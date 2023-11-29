@@ -213,12 +213,10 @@ export default function DataTableComponent({ columns, globalFilterFields, data, 
             <i className="pi pi-search" />
             <InputText value={globalFilterValue} type="search" onChange={onGlobalFilterChange} placeholder="Buscador General" />
          </span>
-         {rowEdit && (
-            <Button variant="contained" fullWidth onClick={() => (rowEdit ? addRow() : handleClickAdd())}>
-               <AddCircleOutlineOutlined sx={{ mr: 0.2 }} />
-               AGREGAR
-            </Button>
-         )}
+         <Button variant="contained" fullWidth onClick={() => (rowEdit ? addRow() : handleClickAdd())}>
+            <AddCircleOutlineOutlined sx={{ mr: 0.2 }} />
+            AGREGAR
+         </Button>
       </Box>
    );
 

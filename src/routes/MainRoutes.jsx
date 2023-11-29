@@ -3,7 +3,7 @@ import { lazy } from "react";
 // project imports
 import MainLayout from "../layout/MainLayout";
 import Loadable from "../ui-component/Loadable";
-import SchoolsView from "../views/admin/SchoolsView";
+import SchoolsView from "../views/admin/SchoolsView/SchoolsView";
 import LevelsView from "../views/admin/LevelsView";
 import SchoolContextProvider from "../context/SchoolContext";
 import LevelContextProvider from "../context/LevelContext";
@@ -15,9 +15,10 @@ import DisabilityContextProvider from "../context/DisabilityContext";
 import RequestBecaContextProvider from "../context/RequestBecaContext";
 import StudentContextProvider from "../context/StudentContext";
 import UserContextProvider from "../context/UserContext";
-import UsersView from "../views/admin/UsersView";
+import UsersView from "../views/admin/UsersView/UsersView";
 import RelationshipContextProvider from "../context/RelationshipContext";
 import TutorContextProvider from "../context/TutorContext";
+import { loaderIndexUsersView } from "../views/admin/UsersView/UsersView";
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import("../views/dashboard/Default")));
@@ -70,8 +71,8 @@ const MainRoutes = {
             <UserContextProvider>
                <UsersView />
             </UserContextProvider>
-         )
-         // loader: loaderIndexUsersView
+         ),
+         loader: loaderIndexUsersView
       },
       {
          path: "catalogos",

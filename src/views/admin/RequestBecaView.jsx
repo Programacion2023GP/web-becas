@@ -71,7 +71,7 @@ const RequestBecaView = () => {
    const { schools, getSchoolsSelectIndex } = useSchoolContext();
    const { getStudentByCURP } = useStudentContext();
    const { getTutorByCURP } = useTutorContext();
-   const { formData, setFormData, resetFormData, createRequestBeca, updateRequestBeca } = useRequestBecaContext();
+   const { formData, setFormData, resetFormData, showRequestBeca, reateRequestBeca, updateRequestBeca } = useRequestBecaContext();
    const [isTutor, setIsTutor] = useState(false); // es true cuando el tutor no es el padre ni la madre
    const [imgIne, setImgIne] = useState([]);
    const [imgPowerLetter, setImgPowerLetter] = useState([]);

@@ -13,6 +13,7 @@ const formDataInitialState = {
 export default function LevelContextProvider({ children }) {
    const singularName = "Nivel"; //Escribirlo siempre letra Capital
    const pluralName = "Niveles"; //Escribirlo siempre letra Capital
+   
    const [formTitle, setFormTitle] = useState(`REGISTRAR ${singularName.toUpperCase()}`);
    const [textBtnSubmit, setTextBtnSumbit] = useState("AGREGAR");
 

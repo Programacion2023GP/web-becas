@@ -26,6 +26,9 @@ const formDataInitialState = {
 };
 
 export default function SchoolContextProvider({ children }) {
+   const singularName = "Escuela"; //Escribirlo siempre letra Capital
+   const pluralName = "Escuelas"; //Escribirlo siempre letra Capital
+
    const [formTitle, setFormTitle] = useState("REGISTRAR ESCUELA");
    const [textBtnSubmit, setTextBtnSumbit] = useState("AGREGAR");
    const [loading, setLoading] = useState(true);
@@ -187,6 +190,8 @@ export default function SchoolContextProvider({ children }) {
    return (
       <SchoolContext.Provider
          value={{
+            singularName,
+            pluralName,
             schools,
             school,
             formData,
