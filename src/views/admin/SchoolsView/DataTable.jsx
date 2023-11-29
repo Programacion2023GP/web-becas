@@ -50,7 +50,7 @@ const SchoolDT = () => {
       { field: "code", header: "Clave", sortable: true, functionEdit: null, body: CodeBodyTemplate, filterField: null },
       { field: "level", header: "Nivel", sortable: true, functionEdit: null, body: LevelBodyTemplate, filterField: null },
       { field: "school", header: "Escuela", sortable: true, functionEdit: null, body: SchoolBodyTemplate, filterField: null },
-      { field: "address", header: "Dirección", sortable: true, functionEdit: null, body: AddressBodyTemplate, filterField: null },
+      // { field: "address", header: "Dirección", sortable: true, functionEdit: null, body: AddressBodyTemplate, filterField: null },
       { field: "director", header: "Director", sortable: true, functionEdit: null, body: DirectorBodyTemplate, filterField: null },
       { field: "phone", header: "Teléfono", sortable: true, functionEdit: null, body: PhoneBodyTemplate, filterField: null },
       { field: "loc_for", header: "Local / Foraneo", sortable: true, functionEdit: null, body: LocForBodyTemplate, filterField: null },
