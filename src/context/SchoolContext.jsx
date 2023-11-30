@@ -37,45 +37,12 @@ export default function SchoolContextProvider({ children }) {
    const [schools, setSchools] = useState([]);
    const [school, setSchool] = useState(null);
    const [formData, setFormData] = useState(formDataInitialState);
-   const [openDialog, setOpenDialog] = useState(false);
-
-   const toggleDrawer = (open) => (event) => {
-      try {
-         if (event && event.type === "keydown" && (event.key === "Tab" || event.key === "Shift")) {
-            return;
-         }
-         setOpenDialog(open);
-      } catch (error) {
-         console.log("Error en toggleDrawer:", error);
-      }
-   };
 
    const resetFormData = () => {
       try {
          setFormData(formDataInitialState);
       } catch (error) {
-         console.log("Error en fillFormData:", error);
-      }
-   };
-
-   const fillFormData = (values) => {
-      try {
-         const newData = { ...formData };
-         newData.id = values.id;
-         newData.code = values.code;
-         newData.level_id = values.level_id;
-         newData.school = values.school;
-         newData.community_id = values.community_id;
-         newData.city_id = values.city_id;
-         newData.colony_id = values.colony_id;
-         newData.address = values.address;
-         newData.phone = values.phone;
-         newData.director = values.director;
-         newData.loc_for = values.loc_for;
-         newData.zone = values.zone;
-         setFormData(newData);
-      } catch (error) {
-         console.log("Error en fillFormData:", error);
+         console.log("Error en resetFormData:", error);
       }
    };
 
@@ -119,11 +86,9 @@ export default function SchoolContextProvider({ children }) {
       try {
          let res = CorrectRes;
          const axiosData = await Axios.get(`/schools/${id}`);
-         setOpenDialog(true);
          res = axiosData.data.data;
          setSchool(res.result);
          setFormData(res.result);
-         // fillFormData(res.result);
 
          return res;
       } catch (error) {
@@ -207,9 +172,6 @@ export default function SchoolContextProvider({ children }) {
             setLoading,
             loadingAction,
             setLoadingAction,
-            openDialog,
-            setOpenDialog,
-            toggleDrawer,
             textBtnSubmit,
             setTextBtnSumbit,
             formTitle,

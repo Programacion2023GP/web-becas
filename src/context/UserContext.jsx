@@ -68,38 +68,6 @@ export default function UserContextProvider({ children }) {
       }
    };
 
-   const fillFormData = (values) => {
-      try {
-         const newData = { ...formData };
-         newData.id = values.id;
-         newData.username = values.username;
-         newData.email = values.email;
-         // newData.password = values.password;
-         newData.role_id = values.role_id;
-         newData.phone = values.phone;
-         newData.license_number = values.license_number;
-         newData.license_due_date = values.license_due_date;
-         newData.payroll_number = values.payroll_number;
-         newData.department_id = values.department_id;
-         newData.name = values.name;
-         newData.paternal_last_name = values.paternal_last_name;
-         newData.maternal_last_name = values.maternal_last_name;
-         newData.community_id = values.community_id;
-         newData.street = values.street;
-         newData.num_ext = values.num_ext;
-         newData.num_int = values.num_int;
-
-         // newData.zip = values.zip;
-         // newData.state = values.state;
-         // newData.city = values.city;
-         // newData.colony = values.colony;
-         setFormData(newData);
-      } catch (error) {
-         console.log("Error en fillFormData:", error);
-         Toast.Error(error);
-      }
-   };
-
    const getUsers = async () => {
       try {
          const res = CorrectRes;
@@ -187,6 +155,24 @@ export default function UserContextProvider({ children }) {
       }
    };
 
+   const DisEnableUser = async (id, active) => {
+      try {
+         let res = CorrectRes;
+         const axiosData = await Axios.get(`/users/${id}/DisEnableUser/${active ? "1" : "0"}`);
+         // console.log("deleteUser() axiosData", axiosData.data);
+         getUsers();
+         res = axiosData.data.data;
+         // console.log("res", res);
+         return res;
+      } catch (error) {
+         const res = ErrorRes;
+         console.log(error);
+         res.message = error;
+         res.alert_text = error;
+         Toast.Error(error);
+      }
+   };
+
    // useEffect(() => {
    //    console.log("el useEffect de UserContext");
    //    getUsers();
@@ -209,6 +195,7 @@ export default function UserContextProvider({ children }) {
             createUser,
             updateUser,
             deleteUser,
+            DisEnableUser,
             textBtnSubmit,
             setTextBtnSumbit,
             formTitle,

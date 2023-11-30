@@ -16,23 +16,28 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import sAlert, { QuestionAlertConfig } from "../../../utils/sAlert";
 import Toast from "../../../utils/Toast";
-import { useGlobalContext } from "../../../context/GlobalContext";
+import { ROLE_SUPER_ADMIN, useGlobalContext } from "../../../context/GlobalContext";
 import DataTableComponent from "../../../components/DataTableComponent";
 import { IconCircleCheckFilled } from "@tabler/icons-react";
 import { IconCircleXFilled } from "@tabler/icons-react";
 import { formatDatetime, formatPhone } from "../../../utils/Formats";
 import { GetDataCommunity } from "../../../utils/GetDataCommunity";
+import { useAuthContext } from "../../../context/AuthContext";
 
 const SchoolDT = () => {
+   const { auth } = useAuthContext();
    const { setLoading, setLoadingAction, setOpenDialog } = useGlobalContext();
    const { singularName, school, schools, getSchools, showSchool, deleteSchool, resetFormData, resetSchool, setTextBtnSumbit, setFormTitle } = useSchoolContext();
-   const globalFilterFields = ["code", "level", "school", "address", "director", "phone", "loc_for", "zone", "created_at"];
+   const globalFilterFields = ["code", "level", "school", "director", "phone", "loc_for", "zone", "created_at"];
 
    // #region BodysTemplate
    const CodeBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.code}</Typography>;
    const LevelBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.level}</Typography>;
    const SchoolBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.school}</Typography>;
-   const AddressBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.community.Colonia}</Typography>;
+   const AddressBodyTemplate = (obj) => {
+      obj.community = GetDataCommunity(obj.community_id);
+      return <Typography textAlign={"center"}>{obj.community.Colonia}</Typography>;
+   };
    const DirectorBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.director}</Typography>;
    const PhoneBodyTemplate = (obj) => <Typography textAlign={"center"}>{formatPhone(obj.phone)}</Typography>;
    const LocForBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.loc_for == "1" ? "LOCAL" : "FORANEA"}</Typography>;
@@ -54,11 +59,13 @@ const SchoolDT = () => {
       { field: "director", header: "Director", sortable: true, functionEdit: null, body: DirectorBodyTemplate, filterField: null },
       { field: "phone", header: "Teléfono", sortable: true, functionEdit: null, body: PhoneBodyTemplate, filterField: null },
       { field: "loc_for", header: "Local / Foraneo", sortable: true, functionEdit: null, body: LocForBodyTemplate, filterField: null },
-      { field: "zone", header: "Zona", sortable: true, functionEdit: null, body: ZoneBodyTemplate, filterField: null },
-
-      { field: "active", header: "Activo", sortable: true, functionEdit: null, body: ActiveBodyTemplate, filterField: null },
-      { field: "created_at", header: "Miembro desde", sortable: true, functionEdit: null, body: CreatedAtBodyTemplate, filterField: null }
+      { field: "zone", header: "Zona", sortable: true, functionEdit: null, body: ZoneBodyTemplate, filterField: null }
    ];
+   auth.role_id === ROLE_SUPER_ADMIN &&
+      columns.push(
+         { field: "active", header: "Activo", sortable: true, functionEdit: null, body: ActiveBodyTemplate, filterField: null },
+         { field: "created_at", header: "Miembro desde", sortable: true, functionEdit: null, body: CreatedAtBodyTemplate, filterField: null }
+      );
 
    const mySwal = withReactContent(Swal);
 
@@ -66,6 +73,7 @@ const SchoolDT = () => {
       try {
          resetFormData();
          setOpenDialog(true);
+         console.log("klasdklasdl");
          setTextBtnSumbit("AGREGAR");
          setFormTitle(`REGISTRAR ${singularName.toUpperCase()}`);
       } catch (error) {
@@ -127,10 +135,9 @@ const SchoolDT = () => {
    const formatData = async () => {
       try {
          // console.log("cargar listado", schools);
-         await schools.map(async (obj) => {
-            console.log(obj);
+         await schools.map((obj) => {
+            // console.log(obj);
             let register = obj;
-            register.community = GetDataCommunity(obj.community_id);
             register.actions = <ButtonsAction id={obj.id} name={obj.code} active={obj.active} />;
             data.push(register);
          });

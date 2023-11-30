@@ -16,16 +16,19 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import sAlert, { QuestionAlertConfig } from "../../../utils/sAlert";
 import Toast from "../../../utils/Toast";
-import { useGlobalContext } from "../../../context/GlobalContext";
+import { ROLE_SUPER_ADMIN, useGlobalContext } from "../../../context/GlobalContext";
 import DataTableComponent from "../../../components/DataTableComponent";
 import { IconCircleCheckFilled } from "@tabler/icons-react";
 import { IconCircleXFilled } from "@tabler/icons-react";
 import { formatDatetime } from "../../../utils/Formats";
+import { useAuthContext } from "../../../context/AuthContext";
+import SwitchComponent from "../../../components/SwitchComponent";
 
 const UserDT = () => {
+   const { auth } = useAuthContext();
    const { setLoading, setLoadingAction, setOpenDialog } = useGlobalContext();
-   const { singularName, user, users, getUsers, showUser, deleteUser, resetFormData, resetUser, setTextBtnSumbit, setFormTitle } = useUserContext();
-   const globalFilterFields = ["username", "email", "role", "created_at"];
+   const { singularName, user, users, getUsers, showUser, deleteUser, DisEnableUser, resetFormData, resetUser, setTextBtnSumbit, setFormTitle } = useUserContext();
+   const globalFilterFields = ["username", "email", "role", "active", "created_at"];
 
    // #region BodysTemplate
    const UserBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.username}</Typography>;
@@ -53,7 +56,7 @@ const UserDT = () => {
    const handleClickAdd = () => {
       try {
          resetUser();
-         user.role = "Selecciona una opción...";
+         // user.role = "Selecciona una opción...";
          resetFormData();
          setOpenDialog(true);
          setTextBtnSumbit("AGREGAR");
@@ -80,16 +83,27 @@ const UserDT = () => {
 
    const handleClickDelete = async (id, name, active) => {
       try {
-         mySwal
-            .fire(QuestionAlertConfig(`Estas seguro de ${active ? "desactivar" : "reactivar"} a ${name}`, active ? "Si, desactivar" : "Si, reactivar"))
-            .then(async (result) => {
-               if (result.isConfirmed) {
-                  setLoadingAction(true);
-                  const axiosResponse = await deleteUser(id);
-                  setLoadingAction(false);
-                  Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
-               }
-            });
+         mySwal.fire(QuestionAlertConfig(`Estas seguro de eliminar a ${name}`)).then(async (result) => {
+            if (result.isConfirmed) {
+               setLoadingAction(true);
+               const axiosResponse = await deleteUser(id);
+               setLoadingAction(false);
+               Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
+            }
+         });
+      } catch (error) {
+         console.log(error);
+         Toast.Error(error);
+      }
+   };
+
+   const handleClickDisEnable = async (id, name, active) => {
+      try {
+         let axiosResponse;
+         setTimeout(async () => {
+            axiosResponse = await DisEnableUser(id, !active);
+            Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
+         }, 500);
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -109,6 +123,13 @@ const UserDT = () => {
                   <IconDelete />
                </Button>
             </Tooltip>
+            {auth.role_id == ROLE_SUPER_ADMIN && (
+               <Tooltip title={active ? "Desactivar" : "Reactivar"} placement="right">
+                  <Button color="dark" onClick={() => handleClickDisEnable(id, name, active)} sx={{}}>
+                     <SwitchComponent checked={active} />
+                  </Button>
+               </Tooltip>
+            )}
          </ButtonGroup>
       );
    };

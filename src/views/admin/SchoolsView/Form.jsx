@@ -25,6 +25,9 @@ const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
 
 const SchoolForm = () => {
    const {
+      openDialog,
+      setOpenDialog,
+      toggleDrawer,
       setLoadingAction,
       setDisabledState,
       setDisabledCity,
@@ -39,9 +42,7 @@ const SchoolForm = () => {
    const {
       createSchool,
       updateSchool,
-      openDialog,
-      setOpenDialog,
-      toggleDrawer,
+
       formData,
       setFormData,
       textBtnSubmit,
