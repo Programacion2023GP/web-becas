@@ -3,22 +3,22 @@ import { lazy } from "react";
 // project imports
 import MainLayout from "../layout/MainLayout";
 import Loadable from "../ui-component/Loadable";
-import SchoolsView from "../views/admin/SchoolsView/SchoolsView";
-import LevelsView from "../views/admin/LevelsView";
+import SchoolsView from "../views/admin/SchoolsView/Index";
+import LevelsView from "../views/admin/LevelsView/Index";
 import SchoolContextProvider from "../context/SchoolContext";
 import LevelContextProvider from "../context/LevelContext";
-import PerimetersView from "../views/admin/PerimetersView";
+import PerimetersView from "../views/admin/PerimetersView/Index";
 import PerimeterContextProvider from "../context/PerimeterContext";
 import RequestBecaView from "../views/admin/RequestBecaView";
-import DisabilitiesView from "../views/admin/DisabilitiesView";
+import DisabilitiesView from "../views/admin/DisabilitiesView/Index";
 import DisabilityContextProvider from "../context/DisabilityContext";
 import RequestBecaContextProvider from "../context/RequestBecaContext";
 import StudentContextProvider from "../context/StudentContext";
 import UserContextProvider from "../context/UserContext";
-import UsersView from "../views/admin/UsersView/UsersView";
+import UsersView from "../views/admin/UsersView/Index";
 import RelationshipContextProvider from "../context/RelationshipContext";
 import TutorContextProvider from "../context/TutorContext";
-import { loaderIndexUsersView } from "../views/admin/UsersView/UsersView";
+import { loaderIndexUsersView } from "../views/admin/UsersView/Index";
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import("../views/dashboard/Default")));

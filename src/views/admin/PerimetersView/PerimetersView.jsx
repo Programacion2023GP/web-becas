@@ -6,34 +6,34 @@ import Paper from "@mui/material/Paper";
 // import Grid from '@mui/material/Unstable_Grid2';
 
 // project imports
-import MainCard from "../../ui-component/cards/MainCard";
-import DisabilityTable from "../../components/disabilities/DisabilityTable";
-import DisabilityForm from "../../components/disabilities/DisabilityForm";
+import MainCard from "../../../ui-component/cards/MainCard";
+import PerimeterTable from "../../../components/perimeters/PerimeterTable";
+import PerimeterForm from "../../../components/perimeters/PerimeterForm";
 
-import { CorrectRes, ErrorRes } from "../../utils/Response";
+import { CorrectRes, ErrorRes } from "../../../utils/Response";
 import { useLoaderData } from "react-router-dom";
-import { Axios } from "../../context/AuthContext";
+import { Axios } from "../../../context/AuthContext";
 // import Backdrop from "../../components/BackDrop";
 
 import { useEffect, useState } from "react";
-import { useDisabilityContext } from "../../context/DisabilityContext";
+import { usePerimeterContext } from "../../../context/PerimeterContext";
 import { Button } from "@mui/material";
 import { AddCircleOutlineOutlined } from "@mui/icons-material";
-import sAlert from "../../utils/sAlert";
-import Toast from "../../utils/Toast";
-import { useGlobalContext } from "../../context/GlobalContext";
+import sAlert from "../../../utils/sAlert";
+import Toast from "../../../utils/Toast";
+import { useGlobalContext } from "../../../context/GlobalContext";
 
-const DisabilitiesView = () => {
+const PerimetersView = () => {
    // const { result } = useLoaderData();
    const { setLoading, setLoadingAction } = useGlobalContext();
-   const { getDisabilities, setOpenDialog, resetFormData, setTextBtnSumbit, setFormTitle } = useDisabilityContext();
+   const { getPerimeters, setOpenDialog, resetFormData, setTextBtnSumbit, setFormTitle } = usePerimeterContext();
 
    const handleClickAdd = () => {
       try {
          resetFormData();
          setOpenDialog(true);
          setTextBtnSumbit("AGREGAR");
-         setFormTitle("REGISTRAR DISCAPACIDAD");
+         setFormTitle("REGISTRAR PERÍMETRO");
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -43,7 +43,7 @@ const DisabilitiesView = () => {
    useEffect(() => {
       try {
          setLoading(true);
-         getDisabilities();
+         getPerimeters();
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -61,10 +61,10 @@ const DisabilitiesView = () => {
             <Button variant="contained" fullWidth onClick={() => handleClickAdd()} sx={{ mb: 1 }}>
                <AddCircleOutlineOutlined sx={{ mr: 1 }}></AddCircleOutlineOutlined> AGREGAR
             </Button>
-            <DisabilityTable />
+            <PerimeterTable />
          </MainCard>
 
-         <DisabilityForm />
+         <PerimeterForm />
       </>
    );
 };
@@ -72,8 +72,8 @@ const DisabilitiesView = () => {
 export const loaderIndex = async () => {
    try {
       const res = CorrectRes;
-      // const axiosData = await Axios.get("/disabilities");
-      // res.result.disabilities = axiosData.data.data.result
+      // const axiosData = await Axios.get("/perimeters");
+      // res.result.perimeters = axiosData.data.data.result
 
       return res;
    } catch (error) {
@@ -86,4 +86,4 @@ export const loaderIndex = async () => {
    }
 };
 
-export default DisabilitiesView;
+export default PerimetersView;

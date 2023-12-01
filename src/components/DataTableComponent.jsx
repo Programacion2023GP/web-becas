@@ -24,7 +24,17 @@ import Toast from "../utils/Toast";
 import { QuestionAlertConfig } from "../utils/sAlert";
 import IconDelete from "./icons/IconDelete";
 
-export default function DataTableComponent({ columns, globalFilterFields, data, setData, headerFilters = true, rowEdit = false, handleClickAdd, refreshTable }) {
+export default function DataTableComponent({
+   columns,
+   globalFilterFields,
+   data,
+   setData,
+   headerFilters = true,
+   rowEdit = false,
+   handleClickAdd,
+   refreshTable,
+   btnAdd = true
+}) {
    const { setLoadingAction, setOpenDialog } = useGlobalContext();
 
    const dt = useRef(null);
@@ -184,7 +194,7 @@ export default function DataTableComponent({ columns, globalFilterFields, data, 
          setLoading(true);
          await refreshTable();
          setLoading(false);
-         Toast.Info("Tabla Actualizada");
+         Toast.Success("Tabla Actualizada");
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -213,10 +223,12 @@ export default function DataTableComponent({ columns, globalFilterFields, data, 
             <i className="pi pi-search" />
             <InputText value={globalFilterValue} type="search" onChange={onGlobalFilterChange} placeholder="Buscador General" />
          </span>
-         <Button variant="contained" fullWidth onClick={() => (rowEdit ? addRow() : handleClickAdd())}>
-            <AddCircleOutlineOutlined sx={{ mr: 0.2 }} />
-            AGREGAR
-         </Button>
+         {btnAdd && (
+            <Button variant="contained" fullWidth onClick={() => (rowEdit ? addRow() : handleClickAdd())}>
+               <AddCircleOutlineOutlined sx={{ mr: 0.2 }} />
+               AGREGAR
+            </Button>
+         )}
       </Box>
    );
 
@@ -231,6 +243,8 @@ export default function DataTableComponent({ columns, globalFilterFields, data, 
             <DataTable
                style={{ borderRadius: "20px" }}
                stripedRows
+               // rowHover
+               // showGridlines
                removableSort
                size="small"
                value={data}

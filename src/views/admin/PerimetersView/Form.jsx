@@ -2,42 +2,41 @@ import { Field, Formik } from "formik";
 import * as Yup from "yup";
 
 import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
-import {
-   Autocomplete,
-   Backdrop,
-   Button,
-   CircularProgress,
-   Divider,
-   FormControlLabel,
-   FormLabel,
-   InputLabel,
-   MenuItem,
-   Radio,
-   RadioGroup,
-   Select,
-   Switch,
-   TextField,
-   Typography
-} from "@mui/material";
+import { Button, FormControlLabel, FormLabel, InputLabel, MenuItem, Radio, RadioGroup, Select, Switch, TextField, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { SwipeableDrawer } from "@mui/material";
 import { FormControl } from "@mui/material";
 import { FormHelperText } from "@mui/material";
-import { useState } from "react";
-import { usePerimeterContext } from "../../context/PerimeterContext";
+import { useMemo, useState } from "react";
+import { usePerimeterContext } from "../../../context/PerimeterContext";
 import { Box } from "@mui/system";
 import { useEffect } from "react";
 import { ButtonGroup } from "@mui/material";
-import Toast from "../../utils/Toast";
-import { useGlobalContext } from "../../context/GlobalContext";
+import Toast from "../../../utils/Toast";
+import { useGlobalContext } from "../../../context/GlobalContext";
+import Select2Component from "../../../components/Form/Select2Component";
+import InputsCommunityComponent, { getCommunity } from "../../../components/Form/InputsCommunityComponent";
+import { handleInputFormik } from "../../../utils/Formats";
+// import InputComponent from "../Form/InputComponent";
 
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
 const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
 
 const PerimeterForm = () => {
-   const { setLoadingAction } = useGlobalContext();
-   const { createPerimeter, updatePerimeter, openDialog, setOpenDialog, toggleDrawer, formData, textBtnSubmit, setTextBtnSumbit, formTitle, setFormTitle } =
-      usePerimeterContext();
+   const { openDialog, setOpenDialog, toggleDrawer, setLoadingAction } = useGlobalContext();
+   const {
+      singularName,
+      perimeters,
+      createPerimeter,
+      updatePerimeter,
+      formData,
+      setFormData,
+      textBtnSubmit,
+      resetFormData,
+      setTextBtnSumbit,
+      formTitle,
+      setFormTitle
+   } = usePerimeterContext();
    const [checkAdd, setCheckAdd] = useState(checkAddInitialState);
    const [colorLabelcheck, setColorLabelcheck] = useState(colorLabelcheckInitialState);
 
@@ -56,14 +55,15 @@ const PerimeterForm = () => {
 
    const onSubmit = async (values, { setSubmitting, setErrors, resetForm }) => {
       try {
-         // return console.log(values);
+         // return console.log("values", values);
          setLoadingAction(true);
          let axiosResponse;
          if (values.id == 0) axiosResponse = await createPerimeter(values);
          else axiosResponse = await updatePerimeter(values);
          resetForm();
+         resetFormData();
          setTextBtnSumbit("AGREGAR");
-         setFormTitle("REGISTRAR PERÍMETRO");
+         setFormTitle(`REGISTRAR ${singularName.toUpperCase()}`);
          setSubmitting(false);
          setLoadingAction(false);
          Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
@@ -89,8 +89,9 @@ const PerimeterForm = () => {
       }
    };
 
-   const handleModify = (setValues) => {
+   const handleModify = (setValues, setFieldValue) => {
       try {
+         if (formData.description) formData.description == null && (formData.description = "");
          setValues(formData);
       } catch (error) {
          console.log(error);
@@ -109,7 +110,7 @@ const PerimeterForm = () => {
    };
 
    const validationSchema = Yup.object().shape({
-      perimeter: Yup.string().trim().required("Perímetro requerido")
+      perimeter: Yup.string().trim().required("Nivel requerido")
    });
 
    useEffect(() => {
@@ -138,17 +139,18 @@ const PerimeterForm = () => {
                   <Grid container spacing={2} component={"form"} onSubmit={handleSubmit}>
                      <Field id="id" name="id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} />
 
-                     {/* Perímetro */}
+                     {/* Nivel */}
                      <Grid xs={12} md={12} sx={{ mb: 3 }}>
                         <TextField
                            id="perimeter"
                            name="perimeter"
-                           label="Perímetro *"
+                           label="Nivel *"
                            type="text"
                            value={values.perimeter}
-                           placeholder="CENTRO"
+                           placeholder="PRIMARIA"
                            onChange={handleChange}
                            onBlur={handleBlur}
+                           onInput={(e) => handleInputFormik(e, setFieldValue, "perimeter", true)}
                            fullWidth
                            error={errors.perimeter && touched.perimeter}
                            helperText={errors.perimeter && touched.perimeter && errors.perimeter}
@@ -173,7 +175,7 @@ const PerimeterForm = () => {
                            color="secondary"
                            fullWidth
                            size="large"
-                           sx={{ mt: 1 }}
+                           sx={{ mt: 1, display: "none" }}
                            onClick={() => handleReset(resetForm, setFieldValue, values.id)}
                         >
                            LIMPIAR

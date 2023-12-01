@@ -2,43 +2,41 @@ import { Field, Formik } from "formik";
 import * as Yup from "yup";
 
 import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
-import {
-   Autocomplete,
-   Backdrop,
-   Button,
-   CircularProgress,
-   Divider,
-   FormControlLabel,
-   FormLabel,
-   InputLabel,
-   MenuItem,
-   Radio,
-   RadioGroup,
-   Select,
-   Switch,
-   TextField,
-   Typography
-} from "@mui/material";
+import { Button, FormControlLabel, FormLabel, InputLabel, MenuItem, Radio, RadioGroup, Select, Switch, TextField, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { SwipeableDrawer } from "@mui/material";
 import { FormControl } from "@mui/material";
 import { FormHelperText } from "@mui/material";
-import { useState } from "react";
-import { useLevelContext } from "../../context/LevelContext";
+import { useMemo, useState } from "react";
+import { useDisabilityContext } from "../../../context/DisabilityContext";
 import { Box } from "@mui/system";
 import { useEffect } from "react";
 import { ButtonGroup } from "@mui/material";
-import Toast from "../../utils/Toast";
-import { useGlobalContext } from "../../context/GlobalContext";
-import { handleInputFormik } from "../../utils/Formats";
+import Toast from "../../../utils/Toast";
+import { useGlobalContext } from "../../../context/GlobalContext";
+import Select2Component from "../../../components/Form/Select2Component";
+import InputsCommunityComponent, { getCommunity } from "../../../components/Form/InputsCommunityComponent";
+import { handleInputFormik } from "../../../utils/Formats";
+// import InputComponent from "../Form/InputComponent";
 
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
 const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
 
-const LevelForm = () => {
-   const { setLoadingAction } = useGlobalContext();
-   const { singularName, createLevel, updateLevel, openDialog, setOpenDialog, toggleDrawer, formData, textBtnSubmit, setTextBtnSumbit, formTitle, setFormTitle } =
-      useLevelContext();
+const DisabilityForm = () => {
+   const { openDialog, setOpenDialog, toggleDrawer, setLoadingAction } = useGlobalContext();
+   const {
+      singularName,
+      disabilities,
+      createDisability,
+      updateDisability,
+      formData,
+      setFormData,
+      textBtnSubmit,
+      resetFormData,
+      setTextBtnSumbit,
+      formTitle,
+      setFormTitle
+   } = useDisabilityContext();
    const [checkAdd, setCheckAdd] = useState(checkAddInitialState);
    const [colorLabelcheck, setColorLabelcheck] = useState(colorLabelcheckInitialState);
 
@@ -57,20 +55,19 @@ const LevelForm = () => {
 
    const onSubmit = async (values, { setSubmitting, setErrors, resetForm }) => {
       try {
-         // return console.log(values);
+         // return console.log("values", values);
          setLoadingAction(true);
          let axiosResponse;
-         if (values.id == 0) axiosResponse = await createLevel(values);
-         else axiosResponse = await updateLevel(values);
-         if (axiosResponse.status_code == 200) {
-            resetForm();
-            setTextBtnSumbit("AGREGAR");
-            setFormTitle(`REGISTRAR ${singularName.toUpperCase()}`);
-         }
+         if (values.id == 0) axiosResponse = await createDisability(values);
+         else axiosResponse = await updateDisability(values);
+         resetForm();
+         resetFormData();
+         setTextBtnSumbit("AGREGAR");
+         setFormTitle(`REGISTRAR ${singularName.toUpperCase()}`);
          setSubmitting(false);
          setLoadingAction(false);
          Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
-         if (!checkAdd && axiosResponse.status_code == 200) setOpenDialog(false);
+         if (!checkAdd) setOpenDialog(false);
       } catch (error) {
          console.error(error);
          setErrors({ submit: error.message });
@@ -92,8 +89,9 @@ const LevelForm = () => {
       }
    };
 
-   const handleModify = (setValues) => {
+   const handleModify = (setValues, setFieldValue) => {
       try {
+         if (formData.description) formData.description == null && (formData.description = "");
          setValues(formData);
       } catch (error) {
          console.log(error);
@@ -112,7 +110,7 @@ const LevelForm = () => {
    };
 
    const validationSchema = Yup.object().shape({
-      level: Yup.string().trim().required("Nivel requerido")
+      disability: Yup.string().trim().required("Nivel requerido")
    });
 
    useEffect(() => {
@@ -140,22 +138,37 @@ const LevelForm = () => {
                {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
                   <Grid container spacing={2} component={"form"} onSubmit={handleSubmit}>
                      <Field id="id" name="id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} />
-
-                     {/* Nivel */}
+                     {/* Discapacidad */}
                      <Grid xs={12} md={12} sx={{ mb: 3 }}>
                         <TextField
-                           id="level"
-                           name="level"
-                           label="Nivel *"
+                           id="disability"
+                           name="disability"
+                           label="Nombre de la Discapacidad *"
                            type="text"
-                           value={values.level}
-                           placeholder="PRIMARIA"
+                           value={values.disability}
+                           placeholder="Seguera"
                            onChange={handleChange}
                            onBlur={handleBlur}
-                           onInput={(e) => handleInputFormik(e, setFieldValue, "level", true)}
+                           onInput={(e) => handleInputFormik(e, setFieldValue, "disability", true)}
                            fullWidth
-                           error={errors.level && touched.level}
-                           helperText={errors.level && touched.level && errors.level}
+                           error={errors.disability && touched.disability}
+                           helperText={errors.disability && touched.disability && errors.disability}
+                        />
+                     </Grid>
+                     {/* Descripción */}
+                     <Grid xs={12} md={12} sx={{ mb: 1 }}>
+                        <TextField
+                           id="description"
+                           name="description"
+                           label="Descripción"
+                           type="text"
+                           value={values.description}
+                           placeholder="Descripción de la discapacidad"
+                           onChange={handleChange}
+                           onBlur={handleBlur}
+                           fullWidth
+                           // error={errors.description && touched.description}
+                           // helperText={errors.description && touched.description && errors.description}
                         />
                      </Grid>
 
@@ -178,7 +191,7 @@ const LevelForm = () => {
                            fullWidth
                            size="large"
                            sx={{ mt: 1 }}
-                           onClick={() => handleReset(resetForm, setFieldValue, values.id)}
+                           onClick={() => handleReset(resetForm, setFieldValue, values.id, values.code)}
                         >
                            LIMPIAR
                         </Button>
@@ -196,4 +209,4 @@ const LevelForm = () => {
       </SwipeableDrawer>
    );
 };
-export default LevelForm;
+export default DisabilityForm;

@@ -11,44 +11,21 @@ const formDataInitialState = {
 };
 
 export default function DisabilityContextProvider({ children }) {
-   const [formTitle, setFormTitle] = useState("REGISTRAR DISCAPACIDAD");
+   const singularName = "Discapacidad"; //Escribirlo siempre letra Capital
+   const pluralName = "Discapacidades"; //Escribirlo siempre letra Capital
+
+   const [formTitle, setFormTitle] = useState(`REGISTRAR ${singularName}`);
    const [textBtnSubmit, setTextBtnSumbit] = useState("AGREGAR");
-   // const [loading, setLoading] = useState(true);
-   // const [loadingAction, setLoadingAction] = useState(false);
 
    const [disabilities, setDisabilities] = useState([]);
    const [disability, setDisability] = useState(null);
    const [formData, setFormData] = useState(formDataInitialState);
-   const [openDialog, setOpenDialog] = useState(false);
-
-   const toggleDrawer = (open) => (event) => {
-      try {
-         if (event && event.type === "keydown" && (event.key === "Tab" || event.key === "Shift")) {
-            return;
-         }
-         setOpenDialog(open);
-      } catch (error) {
-         console.log("Error en toggleDrawer:", error);
-      }
-   };
 
    const resetFormData = () => {
       try {
          setFormData(formDataInitialState);
       } catch (error) {
          console.log("Error en resetFormData:", error);
-      }
-   };
-
-   const fillFormData = (values) => {
-      try {
-         const newData = { ...formData };
-         newData.id = values.id;
-         newData.disability = values.disability;
-         newData.description = values.description;
-         setFormData(newData);
-      } catch (error) {
-         console.log("Error en fillFormData:", error);
       }
    };
 
@@ -92,11 +69,9 @@ export default function DisabilityContextProvider({ children }) {
       try {
          let res = CorrectRes;
          const axiosData = await Axios.get(`/disabilities/${id}`);
-         setOpenDialog(true);
          res = axiosData.data.data;
-         // await setDisability(res.result);
-         // setFormData(res.result);
-         fillFormData(res.result);
+         setDisability(res.result);
+         setFormData(res.result);
 
          return res;
       } catch (error) {
@@ -173,13 +148,12 @@ export default function DisabilityContextProvider({ children }) {
             createDisability,
             updateDisability,
             deleteDisability,
-            openDialog,
-            setOpenDialog,
-            toggleDrawer,
             textBtnSubmit,
             setTextBtnSumbit,
             formTitle,
-            setFormTitle
+            setFormTitle,
+            singularName,
+            pluralName
          }}
       >
          {children}

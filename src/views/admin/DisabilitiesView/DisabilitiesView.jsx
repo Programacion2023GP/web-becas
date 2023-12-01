@@ -6,35 +6,34 @@ import Paper from "@mui/material/Paper";
 // import Grid from '@mui/material/Unstable_Grid2';
 
 // project imports
-import MainCard from "../../ui-component/cards/MainCard";
-// import LevelTable from "../../components/levels/LevelTable";
-import LevelForm from "../../components/levels/LevelForm";
+import MainCard from "../../../ui-component/cards/MainCard";
+import DisabilityTable from "../../../components/disabilities/DisabilityTable";
+import DisabilityForm from "../../../components/disabilities/DisabilityForm";
 
-import { CorrectRes, ErrorRes } from "../../utils/Response";
+import { CorrectRes, ErrorRes } from "../../../utils/Response";
 import { useLoaderData } from "react-router-dom";
-import { Axios } from "../../context/AuthContext";
+import { Axios } from "../../../context/AuthContext";
 // import Backdrop from "../../components/BackDrop";
 
 import { useEffect, useState } from "react";
-import { useLevelContext } from "../../context/LevelContext";
-import { Button, Table } from "@mui/material";
+import { useDisabilityContext } from "../../../context/DisabilityContext";
+import { Button } from "@mui/material";
 import { AddCircleOutlineOutlined } from "@mui/icons-material";
-import sAlert from "../../utils/sAlert";
-import Toast from "../../utils/Toast";
-import { useGlobalContext } from "../../context/GlobalContext";
-import LevelTable from "./LevelsView/LevelTable";
+import sAlert from "../../../utils/sAlert";
+import Toast from "../../../utils/Toast";
+import { useGlobalContext } from "../../../context/GlobalContext";
 
-const LevelsView = () => {
+const DisabilitiesView = () => {
    // const { result } = useLoaderData();
    const { setLoading, setLoadingAction } = useGlobalContext();
-   const { levels, getLevels, setOpenDialog, resetFormData, setTextBtnSumbit, setFormTitle } = useLevelContext();
+   const { getDisabilities, setOpenDialog, resetFormData, setTextBtnSumbit, setFormTitle } = useDisabilityContext();
 
    const handleClickAdd = () => {
       try {
          resetFormData();
          setOpenDialog(true);
          setTextBtnSumbit("AGREGAR");
-         setFormTitle("REGISTRAR NIVEL");
+         setFormTitle("REGISTRAR DISCAPACIDAD");
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -44,7 +43,7 @@ const LevelsView = () => {
    useEffect(() => {
       try {
          setLoading(true);
-         getLevels();
+         getDisabilities();
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -62,11 +61,10 @@ const LevelsView = () => {
             <Button variant="contained" fullWidth onClick={() => handleClickAdd()} sx={{ mb: 1 }}>
                <AddCircleOutlineOutlined sx={{ mr: 1 }}></AddCircleOutlineOutlined> AGREGAR
             </Button>
-            <LevelTable />
-            {/* <LevelTable /> */}
+            <DisabilityTable />
          </MainCard>
 
-         <LevelForm />
+         <DisabilityForm />
       </>
    );
 };
@@ -74,8 +72,8 @@ const LevelsView = () => {
 export const loaderIndex = async () => {
    try {
       const res = CorrectRes;
-      const axiosData = await Axios.get("/levels");
-      res.result.levels = axiosData.data.data.result;
+      // const axiosData = await Axios.get("/disabilities");
+      // res.result.disabilities = axiosData.data.data.result
 
       return res;
    } catch (error) {
@@ -88,4 +86,4 @@ export const loaderIndex = async () => {
    }
 };
 
-export default LevelsView;
+export default DisabilitiesView;

@@ -13,25 +13,13 @@ const formDataInitialState = {
 export default function LevelContextProvider({ children }) {
    const singularName = "Nivel"; //Escribirlo siempre letra Capital
    const pluralName = "Niveles"; //Escribirlo siempre letra Capital
-   
+
    const [formTitle, setFormTitle] = useState(`REGISTRAR ${singularName.toUpperCase()}`);
    const [textBtnSubmit, setTextBtnSumbit] = useState("AGREGAR");
 
    const [levels, setLevels] = useState([]);
    const [level, setLevel] = useState(null);
    const [formData, setFormData] = useState(formDataInitialState);
-   const [openDialog, setOpenDialog] = useState(false);
-
-   const toggleDrawer = (open) => (event) => {
-      try {
-         if (event && event.type === "keydown" && (event.key === "Tab" || event.key === "Shift")) {
-            return;
-         }
-         setOpenDialog(open);
-      } catch (error) {
-         console.log("Error en toggleDrawer:", error);
-      }
-   };
 
    const resetFormData = () => {
       try {
@@ -40,7 +28,6 @@ export default function LevelContextProvider({ children }) {
          console.log("Error en resetFormData:", error);
       }
    };
-
 
    const getLevels = async () => {
       try {
@@ -83,7 +70,6 @@ export default function LevelContextProvider({ children }) {
       try {
          let res = CorrectRes;
          const axiosData = await Axios.get(`/levels/${id}`);
-         setOpenDialog(true);
          res = axiosData.data.data;
          setLevel(res.result);
          setFormData(res.result);
@@ -167,9 +153,6 @@ export default function LevelContextProvider({ children }) {
             createLevel,
             updateLevel,
             deleteLevel,
-            openDialog,
-            setOpenDialog,
-            toggleDrawer,
             textBtnSubmit,
             setTextBtnSumbit,
             formTitle,

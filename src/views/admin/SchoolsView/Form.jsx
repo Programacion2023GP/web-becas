@@ -38,7 +38,7 @@ const SchoolForm = () => {
       setDataColonies,
       setDataColoniesComplete
    } = useGlobalContext();
-   const { levels, getLevelsSelectIndex } = useLevelContext();
+   const { singularName, levels, getLevelsSelectIndex } = useLevelContext();
    const {
       createSchool,
       updateSchool,
@@ -77,7 +77,7 @@ const SchoolForm = () => {
          resetForm();
          resetFormData();
          setTextBtnSumbit("AGREGAR");
-         setFormTitle("REGISTRAR ESCUELA");
+         setFormTitle(`REGISTRAR ${singularName.toUpperCase()}`);
          setSubmitting(false);
          setLoadingAction(false);
          Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
@@ -97,7 +97,6 @@ const SchoolForm = () => {
       try {
          resetForm();
          setFieldValue("id", id);
-         setFieldValue("code", code);
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -140,10 +139,6 @@ const SchoolForm = () => {
          Toast.Error(error);
       }
    };
-   const options = [
-      { label: "The Godfather", id: 1 },
-      { label: "Pulp Fiction", id: 2 }
-   ];
 
    const validationSchema = Yup.object().shape({
       code: Yup.string().trim().required("Clave de escuela requerida"),
@@ -178,7 +173,6 @@ const SchoolForm = () => {
       <SwipeableDrawer anchor={"right"} open={openDialog} onClose={toggleDrawer(false)} onOpen={toggleDrawer(true)}>
          <Box role="presentation" p={3} pt={5} className="form">
             <Typography variant="h2" mb={3}>
-               {/* {formData.id == 0 ? "REGISTRAR ESCUELA" : "EDITAR ESCUELA"} */}
                {formTitle}
                <FormControlLabel
                   sx={{ float: "right", color: colorLabelcheck }}
@@ -349,7 +343,7 @@ const SchoolForm = () => {
                            color="secondary"
                            fullWidth
                            size="large"
-                           sx={{ mt: 1 }}
+                           sx={{ mt: 1, display: "none" }}
                            onClick={() => handleReset(resetForm, setFieldValue, values.id, values.code)}
                         >
                            LIMPIAR

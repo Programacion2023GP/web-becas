@@ -46,10 +46,13 @@ const UserDT = () => {
    const columns = [
       { field: "user", header: "Usuario", sortable: true, functionEdit: null, body: UserBodyTemplate, filterField: null },
       { field: "email", header: "Correo", sortable: true, functionEdit: null, body: EmailBodyTemplate, filterField: null },
-      { field: "role", header: "Rol", sortable: true, functionEdit: null, body: RoleBodyTemplate, filterField: null },
-      { field: "active", header: "Activo", sortable: true, functionEdit: null, body: ActiveBodyTemplate, filterField: null },
-      { field: "created_at", header: "Miembro desde", sortable: true, functionEdit: null, body: CreatedAtBodyTemplate, filterField: null }
+      { field: "role", header: "Rol", sortable: true, functionEdit: null, body: RoleBodyTemplate, filterField: null }
    ];
+   auth.role_id === ROLE_SUPER_ADMIN &&
+      columns.push(
+         { field: "active", header: "Activo", sortable: true, functionEdit: null, body: ActiveBodyTemplate, filterField: null },
+         { field: "created_at", header: "Miembro desde", sortable: true, functionEdit: null, body: CreatedAtBodyTemplate, filterField: null }
+      );
 
    const mySwal = withReactContent(Swal);
 
@@ -113,12 +116,12 @@ const UserDT = () => {
    const ButtonsAction = ({ id, name, active }) => {
       return (
          <ButtonGroup variant="outlined">
-            <Tooltip title={"Editar Usuario"} placement="top">
+            <Tooltip title={`Editar ${singularName}`} placement="top">
                <Button color="info" onClick={() => handleClickEdit(id)}>
                   <IconEdit />
                </Button>
             </Tooltip>
-            <Tooltip title={"Eliminar Usuario"} placement="top">
+            <Tooltip title={`Eliminar ${singularName}`} placement="top">
                <Button color="error" onClick={() => handleClickDelete(id, name, active)}>
                   <IconDelete />
                </Button>

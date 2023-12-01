@@ -16,17 +16,22 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import sAlert, { QuestionAlertConfig } from "../../../utils/sAlert";
 import Toast from "../../../utils/Toast";
-import { useGlobalContext } from "../../../context/GlobalContext";
+import { ROLE_SUPER_ADMIN, useGlobalContext } from "../../../context/GlobalContext";
 import DataTableComponent from "../../../components/DataTableComponent";
 import { IconEye } from "@tabler/icons";
 import { formatDatetime } from "../../../utils/Formats";
 import { Link } from "react-router-dom";
+import { useAuthContext } from "../../../context/AuthContext";
+import { IconCircleCheckFilled } from "@tabler/icons-react";
+import { IconCircleXFilled } from "@tabler/icons-react";
+import SwitchComponent from "../../../components/SwitchComponent";
 
 const RequestBecaDT = () => {
+   const { auth } = useAuthContext();
    const { setLoading, setLoadingAction, setOpenDialog } = useGlobalContext();
    const { singularName, pluralName, requestBecas, setRequestBecas, getRequestBecas, showRequestBeca, deleteRequestBeca, setTextBtnSumbit, setFormTitle } =
       useRequestBecaContext();
-   const globalFilterFields = ["folio", "code", "level", "school", "curp", "name", "paternal_last_name", "maternal_last_name", "average", "created_at"];
+   const globalFilterFields = ["folio", "code", "level", "school", "curp", "name", "paternal_last_name", "maternal_last_name", "average", "status", "created_at"];
 
    //#region BODY TEMPLATES
    const FolioBodyTemplate = (obj) => (
@@ -51,7 +56,18 @@ const RequestBecaDT = () => {
          <b>{obj.average}</b>
       </Typography>
    );
-   const requestDateBodyTemplate = (obj) => <Typography textAlign={"center"}>{formatDatetime(obj.created_at)}</Typography>;
+   const StatusBodyTemplate = (obj) => (
+      <Typography textAlign={"center"}>
+         <b>{obj.status}</b>
+      </Typography>
+   );
+
+   const ActiveBodyTemplate = (obj) => (
+      <Typography textAlign={"center"}>
+         {obj.active ? <IconCircleCheckFilled style={{ color: "green" }} /> : <IconCircleXFilled style={{ color: "red" }} />}
+      </Typography>
+   );
+   const RequestDateBodyTemplate = (obj) => <Typography textAlign={"center"}>{formatDatetime(obj.created_at)}</Typography>;
    //#endregion BODY TEMPLATES
 
    const columns = [
@@ -59,10 +75,25 @@ const RequestBecaDT = () => {
       { field: "school", header: "Escuela", sortable: true, functionEdit: null, body: SchoolBodyTemplate },
       { field: "student", header: "Alumno", sortable: true, functionEdit: null, body: StudentBodyTemplate },
       { field: "average", header: "Promedio", sortable: true, functionEdit: null, body: AverageBodyTemplate },
-      { field: "created_at", header: "Fecha de Solicitud", sortable: true, functionEdit: null, body: requestDateBodyTemplate }
+      { field: "status", header: "Estatus", sortable: true, functionEdit: null, body: StatusBodyTemplate },
+      { field: "created_at", header: "Fecha de Solicitud", sortable: true, functionEdit: null, body: RequestDateBodyTemplate }
    ];
+   auth.role_id === ROLE_SUPER_ADMIN &&
+      columns.push(
+         { field: "active", header: "Activo", sortable: true, functionEdit: null, body: ActiveBodyTemplate, filterField: null }
+         // { field: "created_at", header: "Fecha de Solicitud", sortable: true, functionEdit: null, body: RequestDateBodyTemplate, filterField: null }
+      );
 
    const mySwal = withReactContent(Swal);
+
+   const handleClickAdd = () => {
+      try {
+         location = "/admin/solicitud-beca";
+      } catch (error) {
+         console.log(error);
+         Toast.Error(error);
+      }
+   };
 
    const handleClickEdit = async (id) => {
       try {
@@ -80,7 +111,7 @@ const RequestBecaDT = () => {
 
    const handleClickDelete = async (id, name) => {
       try {
-         mySwal.fire(QuestionAlertConfig(`Estas seguro de eliminar a ${name}`)).then(async (result) => {
+         mySwal.fire(QuestionAlertConfig(`Estas seguro de eliminar la solicitu con folio #${name}`)).then(async (result) => {
             if (result.isConfirmed) {
                setLoadingAction(true);
                const axiosResponse = await deleteRequestBeca(id);
@@ -93,6 +124,19 @@ const RequestBecaDT = () => {
          Toast.Error(error);
       }
    };
+
+   // const handleClickDisEnable = async (id, name, active) => {
+   //    try {
+   //       let axiosResponse;
+   //       setTimeout(async () => {
+   //          axiosResponse = await DisEnableUser(id, !active);
+   //          Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
+   //       }, 500);
+   //    } catch (error) {
+   //       console.log(error);
+   //       Toast.Error(error);
+   //    }
+   // };
 
    const ButtonsAction = ({ id, name }) => {
       return (
@@ -115,6 +159,13 @@ const RequestBecaDT = () => {
                   <IconDelete />
                </Button>
             </Tooltip>
+            {/* {auth.role_id == ROLE_SUPER_ADMIN && (
+               <Tooltip title={active ? "Desactivar" : "Reactivar"} placement="right">
+                  <Button color="dark" onClick={() => handleClickDisEnable(id, name, active)} sx={{}}>
+                     <SwitchComponent checked={active} />
+                  </Button>
+               </Tooltip>
+            )} */}
          </ButtonGroup>
       );
    };
@@ -125,10 +176,10 @@ const RequestBecaDT = () => {
          // console.log("cargar listado", requestBecas);
          await requestBecas.map((obj) => {
             // console.log(obj);
-            let row = obj;
-            row.created_at = formatDatetime(obj.created_at, true);
-            row.actions = <ButtonsAction id={obj.id} name={obj.folio} />;
-            data.push(row);
+            let register = obj;
+            register.created_at = formatDatetime(obj.created_at, true);
+            register.actions = <ButtonsAction id={obj.id} name={obj.folio} />;
+            data.push(register);
          });
          // if (data.length > 0) setGlobalFilterFields(Object.keys(requestBecas[0]));
          // console.log("la data del formatData", globalFilterFields);
@@ -150,8 +201,9 @@ const RequestBecaDT = () => {
          setData={setRequestBecas}
          globalFilterFields={globalFilterFields}
          headerFilters={false}
-         refreshTable={getRequestBecas}
+         handleClickAdd={handleClickAdd}
          rowEdit={false}
+         refreshTable={getRequestBecas}
       />
    );
 };

@@ -31,7 +31,7 @@ const Select2Component = ({
    valueLabel,
    formDataLabel,
    placeholder,
-   options,
+   options = [{ id: 0, label: "Selecciona una opción..." }],
    fullWidth,
    handleChangeValueSuccess,
    handleBlur,

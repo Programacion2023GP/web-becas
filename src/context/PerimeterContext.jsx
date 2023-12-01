@@ -10,43 +10,21 @@ const formDataInitialState = {
 };
 
 export default function PerimeterContextProvider({ children }) {
-   const [formTitle, setFormTitle] = useState("REGISTRAR PERIMETRO");
+   const singularName = "Perímetro"; //Escribirlo siempre letra Capital
+   const pluralName = "Perímetros"; //Escribirlo siempre letra Capital
+
+   const [formTitle, setFormTitle] = useState(`REGISTRAR ${singularName}`);
    const [textBtnSubmit, setTextBtnSumbit] = useState("AGREGAR");
-   // const [loading, setLoading] = useState(true);
-   // const [loadingAction, setLoadingAction] = useState(false);
 
    const [perimeters, setPerimeters] = useState([]);
    const [perimeter, setPerimeter] = useState(null);
    const [formData, setFormData] = useState(formDataInitialState);
-   const [openDialog, setOpenDialog] = useState(false);
-
-   const toggleDrawer = (open) => (event) => {
-      try {
-         if (event && event.type === "keydown" && (event.key === "Tab" || event.key === "Shift")) {
-            return;
-         }
-         setOpenDialog(open);
-      } catch (error) {
-         console.log("Error en toggleDrawer:", error);
-      }
-   };
 
    const resetFormData = () => {
       try {
          setFormData(formDataInitialState);
       } catch (error) {
          console.log("Error en resetFormData:", error);
-      }
-   };
-
-   const fillFormData = (values) => {
-      try {
-         const newData = { ...formData };
-         newData.id = values.id;
-         newData.perimeter = values.perimeter;
-         setFormData(newData);
-      } catch (error) {
-         console.log("Error en fillFormData:", error);
       }
    };
 
@@ -71,11 +49,9 @@ export default function PerimeterContextProvider({ children }) {
       try {
          let res = CorrectRes;
          const axiosData = await Axios.get(`/perimeters/${id}`);
-         setOpenDialog(true);
          res = axiosData.data.data;
-         // await setPerimeter(res.result);
-         // setFormData(res.result);
-         fillFormData(res.result);
+         setPerimeter(res.result);
+         setFormData(res.result);
 
          return res;
       } catch (error) {
@@ -151,13 +127,12 @@ export default function PerimeterContextProvider({ children }) {
             createPerimeter,
             updatePerimeter,
             deletePerimeter,
-            openDialog,
-            setOpenDialog,
-            toggleDrawer,
             textBtnSubmit,
             setTextBtnSumbit,
             formTitle,
-            setFormTitle
+            setFormTitle,
+            singularName,
+            pluralName
          }}
       >
          {children}

@@ -2,43 +2,30 @@ import { Field, Formik } from "formik";
 import * as Yup from "yup";
 
 import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
-import {
-   Autocomplete,
-   Backdrop,
-   Button,
-   CircularProgress,
-   Divider,
-   FormControlLabel,
-   FormLabel,
-   InputLabel,
-   MenuItem,
-   Radio,
-   RadioGroup,
-   Select,
-   Switch,
-   TextField,
-   Typography
-} from "@mui/material";
+import { Button, FormControlLabel, FormLabel, InputLabel, MenuItem, Radio, RadioGroup, Select, Switch, TextField, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { SwipeableDrawer } from "@mui/material";
 import { FormControl } from "@mui/material";
 import { FormHelperText } from "@mui/material";
-import { useState } from "react";
-import { useDisabilityContext } from "../../context/DisabilityContext";
+import { useMemo, useState } from "react";
+import { useLevelContext } from "../../../context/LevelContext";
 import { Box } from "@mui/system";
 import { useEffect } from "react";
 import { ButtonGroup } from "@mui/material";
-import Toast from "../../utils/Toast";
-import { useGlobalContext } from "../../context/GlobalContext";
-import { handleInputFormik } from "../../utils/Formats";
+import Toast from "../../../utils/Toast";
+import { useGlobalContext } from "../../../context/GlobalContext";
+import Select2Component from "../../../components/Form/Select2Component";
+import InputsCommunityComponent, { getCommunity } from "../../../components/Form/InputsCommunityComponent";
+import { handleInputFormik } from "../../../utils/Formats";
+// import InputComponent from "../Form/InputComponent";
 
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
 const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
 
-const DisabilityForm = ({ dataCities, dataColonies }) => {
-   const { setLoadingAction } = useGlobalContext();
-   const { createDisability, updateDisability, openDialog, setOpenDialog, toggleDrawer, formData, textBtnSubmit, setTextBtnSumbit, formTitle, setFormTitle } =
-      useDisabilityContext();
+const LevelForm = () => {
+   const { openDialog, setOpenDialog, toggleDrawer, setLoadingAction } = useGlobalContext();
+   const { singularName, levels, createLevel, updateLevel, formData, setFormData, textBtnSubmit, resetFormData, setTextBtnSumbit, formTitle, setFormTitle } =
+      useLevelContext();
    const [checkAdd, setCheckAdd] = useState(checkAddInitialState);
    const [colorLabelcheck, setColorLabelcheck] = useState(colorLabelcheckInitialState);
 
@@ -57,14 +44,15 @@ const DisabilityForm = ({ dataCities, dataColonies }) => {
 
    const onSubmit = async (values, { setSubmitting, setErrors, resetForm }) => {
       try {
-         // return console.log(values);
+         // return console.log("values", values);
          setLoadingAction(true);
          let axiosResponse;
-         if (values.id == 0) axiosResponse = await createDisability(values);
-         else axiosResponse = await updateDisability(values);
+         if (values.id == 0) axiosResponse = await createLevel(values);
+         else axiosResponse = await updateLevel(values);
          resetForm();
+         resetFormData();
          setTextBtnSumbit("AGREGAR");
-         setFormTitle("REGISTRAR DISCAPACIDAD");
+         setFormTitle(`REGISTRAR ${singularName.toUpperCase()}`);
          setSubmitting(false);
          setLoadingAction(false);
          Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
@@ -80,7 +68,7 @@ const DisabilityForm = ({ dataCities, dataColonies }) => {
       }
    };
 
-   const handleReset = (resetForm, setFieldValue, id, code) => {
+   const handleReset = (resetForm, setFieldValue, id) => {
       try {
          resetForm();
          setFieldValue("id", id);
@@ -90,8 +78,9 @@ const DisabilityForm = ({ dataCities, dataColonies }) => {
       }
    };
 
-   const handleModify = (setValues) => {
+   const handleModify = (setValues, setFieldValue) => {
       try {
+         if (formData.description) formData.description == null && (formData.description = "");
          setValues(formData);
       } catch (error) {
          console.log(error);
@@ -110,7 +99,7 @@ const DisabilityForm = ({ dataCities, dataColonies }) => {
    };
 
    const validationSchema = Yup.object().shape({
-      disability: Yup.string().trim().required("Nombre de la discapacidad requerida")
+      level: Yup.string().trim().required("Nivel requerido")
    });
 
    useEffect(() => {
@@ -127,7 +116,6 @@ const DisabilityForm = ({ dataCities, dataColonies }) => {
       <SwipeableDrawer anchor={"right"} open={openDialog} onClose={toggleDrawer(false)} onOpen={toggleDrawer(true)}>
          <Box role="presentation" p={3} pt={5} className="form">
             <Typography variant="h2" mb={3}>
-               {/* {formData.id == 0 ? "REGISTRAR DISCAPACIDAD" : "EDITAR DISCAPACIDAD"} */}
                {formTitle}
                <FormControlLabel
                   sx={{ float: "right", color: colorLabelcheck }}
@@ -139,37 +127,22 @@ const DisabilityForm = ({ dataCities, dataColonies }) => {
                {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
                   <Grid container spacing={2} component={"form"} onSubmit={handleSubmit}>
                      <Field id="id" name="id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} />
-                     {/* Discapacidad */}
+
+                     {/* Nivel */}
                      <Grid xs={12} md={12} sx={{ mb: 3 }}>
                         <TextField
-                           id="disability"
-                           name="disability"
-                           label="Nombre de la Discapacidad *"
+                           id="level"
+                           name="level"
+                           label="Nivel *"
                            type="text"
-                           value={values.disability}
-                           placeholder="Seguera"
+                           value={values.level}
+                           placeholder="PRIMARIA"
                            onChange={handleChange}
                            onBlur={handleBlur}
-                           onInput={(e) => handleInputFormik(e, setFieldValue, "disability", true)}
+                           onInput={(e) => handleInputFormik(e, setFieldValue, "level", true)}
                            fullWidth
-                           error={errors.disability && touched.disability}
-                           helperText={errors.disability && touched.disability && errors.disability}
-                        />
-                     </Grid>
-                     {/* Descripción */}
-                     <Grid xs={12} md={12} sx={{ mb: 1 }}>
-                        <TextField
-                           id="description"
-                           name="description"
-                           label="Descripción"
-                           type="text"
-                           value={values.description}
-                           placeholder="Descripción de la discapacidad"
-                           onChange={handleChange}
-                           onBlur={handleBlur}
-                           fullWidth
-                           // error={errors.description && touched.description}
-                           // helperText={errors.description && touched.description && errors.description}
+                           error={errors.level && touched.level}
+                           helperText={errors.level && touched.level && errors.level}
                         />
                      </Grid>
 
@@ -191,8 +164,8 @@ const DisabilityForm = ({ dataCities, dataColonies }) => {
                            color="secondary"
                            fullWidth
                            size="large"
-                           sx={{ mt: 1 }}
-                           onClick={() => handleReset(resetForm, setFieldValue, values.id, values.code)}
+                           sx={{ mt: 1, display: "none" }}
+                           onClick={() => handleReset(resetForm, setFieldValue, values.id)}
                         >
                            LIMPIAR
                         </Button>
@@ -210,4 +183,4 @@ const DisabilityForm = ({ dataCities, dataColonies }) => {
       </SwipeableDrawer>
    );
 };
-export default DisabilityForm;
+export default LevelForm;
