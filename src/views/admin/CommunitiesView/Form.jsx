@@ -8,7 +8,7 @@ import { SwipeableDrawer } from "@mui/material";
 import { FormControl } from "@mui/material";
 import { FormHelperText } from "@mui/material";
 import { useMemo, useState } from "react";
-import { usePerimeterContext } from "../../../context/PerimeterContext";
+import { useCommunityContext } from "../../../context/CommunityContext";
 import { Box } from "@mui/system";
 import { useEffect } from "react";
 import { ButtonGroup } from "@mui/material";
@@ -17,18 +17,32 @@ import { useGlobalContext } from "../../../context/GlobalContext";
 import Select2Component from "../../../components/Form/Select2Component";
 import InputsCommunityComponent, { getCommunity } from "../../../components/Form/InputsCommunityComponent";
 import { handleInputFormik } from "../../../utils/Formats";
+import { usePerimeterContext } from "../../../context/PerimeterContext";
 // import InputComponent from "../Form/InputComponent";
 
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
 const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
 
-const PerimeterForm = () => {
-   const { openDialog, setOpenDialog, toggleDrawer, setLoadingAction } = useGlobalContext();
+const CommunityForm = () => {
+   const {
+      openDialog,
+      setOpenDialog,
+      toggleDrawer,
+      setLoadingAction,
+      setDisabledState,
+      setDisabledCity,
+      setDisabledColony,
+      setShowLoading,
+      setDataStates,
+      setDataCities,
+      setDataColonies,
+      setDataColoniesComplete
+   } = useGlobalContext();
    const {
       singularName,
-      perimeters,
-      createPerimeter,
-      updatePerimeter,
+      communities,
+      createCommunity,
+      updateCommunity,
       formData,
       setFormData,
       textBtnSubmit,
@@ -36,7 +50,10 @@ const PerimeterForm = () => {
       setTextBtnSumbit,
       formTitle,
       setFormTitle
-   } = usePerimeterContext();
+   } = useCommunityContext();
+
+   const { perimeters } = usePerimeterContext();
+
    const [checkAdd, setCheckAdd] = useState(checkAddInitialState);
    const [colorLabelcheck, setColorLabelcheck] = useState(colorLabelcheckInitialState);
 
@@ -58,8 +75,8 @@ const PerimeterForm = () => {
          // return console.log("values", values);
          setLoadingAction(true);
          let axiosResponse;
-         if (values.id == 0) axiosResponse = await createPerimeter(values);
-         else axiosResponse = await updatePerimeter(values);
+         if (values.id == 0) axiosResponse = await createCommunity(values);
+         else axiosResponse = await updateCommunity(values);
          resetForm();
          resetFormData();
          setTextBtnSumbit("AGREGAR");
@@ -91,6 +108,21 @@ const PerimeterForm = () => {
 
    const handleModify = (setValues, setFieldValue) => {
       try {
+         getCommunity(
+            formData.zip,
+            setFieldValue,
+            formData.community_id,
+            formData,
+            setFormData,
+            setDisabledState,
+            setDisabledCity,
+            setDisabledColony,
+            setShowLoading,
+            setDataStates,
+            setDataCities,
+            setDataColonies,
+            setDataColoniesComplete
+         );
          if (formData.description) formData.description == null && (formData.description = "");
          setValues(formData);
       } catch (error) {
@@ -110,7 +142,7 @@ const PerimeterForm = () => {
    };
 
    const validationSchema = Yup.object().shape({
-      perimeter: Yup.string().trim().required("Perímetro requerido")
+      name: Yup.string().trim().required("Communidad requerido")
    });
 
    useEffect(() => {
@@ -139,21 +171,83 @@ const PerimeterForm = () => {
                   <Grid container spacing={2} component={"form"} onSubmit={handleSubmit}>
                      <Field id="id" name="id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} />
 
-                     {/* Perímetro */}
+                     {/* Comunidad */}
+                     <InputsCommunityComponent
+                        formData={formData}
+                        setFormData={setFormData}
+                        values={values}
+                        setValues={setValues}
+                        setFieldValue={setFieldValue}
+                        handleChange={handleChange}
+                        handleBlur={handleBlur}
+                        errors={errors}
+                        touched={touched}
+                        registerCommunity={true}
+                     />
+                     {/* Communidad */}
                      <Grid xs={12} md={12} sx={{ mb: 3 }}>
                         <TextField
-                           id="perimeter"
-                           name="perimeter"
-                           label="Perímetro *"
+                           id="name"
+                           name="name"
+                           label="Communidad *"
                            type="text"
-                           value={values.perimeter}
-                           placeholder="Escribe el nombre del perímetro"
+                           value={values.name}
+                           placeholder="PRIMARIA"
                            onChange={handleChange}
                            onBlur={handleBlur}
-                           onInput={(e) => handleInputFormik(e, setFieldValue, "perimeter", true)}
+                           onInput={(e) => handleInputFormik(e, setFieldValue, "name", true)}
                            fullWidth
-                           error={errors.perimeter && touched.perimeter}
-                           helperText={errors.perimeter && touched.perimeter && errors.perimeter}
+                           error={errors.name && touched.name}
+                           helperText={errors.name && touched.name && errors.name}
+                        />
+                     </Grid>
+                     {/* Tipo de Communidad */}
+                     <Grid xs={12} md={6} sx={{ mb: 3 }}>
+                        <TextField
+                           id="type"
+                           name="type"
+                           label="Tipo de Communidad *"
+                           type="text"
+                           value={values.type}
+                           placeholder="colonia | fraccionamiento | ejido | rancho"
+                           onChange={handleChange}
+                           onBlur={handleBlur}
+                           onInput={(e) => handleInputFormik(e, setFieldValue, "type", false)}
+                           fullWidth
+                           error={errors.type && touched.type}
+                           helperText={errors.type && touched.type && errors.type}
+                        />
+                     </Grid>
+                     {/* Zona */}
+                     <Grid xs={12} md={6} sx={{ mb: 3 }}>
+                        <FormControl fullWidth sx={{ alignItems: "center" }}>
+                           <FormLabel id="zone-label">Zona</FormLabel>
+                           <RadioGroup row aria-labelledby="zone-label" id="zone" name="zone" value={values.zone} onChange={handleChange} onBlur={handleBlur}>
+                              <FormControlLabel value="urbana" control={<Radio />} label="Urbana" />
+                              <FormControlLabel value="rural" control={<Radio />} label="Rural" />
+                           </RadioGroup>
+                           {touched.zone && errors.zone && (
+                              <FormHelperText error id="ht-zone">
+                                 {errors.zone}
+                              </FormHelperText>
+                           )}
+                        </FormControl>
+                     </Grid>
+                     {/* Perímetro */}
+                     <Grid xs={12} md={12} sx={{ mb: 1 }}>
+                        <Select2Component
+                           idName={"perimeter_id"}
+                           label={"Perímetro *"}
+                           valueLabel={values.perimeter}
+                           formDataLabel={"perimeter"}
+                           placeholder={"Selecciona una opción..."}
+                           options={perimeters}
+                           fullWidth={true}
+                           // handleChangeValueSuccess={handleChangeLevel}
+                           handleBlur={handleBlur}
+                           error={errors.perimeter_id}
+                           touched={touched.perimeter_id}
+                           disabled={false}
                         />
                      </Grid>
 
@@ -194,4 +288,4 @@ const PerimeterForm = () => {
       </SwipeableDrawer>
    );
 };
-export default PerimeterForm;
+export default CommunityForm;

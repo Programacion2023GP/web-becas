@@ -2,41 +2,64 @@ import { Field, Formik } from "formik";
 import * as Yup from "yup";
 
 import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
-import { Button, FormControlLabel, FormLabel, InputLabel, MenuItem, Radio, RadioGroup, Select, Switch, TextField, Typography } from "@mui/material";
+import {
+   Button,
+   Dialog,
+   DialogActions,
+   DialogContent,
+   FormControlLabel,
+   FormLabel,
+   InputLabel,
+   MenuItem,
+   Radio,
+   RadioGroup,
+   Select,
+   Switch,
+   TextField,
+   Toolbar,
+   Typography,
+   Tooltip,
+   IconButton
+} from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { SwipeableDrawer } from "@mui/material";
 import { FormControl } from "@mui/material";
 import { FormHelperText } from "@mui/material";
 import { useMemo, useState } from "react";
-import { usePerimeterContext } from "../../../context/PerimeterContext";
+import { useCommunityContext } from "../../../context/CommunityContext";
 import { Box } from "@mui/system";
 import { useEffect } from "react";
-import { ButtonGroup } from "@mui/material";
 import Toast from "../../../utils/Toast";
 import { useGlobalContext } from "../../../context/GlobalContext";
 import Select2Component from "../../../components/Form/Select2Component";
-import InputsCommunityComponent, { getCommunity } from "../../../components/Form/InputsCommunityComponent";
 import { handleInputFormik } from "../../../utils/Formats";
+import { usePerimeterContext } from "../../../context/PerimeterContext";
 // import InputComponent from "../Form/InputComponent";
+import { IconX } from "@tabler/icons-react";
 
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
 const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
 
-const PerimeterForm = () => {
-   const { openDialog, setOpenDialog, toggleDrawer, setLoadingAction } = useGlobalContext();
+const CommunityFormAssignPerimeter = ({ openDialog, setOpenDialog }) => {
+   const { setLoadingAction } = useGlobalContext();
    const {
       singularName,
-      perimeters,
-      createPerimeter,
-      updatePerimeter,
+      community,
+      communities,
+      createCommunity,
+      updateCommunity,
       formData,
       setFormData,
       textBtnSubmit,
       resetFormData,
       setTextBtnSumbit,
       formTitle,
-      setFormTitle
-   } = usePerimeterContext();
+      setFormTitle,
+      assignPerimeterToCommunity
+   } = useCommunityContext();
+
+   const { perimeters } = usePerimeterContext();
+
    const [checkAdd, setCheckAdd] = useState(checkAddInitialState);
    const [colorLabelcheck, setColorLabelcheck] = useState(colorLabelcheckInitialState);
 
@@ -55,15 +78,12 @@ const PerimeterForm = () => {
 
    const onSubmit = async (values, { setSubmitting, setErrors, resetForm }) => {
       try {
+         // values.id = community_id;
          // return console.log("values", values);
          setLoadingAction(true);
-         let axiosResponse;
-         if (values.id == 0) axiosResponse = await createPerimeter(values);
-         else axiosResponse = await updatePerimeter(values);
+         let axiosResponse = await assignPerimeterToCommunity(values.perimeter_id, values.id);
          resetForm();
          resetFormData();
-         setTextBtnSumbit("AGREGAR");
-         setFormTitle(`REGISTRAR ${singularName.toUpperCase()}`);
          setSubmitting(false);
          setLoadingAction(false);
          Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
@@ -91,6 +111,21 @@ const PerimeterForm = () => {
 
    const handleModify = (setValues, setFieldValue) => {
       try {
+         getCommunity(
+            formData.zip,
+            setFieldValue,
+            formData.community_id,
+            formData,
+            setFormData,
+            setDisabledState,
+            setDisabledCity,
+            setDisabledColony,
+            setShowLoading,
+            setDataStates,
+            setDataCities,
+            setDataColonies,
+            setDataColoniesComplete
+         );
          if (formData.description) formData.description == null && (formData.description = "");
          setValues(formData);
       } catch (error) {
@@ -110,6 +145,7 @@ const PerimeterForm = () => {
    };
 
    const validationSchema = Yup.object().shape({
+      perimeter_id: Yup.number().min(1, "Ésta opción no es valida").required("Perímetro requerido"),
       perimeter: Yup.string().trim().required("Perímetro requerido")
    });
 
@@ -124,74 +160,58 @@ const PerimeterForm = () => {
    }, [formData]);
 
    return (
-      <SwipeableDrawer anchor={"right"} open={openDialog} onClose={toggleDrawer(false)} onOpen={toggleDrawer(true)}>
-         <Box role="presentation" p={3} pt={5} className="form">
-            <Typography variant="h2" mb={3}>
-               {formTitle}
-               <FormControlLabel
-                  sx={{ float: "right", color: colorLabelcheck }}
-                  control={<Switch checked={checkAdd} onChange={(e) => handleChangeCheckAdd(e)} />}
-                  label="Seguir Agregando"
-               />
+      <Dialog fullWidth maxWidth={"sm"} open={openDialog} onClose={() => setOpenDialog(false)}>
+         {/* <DialogTitle> */}
+         <Toolbar>
+            <Typography sx={{ ml: 2, flex: 1 }} variant="h3" component="div">
+               {community && `Asignar Perimetro a ${community.name}`}
             </Typography>
+            <Tooltip title={`Cerrar ventana`} placement="top">
+               <IconButton edge="end" color="inherit" onClick={() => setOpenDialog(false)} aria-label="close">
+                  <IconX />
+               </IconButton>
+            </Tooltip>
+         </Toolbar>
+         {/* </DialogTitle> */}
+         <DialogContent sx={{ paddingBlock: 10, paddingInline: 5 }}>
+            {/* <DialogContentText>You can set my maximum width and whether to adapt or not.</DialogContentText> */}
+
+            {/* Perímetro */}
             <Formik initialValues={formData} validationSchema={validationSchema} onSubmit={onSubmit}>
                {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
-                  <Grid container spacing={2} component={"form"} onSubmit={handleSubmit}>
+                  <Grid container spacing={2} component={"form"} onSubmit={handleSubmit} flexDirection={"row-reverse"}>
                      <Field id="id" name="id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} />
-
-                     {/* Perímetro */}
-                     <Grid xs={12} md={12} sx={{ mb: 3 }}>
-                        <TextField
-                           id="perimeter"
-                           name="perimeter"
-                           label="Perímetro *"
-                           type="text"
-                           value={values.perimeter}
-                           placeholder="Escribe el nombre del perímetro"
-                           onChange={handleChange}
-                           onBlur={handleBlur}
-                           onInput={(e) => handleInputFormik(e, setFieldValue, "perimeter", true)}
-                           fullWidth
-                           error={errors.perimeter && touched.perimeter}
-                           helperText={errors.perimeter && touched.perimeter && errors.perimeter}
+                     <Grid xs={12} md={12} sx={{ mb: 1 }}>
+                        <Select2Component
+                           idName={"perimeter_id"}
+                           label={"Perímetro *"}
+                           valueLabel={values.perimeter}
+                           formDataLabel={"perimeter"}
+                           placeholder={"Selecciona una opción..."}
+                           options={perimeters}
+                           fullWidth={true}
+                           // handleChangeValueSuccess={handleChangeLevel}
+                           handleBlur={handleBlur}
+                           error={errors.perimeter_id}
+                           touched={touched.perimeter_id}
+                           disabled={false}
                         />
                      </Grid>
-
-                     <LoadingButton
-                        type="submit"
-                        disabled={isSubmitting}
-                        loading={isSubmitting}
-                        // loadingPosition="start"
-                        variant="contained"
-                        fullWidth
-                        size="large"
-                     >
-                        {textBtnSubmit}
-                     </LoadingButton>
-                     <ButtonGroup variant="outlined" fullWidth>
-                        <Button
-                           type="reset"
-                           variant="outlined"
-                           color="secondary"
-                           fullWidth
-                           size="large"
-                           sx={{ mt: 1, display: "none" }}
-                           onClick={() => handleReset(resetForm, setFieldValue, values.id)}
-                        >
-                           LIMPIAR
-                        </Button>
-                        <Button type="reset" variant="outlined" color="error" fullWidth size="large" sx={{ mt: 1 }} onClick={() => handleCancel(resetForm)}>
-                           CANCELAR
-                        </Button>
-                     </ButtonGroup>
-                     <Button type="button" color="info" fullWidth id="btnModify" sx={{ mt: 1, display: "none" }} onClick={() => handleModify(setValues)}>
-                        setValues
-                     </Button>
+                     <Grid>
+                        <DialogActions>
+                           <Button type="submit" disabled={isSubmitting} onClick={() => Toast.Success("Guardado")}>
+                              Asignar
+                           </Button>
+                           <Button type="button" color="info" fullWidth id="btnModify" sx={{ mt: 1, display: "none" }} onClick={() => handleModify(setValues)}>
+                              setValues
+                           </Button>
+                        </DialogActions>
+                     </Grid>
                   </Grid>
                )}
             </Formik>
-         </Box>
-      </SwipeableDrawer>
+         </DialogContent>
+      </Dialog>
    );
 };
-export default PerimeterForm;
+export default CommunityFormAssignPerimeter;

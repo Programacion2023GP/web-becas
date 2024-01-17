@@ -9,7 +9,7 @@ import SchoolContextProvider from "../context/SchoolContext";
 import LevelContextProvider from "../context/LevelContext";
 import PerimetersView from "../views/admin/PerimetersView/Index";
 import PerimeterContextProvider from "../context/PerimeterContext";
-import RequestBecaView from "../views/admin/RequestBecaView";
+import RequestBecaView from "../views/admin/RequestBecaView/RequestBecaView";
 import DisabilitiesView from "../views/admin/DisabilitiesView/Index";
 import DisabilityContextProvider from "../context/DisabilityContext";
 import RequestBecaContextProvider from "../context/RequestBecaContext";
@@ -19,6 +19,10 @@ import UsersView from "../views/admin/UsersView/Index";
 import RelationshipContextProvider from "../context/RelationshipContext";
 import TutorContextProvider from "../context/TutorContext";
 import { loaderIndexUsersView } from "../views/admin/UsersView/Index";
+import FamilyContextProvider from "../context/FamilyContext";
+import RequestListView from "../views/Request/RequestListView/RequestListView";
+import CommunitiesView from "../views/admin/CommunitiesView/Index";
+import CommunityContextProvider from "../context/CommunityContext";
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import("../views/dashboard/Default")));
@@ -48,7 +52,7 @@ const MainRoutes = {
       //    element: <DashboardDefault />
       // },
       {
-         path: "solicitud-beca/:folio?",
+         path: "solicitud-beca/pagina?/:pagina?/folio?/:folio?",
          element: (
             <RequestBecaContextProvider>
                <StudentContextProvider>
@@ -56,7 +60,9 @@ const MainRoutes = {
                      <SchoolContextProvider>
                         <TutorContextProvider>
                            <RelationshipContextProvider>
-                              <RequestBecaView />
+                              <FamilyContextProvider>
+                                 <RequestBecaView />
+                              </FamilyContextProvider>
                            </RelationshipContextProvider>
                         </TutorContextProvider>
                      </SchoolContextProvider>
@@ -94,6 +100,14 @@ const MainRoutes = {
                )
             },
             {
+               path: "discapacidades",
+               element: (
+                  <DisabilityContextProvider>
+                     <DisabilitiesView />
+                  </DisabilityContextProvider>
+               )
+            },
+            {
                path: "perimetros",
                element: (
                   <PerimeterContextProvider>
@@ -102,11 +116,29 @@ const MainRoutes = {
                )
             },
             {
-               path: "discapacidades",
+               path: "comunidades",
                element: (
-                  <DisabilityContextProvider>
-                     <DisabilitiesView />
-                  </DisabilityContextProvider>
+                  <CommunityContextProvider>
+                     <PerimeterContextProvider>
+                        <CommunitiesView />
+                     </PerimeterContextProvider>
+                  </CommunityContextProvider>
+               )
+            }
+         ]
+      },
+      {
+         path: "solicitudes",
+         children: [
+            {
+               index: true,
+               // path: "/",
+               element: (
+                  <FamilyContextProvider>
+                     <RequestBecaContextProvider>
+                        <RequestListView />
+                     </RequestBecaContextProvider>
+                  </FamilyContextProvider>
                )
             }
          ]

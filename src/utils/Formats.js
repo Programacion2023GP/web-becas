@@ -1,5 +1,6 @@
 import moment from "moment";
 import Toast from "./Toast";
+
 moment.locale("es");
 
 //#region /** FECHAS - FORMATEADO */
@@ -59,7 +60,7 @@ export function formatDatetime(the_date, long_format = true) {
    // return datetime = new Intl.DateTimeFormat("es-MX", { day: '2-digit', month: '2-digit', year: 'numeric', hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: true }).format(date);
 }
 
-function formatDatetimeToSQL(the_date) {
+export function formatDatetimeToSQL(the_date) {
    let datetime = moment(the_date).format("YYYY-MM-DDTh:mm:ss");
    return datetime;
 }
@@ -116,6 +117,17 @@ export const handleInputStringCase = async (e, setState, toUpper = true) => {
    try {
       const newText = toUpper ? await formatToUpperCase(e) : await formatToLowerCase(e);
       setState(newText);
+   } catch (error) {
+      console.log(error);
+      Toast.Error(error);
+   }
+};
+
+export const splitArroba = (string, returnFirst = true) => {
+   try {
+      const array = string.split("@");
+      const value = returnFirst ? array[0] : array.reverse()[0];
+      return value;
    } catch (error) {
       console.log(error);
       Toast.Error(error);

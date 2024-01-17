@@ -112,7 +112,7 @@ const RequestBecaForm = ({ dataCities, dataColonies }) => {
       code: Yup.string().trim().required("Clave de escuela requerida"),
       school: Yup.string().trim().required("Nombre de escuela requerida"),
       city: Yup.string().trim().required("Ciudad requerido"),
-      colony: Yup.string().trim().required("Colonia requerida"),
+      colony: Yup.string().trim().notOneOf(["Selecciona una opción..."], "Ésta opción no es valida").required("Colonia requerida"),
       street: Yup.string().trim().required("Dirección requerida"),
       phone: Yup.string()
          .trim()

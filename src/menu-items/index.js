@@ -24,14 +24,14 @@ const menuItems = {
                id: "request-list",
                title: "Solicitudes",
                type: "item",
-               url: "/solicitudes/",
+               url: "/admin/solicitudes/",
                icon: tablerIcons["IconStack3"]
             },
             {
                id: "my-request",
                title: "Mis Solicitudes",
                type: "item",
-               url: "/solicitudes/mis-solicitudes",
+               url: "/admin/solicitudes/mis-solicitudes",
                icon: tablerIcons["IconFileStack"],
                breadcrumbs: false
             }

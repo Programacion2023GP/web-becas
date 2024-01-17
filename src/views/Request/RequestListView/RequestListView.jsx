@@ -23,7 +23,7 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 
 import { useRequestBecaContext } from "../../../context/RequestBecaContext";
-import { IconEdit, IconEye, IconInfoCircle } from "@tabler/icons";
+import { IconEdit, IconEye, IconInfoCircle, IconPrinter } from "@tabler/icons";
 import { useStudentContext } from "../../../context/StudentContext";
 import Toast from "../../../utils/Toast";
 import sAlert from "../../../utils/sAlert";
@@ -97,7 +97,6 @@ const RequestListView = () => {
             {"LISTADO DE SOLICITUDES".toUpperCase()}
          </Typography>
          <RequestBecaDT />
-         {/* <TableComponent columns={columns} data={data} singularName={singularName} /> */}
       </Box>
    );
 };

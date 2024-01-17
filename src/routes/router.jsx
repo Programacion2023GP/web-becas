@@ -1,4 +1,4 @@
-import { createBrowserRouter, useRoutes } from "react-router-dom";
+import { createHashRouter, useRoutes } from "react-router-dom";
 
 // routes
 import MainRoutes from "./MainRoutes";
@@ -11,15 +11,13 @@ import Loadable from "../ui-component/Loadable";
 import MinimalLayout from "../layout/MinimalLayout";
 import NotFound from "../views/NotFound";
 import MainLayout from "../layout/MainLayout";
-import RequestBecaContextProvider from "../context/RequestBecaContext";
-import RequestListView from "../views/Request/RequestListView/RequestListView";
 
 // login option 3 routing
 const AuthLogin = Loadable(lazy(() => import("../views/authentication/Login")));
 const AuthRegister = Loadable(lazy(() => import("../views/authentication/Register")));
 // ====================|| AUTHENTICATION ROUTING ||===================== //
 
-export const router = createBrowserRouter([
+export const router = createHashRouter([
    {
       path: "/",
       element: <MinimalLayout />,
@@ -39,22 +37,7 @@ export const router = createBrowserRouter([
             path: "register",
             element: <AuthRegister />
          },
-         MainRoutes,
-         {
-            path: "solicitudes",
-            element: <MainLayout />,
-            children: [
-               {
-                  index: true,
-                  // path: "/",
-                  element: (
-                     <RequestBecaContextProvider>
-                        <RequestListView />
-                     </RequestBecaContextProvider>
-                  )
-               }
-            ]
-         }
+         MainRoutes
       ]
    }
 ]);

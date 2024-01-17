@@ -72,7 +72,7 @@ const SimpleTableComponent = ({ title, columns, rows }) => {
          </Typography>
          <Paper sx={{ width: "100%", overflow: "hidden" }}>
             <TableContainer sx={{ maxHeight: "50%" }}>
-               <Table stickyHeader aria-label="sticky table">
+               <Table stickyHeader size="small" aria-label="sticky table">
                   <TableHead>
                      <TableRow>
                         {columns.map((column) => (
@@ -90,8 +90,8 @@ const SimpleTableComponent = ({ title, columns, rows }) => {
                                  const value = row[column.id];
                                  return (
                                     <TableCell key={column.id} align={column.align}>
-                                       {column.format(value)}
-                                       {/* {column.format && typeof value === "number" ? column.format(value) : value} */}
+                                       {/* {column.format(value)} */}
+                                       {column.format && typeof value === "number" ? column.format(value) : value}
                                     </TableCell>
                                  );
                               })}

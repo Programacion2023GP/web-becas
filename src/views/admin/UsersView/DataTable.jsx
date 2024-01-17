@@ -141,9 +141,10 @@ const UserDT = () => {
    const formatData = async () => {
       try {
          // console.log("cargar listado", users);
-         await users.map((obj) => {
+         await users.map((obj, index) => {
             // console.log(obj);
             let register = obj;
+            register.key = index + 1;
             register.actions = <ButtonsAction id={obj.id} name={obj.username} active={obj.active} />;
             data.push(register);
          });

@@ -219,7 +219,9 @@ th.text-center .p-column-header-content {
    justify-content: center;
 }
 
-
+.page-break {
+   page-break-before: always;
+}
 
 @media (max-width: 1500px) {
    .form,

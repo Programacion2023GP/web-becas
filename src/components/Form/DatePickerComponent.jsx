@@ -28,7 +28,20 @@ import { Field } from "formik";
    />
  */
 
-const DatePickerComponent = ({ idName, label, format = "DD/MM/YYYY", value, setFieldValue, onChange, onBlur, error, touched, showErrorInput = null, formData }) => {
+const DatePickerComponent = ({
+   idName,
+   label,
+   format = "DD/MM/YYYY",
+   value,
+   setFieldValue,
+   onChange,
+   onBlur,
+   error,
+   touched,
+   showErrorInput = null,
+   formData,
+   disabled
+}) => {
    // const handleChangeDatePicker = (date, setFieldValue) => {
    //    // console.log("valor del datePicker en daysjs", date);
    //    const dateFormated = dayjs(date).format("YYYY-MM-DD");
@@ -51,6 +64,7 @@ const DatePickerComponent = ({ idName, label, format = "DD/MM/YYYY", value, setF
                      value={dayjs(field.value) || null}
                      onChange={(date) => form.setFieldValue(field.name, dayjs(date).format("YYYY-MM-DD"))}
                      error={error && touched}
+                     disabled={disabled}
                   />
                   {touched && error && (
                      <FormHelperText error id={`ht-${idName}`}>

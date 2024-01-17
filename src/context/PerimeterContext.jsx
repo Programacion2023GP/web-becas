@@ -1,7 +1,9 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { Axios } from "./AuthContext";
+// import { Axios } from "./AuthContext";
 import { CorrectRes, ErrorRes } from "../utils/Response";
+import axios from "axios";
 
+const axiosMyCommunity = axios;
 const PerimeterContext = createContext();
 
 const formDataInitialState = {
@@ -27,45 +29,70 @@ export default function PerimeterContextProvider({ children }) {
          console.log("Error en resetFormData:", error);
       }
    };
-
-   const getPerimeters = async () => {
+   const resetPerimeter = () => {
       try {
-         const res = CorrectRes;
-         const axiosData = await Axios.get(`/perimeters`);
-         res.result.perimeters = axiosData.data.data.result;
-         setPerimeters(axiosData.data.data.result);
-         // console.log("perimeters", perimeters);
-
-         return res;
+         setPerimeter(formDataInitialState);
       } catch (error) {
-         const res = ErrorRes;
-         console.log(error);
-         res.message = error;
-         res.alert_text = error;
+         console.log("Error en resetPerimeter:", error);
       }
    };
 
-   const showPerimeter = async (id) => {
+   const getPerimeters = async () => {
+      let res = CorrectRes;
       try {
-         let res = CorrectRes;
-         const axiosData = await Axios.get(`/perimeters/${id}`);
-         res = axiosData.data.data;
-         setPerimeter(res.result);
-         setFormData(res.result);
-
-         return res;
+         const axiosData = await axiosMyCommunity.get(`${import.meta.env.VITE_API_CP}/perimetros/id`);
+         // console.log("axiosData", axiosData);
+         res.result.perimeters = axiosData.data.data.result;
+         setPerimeters(axiosData.data.data.result);
+         // console.log("perimeters", perimeters);
       } catch (error) {
-         const res = ErrorRes;
+         res = ErrorRes;
          console.log(error);
          res.message = error;
          res.alert_text = error;
       }
+      return res;
+   };
+
+   const getPerimetersSelectIndex = async () => {
+      let res = CorrectRes;
+      try {
+         const axiosData = await axiosMyCommunity.get(`${import.meta.env.VITE_API_CP}/perimetros/selectIndex`);
+         // console.log("el getPerimetersSelectIndex", axiosData);
+         res.result.perimeters = axiosData.data.data.result;
+         res.result.perimeters.unshift({ id: 0, label: "Selecciona una opción..." });
+         setPerimeters(axiosData.data.data.result);
+         // console.log("perimeters", perimeters);
+      } catch (error) {
+         res = ErrorRes;
+         console.log(error);
+         res.message = error;
+         res.alert_text = error;
+      }
+      return res;
+   };
+
+   const showPerimeter = async (id) => {
+      let res = CorrectRes;
+      try {
+         const axiosData = await axiosMyCommunity.get(`${import.meta.env.VITE_API_CP}/perimetros/id/${id}`);
+         // console.log("axiosData", axiosData);
+         res = axiosData.data.data;
+         setPerimeter(res.result);
+         setFormData(res.result);
+      } catch (error) {
+         res = ErrorRes;
+         console.log(error);
+         res.message = error;
+         res.alert_text = error;
+      }
+      return res;
    };
 
    const createPerimeter = async (perimeter) => {
       let res = CorrectRes;
       try {
-         const axiosData = await Axios.post("/perimeters", perimeter);
+         const axiosData = await axiosMyCommunity.post(`${import.meta.env.VITE_API_CP}/perimetros/create`, perimeter);
          res = axiosData.data.data;
          getPerimeters();
       } catch (error) {
@@ -80,7 +107,8 @@ export default function PerimeterContextProvider({ children }) {
    const updatePerimeter = async (perimeter) => {
       let res = CorrectRes;
       try {
-         const axiosData = await Axios.put("/perimeters", perimeter);
+         const axiosData = await axiosMyCommunity.post(`${import.meta.env.VITE_API_CP}/perimetros/update/${perimeter.id}`, perimeter);
+         // console.log("axiosData", axiosData);
          res = axiosData.data.data;
          getPerimeters();
          // return res;
@@ -94,21 +122,39 @@ export default function PerimeterContextProvider({ children }) {
    };
 
    const deletePerimeter = async (id) => {
+      let res = CorrectRes;
       try {
-         let res = CorrectRes;
-         const axiosData = await Axios.delete(`/perimeters/${id}`);
-         // console.log("deletePerimeter() axiosData", axiosData.data);
-         getPerimeters();
-         res = axiosData.data.data;
+         console.log("no hay por el momento");
+         // const axiosData = await Axios.delete(`/perimeters/${id}`);
+         // // console.log("deletePerimeter() axiosData", axiosData.data);
+         // getPerimeters();
+         // res = axiosData.data.data;
          // console.log("res", res);
-         return res;
       } catch (error) {
-         const res = ErrorRes;
+         res = ErrorRes;
          console.log(error);
          res.message = error;
          res.alert_text = error;
       }
+      return res;
    };
+
+   // const assignPerimeterToCommunity = async (id, community_id) => {
+   //    let res = CorrectRes;
+   //    try {
+   //       const axiosData = await axiosMyCommunity.get(`${import.meta.env.VITE_API_CP}/perimetros/${id}/assignToCommunity${community_id}`);
+   //       console.log("axiosData", axiosData);
+   //       res = axiosData.data.data;
+   //       setPerimeter(res.result);
+   //       setFormData(res.result);
+   //    } catch (error) {
+   //       res = ErrorRes;
+   //       console.log(error);
+   //       res.message = error;
+   //       res.alert_text = error;
+   //    }
+   //    return res;
+   // };
 
    // useEffect(() => {
    //    console.log("el useEffect de PerimeterContext");
@@ -122,7 +168,9 @@ export default function PerimeterContextProvider({ children }) {
             perimeter,
             formData,
             resetFormData,
+            resetPerimeter,
             getPerimeters,
+            getPerimetersSelectIndex,
             showPerimeter,
             createPerimeter,
             updatePerimeter,

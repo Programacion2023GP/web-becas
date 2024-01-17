@@ -10,7 +10,7 @@ import { InputText } from "primereact/inputtext";
 import { InputNumber } from "primereact/inputnumber";
 import { Dropdown } from "primereact/dropdown";
 import { Tag } from "primereact/tag";
-import { Button, ButtonGroup, Card, Tooltip } from "@mui/material";
+import { Button, ButtonGroup, Card, IconButton, Tooltip } from "@mui/material";
 import { IconEdit, IconFile, IconFileSpreadsheet, IconSearch } from "@tabler/icons";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import { FilterMatchMode, FilterOperator } from "primereact/api";
@@ -23,8 +23,67 @@ import Swal from "sweetalert2";
 import Toast from "../utils/Toast";
 import { QuestionAlertConfig } from "../utils/sAlert";
 import IconDelete from "./icons/IconDelete";
+import { Toolbar } from "primereact/toolbar";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 
+/* COMO IMPROTAR
+*    columns={columns}
+         data={data}
+         globalFilterFields={globalFilterFields}
+         headerFilters={false}
+         handleClickAdd={handleClickAdd}
+         refreshTable={getUsers}
+         btnAdd={true}
+         showGridlines={false}
+         btnsExport={true}
+         rowEdit={false}
+         // handleClickDeleteContinue={handleClickDeleteContinue}
+         // ELIMINAR MULTIPLES REGISTROS
+         btnDeleteMultiple={false}
+         // handleClickDeleteMultipleContinue={handleClickDeleteMultipleContinue}
+         // PARA HACER FORMULARIO EN LA TABLA
+         // AGREGAR
+         // createData={createUser}
+         // newRow={newRow}
+         // EDITAR
+         // setData={setUsers}
+         // updateData={updateUser}
+      />
+*/
+
+/* const newRow = {
+      key: 0,
+      beca_id: becaId,
+      relationship: "",
+      age: "",
+      occupation: "",
+      monthly_income: ""
+   }; */
+/* FUNCIONES DE COMPLEMENTO
+*  FUNCION PARA ELIMINAR MULTIPLES REGISTROS
+   const handleClickDeleteContinue = async (selectedData) => {
+      try {
+         let ids = selectedData.map((d) => d.id);
+         if (ids.length < 1) console.log("no hay registros");
+         let msg = `¿Estas seguro de eliminar `;
+         if (selectedData.length === 1) msg += `al familiar registrado como tu ${selectedData[0].relationship}?`;
+         else if (selectedData.length > 1) msg += `a los familiares registrados como tu ${selectedData.map((d) => d.relationship)}?`;
+         mySwal.fire(QuestionAlertConfig(msg)).then(async (result) => {
+            if (result.isConfirmed) {
+               setLoadingAction(true);
+               const axiosResponse = await deleteFamily(ids);
+               setLoadingAction(false);
+               Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
+            }
+         });
+      } catch (error) {
+         console.log(error);
+         Toast.Error(error);
+      }
+   };
+*/
 export default function DataTableComponent({
+   idName = "table",
    columns,
    globalFilterFields,
    data,
@@ -32,12 +91,23 @@ export default function DataTableComponent({
    headerFilters = true,
    rowEdit = false,
    handleClickAdd,
+   createData,
+   onRowEditCompleteContinue = null,
+   updateData,
    refreshTable,
-   btnAdd = true
+   btnAdd = true,
+   newRow = null,
+   btnsExport = true,
+   showGridlines = false,
+   btnDeleteMultiple = false,
+   handleClickDeleteMultipleContinue
 }) {
    const { setLoadingAction, setOpenDialog } = useGlobalContext();
+   const [selectedData, setSelectedData] = useState(null);
+   const [updating, setUpdating] = useState(false);
 
    const dt = useRef(null);
+   // columns.unshift({ id: 0, label: "Selecciona una opción..." });
 
    // FILTROS
    let filtersColumns = columns.map((c) => [c.field, { value: null, matchMode: FilterMatchMode.STARTS_WITH }]);
@@ -65,64 +135,84 @@ export default function DataTableComponent({
    };
 
    const addRow = () => {
-      console.log(data);
-      const newProducts = {
-         // id: cont++,
-         code: "",
-         name: "",
-         description: "",
-         image: "",
-         price: "",
-         category: "",
-         quantity: "",
-         inventoryStatus: "",
-         rating: ""
-      };
+      // console.log(data);
+      // console.log("newRow", newRow);
 
-      let _products = [...data];
-      console.log("_products", _products);
-      // let { newData, index } = e;
+      let _data = [...data];
+      // console.log("_data", _data);
+      // // let { newData, index } = e;
 
-      // _products[index] = newData;
-      _products.push(newProducts);
+      // // _data[index] = newData;
+      _data.unshift(newRow);
 
-      setData(_products);
+      setData(_data);
 
-      // setData(newProducts);
-      console.log(data);
+      setTimeout(() => {
+         document.querySelector(`#${idName} tbody`).childNodes[0].querySelector("button").click();
+      }, 100); // // setData(newRow);
+      // console.log(data);
    };
 
-   const onRowEditComplete = (e) => {
-      console.log(e);
-      let _products = [...data];
-      let { newData, index } = e;
-
-      _products[index] = newData;
-
-      setData(_products);
+   const handleOnRowEditIinit = (e) => {
+      setUpdating(true);
+      const firtsColumn = e.originalEvent.target.closest("tr").childNodes[1];
+      firtsColumn.querySelector(".p-inputtext");
+   };
+   const handleOnRowEditCancel = (e) => {
+      setUpdating(false);
+      const dataSelected = e.data;
+      if (dataSelected.relationship == "" && dataSelected.age == "" && dataSelected.occupation == "" && dataSelected.monthly_income == null) {
+         let _data = data.filter((val) => val.id !== dataSelected.id);
+         setData(_data);
+      }
    };
 
-   const textEditor = (options) => {
-      return <InputText type="text" value={options.value} onChange={(e) => options.editorCallback(e.target.value)} />;
+   const onRowEditComplete = async (e) => {
+      try {
+         // console.log(e);
+         // console.log(data);
+         let _data = [...data];
+         let { newData, index } = e;
+
+         _data[index] = newData;
+
+         setData(_data);
+         // onRowEditCompleteContinue(newData);
+         const newNewData = newData;
+         delete newNewData.actions;
+         let ajaxResponse;
+         if (newNewData.id > 0) ajaxResponse = await updateData(newNewData);
+         else ajaxResponse = await createData(newNewData);
+         Toast.Customizable(ajaxResponse.alert_text, ajaxResponse.alert_icon);
+         setUpdating(false);
+      } catch (error) {
+         console.log(error);
+         Toast.Error(error);
+         setUpdating(false);
+      }
    };
 
-   const statusEditor = (options) => {
-      return (
-         <Dropdown
-            value={options.value}
-            options={statuses}
-            onChange={(e) => options.editorCallback(e.value)}
-            placeholder="Select a Status"
-            itemTemplate={(option) => {
-               return <Tag value={option} severity={getSeverity(option)}></Tag>;
-            }}
-         />
-      );
-   };
+   // const textEditor = (options) => {
+   //    return <InputText type="text" value={options.value} onChange={(e) => options.editorCallback(e.target.value)} />;
+   // };
 
-   const priceEditor = (options) => {
-      return <InputNumber value={options.value} onValueChange={(e) => options.editorCallback(e.value)} mode="currency" currency="USD" locale="en-US" />;
-   };
+   // const statusEditor = (options) => {
+   //    return (
+   //       <Dropdown
+   //          value={options.value}
+   //          options={statuses}
+   //          onChange={(e) => options.editorCallback(e.value)}
+   //          placeholder="Select a Status"
+   //          itemTemplate={(option) => {
+   //             return <Tag value={option} severity={getSeverity(option)}></Tag>;
+   //          }}
+   //       />
+   //    );
+   // };
+
+   // const priceEditor = (options) => {
+   //    return <InputNumber value={options.value} onValueChange={(e) => options.editorCallback(e.value)} mode="currency" currency="USD" locale="en-US" />;
+   // };
 
    //#region EXPORTAR
    const exportColumns = columns.map((col) => {
@@ -200,32 +290,79 @@ export default function DataTableComponent({
          Toast.Error(error);
       }
    };
+   const confirmDeleteSelected = () => {
+      setDeleteDataDialog(true);
+   };
+   const leftToolbarTemplate = () => {
+      return (
+         <div className="flex flex-wrap gap-2">
+            {/* <Button label="New" icon="pi pi-plus" severity="success" onClick={openNew} /> */}
+            <Button variant="contained" color="error" startIcon={<IconDelete />} onClick={confirmDeleteSelected} disabled={!selectedData || !selectedData.length}>
+               Eliminar Seleccionados
+            </Button>
+         </div>
+      );
+   };
+
+   const handleClickDeleteMultiple = async () => {
+      // console.log(selectedData);
+      await handleClickDeleteMultipleContinue(selectedData);
+      setSelectedData([]);
+   };
 
    const header = (
       <Box sx={{ display: "flex", gap: 2, justifyContent: "space-between", alignItems: "center" }}>
-         <Tooltip title="Exportar a Excel" placement="top">
-            <Button type="button" variant="text" color="success" sx={{ borderRadius: "12px", mr: 1 }} onClick={exportExcel}>
-               <IconFileSpreadsheet />
-            </Button>
-         </Tooltip>
+         {btnDeleteMultiple && (
+            <Tooltip title="Eliminar Seleccionados" placement="top">
+               <span>
+                  <IconButton
+                     type="button"
+                     variant="text"
+                     color="error"
+                     onClick={handleClickDeleteMultiple}
+                     disabled={!selectedData || !selectedData.length}
+                     sx={{ borderRadius: "12px", mr: 1 }}
+                  >
+                     <i className="pi pi-trash"></i>
+                  </IconButton>
+               </span>
+            </Tooltip>
+         )}
 
-         <Tooltip title="Exportar a PDF" placement="top">
-            <Button type="button" variant="text" color="error" sx={{ borderRadius: "12px", mr: 1 }} onClick={exportPdf}>
-               <PictureAsPdfIcon />
-            </Button>
-         </Tooltip>
+         {btnsExport && (
+            <>
+               <Tooltip title="Exportar a Excel" placement="top">
+                  <IconButton type="button" variant="text" color="success" sx={{ borderRadius: "12px", mr: 1 }} onClick={exportExcel}>
+                     <IconFileSpreadsheet />
+                  </IconButton>
+               </Tooltip>
+
+               <Tooltip title="Exportar a PDF" placement="top">
+                  <IconButton type="button" variant="text" color="error" sx={{ borderRadius: "12px", mr: 1 }} onClick={exportPdf}>
+                     <PictureAsPdfIcon />
+                  </IconButton>
+               </Tooltip>
+            </>
+         )}
+
          <Tooltip title="Refrescar Tabla" placement="top">
-            <Button type="button" variant="text" sx={{ borderRadius: "12px", mr: 1 }} onClick={handleClickRefresh}>
+            <IconButton type="button" variant="text" color="primary" sx={{ borderRadius: "12px", mr: 1 }} onClick={handleClickRefresh}>
                <i className="pi pi-refresh"></i>
-            </Button>
+            </IconButton>
          </Tooltip>
          <span className="p-input-icon-left">
             <i className="pi pi-search" />
             <InputText value={globalFilterValue} type="search" onChange={onGlobalFilterChange} placeholder="Buscador General" />
          </span>
          {btnAdd && (
-            <Button variant="contained" fullWidth onClick={() => (rowEdit ? addRow() : handleClickAdd())}>
-               <AddCircleOutlineOutlined sx={{ mr: 0.2 }} />
+            <Button
+               variant="contained"
+               sx={{ width: 250 }}
+               startIcon={<AddCircleOutlineOutlined sx={{ mr: 0.2 }} />}
+               size="large"
+               disabled={updating}
+               onClick={() => (rowEdit ? addRow() : handleClickAdd())}
+            >
                AGREGAR
             </Button>
          )}
@@ -240,17 +377,22 @@ export default function DataTableComponent({
       <div className="card p-fluid">
          {/* <Tooltip target=".export-buttons>button" position="bottom" /> */}
          <Card>
+            {/* {rowEdit && <Toolbar className="mb-4" left={leftToolbarTemplate}></Toolbar>} */}
+
             <DataTable
+               id={idName}
+               name={idName}
+               ref={dt}
                style={{ borderRadius: "20px" }}
                stripedRows
                // rowHover
-               // showGridlines
+               showGridlines={showGridlines}
                removableSort
                size="small"
                value={data}
                editMode="row"
                header={header}
-               dataKey="id"
+               dataKey="key"
                paginator
                rowsPerPageOptions={[5, 10, 50, 100, 1000]}
                rows={10}
@@ -261,12 +403,17 @@ export default function DataTableComponent({
                globalFilter={globalFilterValue}
                globalFilterFields={globalFilterFields}
                filterDisplay={headerFilters ? "row" : "menu"}
-               onRowEditComplete={onRowEditComplete}
                tableStyle={{ minWidth: "50rem" }}
                paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                emptyMessage="No se encontraron registros."
                currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} registros"
+               selection={selectedData}
+               onSelectionChange={(e) => setSelectedData(e.value)}
+               onRowEditComplete={onRowEditComplete}
+               onRowEditInit={handleOnRowEditIinit}
+               onRowEditCancel={handleOnRowEditCancel}
             >
+               {btnDeleteMultiple && <Column selectionMode="multiple" exportable={false}></Column>}
                {columns.map((col, index) => (
                   <Column
                      key={index}

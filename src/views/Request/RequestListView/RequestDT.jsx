@@ -1,30 +1,26 @@
-import { Fragment, useEffect, useState } from "react";
-import { ThemeProvider } from "@mui/material/styles";
-import { createTheme } from "@mui/material/styles";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
-import { CacheProvider } from "@emotion/react";
-import createCache from "@emotion/cache";
-import { Button, ButtonGroup, Tooltip, Typography } from "@mui/material";
-import IconEdit from "../../../components/icons/IconEdit";
-import IconDelete from "../../../components/icons/IconDelete";
+import { useEffect, useState } from "react";
+import { Button, ButtonGroup, Dialog, DialogActions, DialogContent, IconButton, Toolbar, Tooltip, Typography } from "@mui/material";
+import { IconX, IconWindowMaximize, IconWindowMinimize, IconFileTypePdf } from "@tabler/icons-react";
 
 import { useRequestBecaContext } from "../../../context/RequestBecaContext";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import sAlert, { QuestionAlertConfig } from "../../../utils/sAlert";
+import { QuestionAlertConfig } from "../../../utils/sAlert";
 import Toast from "../../../utils/Toast";
-import { ROLE_SUPER_ADMIN, useGlobalContext } from "../../../context/GlobalContext";
+import { ROLE_ADMIN, ROLE_SUPER_ADMIN, useGlobalContext } from "../../../context/GlobalContext";
 import DataTableComponent from "../../../components/DataTableComponent";
-import { IconEye } from "@tabler/icons";
+import { IconEye, IconPrinter } from "@tabler/icons";
 import { formatDatetime } from "../../../utils/Formats";
 import { Link } from "react-router-dom";
 import { useAuthContext } from "../../../context/AuthContext";
 import { IconCircleCheckFilled } from "@tabler/icons-react";
 import { IconCircleXFilled } from "@tabler/icons-react";
-import SwitchComponent from "../../../components/SwitchComponent";
+import { Box } from "@mui/system";
+import { getCommunityById } from "../../../components/Form/InputsCommunityComponent";
+import { useFamilyContext } from "../../../context/FamilyContext";
+import html2pdf from "html2pdf.js";
+import RequestReportPDF from "./RequestReportPDF";
+import TaskAltIcon from "@mui/icons-material/TaskAlt";
 
 const RequestBecaDT = () => {
    const { auth } = useAuthContext();
@@ -32,6 +28,65 @@ const RequestBecaDT = () => {
    const { singularName, pluralName, requestBecas, setRequestBecas, getRequestBecas, showRequestBeca, deleteRequestBeca, setTextBtnSumbit, setFormTitle } =
       useRequestBecaContext();
    const globalFilterFields = ["folio", "code", "level", "school", "curp", "name", "paternal_last_name", "maternal_last_name", "average", "status", "created_at"];
+   const { getIndexByFolio } = useFamilyContext();
+
+   const [openDialogPreview, setOpenDialogPreview] = useState(false);
+   const [fullScreenDialog, setFullScreenDialog] = useState(false);
+   const [objReport, setObjReport] = useState(null);
+
+   const [downloadOptions, setDownloadOptions] = useState({
+      margin: 0.5,
+      filename: "Solicitud de Beca.pdf",
+      image: {
+         type: "png",
+         quality: 1,
+         width: 300
+      },
+      enableLinks: true,
+      html2canvas: { scale: 3, useCORS: true },
+      jsPDF: {
+         unit: "cm",
+         format: "letter",
+         orientation: "portrait",
+         scrollY: 0
+      }
+      // pagebreak: { before: "#page2" } // Agrega paginación antes de un elemento con el ID 'page2'
+   });
+   let MyDocument;
+
+   const downloadPDF = async (elementID) => {
+      setLoadingAction(true);
+      const element = document.getElementById(elementID);
+      const htmlContent = element.innerHTML;
+      const title = "Solicitud de Beca";
+      setDownloadOptions({
+         ...downloadOptions,
+         filename: title
+      });
+
+      await html2pdf().from(htmlContent).set(downloadOptions).outputPdf().save();
+      setLoadingAction(false);
+   };
+
+   const printContent = (idContent) => {
+      var content = document.getElementById(idContent).innerHTML;
+      var printWindow = window.open("", "_blank");
+      printWindow.document.write(`<html><head>
+         <title>Solicitud de Beca</title>
+         <link rel="preconnect" href="https://fonts.googleapis.com">
+         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+         <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+         <style>
+            table{font-family: 'Roboto', sans-serif;}
+         </style>
+      </head><body>`);
+      printWindow.document.write(content);
+      printWindow.document.write(`</body></html>`);
+      printWindow.document.close();
+      setTimeout(() => {
+         printWindow.print();
+      }, 500);
+   };
 
    //#region BODY TEMPLATES
    const FolioBodyTemplate = (obj) => (
@@ -67,7 +122,13 @@ const RequestBecaDT = () => {
          {obj.active ? <IconCircleCheckFilled style={{ color: "green" }} /> : <IconCircleXFilled style={{ color: "red" }} />}
       </Typography>
    );
+   const CurrentBodyTemplate = (obj) => (
+      <Typography textAlign={"center"}>
+         <b>{obj.current_page}</b>
+      </Typography>
+   );
    const RequestDateBodyTemplate = (obj) => <Typography textAlign={"center"}>{formatDatetime(obj.created_at)}</Typography>;
+   const EndDateBodyTemplate = (obj) => <Typography textAlign={"center"}>{formatDatetime(obj.end_date)}</Typography>;
    //#endregion BODY TEMPLATES
 
    const columns = [
@@ -76,7 +137,9 @@ const RequestBecaDT = () => {
       { field: "student", header: "Alumno", sortable: true, functionEdit: null, body: StudentBodyTemplate },
       { field: "average", header: "Promedio", sortable: true, functionEdit: null, body: AverageBodyTemplate },
       { field: "status", header: "Estatus", sortable: true, functionEdit: null, body: StatusBodyTemplate },
-      { field: "created_at", header: "Fecha de Solicitud", sortable: true, functionEdit: null, body: RequestDateBodyTemplate }
+      { field: "current_page", header: "Página", sortable: true, functionEdit: null, body: CurrentBodyTemplate, filterField: null },
+      { field: "created_at", header: "Fecha de Solicitud", sortable: true, functionEdit: null, body: RequestDateBodyTemplate },
+      { field: "end_date", header: "Fecha de Termino", sortable: true, functionEdit: null, body: EndDateBodyTemplate }
    ];
    auth.role_id === ROLE_SUPER_ADMIN &&
       columns.push(
@@ -86,9 +149,23 @@ const RequestBecaDT = () => {
 
    const mySwal = withReactContent(Swal);
 
+   const handleClickView = async (obj) => {
+      setLoadingAction(true);
+      // console.log(obj);
+      const community = await getCommunityById(obj.community_id);
+      const school_community = await getCommunityById(obj.school_community_id);
+      const familyData = await getIndexByFolio(obj.folio);
+      obj.community = community;
+      obj.school_community = school_community;
+      obj.families = familyData.result.families;
+      setObjReport(obj);
+      setOpenDialogPreview(true);
+      setLoadingAction(false);
+   };
+
    const handleClickAdd = () => {
       try {
-         location = "/admin/solicitud-beca";
+         location.hash = "/admin/solicitud-beca";
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -138,18 +215,34 @@ const RequestBecaDT = () => {
    //    }
    // };
 
-   const ButtonsAction = ({ id, name }) => {
+   const ButtonsAction = ({ id, name, current_page, obj }) => {
       return (
          <ButtonGroup variant="outlined">
-            <Tooltip title={`Solicitud ${name}`} placement="top">
-               <Button color="primary">
-                  <Link to={`/admin/solicitud-beca/${id}`} style={{ textDecoration: "none" }}>
-                     {/* <IconEye /> */}
-                     Continuar
-                  </Link>
-               </Button>
-            </Tooltip>
-            <Tooltip title={`Editar ${singularName}`} placement="top">
+            {auth.role_id <= ROLE_ADMIN && obj.status == "TERMINADA" && (
+               <Tooltip title={`Ver Solicitud ${singularName}`} placement="top">
+                  <Button color="dark" onClick={() => handleClickView(obj)}>
+                     <IconEye />
+                  </Button>
+               </Tooltip>
+            )}
+            {obj.end_date == null && (
+               <Tooltip title={`Solicitud ${name}`} placement="top">
+                  <Button color="primary">
+                     <Link to={`/admin/solicitud-beca/pagina/${current_page}/folio/${id}`} target="_blank" style={{ textDecoration: "none" }}>
+                        Continuar
+                     </Link>
+                  </Button>
+               </Tooltip>
+            )}
+            {auth.role_id <= ROLE_ADMIN ||
+               (obj.status == "TERMINADA" && (
+                  <Tooltip title={`Ver Solicitud ${singularName}`} placement="top">
+                     <Button color="success" onClick={() => handleClickView(obj)}>
+                        <TaskAltIcon />
+                     </Button>
+                  </Tooltip>
+               ))}
+            {/* <Tooltip title={`Editar ${singularName}`} placement="top">
                <Button color="info" onClick={() => handleClickEdit(id)}>
                   <IconEdit />
                </Button>
@@ -158,7 +251,7 @@ const RequestBecaDT = () => {
                <Button color="error" onClick={() => handleClickDelete(id, name)}>
                   <IconDelete />
                </Button>
-            </Tooltip>
+            </Tooltip> */}
             {/* {auth.role_id == ROLE_SUPER_ADMIN && (
                <Tooltip title={active ? "Desactivar" : "Reactivar"} placement="right">
                   <Button color="dark" onClick={() => handleClickDisEnable(id, name, active)} sx={{}}>
@@ -174,11 +267,11 @@ const RequestBecaDT = () => {
    const formatData = async () => {
       try {
          // console.log("cargar listado", requestBecas);
-         await requestBecas.map((obj) => {
+         await requestBecas.map((obj, index) => {
             // console.log(obj);
             let register = obj;
-            register.created_at = formatDatetime(obj.created_at, true);
-            register.actions = <ButtonsAction id={obj.id} name={obj.folio} />;
+            register.key = index + 1;
+            register.actions = <ButtonsAction id={obj.id} name={obj.folio} current_page={obj.current_page} obj={obj} />;
             data.push(register);
          });
          // if (data.length > 0) setGlobalFilterFields(Object.keys(requestBecas[0]));
@@ -194,17 +287,68 @@ const RequestBecaDT = () => {
    useEffect(() => {
       setLoading(false);
    }, []);
+
    return (
-      <DataTableComponent
-         columns={columns}
-         data={data}
-         setData={setRequestBecas}
-         globalFilterFields={globalFilterFields}
-         headerFilters={false}
-         handleClickAdd={handleClickAdd}
-         rowEdit={false}
-         refreshTable={getRequestBecas}
-      />
+      <>
+         <DataTableComponent
+            columns={columns}
+            data={data}
+            setData={setRequestBecas}
+            globalFilterFields={globalFilterFields}
+            headerFilters={false}
+            handleClickAdd={handleClickAdd}
+            rowEdit={false}
+            refreshTable={getRequestBecas}
+         />
+
+         <Dialog fullWidth maxWidth={"lg"} fullScreen={fullScreenDialog} open={openDialogPreview} onClose={() => setOpenDialogPreview(false)}>
+            {/* <DialogTitle> */}
+            <Toolbar>
+               <Typography sx={{ ml: 2, flex: 1 }} variant="h3" component="div">
+                  {"title"}
+               </Typography>
+               <Tooltip title={`Exportar Reporte a PDF`} placement="top">
+                  <IconButton color="inherit" onClick={() => downloadPDF("reportPaper")}>
+                     <IconFileTypePdf color="red" />
+                  </IconButton>
+               </Tooltip>
+               <Tooltip title={`Imprimir Reporte`} placement="top">
+                  <IconButton color="inherit" onClick={() => printContent("reportPaper")}>
+                     <IconPrinter />
+                  </IconButton>
+               </Tooltip>
+               <Tooltip title={fullScreenDialog ? `Minimizar ventana` : `Maximizar ventana`} placement="top">
+                  <IconButton color="inherit" onClick={() => setFullScreenDialog(!fullScreenDialog)}>
+                     {fullScreenDialog ? <IconWindowMinimize /> : <IconWindowMaximize />}
+                  </IconButton>
+               </Tooltip>
+               <Tooltip title={`Cerrar ventana`} placement="top">
+                  <IconButton edge="end" color="inherit" onClick={() => setOpenDialogPreview(false)} aria-label="close">
+                     <IconX />
+                  </IconButton>
+               </Tooltip>
+            </Toolbar>
+            {/* </DialogTitle> */}
+            <DialogContent>
+               {/* <DialogContentText>You can set my maximum width and whether to adapt or not.</DialogContentText> */}
+               <Box
+                  noValidate
+                  component="form"
+                  sx={{
+                     display: "flex",
+                     flexDirection: "column",
+                     m: "auto",
+                     width: "95%"
+                  }}
+               >
+                  <RequestReportPDF obj={objReport} />
+               </Box>
+            </DialogContent>
+            {/* <DialogActions>
+               <Button onClick={() => Toast.Success("Guardado")}>Guardar</Button>
+            </DialogActions> */}
+         </Dialog>
+      </>
    );
 };
 export default RequestBecaDT;
