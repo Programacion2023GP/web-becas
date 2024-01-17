@@ -18,6 +18,7 @@ import { SET_MENU } from "../../config/store/actions";
 import { IconChevronRight } from "@tabler/icons";
 import { useAuthContext } from "../../context/AuthContext";
 import { useGlobalContext } from "../../context/GlobalContext";
+import { useEffect } from "react";
 // import AuthContextProvider, { useAuthContext } from "../../context/AuthContextFirebase";
 
 // styles
@@ -66,41 +67,89 @@ const MainLayout = () => {
       dispatch({ type: SET_MENU, opened: !leftDrawerOpened });
    };
 
-   const { auth } = useAuthContext();
+   const { auth, permissionRead, validateAccessPage } = useAuthContext();
+   const { cursorLoading } = useGlobalContext();
 
-   return auth ? (
-      <Box sx={{ display: "flex" }}>
-         <CssBaseline />
-         {/* header */}
-         <AppBar
-            enableColorOnDark
-            position="fixed"
-            color="inherit"
-            elevation={5}
-            sx={{
-               bgcolor: theme.palette.background.default,
-               transition: leftDrawerOpened ? theme.transitions.create("width") : "none"
-            }}
-         >
-            <Toolbar>
-               <Header handleLeftDrawerToggle={handleLeftDrawerToggle} />
-            </Toolbar>
-         </AppBar>
+   useEffect(() => {
+      // console.log("holaaa");
+      validateAccessPage();
+   });
 
-         {/* drawer */}
-         <Sidebar drawerOpen={!matchDownMd ? leftDrawerOpened : !leftDrawerOpened} drawerToggle={handleLeftDrawerToggle} />
+   return (
+      auth && (
+         <>
+            {permissionRead && (
+               <>
+                  <Box sx={{ display: "flex" }}>
+                     <CssBaseline />
+                     {/* header */}
+                     <AppBar
+                        enableColorOnDark
+                        position="fixed"
+                        color="inherit"
+                        elevation={5}
+                        sx={{
+                           background: "linear-gradient(337deg, rgba(13,52,25,1) 0%, rgba(52,128,63,1) 50%, rgba(13,52,25,1) 100%)",
+                           transition: leftDrawerOpened ? theme.transitions.create("width") : "none"
+                        }}
+                     >
+                        <Toolbar>
+                           <Header handleLeftDrawerToggle={handleLeftDrawerToggle} />
+                        </Toolbar>
+                     </AppBar>
 
-         {/* main content */}
-         <Main theme={theme} open={leftDrawerOpened}>
-            {/* breadcrumb */}
-            <Breadcrumbs separator={IconChevronRight} navigation={navigation} icon title rightAlign />
-            <Outlet />
-         </Main>
-         <Customization />
-      </Box>
-   ) : (
-      <Navigate to={"/login"} />
+                     {/* drawer */}
+                     <Sidebar drawerOpen={!matchDownMd ? leftDrawerOpened : !leftDrawerOpened} drawerToggle={handleLeftDrawerToggle} />
+
+                     {/* main content */}
+                     <Main theme={theme} open={leftDrawerOpened} className={cursorLoading && "cursor-loading"}>
+                        {/* breadcrumb */}
+                        <Breadcrumbs separator={IconChevronRight} navigation={navigation} icon title rightAlign />
+                        <Outlet />
+                     </Main>
+                     <Customization />
+                  </Box>
+               </>
+            )}
+            {/* // : ( // <p>Sin permiso</p>
+            // // <Navigate to={"/login"} />
+            // )} */}
+         </>
+      )
    );
+   // return auth ? (
+   //    <Box sx={{ display: "flex" }}>
+   //       <CssBaseline />
+   //       {/* header */}
+   //       <AppBar
+   //          enableColorOnDark
+   //          position="fixed"
+   //          color="inherit"
+   //          elevation={5}
+   //          sx={{
+   //             bgcolor: theme.palette.background.default,
+   //             transition: leftDrawerOpened ? theme.transitions.create("width") : "none"
+   //          }}
+   //       >
+   //          <Toolbar>
+   //             <Header handleLeftDrawerToggle={handleLeftDrawerToggle} />
+   //          </Toolbar>
+   //       </AppBar>
+
+   //       {/* drawer */}
+   //       <Sidebar drawerOpen={!matchDownMd ? leftDrawerOpened : !leftDrawerOpened} drawerToggle={handleLeftDrawerToggle} />
+
+   //       {/* main content */}
+   //       <Main theme={theme} open={leftDrawerOpened}>
+   //          {/* breadcrumb */}
+   //          <Breadcrumbs separator={IconChevronRight} navigation={navigation} icon title rightAlign />
+   //          <Outlet />
+   //       </Main>
+   //       <Customization />
+   //    </Box>
+   // ) : (
+   //    <Navigate to={"/login"} />
+   // );
 };
 
 export default MainLayout;

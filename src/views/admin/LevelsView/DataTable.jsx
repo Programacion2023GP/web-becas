@@ -139,6 +139,7 @@ const LevelDT = () => {
          await levels.map((obj) => {
             // console.log(obj);
             let register = obj;
+            register.key = index + 1;
             register.actions = <ButtonsAction id={obj.id} name={obj.level} active={obj.active} />;
             data.push(register);
          });

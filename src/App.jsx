@@ -13,19 +13,19 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 const App = () => {
    const customization = useSelector((state) => state.customization);
-   const { loading, loadingAction } = useGlobalContext();
+   const { load, loadLogo, loadAction } = useGlobalContext();
 
    return (
       <ThemeProvider theme={themes(customization)}>
          <CssBaseline />
          {/* <NavigationSroll> */}
          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 10000 }} open={loading}>
+            <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 10000 }} open={load}>
                <Typography variant="h1" sx={{ color: "#fff" }}>
                   CARGANDO... <CircularProgress color="inherit" />
                </Typography>
             </Backdrop>
-            <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 10000 }} open={loadingAction}>
+            <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 10000 }} open={loadAction}>
                <Typography variant="h1" sx={{ color: "#fff" }}>
                   CARGANDO... <CircularProgress color="inherit" />
                </Typography>

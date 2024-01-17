@@ -73,7 +73,7 @@ const SchoolDT = () => {
       try {
          resetFormData();
          setOpenDialog(true);
-         console.log("klasdklasdl");
+         // console.log("klasdklasdl");
          setTextBtnSumbit("AGREGAR");
          setFormTitle(`REGISTRAR ${singularName.toUpperCase()}`);
       } catch (error) {
@@ -156,6 +156,7 @@ const SchoolDT = () => {
          await schools.map((obj) => {
             // console.log(obj);
             let register = obj;
+            register.key = index + 1;
             register.actions = <ButtonsAction id={obj.id} name={obj.code} active={obj.active} />;
             data.push(register);
          });
