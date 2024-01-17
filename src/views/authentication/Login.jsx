@@ -32,9 +32,9 @@ const Login = () => {
    const matchDownSM = useMediaQuery(theme.breakpoints.down("md"));
 
    return (
-      <AuthWrapper>
-         <Grid container direction="column" justifyContent="flex-end" sx={{ minHeight: "100vh" }}>
-            <Grid item xs={12}>
+      <AuthWrapper className="bg-login">
+         <Grid container direction="column" justifyContent="flex-end" sx={{ minHeight: "100vh", zIndex: 2 }}>
+            <Grid item xs={12} sx={{ zIndex: 2 }}>
                <Grid container justifyContent="center" alignItems="center" sx={{ minHeight: "calc(100vh - 68px)" }}>
                   <Grid item sx={{ m: { xs: 1, sm: 3 }, mb: 0 }}>
                      <AuthCardWrapper>

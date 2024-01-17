@@ -16,14 +16,14 @@ import Toast from "../../../utils/Toast";
 import { IconCheck } from "@tabler/icons";
 import CloseIcon from "@mui/icons-material/Close";
 import CheckIcon from "@mui/icons-material/Check";
-import MyPDFComponent from "../../../utils/createPDF";
+// import MyPDFComponent from "../../../utils/createPDF";
 // import { Document, Page } from "@react-pdf/renderer";
 // import {} from "html-pdf-client";
 
 export default function RequestReportPDF({ obj }) {
    const checkCross = (value, size = 24) => {
       try {
-         return value ? <CheckIcon height={size} /> : <CloseIcon />;
+         return value ? <CheckIcon height={size} /> : <CloseIcon fontSize="small" />;
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -473,7 +473,7 @@ export default function RequestReportPDF({ obj }) {
                                     {t.tBodyCells.map((tc, tbIndex) => {
                                        if (Array.isArray(tc)) {
                                           return (
-                                             <tr hover role="checkbox" tabIndex={-1} key={`tb_tr_${tbIndex}`}>
+                                             <tr role="checkbox" tabIndex={-1} key={`tb_tr_${tbIndex}`}>
                                                 {tc.map((tcValue, innerIndex) => (
                                                    <td key={`arrayTBCell_${tbIndex}_${innerIndex}`} colSpan={tcValue.colSpan} align="center" style={tcValue.style}>
                                                       {tcValue.value}
@@ -545,7 +545,7 @@ const first = (second) => {
                               {t.tBodyCells.map((tc, tbIndex) => {
                                  if (Array.isArray(tc)) {
                                     return (
-                                       <TableRow hover role="checkbox" tabIndex={-1} key={`tb_tr_${tbIndex}`}>
+                                       <TableRow role="checkbox" tabIndex={-1} key={`tb_tr_${tbIndex}`}>
                                           {tc.map((tcValue, innerIndex) => (
                                              <TableCell key={`arrayTBCell_${tbIndex}_${innerIndex}`} colSpan={tcValue.colSpan} align={"center"} style={tcValue.style}>
                                                 {tcValue.value}
