@@ -40,6 +40,7 @@ import User1 from "../../../../assets/others/users/user-round.svg";
 import { IconLogout, IconSearch, IconSettings, IconUser } from "@tabler/icons";
 // import { useAuthContext } from "../../../../context/AuthContextFirebase";
 import { useAuthContext } from "../../../../context/AuthContext";
+import { useGlobalContext } from "../../../../context/GlobalContext";
 // import { logout } from "../../../../config/firebase";
 
 // ==============================|| PROFILE MENU ||============================== //
@@ -60,12 +61,15 @@ const ProfileSection = () => {
    const anchorRef = useRef(null);
 
    const { logout } = useAuthContext();
+   const { setLoadAction } = useGlobalContext();
    const authUser = JSON.parse(localStorage.getItem("auth"));
 
    const handleLogout = async () => {
       // console.log("Logout");
       try {
+         setLoadAction(true);
          await logout();
+         setLoadAction(false);
       } catch (error) {
          console.log(error);
       }

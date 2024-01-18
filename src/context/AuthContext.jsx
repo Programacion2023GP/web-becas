@@ -1,12 +1,12 @@
 import axios from "axios";
 import { createContext, useContext, useEffect, useState } from "react";
 import sAlert from "../utils/sAlert";
-import Toast from "../utils/Toast";
 
 export const AuthContext = createContext();
 
 export const Axios = axios;
 Axios.defaults.baseURL = import.meta.env.VITE_API;
+
 Axios.defaults.headers.common = {
    Accept: "application/json", //*/*
    "Content-Type": "application/json",
@@ -27,11 +27,12 @@ export default function AuthContextProvider({ children }) {
          });
          // console.log("el data register:", data);
          if (data.data.status_code == 200) sAlert.Success(data.data.alert_text, 2500);
-         return data.data;
+         return data.data
       } catch (error) {
          console.log(error);
          sAlert.Error("Parece que hay un error 🤔, intenta más tarde");
       }
+      return data.data;
    };
 
    const login = async ({ email, password }) => {
@@ -41,15 +42,18 @@ export default function AuthContextProvider({ children }) {
             email,
             password
          });
-         // console.log("data", data);
 
-         if (data.data.result.token === null) sAlert.Customizable(data.data.alert_text, data.data.alert_icon, true, false);
+         if (data.data.status_code != 200 && !data.data.result.token) return alert("algo paso");
          localStorage.setItem("token", data.data.result.token);
-         localStorage.setItem("auth", JSON.stringify(data.data.result.user));
-         setAuth(JSON.parse(localStorage.getItem("auth")));
+         localStorage.setItem("auth", JSON.stringify(data.data.result));
+
          const token = localStorage.getItem("token") || null;
          Axios.defaults.headers.common.Authorization = `Bearer ${token}`;
-         return data.data;
+
+         setAuth(JSON.parse(localStorage.getItem("auth")));
+         // setAuth(data.data.result.auth);
+
+         return data;
       } catch (error) {
          console.log(error);
          sAlert.Error("Parece que hay un error 🤔, intenta más tarde");
@@ -59,6 +63,7 @@ export default function AuthContextProvider({ children }) {
    const loggedInCheck = async () => {
       const token = localStorage.getItem("token") || null;
       Axios.defaults.headers.common.Authorization = `Bearer ${token}`;
+      // Axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       if (token != null && auth != null) {
          const { data } = await Axios.get(`users/${auth.id}`); //es el id
          if (data.data.status_code != 200) setAuth(null);
@@ -81,23 +86,21 @@ export default function AuthContextProvider({ children }) {
             location.hash = "/login";
             return;
          }
-         const { data } = await Axios.get(`/logout`);
+         const { data } = await Axios.post(`/logout/${auth.id}`);
 
          localStorage.removeItem("token");
          localStorage.removeItem("auth");
          const token = localStorage.getItem("token") || null;
          Axios.defaults.headers.common.Authorization = `Bearer ${token}`;
          setAuth(null);
-         location.hash = "/login";
-         return data.data;
+         return data;
       } catch (error) {
-         console.log(error);
+         console.log("me arrojo al catch");
          localStorage.removeItem("token");
          localStorage.removeItem("auth");
          const token = localStorage.getItem("token") || null;
          Axios.defaults.headers.common.Authorization = `Bearer ${token}`;
-         setAuth(null);
-         location.hash = "/login";
+         window.location.hash = "/login";
       }
    };
 
@@ -147,14 +150,17 @@ export default function AuthContextProvider({ children }) {
    };
 
    // useEffect(() => {
-   //    console.log("el useEffect de AuthContext");
    //    const asyncCall = async () => await loggedInCheck();
+
    //    asyncCall();
    // }, []);
 
    // console.log("el auth en el context: ", auth);
    // if (auth === null) return;
 
+   // return <AuthContext.Provider value={{ auth, setAuth }}>{children}</AuthContext.Provider>;
    return <AuthContext.Provider value={{ register, login, auth, loggedInCheck, logout, permissionRead, validateAccessPage }}>{children}</AuthContext.Provider>;
 }
 export const useAuthContext = () => useContext(AuthContext);
+
+// export default AuthContextProvider;

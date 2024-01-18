@@ -23,6 +23,7 @@ import FamilyContextProvider from "../context/FamilyContext";
 import RequestListView from "../views/Request/RequestListView/RequestListView";
 import CommunitiesView from "../views/admin/CommunitiesView/Index";
 import CommunityContextProvider from "../context/CommunityContext";
+import MenuContextProvider from "../context/MenuContext";
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import("../views/dashboard/Default")));
@@ -41,7 +42,11 @@ const SamplePage = Loadable(lazy(() => import("../views/sample-page")));
 
 const MainRoutes = {
    path: "/admin",
-   element: <MainLayout />,
+   element: (
+      <MenuContextProvider>
+         <MainLayout />
+      </MenuContextProvider>
+   ),
    children: [
       {
          index: true,
