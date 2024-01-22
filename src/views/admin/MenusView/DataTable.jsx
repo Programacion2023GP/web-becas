@@ -1,20 +1,12 @@
-import { Fragment, useEffect, useState } from "react";
-import { ThemeProvider } from "@mui/material/styles";
-import { createTheme } from "@mui/material/styles";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
-import { CacheProvider } from "@emotion/react";
-import createCache from "@emotion/cache";
+import { useEffect } from "react";
 import { Button, ButtonGroup, Tooltip, Typography } from "@mui/material";
 import IconEdit from "../../../components/icons/IconEdit";
 import IconDelete from "../../../components/icons/IconDelete";
 
-import { useDisabilityContext } from "../../../context/DisabilityContext";
+import { useMenuContext } from "../../../context/MenuContext";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import sAlert, { QuestionAlertConfig } from "../../../utils/sAlert";
+import { QuestionAlertConfig } from "../../../utils/sAlert";
 import Toast from "../../../utils/Toast";
 import { ROLE_SUPER_ADMIN, useGlobalContext } from "../../../context/GlobalContext";
 import DataTableComponent from "../../../components/DataTableComponent";
@@ -22,29 +14,27 @@ import { IconCircleCheckFilled } from "@tabler/icons-react";
 import { IconCircleXFilled } from "@tabler/icons-react";
 import { formatDatetime } from "../../../utils/Formats";
 import { useAuthContext } from "../../../context/AuthContext";
-import SwitchComponent from "../../../components/SwitchComponent";
+import { Box } from "@mui/system";
 
-const DisabilityDT = () => {
+const MenuDT = () => {
    const { auth } = useAuthContext();
    const { setLoading, setLoadingAction, setOpenDialog } = useGlobalContext();
-   const {
-      singularName,
-      disability,
-      disabilities,
-      getDisabilities,
-      showDisability,
-      deleteDisability,
-      DisEnableDisability,
-      resetFormData,
-      resetDisability,
-      setTextBtnSumbit,
-      setFormTitle
-   } = useDisabilityContext();
-   const globalFilterFields = ["disability", "description", "active", "created_at"];
+   const { singularName, menu, menus, getMenus, showMenu, deleteMenu, DisEnableMenu, resetFormData, resetMenu, setTextBtnSumbit, setFormTitle } = useMenuContext();
+   const globalFilterFields = ["menu", "active", "created_at"];
 
    // #region BodysTemplate
-   const DisabilityBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.disability}</Typography>;
-   const DescriptionBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.description}</Typography>;
+   const IconBodyTemplate = (obj) => {
+      const IconComponent = `<${obj.icon}/>`;
+      return (
+         <Box textAlign={"center"}>
+            {IconComponent}
+            <Typography variant="subtitle2">{obj.icon}</Typography>
+         </Box>
+      );
+      // <Box textAlign={"center"}>{<img alt="Icono del menu" src={`${import.meta.env.VITE_HOST}/${obj.img_preview}`} style={{ maxWidth: 100, maxHeight: 100 }} />}</Box>
+   };
+   const MenuBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.menu}</Typography>;
+   const LevelBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.belongs_to}</Typography>;
 
    const ActiveBodyTemplate = (obj) => (
       <Typography textAlign={"center"}>
@@ -56,20 +46,21 @@ const DisabilityDT = () => {
    // #endregion BodysTemplate
 
    const columns = [
-      { field: "disability", header: "Nivel", sortable: true, functionEdit: null, body: DisabilityBodyTemplate, filterField: null },
-      { field: "description", header: "Descripción", sortable: true, functionEdit: null, body: DescriptionBodyTemplate, filterField: null }
+      { field: "icon", header: "Icono", sortable: true, functionEdit: null, body: IconBodyTemplate, filterField: null },
+      { field: "menu", header: "Menu", sortable: true, functionEdit: null, body: MenuBodyTemplate, filterField: null },
+      { field: "menu", header: "Nivel", sortable: true, functionEdit: null, body: LevelBodyTemplate, filterField: null }
    ];
    auth.role_id === ROLE_SUPER_ADMIN &&
       columns.push(
-         { field: "active", header: "Activo", sortable: true, functionEdit: null, body: ActiveBodyTemplate, filterField: null },
-         { field: "created_at", header: "Fecha de registro", sortable: true, functionEdit: null, body: CreatedAtBodyTemplate, filterField: null }
+         { field: "active", header: "Activo", sortable: true, functionEdit: null, body: ActiveBodyTemplate, filterField: null }
+         // { field: "created_at", header: "Fecha de registro", sortable: true, functionEdit: null, body: CreatedAtBodyTemplate, filterField: null }
       );
 
    const mySwal = withReactContent(Swal);
 
    const handleClickAdd = () => {
       try {
-         // resetDisability();
+         // resetMenu();
          resetFormData();
          setOpenDialog(true);
          setTextBtnSumbit("AGREGAR");
@@ -85,7 +76,7 @@ const DisabilityDT = () => {
          setLoadingAction(true);
          setTextBtnSumbit("GUARDAR");
          setFormTitle(`EDITAR ${singularName.toUpperCase()}`);
-         await showDisability(id);
+         await showMenu(id);
          setOpenDialog(true);
          setLoadingAction(false);
       } catch (error) {
@@ -99,7 +90,7 @@ const DisabilityDT = () => {
          mySwal.fire(QuestionAlertConfig(`Estas seguro de eliminar a ${name}`)).then(async (result) => {
             if (result.isConfirmed) {
                setLoadingAction(true);
-               const axiosResponse = await deleteDisability(id);
+               const axiosResponse = await deleteMenu(id);
                setLoadingAction(false);
                Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
             }
@@ -114,7 +105,7 @@ const DisabilityDT = () => {
    //    try {
    //       let axiosResponse;
    //       setTimeout(async () => {
-   //          axiosResponse = await DisEnableDisability(id, !active);
+   //          axiosResponse = await DisEnableMenu(id, !active);
    //          Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
    //       }, 500);
    //    } catch (error) {
@@ -150,15 +141,15 @@ const DisabilityDT = () => {
    const data = [];
    const formatData = async () => {
       try {
-         // console.log("cargar listado", disabilities);
-         await disabilities.map((obj, index) => {
-            // console.log(obj);
+         // console.log("cargar listado", menus);
+         await menus.map((obj, index) => {
+            console.log(obj);
             let register = obj;
             register.key = index + 1;
-            register.actions = <ButtonsAction id={obj.id} name={obj.disability} active={obj.active} />;
+            register.actions = <ButtonsAction id={obj.id} name={obj.menu} active={obj.active} />;
             data.push(register);
          });
-         // if (data.length > 0) setGlobalFilterFields(Object.keys(disabilities[0]));
+         // if (data.length > 0) setGlobalFilterFields(Object.keys(menus[0]));
          // console.log("la data del formatData", globalFilterFields);
          setLoading(false);
       } catch (error) {
@@ -179,8 +170,10 @@ const DisabilityDT = () => {
          headerFilters={false}
          handleClickAdd={handleClickAdd}
          rowEdit={false}
-         refreshTable={getDisabilities}
+         refreshTable={getMenus}
+         btnsExport={false}
+         btnAdd={false}
       />
    );
 };
-export default DisabilityDT;
+export default MenuDT;

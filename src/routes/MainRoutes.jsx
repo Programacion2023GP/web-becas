@@ -24,6 +24,7 @@ import RequestListView from "../views/Request/RequestListView/RequestListView";
 import CommunitiesView from "../views/admin/CommunitiesView/Index";
 import CommunityContextProvider from "../context/CommunityContext";
 import MenuContextProvider from "../context/MenuContext";
+import MenusView from "../views/admin/MenusView/Index";
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import("../views/dashboard/Default")));
@@ -82,6 +83,15 @@ const MainRoutes = {
             <UserContextProvider>
                <UsersView />
             </UserContextProvider>
+         ),
+         loader: loaderIndexUsersView
+      },
+      {
+         path: "menus",
+         element: (
+            <MenuContextProvider>
+               <MenusView />
+            </MenuContextProvider>
          ),
          loader: loaderIndexUsersView
       },

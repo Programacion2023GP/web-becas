@@ -10,7 +10,7 @@ const formDataInitialState = {
    id: 0,
    menu: "",
    caption: "",
-   type: "",
+   type: "group",
    belongs_to: 0,
    url: "",
    icon: "",
@@ -36,6 +36,14 @@ export default function MenuContextProvider({ children }) {
          setFormData(formDataInitialState);
       } catch (error) {
          console.log("Error en resetFormData:", error);
+         Toast.Error(error);
+      }
+   };
+   const resetMenu = () => {
+      try {
+         setMenu(formDataInitialState);
+      } catch (error) {
+         console.log("Error en resetMenu:", error);
          Toast.Error(error);
       }
    };
@@ -264,6 +272,7 @@ export default function MenuContextProvider({ children }) {
             formData,
             setFormData,
             resetFormData,
+            resetMenu,
             getMenus,
             showMenu,
             MenusByRole,

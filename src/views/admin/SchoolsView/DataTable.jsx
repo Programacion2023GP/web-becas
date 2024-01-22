@@ -153,7 +153,7 @@ const SchoolDT = () => {
    const formatData = async () => {
       try {
          // console.log("cargar listado", schools);
-         await schools.map((obj) => {
+         await schools.map((obj,index) => {
             // console.log(obj);
             let register = obj;
             register.key = index + 1;

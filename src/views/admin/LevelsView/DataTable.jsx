@@ -136,7 +136,7 @@ const LevelDT = () => {
    const formatData = async () => {
       try {
          // console.log("cargar listado", levels);
-         await levels.map((obj) => {
+         await levels.map((obj, index) => {
             // console.log(obj);
             let register = obj;
             register.key = index + 1;

@@ -28,6 +28,13 @@ export default function LevelContextProvider({ children }) {
          console.log("Error en resetFormData:", error);
       }
    };
+   const resetLevel = () => {
+      try {
+         setLevel(formDataInitialState);
+      } catch (error) {
+         console.log("Error en resetLevel:", error);
+      }
+   };
 
    const getLevels = async () => {
       try {
