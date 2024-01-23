@@ -144,6 +144,25 @@ export default function MenuContextProvider({ children }) {
       }
    };
 
+   const DisEnableMenu = async (id, active) => {
+      try {
+         let res = CorrectRes;
+         const axiosData = await Axios.get(`/menus/${id}/DisEnableMenu/${active ? "1" : "0"}`);
+         // console.log("deleteUser() axiosData", axiosData.data);
+         getMenus();
+         showMyMenus();
+         res = axiosData.data.data;
+         // console.log("res", res);
+         return res;
+      } catch (error) {
+         const res = ErrorRes;
+         console.log(error);
+         res.message = error;
+         res.alert_text = error;
+         Toast.Error(error);
+      }
+   };
+
    // #region CRUD
 
    const getMenus = async () => {
@@ -285,7 +304,8 @@ export default function MenuContextProvider({ children }) {
             textBtnSubmit,
             setTextBtnSumbit,
             formTitle,
-            setFormTitle
+            setFormTitle,
+            DisEnableMenu
          }}
       >
          {children}

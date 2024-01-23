@@ -15,12 +15,13 @@ import { IconCircleXFilled } from "@tabler/icons-react";
 import { formatDatetime } from "../../../utils/Formats";
 import { useAuthContext } from "../../../context/AuthContext";
 import { Box } from "@mui/system";
+import SwitchComponent from "../../../components/SwitchComponent";
 
 const MenuDT = () => {
    const { auth } = useAuthContext();
    const { setLoading, setLoadingAction, setOpenDialog } = useGlobalContext();
    const { singularName, menu, menus, getMenus, showMenu, deleteMenu, DisEnableMenu, resetFormData, resetMenu, setTextBtnSumbit, setFormTitle } = useMenuContext();
-   const globalFilterFields = ["menu", "active", "created_at"];
+   const globalFilterFields = ["icon", "menu", "caption", "patern", "order", "url", "active", "created_at"];
 
    // #region BodysTemplate
    const IconBodyTemplate = (obj) => {
@@ -33,8 +34,39 @@ const MenuDT = () => {
       );
       // <Box textAlign={"center"}>{<img alt="Icono del menu" src={`${import.meta.env.VITE_HOST}/${obj.img_preview}`} style={{ maxWidth: 100, maxHeight: 100 }} />}</Box>
    };
-   const MenuBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.menu}</Typography>;
-   const LevelBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.belongs_to}</Typography>;
+   const MenuBodyTemplate = (obj) => (
+      <>
+         <Typography textAlign={"center"}>{obj.menu}</Typography>
+         {obj.caption && (
+            <Typography textAlign={"center"} sx={{ fontStyle: "italic", fontSize: 12 }}>
+               {obj.caption}
+            </Typography>
+         )}
+      </>
+   );
+   const InfoBodyTemplate = (obj) => (
+      <>
+         {obj.belongs_to > 0 ? (
+            <Typography textAlign={"center"}>
+               Pertence a: <b>{obj.patern ?? "-"}</b>
+               <br />
+               Orden: <b>{obj.order ?? "-"}</b>
+               <br />
+               Path: <b>{obj.url ?? "-"}</b>
+               <br />
+            </Typography>
+         ) : (
+            <>
+               <Typography textAlign={"center"}>
+                  <b>{"***** MENÚ PADRE *****"}</b>
+               </Typography>
+               <Typography textAlign={"center"}>
+                  Orden: <b>{obj.order ?? "-"}</b>
+               </Typography>
+            </>
+         )}
+      </>
+   );
 
    const ActiveBodyTemplate = (obj) => (
       <Typography textAlign={"center"}>
@@ -48,7 +80,7 @@ const MenuDT = () => {
    const columns = [
       { field: "icon", header: "Icono", sortable: true, functionEdit: null, body: IconBodyTemplate, filterField: null },
       { field: "menu", header: "Menu", sortable: true, functionEdit: null, body: MenuBodyTemplate, filterField: null },
-      { field: "menu", header: "Nivel", sortable: true, functionEdit: null, body: LevelBodyTemplate, filterField: null }
+      { field: "level", header: "Info", sortable: true, functionEdit: null, body: InfoBodyTemplate, filterField: null }
    ];
    auth.role_id === ROLE_SUPER_ADMIN &&
       columns.push(
@@ -101,18 +133,18 @@ const MenuDT = () => {
       }
    };
 
-   // const handleClickDisEnable = async (id, name, active) => {
-   //    try {
-   //       let axiosResponse;
-   //       setTimeout(async () => {
-   //          axiosResponse = await DisEnableMenu(id, !active);
-   //          Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
-   //       }, 500);
-   //    } catch (error) {
-   //       console.log(error);
-   //       Toast.Error(error);
-   //    }
-   // };
+   const handleClickDisEnable = async (id, name, active) => {
+      try {
+         let axiosResponse;
+         setTimeout(async () => {
+            axiosResponse = await DisEnableMenu(id, !active);
+            Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
+         }, 500);
+      } catch (error) {
+         console.log(error);
+         Toast.Error(error);
+      }
+   };
 
    const ButtonsAction = ({ id, name, active }) => {
       return (
@@ -122,18 +154,18 @@ const MenuDT = () => {
                   <IconEdit />
                </Button>
             </Tooltip>
-            <Tooltip title={`Eliminar ${singularName}`} placement="top">
+            {/* <Tooltip title={`Eliminar ${singularName}`} placement="top">
                <Button color="error" onClick={() => handleClickDelete(id, name)}>
                   <IconDelete />
                </Button>
-            </Tooltip>
-            {/* {auth.role_id == ROLE_SUPER_ADMIN && (
+            </Tooltip> */}
+            {auth.role_id == ROLE_SUPER_ADMIN && (
                <Tooltip title={active ? "Desactivar" : "Reactivar"} placement="right">
                   <Button color="dark" onClick={() => handleClickDisEnable(id, name, active)} sx={{}}>
-                     <SwitchComponent checked={active} />
+                     <SwitchComponent checked={Boolean(active)} />
                   </Button>
                </Tooltip>
-            )} */}
+            )}
          </ButtonGroup>
       );
    };
