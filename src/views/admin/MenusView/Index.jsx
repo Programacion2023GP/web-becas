@@ -16,12 +16,13 @@ import { useGlobalContext } from "../../../context/GlobalContext";
 const MenusView = () => {
    // const { result } = useLoaderData();
    const { setLoading } = useGlobalContext();
-   const { pluralName, menu, getMenus } = useMenuContext();
+   const { pluralName, menu, getMenus, getHeaderMenusSelectIndex } = useMenuContext();
 
    useEffect(() => {
       try {
          setLoading(true);
          getMenus();
+         getHeaderMenusSelectIndex();
       } catch (error) {
          console.log(error);
          Toast.Error(error);

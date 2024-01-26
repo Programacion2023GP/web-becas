@@ -12,25 +12,20 @@ import { useMenuContext } from "../../../../context/MenuContext";
 
 const MenuList = () => {
    const { auth } = useAuthContext();
-   const { menuItems, showMyMenus } = useMenuContext();
+   const { menus, menuItems, showMyMenus } = useMenuContext();
    // console.log(auth);
    useEffect(() => {
-      console.log("el useEffect de MenuList", menuItem);
+      // console.log("el useEffect de MenuList", menuItem);
       showMyMenus();
    }, [auth]);
-   
+
    const navItems = menuItems.items.map((item) => {
       switch (item.type) {
          case "group":
             return <NavGroup key={item.id} item={item} />;
          default:
             return (
-               <Typography
-                  key={item.id}
-                  variant="h6"
-                  color="error"
-                  align="center"
-               >
+               <Typography key={item.id} variant="h6" color="error" align="center">
                   Menu Items Error
                </Typography>
             );

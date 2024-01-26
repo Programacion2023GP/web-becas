@@ -14,12 +14,14 @@ const formDataInitialState = {
    belongs_to: 0,
    url: "",
    icon: "",
-   order: 0,
-   show_counter: false
+   order: "",
+   show_counter: false,
+
+   patern: ""
 };
 
 export default function MenuContextProvider({ children }) {
-   const { auth, logout } = useAuthContext();
+   const { auth, setAuth, logout } = useAuthContext();
    const singularName = "Menú"; //Escribirlo siempre letra Capital
    const pluralName = "Menús"; //Escribirlo siempre letra Capital
 
@@ -30,6 +32,7 @@ export default function MenuContextProvider({ children }) {
    const [menu, setMenu] = useState(null);
    const [formData, setFormData] = useState(formDataInitialState);
    const [menuItems, setMenuItems] = useState({ items: [] });
+   const [headerMenus, setHeaderMenus] = useState([]);
 
    const resetFormData = () => {
       try {
@@ -88,6 +91,7 @@ export default function MenuContextProvider({ children }) {
    };
 
    const showMyMenus = async () => {
+      // console.log("cargando mis menussss");
       let res = CorrectRes;
       try {
          if (auth !== null) {
@@ -126,6 +130,7 @@ export default function MenuContextProvider({ children }) {
             });
             // console.log("items", items);
             setMenuItems({ items: items });
+            // setAuth({ ...auth, menus: "cambiados" });
          }
       } catch (error) {
          if (error.response.status === 401) {
@@ -150,7 +155,6 @@ export default function MenuContextProvider({ children }) {
          const axiosData = await Axios.get(`/menus/${id}/DisEnableMenu/${active ? "1" : "0"}`);
          // console.log("deleteUser() axiosData", axiosData.data);
          getMenus();
-         showMyMenus();
          res = axiosData.data.data;
          // console.log("res", res);
          return res;
@@ -163,6 +167,24 @@ export default function MenuContextProvider({ children }) {
       }
    };
 
+   const getHeaderMenusSelectIndex = async () => {
+      try {
+         const res = CorrectRes;
+         const axiosData = await Axios.get(`/menus/headers/selectIndex`);
+         // console.log("el selectedDeLevels", axiosData);
+         res.result.headerMenus = axiosData.data.data.result;
+         res.result.headerMenus.unshift({ id: 0, label: "Selecciona una opción..." });
+         setHeaderMenus(axiosData.data.data.result);
+         // console.log("headerMenus", headerMenus);
+
+         return res;
+      } catch (error) {
+         const res = ErrorRes;
+         console.log(error);
+         res.message = error;
+         res.alert_text = error;
+      }
+   };
    // #region CRUD
 
    const getMenus = async () => {
@@ -174,7 +196,7 @@ export default function MenuContextProvider({ children }) {
          // console.log(res.result);
          setMenus(axiosData.data.data.result);
          // console.log("menus", menus);
-
+         showMyMenus();
          return res;
       } catch (error) {
          console.log(error);
@@ -228,7 +250,7 @@ export default function MenuContextProvider({ children }) {
    const createMenu = async (menu) => {
       let res = CorrectRes;
       try {
-         const axiosData = await Axios.post("/menus", menu);
+         const axiosData = await Axios.post("/menus/create", menu);
          res = axiosData.data.data;
          getMenus();
       } catch (error) {
@@ -305,7 +327,10 @@ export default function MenuContextProvider({ children }) {
             setTextBtnSumbit,
             formTitle,
             setFormTitle,
-            DisEnableMenu
+            DisEnableMenu,
+            headerMenus,
+            setHeaderMenus,
+            getHeaderMenusSelectIndex
          }}
       >
          {children}

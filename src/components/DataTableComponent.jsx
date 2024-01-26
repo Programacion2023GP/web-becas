@@ -399,11 +399,11 @@ export default function DataTableComponent({
                loading={loading}
                filters={filters}
                scrollable={true}
-               scrollHeight="67vh"
+               scrollHeight="63vh"
                globalFilter={globalFilterValue}
                globalFilterFields={globalFilterFields}
                filterDisplay={headerFilters ? "row" : "menu"}
-               tableStyle={{ minWidth: "50rem" }}
+               tableStyle={{ minWidth: "5rem" }}
                paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                emptyMessage="No se encontraron registros."
                currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} registros"

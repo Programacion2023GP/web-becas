@@ -52,6 +52,6 @@ const SwitchComponent = ({ checked, label, height = 26 }) => {
       }
    }));
 
-   return <FormControlLabel control={<IOSSwitch sx={{ m: 0, p: 0 }} defaultChecked={checked} />} label={label} />;
+   return <FormControlLabel control={<IOSSwitch sx={{ m: 0, p: 0, mr: 1 }} defaultChecked={checked} />} label={label} />;
 };
 export default SwitchComponent;

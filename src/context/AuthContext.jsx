@@ -156,6 +156,8 @@ export default function AuthContextProvider({ children }) {
    // console.log("el auth en el context: ", auth);
    // if (auth === null) return;
 
-   return <AuthContext.Provider value={{ register, login, auth, loggedInCheck, logout, permissionRead, validateAccessPage }}>{children}</AuthContext.Provider>;
+   return (
+      <AuthContext.Provider value={{ register, login, auth, setAuth, loggedInCheck, logout, permissionRead, validateAccessPage }}>{children}</AuthContext.Provider>
+   );
 }
 export const useAuthContext = () => useContext(AuthContext);

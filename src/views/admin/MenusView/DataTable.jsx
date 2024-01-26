@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { Button, ButtonGroup, Tooltip, Typography } from "@mui/material";
 import IconEdit from "../../../components/icons/IconEdit";
 import IconDelete from "../../../components/icons/IconDelete";
@@ -16,6 +16,8 @@ import { formatDatetime } from "../../../utils/Formats";
 import { useAuthContext } from "../../../context/AuthContext";
 import { Box } from "@mui/system";
 import SwitchComponent from "../../../components/SwitchComponent";
+import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
+import * as tablerIcons from "@tabler/icons";
 
 const MenuDT = () => {
    const { auth } = useAuthContext();
@@ -25,11 +27,16 @@ const MenuDT = () => {
 
    // #region BodysTemplate
    const IconBodyTemplate = (obj) => {
-      const IconComponent = `<${obj.icon}/>`;
+      // const Icon = React.createElement(obj.icon ? obj.icon : IconPointFilled);
+      const Icon = tablerIcons[`${obj.icon}`];
       return (
          <Box textAlign={"center"}>
-            {IconComponent}
-            <Typography variant="subtitle2">{obj.icon}</Typography>
+            {obj.icon && (
+               <>
+                  <Icon stroke={1.5} size="1.3rem" />
+                  <Typography variant="subtitle2">{obj.icon}</Typography>
+               </>
+            )}
          </Box>
       );
       // <Box textAlign={"center"}>{<img alt="Icono del menu" src={`${import.meta.env.VITE_HOST}/${obj.img_preview}`} style={{ maxWidth: 100, maxHeight: 100 }} />}</Box>
@@ -109,7 +116,7 @@ const MenuDT = () => {
          setTextBtnSumbit("GUARDAR");
          setFormTitle(`EDITAR ${singularName.toUpperCase()}`);
          await showMenu(id);
-         setOpenDialog(true);
+         // setOpenDialog(true);
          setLoadingAction(false);
       } catch (error) {
          console.log(error);
@@ -175,7 +182,7 @@ const MenuDT = () => {
       try {
          // console.log("cargar listado", menus);
          await menus.map((obj, index) => {
-            console.log(obj);
+            // console.log(obj);
             let register = obj;
             register.key = index + 1;
             register.actions = <ButtonsAction id={obj.id} name={obj.menu} active={obj.active} />;
