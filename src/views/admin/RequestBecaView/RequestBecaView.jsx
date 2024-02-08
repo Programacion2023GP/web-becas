@@ -137,7 +137,8 @@ const RequestBecaView = () => {
       "Datos Económicos",
       "Datos de la Vivienda",
       "Equipamiento Doméstico",
-      "Programas de Becas"
+      "Programas de Becas",
+      "Cargar Documentos"
    ];
 
    const [activeStep, setActiveStep] = useState(Number(pagina) - 1);
@@ -352,12 +353,12 @@ const RequestBecaView = () => {
 
    const onSubmit1 = async (values, { setSubmitting, setErrors, resetForm, setValues }) => {
       try {
-         if (isTutor) {
-            values.tutor_img_ine = imgIne.length == 0 ? "" : imgIne[0].file;
-            values.tutor_img_power_letter = imgPowerLetter.length == 0 ? "" : imgPowerLetter[0].file;
-         }
-         // console.log("values", values);
-         await setFormData({ ...formData, ...values });
+         // if (isTutor) {
+         //    values.tutor_img_ine = imgIne.length == 0 ? "" : imgIne[0].file;
+         //    values.tutor_img_power_letter = imgPowerLetter.length == 0 ? "" : imgPowerLetter[0].file;
+         // }
+         // // console.log("values", values);
+         // await setFormData({ ...formData, ...values });
          // console.log("formData-1", formData);
          // await setValues(formData);
          // console.log("formData", formData);
@@ -601,6 +602,52 @@ const RequestBecaView = () => {
       try {
          // console.log("formData en submit3", formData);
          if (values.under_protest) values.b6_finished = true;
+
+         values.b6_beca_transport = values.b6_beca_transport ? true : false || false;
+         values.b6_beca_benito_juarez = values.b6_beca_benito_juarez ? true : false || false;
+         values.b6_beca_jovenes = values.b6_beca_jovenes ? true : false || false;
+         values.b6_other = values.b6_other ? true : false || false;
+         values.end_date = formatDatetimeToSQL(new Date());
+         await setFormData({ ...formData, ...values });
+         // console.log("formData", values);
+         // return console.log("values", values);
+         // await setFormData(values);
+         // await setValues(formData);
+         setLoadingAction(true);
+         const axiosResponse = await saveBeca(folio, pagina, values);
+         setSubmitting(false);
+         setLoadingAction(false);
+
+         if (axiosResponse.status_code != 200) {
+            Toast.Success(axiosResponse.alert_text);
+            return Toast.Warning(axiosResponse.alert_title);
+         }
+         Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
+         // console.log("axiosResponse", axiosResponse);
+         setStepFailed(-1);
+         // resetForm();
+         // resetFormData();
+         handleComplete();
+         // if (!checkAdd) setOpenDialog(false);
+      } catch (error) {
+         console.error(error);
+         setErrors({ submit: error.message });
+         setSubmitting(false);
+      } finally {
+         setSubmitting(false);
+      }
+   };
+
+   const onSubmit9 = async (values, { setSubmitting, setErrors, resetForm, setValues }) => {
+      try {
+         if (isTutor) {
+            values.tutor_img_ine = imgIne.length == 0 ? "" : imgIne[0].file;
+            values.tutor_img_power_letter = imgPowerLetter.length == 0 ? "" : imgPowerLetter[0].file;
+         }
+         // console.log("values", values);
+         await setFormData({ ...formData, ...values });
+         // console.log("formData en submit3", formData);
+         // if (values.under_protest) values.b7_finished = true;
 
          values.b6_beca_transport = values.b6_beca_transport ? true : false || false;
          values.b6_beca_benito_juarez = values.b6_beca_benito_juarez ? true : false || false;
@@ -2150,6 +2197,71 @@ const RequestBecaView = () => {
                                        </Grid>
 
                                        {folio > 0 && <ButtonsBeforeOrNext isSubmitting={isSubmitting} setValues={setValues} />}
+                                    </Box>
+                                 )}
+                              </Formik>
+                           )}
+                           {activeStep + 1 == 9 && (
+                              <Formik initialValues={formData} validationSchema={validationSchemas(activeStep + 1)} onSubmit={onSubmit1}>
+                                 {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
+                                    <Box
+                                       sx={{ height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between" }}
+                                       component={"form"}
+                                       onSubmit={handleSubmit}
+                                       onBlur={onBlurCapture}
+                                    >
+                                       <Grid container spacing={2}>
+                                          {isTutor && (
+                                             <>
+                                                <Grid xs={12}>
+                                                   <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
+                                                </Grid>
+                                                <Grid xs={12} sx={{ mb: 3 }}>
+                                                   <Typography variant="h4">Si no eres familiar directo favor de cargar los siguientes documentos...</Typography>
+                                                </Grid>
+                                                {/* IMAGEN DE INE TUTOR */}
+                                                <Grid xs={12} md={6} sx={{ mb: 3 }}>
+                                                   <InputFileComponent
+                                                      idName="tutor_img_ine"
+                                                      label="Foto INE del tutor"
+                                                      filePreviews={imgIne}
+                                                      setFilePreviews={setImgIne}
+                                                      error={errors.tutor_img_ine}
+                                                      touched={touched.tutor_img_ine}
+                                                      multiple={false}
+                                                      accept={"image/*"}
+                                                   />
+                                                </Grid>
+                                                {/* IMAGEN DE CARTA PODER TUTOR */}
+                                                <Grid xs={12} md={6} sx={{ mb: 3 }}>
+                                                   <InputFileComponent
+                                                      idName="tutor_img_power_letter"
+                                                      label="Foto Carta Poder del tutor"
+                                                      filePreviews={imgPowerLetter}
+                                                      setFilePreviews={setImgPowerLetter}
+                                                      error={errors.tutor_img_power_letter}
+                                                      touched={touched.tutor_img_power_letter}
+                                                      multiple={false}
+                                                      accept={"image/*"}
+                                                   />
+                                                </Grid>
+                                             </>
+                                          )}
+                                          {/* IMAGEN DE INE TUTOR */}
+                                          <Grid xs={12} md={6} sx={{ mb: 3 }}>
+                                             <InputFileComponent
+                                                idName="tutor_img_ine"
+                                                label="Foto INE del tutor"
+                                                filePreviews={imgIne}
+                                                setFilePreviews={setImgIne}
+                                                error={errors.tutor_img_ine}
+                                                touched={touched.tutor_img_ine}
+                                                multiple={false}
+                                                accept={"image/*"}
+                                             />
+                                          </Grid>
+                                       </Grid>
+                                       {!(folio > 0) && <ButtonsBeforeOrNext isSubmitting={isSubmitting} setValues={setValues} />}
                                     </Box>
                                  )}
                               </Formik>

@@ -23,7 +23,7 @@ const MenuDT = () => {
    const { auth } = useAuthContext();
    const { setLoading, setLoadingAction, setOpenDialog } = useGlobalContext();
    const { singularName, menu, menus, getMenus, showMenu, deleteMenu, DisEnableMenu, resetFormData, resetMenu, setTextBtnSumbit, setFormTitle } = useMenuContext();
-   const globalFilterFields = ["icon", "menu", "caption", "patern", "order", "url", "active", "created_at"];
+   const globalFilterFields = ["icon", "menu", "caption", "patern", "order", "url", "others_permissions", "active", "created_at"];
 
    // #region BodysTemplate
    const IconBodyTemplate = (obj) => {
@@ -39,7 +39,6 @@ const MenuDT = () => {
             )}
          </Box>
       );
-      // <Box textAlign={"center"}>{<img alt="Icono del menu" src={`${import.meta.env.VITE_HOST}/${obj.img_preview}`} style={{ maxWidth: 100, maxHeight: 100 }} />}</Box>
    };
    const MenuBodyTemplate = (obj) => (
       <>
@@ -74,6 +73,11 @@ const MenuDT = () => {
          )}
       </>
    );
+   const OthersPermissionsTemplate = (obj) => (
+      <>
+         <Typography textAlign={"center"}>{obj.others_permissions}</Typography>
+      </>
+   );
 
    const ActiveBodyTemplate = (obj) => (
       <Typography textAlign={"center"}>
@@ -87,7 +91,8 @@ const MenuDT = () => {
    const columns = [
       { field: "icon", header: "Icono", sortable: true, functionEdit: null, body: IconBodyTemplate, filterField: null },
       { field: "menu", header: "Menu", sortable: true, functionEdit: null, body: MenuBodyTemplate, filterField: null },
-      { field: "level", header: "Info", sortable: true, functionEdit: null, body: InfoBodyTemplate, filterField: null }
+      { field: "level", header: "Info", sortable: true, functionEdit: null, body: InfoBodyTemplate, filterField: null },
+      { field: "others_permissions", header: "Otros Permisos", sortable: true, functionEdit: null, body: OthersPermissionsTemplate, filterField: null }
    ];
    auth.role_id === ROLE_SUPER_ADMIN &&
       columns.push(
@@ -182,7 +187,7 @@ const MenuDT = () => {
       try {
          // console.log("cargar listado", menus);
          await menus.map((obj, index) => {
-            // console.log(obj);
+            console.log(obj);
             let register = obj;
             register.key = index + 1;
             register.actions = <ButtonsAction id={obj.id} name={obj.menu} active={obj.active} />;
@@ -212,6 +217,7 @@ const MenuDT = () => {
          refreshTable={getMenus}
          btnsExport={false}
          btnAdd={false}
+         scrollHeight="63vh"
       />
    );
 };

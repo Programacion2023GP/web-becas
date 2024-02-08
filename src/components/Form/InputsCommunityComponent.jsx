@@ -76,6 +76,8 @@ export const getCommunity = async (
    setDataColoniesComplete
 ) => {
    try {
+      // return console.log("vamos bine aqui");
+      let _community_id = null;
       setShowLoading(true);
       setDisabledState(true);
       setDisabledCity(true);
@@ -137,8 +139,8 @@ export const getCommunity = async (
       setFieldValue("zip", community_id ? formData.zip : zip);
       setFieldValue("state", community_id ? formData.state : states.length == 1 ? states[0] : states[1]);
       setFieldValue("city", community_id ? formData.city : cities.length == 1 ? cities[0] : cities[1]);
-      setFieldValue("colony", community_id ? formData.colony : colonies[0]);
-      // setFieldValue("colony", community_id ? formData.colony : colonies.length == 2 ? colonies[1] : colonies[0]);
+      setFieldValue("colony", community_id ? formData.colony : colonies.length == 2 ? colonies[1] : colonies[0]);
+      if (!community_id) setFieldValue("community_id", coloniesComplete.length == 2 && coloniesComplete[1].id);
       // setFieldValue("colony", community_id ? community_id : colonies[0]["id"]);
       setShowLoading(false);
    } catch (error) {
@@ -194,7 +196,6 @@ const InputsCommunityComponent = ({
          if (e.target.value.length == 0) return Toast.Info("C.P. vacio.");
 
          if (e.target.value.length == 5) {
-            setCursorLoading(true);
             await getCommunity(
                zip,
                setFieldValue,
@@ -210,7 +211,6 @@ const InputsCommunityComponent = ({
                setDataColonies,
                setDataColoniesComplete
             );
-            setCursorLoading(false);
          } else {
             setDisabledColony(true);
             setFieldValue("state", "Selecciona una opción...");
@@ -220,7 +220,7 @@ const InputsCommunityComponent = ({
       } catch (error) {
          console.log(error);
          Toast.Error(error);
-         setCursorLoading(false);
+         // setCursorLoading(false);
          setShowLoading(false);
       }
    };

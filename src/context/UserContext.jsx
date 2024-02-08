@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { Axios } from "./AuthContext";
+import { Axios, useAuthContext } from "./AuthContext";
 import { CorrectRes, ErrorRes } from "../utils/Response";
 import Toast from "../utils/Toast";
 
@@ -41,13 +41,15 @@ const userInitialState = {
 };
 
 export default function UserContextProvider({ children }) {
+   const { auth } = useAuthContext();
+
    const singularName = "Usuario"; //Escribirlo siempre letra Capital
    const pluralName = "Usuarios"; //Escribirlo siempre letra Capital
 
    const [formTitle, setFormTitle] = useState(`REGISTRAR ${singularName.toUpperCase()}`);
    const [textBtnSubmit, setTextBtnSumbit] = useState("AGREGAR");
 
-   const [user, setUser] = useState(null);
+   const [user, setUser] = useState(formDataInitialState);
    const [users, setUsers] = useState([]);
    const [formData, setFormData] = useState(formDataInitialState);
 
@@ -71,7 +73,8 @@ export default function UserContextProvider({ children }) {
    const getUsers = async () => {
       try {
          const res = CorrectRes;
-         const axiosData = await Axios.get(`/users`);
+         // const axiosData = await Axios.get(`/users`);
+         const axiosData = await Axios.get(`/users/role_id/${auth.role_id}`);
          res.result.users = axiosData.data.data.result;
          setUsers(axiosData.data.data.result);
          // console.log("users", users);
@@ -155,6 +158,23 @@ export default function UserContextProvider({ children }) {
       }
    };
 
+   const deleteMultiple = async (ids) => {
+      try {
+         let res = CorrectRes;
+         const axiosData = await Axios.post(`/users/destroyMultiple`, { ids });
+         // console.log("deleteMultiple() axiosData", axiosData.data);
+         getUsers();
+         res = axiosData.data.data;
+         // console.log("res", res);
+         return res;
+      } catch (error) {
+         const res = ErrorRes;
+         console.log(error);
+         res.message = error;
+         res.alert_text = error;
+      }
+   };
+
    const DisEnableUser = async (id, active) => {
       try {
          let res = CorrectRes;
@@ -199,7 +219,8 @@ export default function UserContextProvider({ children }) {
             textBtnSubmit,
             setTextBtnSumbit,
             formTitle,
-            setFormTitle
+            setFormTitle,
+            deleteMultiple
          }}
       >
          {children}

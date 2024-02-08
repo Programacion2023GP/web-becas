@@ -25,6 +25,8 @@ import CommunitiesView from "../views/admin/CommunitiesView/Index";
 import CommunityContextProvider from "../context/CommunityContext";
 import MenuContextProvider from "../context/MenuContext";
 import MenusView from "../views/admin/MenusView/Index";
+import RoleContextProvider from "../context/RoleContext";
+import RolesView from "../views/admin/RolesView/Index";
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import("../views/dashboard/Default")));
@@ -92,8 +94,19 @@ const MainRoutes = {
             <MenuContextProvider>
                <MenusView />
             </MenuContextProvider>
-         ),
-         loader: loaderIndexUsersView
+         )
+         // loader: loaderIndexUsersView
+      },
+      {
+         path: "roles-y-permisos",
+         element: (
+            <RoleContextProvider>
+               <MenuContextProvider>
+                  <RolesView />
+               </MenuContextProvider>
+            </RoleContextProvider>
+         )
+         // loader: loaderIndex
       },
       {
          path: "catalogos",

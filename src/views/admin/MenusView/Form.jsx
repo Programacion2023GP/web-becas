@@ -2,7 +2,7 @@ import { Field, Formik } from "formik";
 import * as Yup from "yup";
 
 import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
-import { Button, FormControlLabel, FormLabel, InputLabel, MenuItem, Radio, RadioGroup, Select, Switch, TextField, Tooltip, Typography } from "@mui/material";
+import { Button, Card, FormControlLabel, FormLabel, InputLabel, MenuItem, Radio, RadioGroup, Select, Switch, TextField, Tooltip, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { SwipeableDrawer } from "@mui/material";
 import { FormControl } from "@mui/material";
@@ -17,7 +17,6 @@ import { useGlobalContext } from "../../../context/GlobalContext";
 import Select2Component from "../../../components/Form/Select2Component";
 import InputsCommunityComponent, { getCommunity } from "../../../components/Form/InputsCommunityComponent";
 import { handleInputFormik } from "../../../utils/Formats";
-import { Card } from "@material-ui/core";
 import SwitchComponent from "../../../components/SwitchComponent";
 import { Label } from "@mui/icons-material";
 // import InputComponent from "../Form/InputComponent";
@@ -272,6 +271,26 @@ const MenuForm = () => {
                                  <a href="https://tabler.io/icons" target="_blank">
                                     Pagina de iconos - copiar el "React Name"
                                  </a>
+                              </small>
+                           </Grid>
+                           {/* Otros Permisos */}
+                           <Grid xs={12} md={12} sx={{ mb: 3 }}>
+                              <TextField
+                                 id="others_permissions"
+                                 name="others_permissions"
+                                 label="Ingrese los permisos especiales *"
+                                 type="text"
+                                 value={values.others_permissions}
+                                 placeholder="Otros Permisos"
+                                 onChange={handleChange}
+                                 onBlur={handleBlur}
+                                 // onInput={(e) => handleInputFormik(e, setFieldValue, "others_permissions", true)}
+                                 fullWidth
+                                 error={errors.others_permissions && touched.others_permissions}
+                                 helperText={errors.others_permissions && touched.others_permissions && errors.others_permissions}
+                              />
+                              <small style={{ fontStyle: "italic" }}>
+                                 Los permisos seran separados por el caracter "<b>|</b>" que se encuentra a la izquierda de la tecla con el N° 1
                               </small>
                            </Grid>
                         </>

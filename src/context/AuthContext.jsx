@@ -26,20 +26,28 @@ export default function AuthContextProvider({ children }) {
          });
          // console.log("el data register:", data);
          if (data.data.status_code == 200) sAlert.Success(data.data.alert_text, 2500);
+         return data.data;
       } catch (error) {
          console.log(error);
          sAlert.Error("Parece que hay un error 🤔, intenta más tarde");
+         return error;
       }
-      return data.data;
    };
 
    const login = async ({ email, password }) => {
       setAuth(null);
       try {
-         const { data } = await Axios.post(`/login`, {
+         let postData = {
             email,
             password
-         });
+         };
+         if (!email.includes("@"))
+            postData = {
+               username: email,
+               password
+            };
+         // return console.log(postData);
+         const { data } = await Axios.post(`/login`, postData);
          // console.log("data", data);
 
          if (data.data.result.token === null) sAlert.Customizable(data.data.alert_text, data.data.alert_icon, true, false);
@@ -113,22 +121,48 @@ export default function AuthContextProvider({ children }) {
          // console.log("auth.read", auth.read);
          // #region VALIDAR SI TENGO PERMISO PARA ACCEDER A ESTA PAGINA
          const currentPath = location.hash.split("#").reverse()[0];
+         const dataPost = { url: currentPath };
+         let menu = null;
+         const { data } = await Axios.post(`/menus/getIdByUrl`, dataPost);
+         menu = data.data.result;
+         let pagesRead;
+         let idPage;
+         if (menu !== null) {
+            if (auth.read === undefined) return logout(401);
+            pagesRead = auth.read.split(",");
+            // console.log(menu.id);
+            idPage = menu.id.toString();
+            // console.log(pagesRead);
+         }
+
          // console.log("currentPath", currentPath);
          let permission = false; // tengo permiso para estar en esta pagina?
          let validatePermissions = false; // voy a validar el permiso??? es decir, si estoy auth y no tengo en "read"=todas
+         const permissions = {
+            read: false,
+            create: false,
+            update: false,
+            delete: false,
+            more_permissions: []
+         };
+         // console.log("QUE TRA DE PERMISOS EL AUTH - 1", auth);
          if (auth.read !== "todas") validatePermissions = true;
          if (currentPath === "/admin") validatePermissions = false;
 
+         permissions.read = auth.read === "todas" ? true : auth.read.split(",").includes(idPage) ? true : false;
+         permissions.create = auth.create === "todas" ? true : auth.create === null ? false : auth.create.split(",").includes(idPage) ? true : false;
+         permissions.update = auth.update === "todas" ? true : auth.update === null ? false : auth.update.split(",").includes(idPage) ? true : false;
+         permissions.delete = auth.delete === "todas" ? true : auth.delete === null ? false : auth.delete.split(",").includes(idPage) ? true : false;
+         permissions.more_permissions = auth.more_permissions === "todas" ? ["todas"] : auth.more_permissions === null ? [] : auth.more_permissions.split("|");
+
+         // PASAR PERMISOS AL AUTH
+         auth.permissions = permissions;
+         // console.log("QUE TRA DE PERMISOS EL AUTH - 2", auth);
+
          if (validatePermissions) {
-            const dataPost = { url: currentPath };
-            const { data } = await Axios.post(`/menus/getIdByUrl`, dataPost);
             // console.log("data/getIdByUrl", data);
-            if (data.data.result !== null) {
+            if (menu !== null) {
                if (auth.read === undefined) return logout(401);
-               const pagesRead = auth.read.split(",");
-               // console.log(data.data.result.id);
-               const idPage = data.data.result.id.toString();
-               // console.log(pagesRead);
                permission = pagesRead.includes(idPage) ? true : false;
             }
          } else {
@@ -137,8 +171,12 @@ export default function AuthContextProvider({ children }) {
          }
          // console.log("el permission", permission);
          if (permission) setPermissionRead(permission);
+         localStorage.setItem("auth", JSON.stringify(auth));
          // console.log("el permissionRead", permissionRead);
-         if (!permission) window.location.hash = "/admin";
+         // console.log(location.hash.split("/"));
+         if (!permission && location.hash.split("/").length < 3) {
+            window.location.hash = "/admin";
+         }
 
          // #endregion VALIDAR SI TENGO PERMISO PARA ACCEDER A ESTA PAGINA
       } catch (error) {
@@ -156,8 +194,6 @@ export default function AuthContextProvider({ children }) {
    // console.log("el auth en el context: ", auth);
    // if (auth === null) return;
 
-   return (
-      <AuthContext.Provider value={{ register, login, auth, setAuth, loggedInCheck, logout, permissionRead, validateAccessPage }}>{children}</AuthContext.Provider>
-   );
+   return <AuthContext.Provider value={{ register, login, auth, loggedInCheck, logout, permissionRead, validateAccessPage }}>{children}</AuthContext.Provider>;
 }
 export const useAuthContext = () => useContext(AuthContext);

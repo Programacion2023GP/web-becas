@@ -49,6 +49,7 @@ const FirebaseLogin = ({ ...others }) => {
    const matchDownSM = useMediaQuery(theme.breakpoints.down("md"));
    const customization = useSelector((state) => state.customization);
    const [checked, setChecked] = useState(true);
+   const [inputUsername, setInputUserName] = useState(true);
 
    const { login, loggetInCheck } = useAuthContext();
 
@@ -63,6 +64,13 @@ const FirebaseLogin = ({ ...others }) => {
 
    const handleMouseDownPassword = (event) => {
       event.preventDefault();
+   };
+
+   const handleInputUsername = (e) => {
+      // console.log(e.target.value);
+      if (e.target.value.includes("@")) setInputUserName(false);
+      else setInputUserName(true);
+      // console.log(inputUsername);
    };
 
    const onSubmit = async ({ email, password }, { setSubmitting, setErrors, resetForm }) => {
@@ -88,10 +96,20 @@ const FirebaseLogin = ({ ...others }) => {
       }
    };
 
-   const validationSchema = Yup.object().shape({
-      email: Yup.string().email("Correo no valida").required("Correo requerido"),
-      password: Yup.string().trim().min(3, "Mínimo 6 caracteres").required("Contraseña requerida")
-   });
+   const validationSchemas = () => {
+      let validationSchema;
+      if (inputUsername)
+         validationSchema = Yup.object().shape({
+            email: Yup.string().trim().required("Nombre de usario o Correo requerido"),
+            password: Yup.string().trim().min(3, "Mínimo 6 caracteres").required("Contraseña requerida")
+         });
+      else
+         validationSchema = Yup.object().shape({
+            email: Yup.string().email("Correo no valida").required("Nombre de usario o Correo requerido"),
+            password: Yup.string().trim().min(3, "Mínimo 6 caracteres").required("Contraseña requerida")
+         });
+      return validationSchema;
+   };
 
    return (
       <>
@@ -174,20 +192,21 @@ const FirebaseLogin = ({ ...others }) => {
                password: "",
                submit: null
             }}
-            validationSchema={validationSchema}
+            validationSchema={validationSchemas}
             onSubmit={onSubmit}
          >
             {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
                <Box onSubmit={handleSubmit} {...others} component="form">
                   <FormControl fullWidth error={Boolean(touched.email && errors.email)} sx={{ ...theme.typography.customInput }}>
-                     <InputLabel htmlFor="email">Correo Electrónico</InputLabel>
+                     <InputLabel htmlFor="email">Nombre de Usuario o Correo Electrónico</InputLabel>
                      <OutlinedInput
                         id="email"
                         name="email"
-                        label="Correo Electrónico"
-                        type="email"
+                        label="Nombre de Usuario o Correo Electrónico"
+                        type={"text"}
                         value={values.email}
-                        placeholder=""
+                        placeholder="Ingrese su nombre de usuario o correo electrónico"
+                        onInput={handleInputUsername}
                         onChange={handleChange}
                         onBlur={handleBlur}
                         inputProps={{}}
