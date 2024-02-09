@@ -168,6 +168,17 @@ const MainRoutes = {
                      </RequestBecaContextProvider>
                   </FamilyContextProvider>
                )
+            },
+            {
+               path: "mis-solicitudes",
+               // path: "/",
+               element: (
+                  <FamilyContextProvider>
+                     <RequestBecaContextProvider>
+                        <RequestListView />
+                     </RequestBecaContextProvider>
+                  </FamilyContextProvider>
+               )
             }
          ]
       },

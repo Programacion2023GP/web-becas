@@ -358,11 +358,11 @@ const RequestBecaView = () => {
          //    values.tutor_img_power_letter = imgPowerLetter.length == 0 ? "" : imgPowerLetter[0].file;
          // }
          // // console.log("values", values);
-         // await setFormData({ ...formData, ...values });
-         // console.log("formData-1", formData);
-         // await setValues(formData);
-         // console.log("formData", formData);
-         // console.log("values", values);
+         await setFormData({ ...formData, ...values });
+         console.log("formData-1", formData);
+         await setValues(formData);
+         console.log("formData", formData);
+         console.log("values", values);
          setStepFailed(-1);
          handleComplete();
          // setTimeout(() => {
@@ -1517,7 +1517,7 @@ const RequestBecaView = () => {
                                                    label="Transporte * $"
                                                    type="number"
                                                    value={values.b3_transport}
-                                                   placeholder="Ingrese el gasto mensual de b3_transporte"
+                                                   placeholder="Ingrese el gasto mensual de transporte"
                                                    setFieldValue={setFieldValue}
                                                    onChange={(e) => {
                                                       handleChange(e);

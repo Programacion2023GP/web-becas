@@ -40,8 +40,10 @@ import { any } from "prop-types";
 import IconDelete from "../../../components/icons/IconDelete";
 import DataTableComponent from "../../../components/DataTableComponent";
 import RequestBecaDT from "./RequestDT";
+import { useAuthContext } from "../../../context/AuthContext";
 
 const RequestListView = () => {
+   const { auth } = useAuthContext();
    const {
       setLoading,
       setLoadingAction,
@@ -94,7 +96,7 @@ const RequestListView = () => {
    return (
       <Box sx={{ width: "100%", height: "100%" }}>
          <Typography variant="h1" color={"#364152"} mb={2} textAlign={"center"}>
-            {"LISTADO DE SOLICITUDES".toUpperCase()}
+            {auth.role_id < 3 ? "LISTADO DE SOLICITUDES".toUpperCase() : "MIS SOLICITUDES".toUpperCase()} 
          </Typography>
          <RequestBecaDT />
       </Box>

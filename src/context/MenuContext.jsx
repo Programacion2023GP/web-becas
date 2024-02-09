@@ -44,6 +44,7 @@ export default function MenuContextProvider({ children }) {
          Toast.Error(error);
       }
    };
+
    const resetMenu = () => {
       try {
          setMenu(formDataInitialState);
@@ -62,7 +63,6 @@ export default function MenuContextProvider({ children }) {
 
          res = axiosData.data.data;
          // console.log(res);
-
          return res;
       } catch (error) {
          console.log(error);

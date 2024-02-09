@@ -120,6 +120,8 @@ const MenuForm = () => {
          validationSchema = Yup.object().shape({
             menu: Yup.string().trim().required("Menú requerido"),
             belongs_to: Yup.number().min(1, "Esta opción no es valida").required("Pertenencia requerida"),
+            patern: Yup.string().trim().notOneOf(["Selecciona una opción..."], "Ésta opción no es valida").required("Pertenencia requerida"),
+
             url: Yup.string().trim().required("URL requerido"),
             icon: Yup.string().trim().required("Icono requerido"),
             order: Yup.number().required("Orden requerido")
@@ -223,7 +225,7 @@ const MenuForm = () => {
                                  idName={"belongs_to"}
                                  label={"Pertenezco a *"}
                                  valueLabel={values.patern}
-                                 formDataLabel={"belongs_to"}
+                                 formDataLabel={"patern"}
                                  placeholder={"Selecciona una opción..."}
                                  options={headerMenus}
                                  fullWidth={true}

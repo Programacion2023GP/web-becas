@@ -149,21 +149,34 @@ export default function AuthContextProvider({ children }) {
          if (auth.read !== "todas") validatePermissions = true;
          if (currentPath === "/admin") validatePermissions = false;
 
-         permissions.read = auth.read === "todas" ? true : auth.read.split(",").includes(idPage) ? true : false;
-         permissions.create = auth.create === "todas" ? true : auth.create === null ? false : auth.create.split(",").includes(idPage) ? true : false;
-         permissions.update = auth.update === "todas" ? true : auth.update === null ? false : auth.update.split(",").includes(idPage) ? true : false;
-         permissions.delete = auth.delete === "todas" ? true : auth.delete === null ? false : auth.delete.split(",").includes(idPage) ? true : false;
-         permissions.more_permissions = auth.more_permissions === "todas" ? ["todas"] : auth.more_permissions === null ? [] : auth.more_permissions.split("|");
+         if (menu) {
+            permissions.read = auth.read === "todas" ? true : auth.read.split(",").includes(idPage) ? true : false;
+            permissions.create = auth.create === "todas" ? true : auth.create === null ? false : auth.create.split(",").includes(idPage) ? true : false;
+            permissions.update = auth.update === "todas" ? true : auth.update === null ? false : auth.update.split(",").includes(idPage) ? true : false;
+            permissions.delete = auth.delete === "todas" ? true : auth.delete === null ? false : auth.delete.split(",").includes(idPage) ? true : false;
+            permissions.more_permissions = auth.more_permissions === "todas" ? ["todas"] : auth.more_permissions === null ? [] : auth.more_permissions.split("|");
 
-         // PASAR PERMISOS AL AUTH
-         auth.permissions = permissions;
+            // PASAR PERMISOS AL AUTH
+            auth.permissions = permissions;
+         }
+
          // console.log("QUE TRA DE PERMISOS EL AUTH - 2", auth);
 
+         // console.log("auth Antes", auth);
+         // if (location.hash.split("/").length <= 3) {
+         //    console.log("conservar los mismos valores del auth");
+         //    setAuth(JSON.parse(localStorage.getItem("auth")));
+         //    console.log("auth Despues", auth);
+         // }
+
          if (validatePermissions) {
+            // console.log("validatePermissions?", menu);
             // console.log("data/getIdByUrl", data);
             if (menu !== null) {
                if (auth.read === undefined) return logout(401);
                permission = pagesRead.includes(idPage) ? true : false;
+            } else {
+               if (location.hash.split("/").length >= 3) permission = true;
             }
          } else {
             // console.log("no necesita validacion");
@@ -174,9 +187,15 @@ export default function AuthContextProvider({ children }) {
          localStorage.setItem("auth", JSON.stringify(auth));
          // console.log("el permissionRead", permissionRead);
          // console.log(location.hash.split("/"));
-         if (!permission && location.hash.split("/").length < 3) {
-            window.location.hash = "/admin";
+         if (!permission) {
+            // console.log("sigue entrando");
+            if (location.hash.split("/").length <= 3) {
+               // console.log("y tengo menos de 3 slash");
+               window.location.hash = "/admin";
+            }
          }
+         // console.log("como quedo el permission?", permission);
+         // console.log("auth al final", auth);
 
          // #endregion VALIDAR SI TENGO PERMISO PARA ACCEDER A ESTA PAGINA
       } catch (error) {
