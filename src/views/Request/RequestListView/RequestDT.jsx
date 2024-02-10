@@ -21,6 +21,7 @@ import { useFamilyContext } from "../../../context/FamilyContext";
 import html2pdf from "html2pdf.js";
 import RequestReportPDF from "./RequestReportPDF";
 import TaskAltIcon from "@mui/icons-material/TaskAlt";
+import PDFTable from "./PDFTable";
 
 const RequestBecaDT = () => {
    const { auth } = useAuthContext();
@@ -52,7 +53,6 @@ const RequestBecaDT = () => {
       }
       // pagebreak: { before: "#page2" } // Agrega paginación antes de un elemento con el ID 'page2'
    });
-   let MyDocument;
 
    const downloadPDF = async (elementID) => {
       setLoadingAction(true);
@@ -300,6 +300,8 @@ const RequestBecaDT = () => {
             rowEdit={false}
             refreshTable={getRequestBecas}
          />
+
+         <PDFTable />
 
          <Dialog fullWidth maxWidth={"lg"} fullScreen={fullScreenDialog} open={openDialogPreview} onClose={() => setOpenDialogPreview(false)}>
             {/* <DialogTitle> */}
