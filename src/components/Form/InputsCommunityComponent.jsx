@@ -192,6 +192,28 @@ const InputsCommunityComponent = ({
    const handleKeyUpZip = async (e, setFieldValue, community_id = null) => {
       try {
          const zip = e.target.value;
+         if (e.target.value == "0") {
+            await getCommunity(
+               zip,
+               setFieldValue,
+               community_id,
+               formData,
+               setFormData,
+               setDisabledState,
+               setDisabledCity,
+               setDisabledColony,
+               setShowLoading,
+               setDataStates,
+               setDataCities,
+               setDataColonies,
+               setDataColoniesComplete
+            );
+         } else {
+            setDisabledColony(true);
+            setFieldValue("state", "Selecciona una opción...");
+            setFieldValue("city", "Selecciona una opción...");
+            setFieldValue("colony", "Selecciona una opción...");
+         }
          if (e.key === "Enter" || e.keyCode === 13) return;
          if (e.target.value.length == 0) return Toast.Info("C.P. vacio.");
 

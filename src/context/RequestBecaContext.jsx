@@ -17,8 +17,8 @@ const formDataInitialState = {
    tutor_paternal_last_name: "",
    tutor_maternal_last_name: "",
    tutor_phone: "",
-   tutor_img_ine: "",
-   tutor_img_power_letter: "",
+   // tutor_img_ine: "",
+   // tutor_img_power_letter: "",
 
    student_data_id: 0,
    curp: "",
@@ -70,7 +70,27 @@ const formDataInitialState = {
    b4_roof_material: "",
    b4_floor_material: "",
    b4_score: "",
-   b4_finished: false
+   b4_finished: false,
+
+   b7_img_tutor_ine: "",
+   b7_approved_tutor_ine: "",
+   b7_comments_tutor_ine: "",
+   b7_img_tutor_power_letter: "",
+   b7_approved_tutor_power_letter: "",
+   b7_comments_tutor_power_letter: "",
+   b7_img_proof_address: "",
+   b7_approved_proof_address: "",
+   b7_comments_proof_address: "",
+   b7_img_curp: "",
+   b7_approved_curp: "",
+   b7_comments_curp: "",
+   b7_img_birth_certificate: "",
+   b7_approved_birth_certificate: "",
+   b7_comments_birth_certificate: "",
+   b7_img_academic_transcript: "",
+   b7_approved_academic_transcript: "",
+   b7_comments_academic_transcript: "",
+   b7_finished: ""
 };
 
 // const formDataInitialState = {

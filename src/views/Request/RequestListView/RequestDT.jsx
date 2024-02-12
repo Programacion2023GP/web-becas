@@ -301,7 +301,7 @@ const RequestBecaDT = () => {
             refreshTable={getRequestBecas}
          />
 
-         <PDFTable />
+         {/* <PDFTable /> */}
 
          <Dialog fullWidth maxWidth={"lg"} fullScreen={fullScreenDialog} open={openDialogPreview} onClose={() => setOpenDialogPreview(false)}>
             {/* <DialogTitle> */}
