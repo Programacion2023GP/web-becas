@@ -1,3 +1,27 @@
+/* SCROLL */
+/* Anchura y color del riel */
+::-webkit-scrollbar {
+   width: 12px; /* Cambia el ancho de la barra de desplazamiento */
+}
+
+/* Color del riel de la barra de desplazamiento */
+::-webkit-scrollbar-track {
+   background: #f1f1f1; /* Cambia el color del riel */
+}
+
+/* Estilo del pulgar (la parte deslizante de la barra) */
+::-webkit-scrollbar-thumb {
+   background: #1E5529; /* Cambia el color del pulgar */
+   border-radius: 10px; /* Redondea las esquinas del pulgar */
+}
+
+/* Estilo del pulgar al pasar el ratón por encima */
+::-webkit-scrollbar-thumb:hover {
+   background: #237433; /* Cambia el color del pulgar al pasar el ratón por encima */
+}
+/* SCROLL */
+
+
 .bg-login {
    position: absolute;
    top: 0;

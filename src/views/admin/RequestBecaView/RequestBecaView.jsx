@@ -648,10 +648,6 @@ const RequestBecaView = () => {
          await setFormData({ ...formData, ...values });
          // console.log("formData en submit3", formData);
 
-         // console.log("formData", values);
-         // return console.log("values", values);
-         // await setFormData(values);
-         // await setValues(formData);
          setLoadingAction(true);
          const axiosResponse = await saveBeca(folio, pagina, values);
          setSubmitting(false);
@@ -950,7 +946,7 @@ const RequestBecaView = () => {
             </Box>
          ) : (
             <>
-               <Stepper nonLinear activeStep={activeStep}>
+               <Stepper nonLinear activeStep={activeStep} sx={{ overflowX: "auto" }}>
                   {steps.map((label, index) => {
                      const labelProps = {};
                      if (stepFailed === index) {
@@ -2205,57 +2201,60 @@ const RequestBecaView = () => {
                               <Formik initialValues={formData} validationSchema={validationSchemas(activeStep + 1)} onSubmit={onSubmit1}>
                                  {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
                                     <Box
-                                       sx={{ height: "90%", display: "flex", flexDirection: "column", justifyContent: "space-between" }}
+                                       sx={{ height: "70%", display: "flex", flexDirection: "column", justifyContent: "space-between" }}
                                        component={"form"}
                                        onSubmit={handleSubmit}
                                        onBlur={onBlurCapture}
                                     >
-                                       <Grid container spacing={2} sx={{ height: "80%", overflowY: "auto" }}>
+                                       <Grid container spacing={2} sx={{ height: "90%", overflowY: "auto" }}>
                                           {/* IMAGEN DE INE TUTOR */}
-                                          <Grid xs={12} md={6} sx={{}}>
-                                             <InputFileComponent
-                                                idName="b7_img_tutor_ine"
-                                                label="Foto INE del tutor *"
-                                                filePreviews={imgTutorIne}
-                                                setFilePreviews={setImgTutorIne}
-                                                error={errors.b7_img_tutor_ine}
-                                                touched={touched.b7_img_tutor_ine}
-                                                multiple={false}
-                                                accept={"image/*"}
-                                             />
-                                          </Grid>
-                                          {/* Botones */}
-                                          <Grid xs={4} md={2} sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-                                             <ButtonsApprovedDocument
-                                                setFieldValue={setFieldValue}
-                                                field={"b7_approved_tutor_ine"}
-                                                approved={values.b7_approved_tutor_ine}
-                                                name="INE del tutor"
-                                             />
-                                          </Grid>
-                                          {/* Comentarios */}
-                                          <Grid xs={8} md={4} sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-                                             <TextField
-                                                id="b7_comments_tutor_ine"
-                                                name="b7_comments_tutor_ine"
-                                                label="Causa del rechazo del documento"
-                                                type="text"
-                                                value={values.b7_comments_tutor_ine}
-                                                placeholder="Escribe el detalle del porque rechazaste este documento..."
-                                                onChange={handleChange}
-                                                onBlur={handleBlur}
-                                                fullWidth
-                                                multiline
-                                                rows={5}
-                                                inputProps={{}}
-                                                // disabled={values.id == 0 ? false : true}
-                                                error={errors.b7_comments_tutor_ine && touched.b7_comments_tutor_ine}
-                                                helperText={
-                                                   errors.b7_comments_tutor_ine && touched.b7_comments_tutor_ine && showErrorInput(9, errors.b7_comments_tutor_ine)
-                                                }
-                                             />
-                                          </Grid>
-                                          {isTutor && (
+                                          <>
+                                             <Grid xs={12} md={6} sx={{}}>
+                                                <InputFileComponent
+                                                   idName="b7_img_tutor_ine"
+                                                   label="Foto INE del tutor *"
+                                                   filePreviews={imgTutorIne}
+                                                   setFilePreviews={setImgTutorIne}
+                                                   error={errors.b7_img_tutor_ine}
+                                                   touched={touched.b7_img_tutor_ine}
+                                                   multiple={false}
+                                                   accept={"image/*"}
+                                                />
+                                             </Grid>
+                                             {/* Botones */}
+                                             <Grid xs={4} md={2} sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+                                                <ButtonsApprovedDocument
+                                                   setFieldValue={setFieldValue}
+                                                   field={"b7_approved_tutor_ine"}
+                                                   approved={values.b7_approved_tutor_ine}
+                                                   name="INE del tutor"
+                                                />
+                                             </Grid>
+                                             {/* Comentarios */}
+                                             <Grid xs={8} md={4} sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+                                                <TextField
+                                                   id="b7_comments_tutor_ine"
+                                                   name="b7_comments_tutor_ine"
+                                                   label="Causa del rechazo del documento"
+                                                   type="text"
+                                                   value={values.b7_comments_tutor_ine}
+                                                   placeholder="Escribe el detalle del porque rechazaste este documento..."
+                                                   onChange={handleChange}
+                                                   onBlur={handleBlur}
+                                                   fullWidth
+                                                   multiline
+                                                   rows={5}
+                                                   inputProps={{}}
+                                                   // disabled={values.id == 0 ? false : true}
+                                                   error={errors.b7_comments_tutor_ine && touched.b7_comments_tutor_ine}
+                                                   helperText={
+                                                      errors.b7_comments_tutor_ine && touched.b7_comments_tutor_ine && showErrorInput(9, errors.b7_comments_tutor_ine)
+                                                   }
+                                                />
+                                             </Grid>
+                                          </>
+                                          {/* IMAGEN DE CARTA PODER TUTOR */}
+                                          {!isTutor && (
                                              <>
                                                 <Grid xs={12}>
                                                    <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
@@ -2263,7 +2262,6 @@ const RequestBecaView = () => {
                                                 <Grid xs={12} sx={{ mb: 3 }}>
                                                    <Typography variant="h4">Si no eres familiar directo favor de cargar los siguientes documentos...</Typography>
                                                 </Grid>
-                                                {/* IMAGEN DE CARTA PODER TUTOR */}
                                                 <Grid xs={12} md={6} sx={{ mb: 3 }}>
                                                    <InputFileComponent
                                                       idName="b7_img_tutor_power_letter"
@@ -2311,149 +2309,155 @@ const RequestBecaView = () => {
                                                 </Grid>
                                              </>
                                           )}
-                                          <Grid xs={12}>
-                                             <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
-                                          </Grid>
                                           {/* IMAGEN DE INE TUTOR */}
-                                          <Grid xs={12} md={6} sx={{ mb: 3 }}>
-                                             <InputFileComponent
-                                                idName="b7_img_proof_address"
-                                                label="Foto Comprobante de Domicilio"
-                                                filePreviews={imgProofAddress}
-                                                setFilePreviews={setImgProofAddress}
-                                                error={errors.b7_img_proof_address}
-                                                touched={touched.b7_img_proof_address}
-                                                multiple={false}
-                                                accept={"image/*"}
-                                             />
-                                          </Grid>
-                                          {/* Botones */}
-                                          <Grid xs={4} md={2} sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-                                             <ButtonsApprovedDocument
-                                                setFieldValue={setFieldValue}
-                                                field={"b7_approved_proof_address"}
-                                                approved={values.b7_approved_proof_address}
-                                                name="Comprobante de Domicilio"
-                                             />
-                                          </Grid>
-                                          {/* Comentarios */}
-                                          <Grid xs={8} md={4} sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-                                             <TextField
-                                                id="b7_comments_proof_address"
-                                                name="b7_comments_proof_address"
-                                                label="Causa del rechazo del documento"
-                                                type="text"
-                                                value={values.b7_comments_proof_address}
-                                                placeholder="Escribe el detalle del porque rechazaste este documento..."
-                                                onChange={handleChange}
-                                                onBlur={handleBlur}
-                                                fullWidth
-                                                multiline
-                                                rows={5}
-                                                inputProps={{}}
-                                                // disabled={values.id == 0 ? false : true}
-                                                error={errors.b7_comments_proof_address && touched.b7_comments_proof_address}
-                                                helperText={
-                                                   errors.b7_comments_proof_address &&
-                                                   touched.b7_comments_proof_address &&
-                                                   showErrorInput(9, errors.b7_comments_proof_address)
-                                                }
-                                             />
-                                          </Grid>
-                                          <Grid xs={12}>
-                                             <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
-                                          </Grid>
+                                          <>
+                                             <Grid xs={12}>
+                                                <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
+                                             </Grid>
+                                             <Grid xs={12} md={6} sx={{ mb: 3 }}>
+                                                <InputFileComponent
+                                                   idName="b7_img_proof_address"
+                                                   label="Foto Comprobante de Domicilio"
+                                                   filePreviews={imgProofAddress}
+                                                   setFilePreviews={setImgProofAddress}
+                                                   error={errors.b7_img_proof_address}
+                                                   touched={touched.b7_img_proof_address}
+                                                   multiple={false}
+                                                   accept={"image/*"}
+                                                />
+                                             </Grid>
+                                             {/* Botones */}
+                                             <Grid xs={4} md={2} sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+                                                <ButtonsApprovedDocument
+                                                   setFieldValue={setFieldValue}
+                                                   field={"b7_approved_proof_address"}
+                                                   approved={values.b7_approved_proof_address}
+                                                   name="Comprobante de Domicilio"
+                                                />
+                                             </Grid>
+                                             {/* Comentarios */}
+                                             <Grid xs={8} md={4} sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+                                                <TextField
+                                                   id="b7_comments_proof_address"
+                                                   name="b7_comments_proof_address"
+                                                   label="Causa del rechazo del documento"
+                                                   type="text"
+                                                   value={values.b7_comments_proof_address}
+                                                   placeholder="Escribe el detalle del porque rechazaste este documento..."
+                                                   onChange={handleChange}
+                                                   onBlur={handleBlur}
+                                                   fullWidth
+                                                   multiline
+                                                   rows={5}
+                                                   inputProps={{}}
+                                                   // disabled={values.id == 0 ? false : true}
+                                                   error={errors.b7_comments_proof_address && touched.b7_comments_proof_address}
+                                                   helperText={
+                                                      errors.b7_comments_proof_address &&
+                                                      touched.b7_comments_proof_address &&
+                                                      showErrorInput(9, errors.b7_comments_proof_address)
+                                                   }
+                                                />
+                                             </Grid>
+                                          </>
                                           {/* IMAGEN DE LA CURP */}
-                                          <Grid xs={12} md={6} sx={{ mb: 3 }}>
-                                             <InputFileComponent
-                                                idName="b7_img_curp"
-                                                label="Foto de la CURP"
-                                                filePreviews={imgCurp}
-                                                setFilePreviews={setImgCurp}
-                                                error={errors.b7_img_curp}
-                                                touched={touched.b7_img_curp}
-                                                multiple={false}
-                                                accept={"image/*"}
-                                             />
-                                          </Grid>
-                                          {/* Botones */}
-                                          <Grid xs={4} md={2} sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-                                             <ButtonsApprovedDocument
-                                                setFieldValue={setFieldValue}
-                                                field={"b7_approved_curp"}
-                                                approved={values.b7_approved_curp}
-                                                name="CURP"
-                                             />
-                                          </Grid>
-                                          {/* Comentarios */}
-                                          <Grid xs={8} md={4} sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-                                             <TextField
-                                                id="b7_comments_curp"
-                                                name="b7_comments_curp"
-                                                label="Causa del rechazo del documento"
-                                                type="text"
-                                                value={values.b7_comments_curp}
-                                                placeholder="Escribe el detalle del porque rechazaste este documento..."
-                                                onChange={handleChange}
-                                                onBlur={handleBlur}
-                                                fullWidth
-                                                multiline
-                                                rows={5}
-                                                inputProps={{}}
-                                                // disabled={values.id == 0 ? false : true}
-                                                error={errors.b7_comments_curp && touched.b7_comments_curp}
-                                                helperText={errors.b7_comments_curp && touched.b7_comments_curp && showErrorInput(9, errors.b7_comments_curp)}
-                                             />
-                                          </Grid>
-                                          <Grid xs={12}>
-                                             <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
-                                          </Grid>
+                                          <>
+                                             <Grid xs={12}>
+                                                <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
+                                             </Grid>
+                                             <Grid xs={12} md={6} sx={{ mb: 3 }}>
+                                                <InputFileComponent
+                                                   idName="b7_img_curp"
+                                                   label="Foto de la CURP"
+                                                   filePreviews={imgCurp}
+                                                   setFilePreviews={setImgCurp}
+                                                   error={errors.b7_img_curp}
+                                                   touched={touched.b7_img_curp}
+                                                   multiple={false}
+                                                   accept={"image/*"}
+                                                />
+                                             </Grid>
+                                             {/* Botones */}
+                                             <Grid xs={4} md={2} sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+                                                <ButtonsApprovedDocument
+                                                   setFieldValue={setFieldValue}
+                                                   field={"b7_approved_curp"}
+                                                   approved={values.b7_approved_curp}
+                                                   name="CURP"
+                                                />
+                                             </Grid>
+                                             {/* Comentarios */}
+                                             <Grid xs={8} md={4} sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+                                                <TextField
+                                                   id="b7_comments_curp"
+                                                   name="b7_comments_curp"
+                                                   label="Causa del rechazo del documento"
+                                                   type="text"
+                                                   value={values.b7_comments_curp}
+                                                   placeholder="Escribe el detalle del porque rechazaste este documento..."
+                                                   onChange={handleChange}
+                                                   onBlur={handleBlur}
+                                                   fullWidth
+                                                   multiline
+                                                   rows={5}
+                                                   inputProps={{}}
+                                                   // disabled={values.id == 0 ? false : true}
+                                                   error={errors.b7_comments_curp && touched.b7_comments_curp}
+                                                   helperText={errors.b7_comments_curp && touched.b7_comments_curp && showErrorInput(9, errors.b7_comments_curp)}
+                                                />
+                                             </Grid>
+                                          </>
                                           {/* IMAGEN DE LA ACTA DE NACIMIENTO */}
-                                          <Grid xs={12} md={6} sx={{ mb: 3 }}>
-                                             <InputFileComponent
-                                                idName="b7_img_birth_certificate"
-                                                label="Foto de la Acta de Nacimiento"
-                                                filePreviews={imgBirthCertificate}
-                                                setFilePreviews={setImgBirthCertificate}
-                                                error={errors.b7_img_birth_certificate}
-                                                touched={touched.b7_img_birth_certificate}
-                                                multiple={false}
-                                                accept={"image/*"}
-                                             />
-                                          </Grid>
-                                          {/* Botones */}
-                                          <Grid xs={4} md={2} sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-                                             <ButtonsApprovedDocument
-                                                setFieldValue={setFieldValue}
-                                                field={"b7_approved_birth_certificate"}
-                                                approved={values.b7_approved_birth_certificate}
-                                                name="Acta de Nacimiento"
-                                             />
-                                          </Grid>
-                                          {/* Comentarios */}
-                                          <Grid xs={8} md={4} sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-                                             <TextField
-                                                id="b7_comments_birth_certificate"
-                                                name="b7_comments_birth_certificate"
-                                                label="Causa del rechazo del documento"
-                                                type="text"
-                                                value={values.b7_comments_birth_certificate}
-                                                placeholder="Escribe el detalle del porque rechazaste este documento..."
-                                                onChange={handleChange}
-                                                onBlur={handleBlur}
-                                                fullWidth
-                                                multiline
-                                                rows={5}
-                                                inputProps={{}}
-                                                // disabled={values.id == 0 ? false : true}
-                                                error={errors.b7_comments_birth_certificate && touched.b7_comments_birth_certificate}
-                                                helperText={
-                                                   errors.b7_comments_birth_certificate &&
-                                                   touched.b7_comments_birth_certificate &&
-                                                   showErrorInput(9, errors.b7_comments_birth_certificate)
-                                                }
-                                             />
-                                          </Grid>
+                                          <>
+                                             <Grid xs={12}>
+                                                <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
+                                             </Grid>
+                                             <Grid xs={12} md={6} sx={{ mb: 3 }}>
+                                                <InputFileComponent
+                                                   idName="b7_img_birth_certificate"
+                                                   label="Foto de la Acta de Nacimiento"
+                                                   filePreviews={imgBirthCertificate}
+                                                   setFilePreviews={setImgBirthCertificate}
+                                                   error={errors.b7_img_birth_certificate}
+                                                   touched={touched.b7_img_birth_certificate}
+                                                   multiple={false}
+                                                   accept={"image/*"}
+                                                />
+                                             </Grid>
+                                             {/* Botones */}
+                                             <Grid xs={4} md={2} sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+                                                <ButtonsApprovedDocument
+                                                   setFieldValue={setFieldValue}
+                                                   field={"b7_approved_birth_certificate"}
+                                                   approved={values.b7_approved_birth_certificate}
+                                                   name="Acta de Nacimiento"
+                                                />
+                                             </Grid>
+                                             {/* Comentarios */}
+                                             <Grid xs={8} md={4} sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+                                                <TextField
+                                                   id="b7_comments_birth_certificate"
+                                                   name="b7_comments_birth_certificate"
+                                                   label="Causa del rechazo del documento"
+                                                   type="text"
+                                                   value={values.b7_comments_birth_certificate}
+                                                   placeholder="Escribe el detalle del porque rechazaste este documento..."
+                                                   onChange={handleChange}
+                                                   onBlur={handleBlur}
+                                                   fullWidth
+                                                   multiline
+                                                   rows={5}
+                                                   inputProps={{}}
+                                                   // disabled={values.id == 0 ? false : true}
+                                                   error={errors.b7_comments_birth_certificate && touched.b7_comments_birth_certificate}
+                                                   helperText={
+                                                      errors.b7_comments_birth_certificate &&
+                                                      touched.b7_comments_birth_certificate &&
+                                                      showErrorInput(9, errors.b7_comments_birth_certificate)
+                                                   }
+                                                />
+                                             </Grid>
+                                          </>
                                        </Grid>
                                        {folio > 0 && <ButtonsBeforeOrNext isSubmitting={isSubmitting} setValues={setValues} />}
                                     </Box>
