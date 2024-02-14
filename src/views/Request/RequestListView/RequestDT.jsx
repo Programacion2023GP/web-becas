@@ -150,17 +150,31 @@ const RequestBecaDT = () => {
    const mySwal = withReactContent(Swal);
 
    const handleClickView = async (obj) => {
-      setLoadingAction(true);
-      // console.log(obj);
-      const community = await getCommunityById(obj.community_id);
-      const school_community = await getCommunityById(obj.school_community_id);
-      const familyData = await getIndexByFolio(obj.folio);
-      obj.community = community;
-      obj.school_community = school_community;
-      obj.families = familyData.result.families;
-      setObjReport(obj);
-      setOpenDialogPreview(true);
-      setLoadingAction(false);
+      try {
+         setLoadingAction(true);
+         // console.log(obj);
+         const community = await getCommunityById(obj.community_id);
+         const school_community = await getCommunityById(obj.school_community_id);
+         const familyData = await getIndexByFolio(obj.folio);
+         obj.community = community;
+         obj.school_community = school_community;
+         obj.families = familyData.result.families;
+         setObjReport(obj);
+         setOpenDialogPreview(true);
+         setLoadingAction(false);
+      } catch (error) {
+         console.log(error);
+         Toast.Error(error);
+      }
+   };
+
+   const handleClickValidateDocuments = (folio) => {
+      try {
+         location.hash = `/admin/solicitud-beca/pagina/9/folio/${folio}`;
+      } catch (error) {
+         console.log(error);
+         Toast.Error(error);
+      }
    };
 
    const handleClickAdd = () => {
@@ -219,11 +233,18 @@ const RequestBecaDT = () => {
       return (
          <ButtonGroup variant="outlined">
             {auth.role_id <= ROLE_ADMIN && obj.status == "TERMINADA" && (
-               <Tooltip title={`Ver Solicitud ${singularName}`} placement="top">
-                  <Button color="dark" onClick={() => handleClickView(obj)}>
-                     <IconEye />
-                  </Button>
-               </Tooltip>
+               <>
+                  <Tooltip title={`Ver Solicitud ${singularName}`} placement="top">
+                     <Button color="dark" onClick={() => handleClickView(obj)}>
+                        <IconEye />
+                     </Button>
+                  </Tooltip>
+                  <Tooltip title={`Validar Documentos del Folio ${singularName}`} placement="top">
+                     <Button color="dark" onClick={() => handleClickValidateDocuments(obj.folio)}>
+                        <IconEye />
+                     </Button>
+                  </Tooltip>
+               </>
             )}
             {obj.end_date == null && (
                <Tooltip title={`Solicitud ${name}`} placement="top">
