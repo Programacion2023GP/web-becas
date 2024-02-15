@@ -152,7 +152,7 @@ const RequestBecaDT = () => {
    const handleClickView = async (obj) => {
       try {
          setLoadingAction(true);
-         // console.log(obj);
+         // return console.log(obj);
          const community = await getCommunityById(obj.community_id);
          const school_community = await getCommunityById(obj.school_community_id);
          const familyData = await getIndexByFolio(obj.folio);

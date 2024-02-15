@@ -45,7 +45,7 @@ import DatePickerComponent from "../../../components/Form/DatePickerComponent";
 import { useDisabilityContext } from "../../../context/DisabilityContext";
 import { useSchoolContext } from "../../../context/SchoolContext";
 import { useRelationshipContext } from "../../../context/RelationshipContext";
-import InputFileComponent from "../../../components/Form/InputFileComponent";
+import InputFileComponent, { setObjImg } from "../../../components/Form/InputFileComponent";
 import { useTutorContext } from "../../../context/TutorContext";
 import SimpleTableComponent from "../../../components/SimpleTableComponent";
 import { AddCircleOutlineOutlined } from "@mui/icons-material";
@@ -617,7 +617,7 @@ const RequestBecaView = () => {
          values.b7_img_birth_certificate = imgBirthCertificate.length == 0 ? "" : imgBirthCertificate[0].file;
          values.b7_img_academic_transcript = imgAcademicTranscript.length == 0 ? "" : imgAcademicTranscript[0].file;
 
-         if (!validateSetImage(values.b7_img_tutor_ine, "La foto de la Licencia es requerida")) return;
+         if (!validateSetImage(values.b7_img_tutor_ine, "La foto de la INE es requerida")) return;
          if (isTutor && !validateSetImage(values.b7_img_tutor_power_letter, "La foto de la Carta Poder es requerida")) return;
          if (!validateSetImage(values.b7_img_proof_address, "La foto del Comprobante de Domicilio es requerida")) return;
          if (!validateSetImage(values.b7_img_curp, "La foto de la CURP es requerida")) return;
@@ -759,22 +759,25 @@ const RequestBecaView = () => {
                // id: 0,
                // folio: Yup.number("solo números").required("Folio requerido"),
                // b7_img_tutor_ine: Yup.string().trim().required("INE requerida"),
-               b7_approved_tutor_ine: auth.role_id <= ROLE_ADMIN && obj.status == "TERMINADA" && Yup.bool().required("Aprueba o Desaprueba el documento."),
+               b7_approved_tutor_ine: auth.role_id <= ROLE_ADMIN && formData.status == "TERMINADA" && Yup.bool().required("Aprueba o Desaprueba el documento."),
                // b7_comments_tutor_ine: "",
                // b7_img_tutor_power_letter: isTutor && Yup.string().trim().required("Carta Poder requerida"),
-               b7_approved_tutor_power_letter: auth.role_id <= ROLE_ADMIN && obj.status == "TERMINADA" && Yup.bool().required("Aprueba o Desaprueba el documento."),
+               b7_approved_tutor_power_letter:
+                  auth.role_id <= ROLE_ADMIN && formData.status == "TERMINADA" && Yup.bool().required("Aprueba o Desaprueba el documento."),
                // b7_comments_tutor_power_letter: "",
                // b7_img_proof_address: Yup.string().trim().required("Comprobante de Domicilio requerida"),
-               b7_approved_proof_address: auth.role_id <= ROLE_ADMIN && obj.status == "TERMINADA" && Yup.bool().required("Aprueba o Desaprueba el documento."),
+               b7_approved_proof_address: auth.role_id <= ROLE_ADMIN && formData.status == "TERMINADA" && Yup.bool().required("Aprueba o Desaprueba el documento."),
                // b7_comments_proof_address: "",
                // b7_img_curp: Yup.string().trim().required("CURP requerida"),
-               b7_approved_curp: auth.role_id <= ROLE_ADMIN && obj.status == "TERMINADA" && Yup.bool().required("Aprueba o Desaprueba el documento."),
+               b7_approved_curp: auth.role_id <= ROLE_ADMIN && formData.status == "TERMINADA" && Yup.bool().required("Aprueba o Desaprueba el documento."),
                // b7_comments_curp: "",
                // b7_img_birth_certificate: Yup.string().trim().required("Acta de Nacimiento requerida"),
-               b7_approved_birth_certificate: auth.role_id <= ROLE_ADMIN && obj.status == "TERMINADA" && Yup.bool().required("Aprueba o Desaprueba el documento."),
+               b7_approved_birth_certificate:
+                  auth.role_id <= ROLE_ADMIN && formData.status == "TERMINADA" && Yup.bool().required("Aprueba o Desaprueba el documento."),
                // b7_comments_birth_certificate: "",
                // b7_img_academic_transcript: Yup.string().trim().required("Constancia Estudiantil con Calificaciones requerida"),
-               b7_approved_academic_transcript: auth.role_id <= ROLE_ADMIN && obj.status == "TERMINADA" && Yup.bool().required("Aprueba o Desaprueba el documento.")
+               b7_approved_academic_transcript:
+                  auth.role_id <= ROLE_ADMIN && formData.status == "TERMINADA" && Yup.bool().required("Aprueba o Desaprueba el documento.")
                // b7_comments_academic_transcript: ""
             });
             break;
@@ -830,6 +833,15 @@ const RequestBecaView = () => {
       );
    };
 
+   const handleClickFinishRevision = () => {
+      console.log("estoy en el handleClickFinishRevision() ");
+      try {
+      } catch (error) {
+         console.log(error);
+         Toast.Error(error);
+      }
+   };
+
    const [houseIs, setHouseIs] = useState("Porpia");
    const handleHouseIs = (event, newValue) => {
       // console.log("el newValue", event.target.value);
@@ -847,6 +859,7 @@ const RequestBecaView = () => {
 
    const handleModify = async (setValues) => {
       try {
+         // console.log("hola handleModify()", pagina);
          setCompleted({ 0: true, 1: true, 2: true });
          const ajaxResponse = await getRequestBecasByFolio(folio);
          // console.log("holaaaaa familia", ajaxResponse.result.requestBecas);
@@ -862,6 +875,11 @@ const RequestBecaView = () => {
 
          if (formData.description) formData.description == null && (formData.description = "");
          await setValues(ajaxResponse.result.requestBecas);
+         console.log("que paso?= :c", formData);
+         setObjImg(formData.b7_img_tutor_ine, setImgTutorIne);
+         if (pagina == 9) {
+            setIsTutor(ajaxResponse.result.requestBecas.tutor_relationship_id > 2 ? true : false);
+         }
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -888,8 +906,6 @@ const RequestBecaView = () => {
          if (folio) {
             const btnModify = document.getElementById("btnModify");
             if (btnModify != null) btnModify.click();
-            setIsTutor(formData.tutor_relationship_id > 2 ? true : false);
-            console.log("soy tutor?", requestBeca);
          }
          getDisabilitiesSelectIndex();
          getSchoolsSelectIndex();
@@ -2204,7 +2220,7 @@ const RequestBecaView = () => {
                                                    accept={"image/*"}
                                                 />
                                              </Grid>
-                                             {auth.role_id <= ROLE_ADMIN && obj.status == "TERMINADA" && (
+                                             {auth.role_id <= ROLE_ADMIN && formData.status == "TERMINADA" && (
                                                 <>
                                                    {/* Botones */}
                                                    <Grid
@@ -2271,7 +2287,7 @@ const RequestBecaView = () => {
                                                       accept={"image/*"}
                                                    />
                                                 </Grid>
-                                                {auth.role_id <= ROLE_ADMIN && obj.status == "TERMINADA" && (
+                                                {auth.role_id <= ROLE_ADMIN && formData.status == "TERMINADA" && (
                                                    <>
                                                       {/* Botones */}
                                                       <Grid
@@ -2335,7 +2351,7 @@ const RequestBecaView = () => {
                                                    accept={"image/*"}
                                                 />
                                              </Grid>
-                                             {auth.role_id <= ROLE_ADMIN && obj.status == "TERMINADA" && (
+                                             {auth.role_id <= ROLE_ADMIN && formData.status == "TERMINADA" && (
                                                 <>
                                                    {/* Botones */}
                                                    <Grid
@@ -2398,7 +2414,7 @@ const RequestBecaView = () => {
                                                    accept={"image/*"}
                                                 />
                                              </Grid>
-                                             {auth.role_id <= ROLE_ADMIN && obj.status == "TERMINADA" && (
+                                             {auth.role_id <= ROLE_ADMIN && formData.status == "TERMINADA" && (
                                                 <>
                                                    {/* Botones */}
                                                    <Grid
@@ -2457,7 +2473,7 @@ const RequestBecaView = () => {
                                                    accept={"image/*"}
                                                 />
                                              </Grid>
-                                             {auth.role_id <= ROLE_ADMIN && obj.status == "TERMINADA" && (
+                                             {auth.role_id <= ROLE_ADMIN && formData.status == "TERMINADA" && (
                                                 <>
                                                    {/* Botones */}
                                                    <Grid
@@ -2520,7 +2536,7 @@ const RequestBecaView = () => {
                                                    accept={"image/*"}
                                                 />
                                              </Grid>
-                                             {auth.role_id <= ROLE_ADMIN && obj.status == "TERMINADA" && (
+                                             {auth.role_id <= ROLE_ADMIN && formData.status == "TERMINADA" && (
                                                 <>
                                                    {/* Botones */}
                                                    <Grid
@@ -2567,7 +2583,22 @@ const RequestBecaView = () => {
                                              )}
                                           </>
                                        </Grid>
-                                       {folio > 0 && <ButtonsBeforeOrNext isSubmitting={isSubmitting} setValues={setValues} />}
+                                       <Button type="button" color="info" id="btnModify" sx={{ mt: 1, display: "none" }} onClick={() => handleModify(setValues)}>
+                                          setValues
+                                       </Button>
+                                       {folio > 0 && ["", "ALTA"].includes(formData.status) && (
+                                          <ButtonsBeforeOrNext isSubmitting={isSubmitting} setValues={setValues} />
+                                       )}
+                                       {auth.role_id < ROLE_ADMIN && folio > 0 && ["TERMINADA", "EN REVISION"].includes(formData.status) && (
+                                          <Box sx={{ display: "flex", flexDirection: "row-reverse", pt: 2 }}>
+                                             <Button color="primary" variant="contained" onClick={handleClickFinishRevision} sx={{ mr: 1 }}>
+                                                TERMINAR REVISIÓN
+                                             </Button>
+                                             <Button color="secondary" variant="contained" onClick={handleBack} sx={{ mr: 1 }}>
+                                                GUARDAR
+                                             </Button>
+                                          </Box>
+                                       )}
                                     </Box>
                                  )}
                               </Formik>
