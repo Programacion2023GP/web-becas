@@ -11,6 +11,7 @@ import { Alert, AlertTitle, Typography } from "@mui/material";
 import sAlert from "../../../utils/sAlert";
 import Toast from "../../../utils/Toast";
 import { useGlobalContext } from "../../../context/GlobalContext";
+import ChartComponent from "../../../components/ChartComponent";
 
 const LevelsView = () => {
    // const { result } = useLoaderData();
@@ -40,6 +41,8 @@ const LevelsView = () => {
          </Typography>
          <LevelDT />
          {/* </MainCard> */}
+
+         <ChartComponent />
 
          <LevelForm />
       </>

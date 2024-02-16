@@ -182,7 +182,28 @@ export default function RequestBecaContextProvider({ children }) {
    const saveBeca = async (folio, page, beca) => {
       try {
          let res = CorrectRes;
-         const axiosData = await Axios.post(`/becas/folio/${folio}/page/${page}/saveBeca`, beca);
+         const axiosData = await Axios.post(`/becas/folio/${folio}/page/${page}/saveBeca`, beca, {
+            headers: {
+               "Content-Type": "multipart/form-data" // Asegúrate de establecer el encabezado adecuado
+            }
+         });
+         res = axiosData.data.data;
+         // setRequestBecas(axiosData.data.data.result);
+         // console.log("requestBecas", requestBecas);
+
+         return res;
+      } catch (error) {
+         const res = ErrorRes;
+         console.log(error);
+         res.message = error;
+         res.alert_text = error;
+      }
+   };
+
+   const updateStatusBeca = async (folio, status) => {
+      try {
+         let res = CorrectRes;
+         const axiosData = await Axios.get(`/becas/updateStatus/folio/${folio}/status/${status}`);
          res = axiosData.data.data;
          // setRequestBecas(axiosData.data.data.result);
          // console.log("requestBecas", requestBecas);
@@ -201,9 +222,9 @@ export default function RequestBecaContextProvider({ children }) {
          const res = CorrectRes;
          const axiosData = await Axios.get(`/becas/folio/${folio}`);
          res.result.requestBecas = axiosData.data.data.result;
-         // console.log("res", res.result.requestBecas);
-         await setRequestBeca(axiosData.data.data.result.requestBecas);
-         await setFormData(res.result.requestBecas);
+         // console.log("getRequestBecasByFolio()->res", res.result.requestBecas);
+         setRequestBeca(res.result.requestBecas);
+         setFormData(res.result.requestBecas);
          // console.log("requestBecas", requestBecas);
 
          return res;
@@ -352,7 +373,8 @@ export default function RequestBecaContextProvider({ children }) {
             getRequestBecasByUser,
             getRequestBecasByFolio,
             saveBeca,
-            getReportRequestByFolio
+            getReportRequestByFolio,
+            updateStatusBeca
          }}
       >
          {children}

@@ -9,7 +9,7 @@ import { QuestionAlertConfig } from "../../../utils/sAlert";
 import Toast from "../../../utils/Toast";
 import { ROLE_ADMIN, ROLE_SUPER_ADMIN, useGlobalContext } from "../../../context/GlobalContext";
 import DataTableComponent from "../../../components/DataTableComponent";
-import { IconEye, IconPrinter } from "@tabler/icons";
+import { IconChecklist, IconEye, IconPrinter } from "@tabler/icons";
 import { formatDatetime } from "../../../utils/Formats";
 import { Link } from "react-router-dom";
 import { useAuthContext } from "../../../context/AuthContext";
@@ -26,8 +26,18 @@ import PDFTable from "./PDFTable";
 const RequestBecaDT = () => {
    const { auth } = useAuthContext();
    const { setLoading, setLoadingAction, setOpenDialog } = useGlobalContext();
-   const { singularName, pluralName, requestBecas, setRequestBecas, getRequestBecas, showRequestBeca, deleteRequestBeca, setTextBtnSumbit, setFormTitle } =
-      useRequestBecaContext();
+   const {
+      singularName,
+      pluralName,
+      requestBecas,
+      setRequestBecas,
+      getRequestBecas,
+      showRequestBeca,
+      deleteRequestBeca,
+      setTextBtnSumbit,
+      setFormTitle,
+      updateStatusBeca
+   } = useRequestBecaContext();
    const globalFilterFields = ["folio", "code", "level", "school", "curp", "name", "paternal_last_name", "maternal_last_name", "average", "status", "created_at"];
    const { getIndexByFolio } = useFamilyContext();
 
@@ -168,8 +178,12 @@ const RequestBecaDT = () => {
       }
    };
 
-   const handleClickValidateDocuments = (folio) => {
+   const handleClickValidateDocuments = async (folio, current_status) => {
       try {
+         if (current_status == "TERMINADA") {
+            const axiosResponse = await updateStatusBeca(folio, "EN REVISION");
+            Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
+         }
          location.hash = `/admin/solicitud-beca/pagina/9/folio/${folio}`;
       } catch (error) {
          console.log(error);
@@ -240,8 +254,8 @@ const RequestBecaDT = () => {
                      </Button>
                   </Tooltip>
                   <Tooltip title={`Validar Documentos del Folio ${singularName}`} placement="top">
-                     <Button color="dark" onClick={() => handleClickValidateDocuments(obj.folio)}>
-                        <IconEye />
+                     <Button color="info" onClick={() => handleClickValidateDocuments(obj.folio, obj.status)}>
+                        <IconChecklist />
                      </Button>
                   </Tooltip>
                </>

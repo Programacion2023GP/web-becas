@@ -11,6 +11,7 @@ import {
    FormGroup,
    FormHelperText,
    FormLabel,
+   Icon,
    IconButton,
    Input,
    Radio,
@@ -400,6 +401,7 @@ const RequestBecaView = () => {
             setStepFailed(-1);
             setFieldValue("id", axiosResponse.result.id);
             setFieldValue("folio", axiosResponse.result.folio);
+            setFieldValue("status", axiosResponse.result.status);
          }
          // resetForm();
          // resetFormData();
@@ -574,7 +576,6 @@ const RequestBecaView = () => {
          values.b6_beca_benito_juarez = values.b6_beca_benito_juarez ? true : false || false;
          values.b6_beca_jovenes = values.b6_beca_jovenes ? true : false || false;
          values.b6_other = values.b6_other ? true : false || false;
-         values.end_date = formatDatetimeToSQL(new Date());
          await setFormData({ ...formData, ...values });
          // console.log("formData", values);
          // return console.log("values", values);
@@ -625,6 +626,7 @@ const RequestBecaView = () => {
          if (!validateSetImage(values.b7_img_academic_transcript, "La foto del Certificado Estudiantil es requerida")) return;
 
          values.b7_finished = true;
+         values.end_date = formatDatetimeToSQL(new Date());
          // return console.log("values", values);
          await setFormData({ ...formData, ...values });
          // console.log("formData en submit3", formData);
@@ -811,12 +813,20 @@ const RequestBecaView = () => {
       );
    };
 
+   const handleClickBtnCheckApproved = (setFieldValue, field) => {
+      try {
+         setFieldValue(field, true);
+      } catch (error) {}
+   };
+
    const ButtonsApprovedDocument = ({ setFieldValue, field, name = "documento", approved = true }) => {
+      const iconSize = 65;
       return (
          <>
+            <Icon sx={{ fontSize: iconSize }}>{approved ? <IconCircleCheck size={iconSize} color="green" /> : <IconCircleX size={iconSize} color="red" />}</Icon>
             <ButtonGroup sx={{ mb: 1 }}>
                <Tooltip title={`Aprobar ${name}`} placement="top">
-                  <Button variant={approved ? "contained" : "outlined"} color="success" onClick={() => setFieldValue(field, true)}>
+                  <Button variant={approved ? "contained" : "outlined"} color="success" onClick={() => handleClickBtnCheckApproved(setFieldValue, field)}>
                      <IconCircleCheck />
                   </Button>
                </Tooltip>
@@ -833,9 +843,18 @@ const RequestBecaView = () => {
       );
    };
 
-   const handleClickFinishRevision = () => {
-      console.log("estoy en el handleClickFinishRevision() ");
+   const handleClickFinishReview = () => {
       try {
+         console.log("estoy en el handleClickFinishReview() ");
+      } catch (error) {
+         console.log(error);
+         Toast.Error(error);
+      }
+   };
+
+   const handleClickSavehReview = () => {
+      try {
+         console.log("estoy en el handleClickSavehReview() ");
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -847,15 +866,6 @@ const RequestBecaView = () => {
       // console.log("el newValue", event.target.value);
       setHouseIs(event.target.value);
    };
-
-   // const monthlyIncomeChange = (values, setValues) => {
-   //    console.log("values", values);
-   //    console.log("monthlyIncome cambio: ", monthlyIncome);
-   //    formData.monthly_income = monthlyIncome;
-   //    values.monthly_income = monthlyIncome;
-   //    setValues(values);
-   //    // setFieldValue("monthly_income", monthlyIncome);
-   // };
 
    const handleModify = async (setValues) => {
       try {
@@ -875,10 +885,18 @@ const RequestBecaView = () => {
 
          if (formData.description) formData.description == null && (formData.description = "");
          await setValues(ajaxResponse.result.requestBecas);
-         console.log("que paso?= :c", formData);
-         setObjImg(formData.b7_img_tutor_ine, setImgTutorIne);
+         await setFormData(ajaxResponse.result.requestBecas);
+         // console.log("que paso?r :c", requestBeca);
+         // console.log("que paso?f :c", formData);
+         // console.log("isTutor :c", isTutor);
          if (pagina == 9) {
-            setIsTutor(ajaxResponse.result.requestBecas.tutor_relationship_id > 2 ? true : false);
+            await setIsTutor(ajaxResponse.result.requestBecas.tutor_relationship_id > 2 ? true : false);
+            setObjImg(ajaxResponse.result.requestBecas.b7_img_tutor_ine, setImgTutorIne);
+            if (isTutor) setObjImg(ajaxResponse.result.requestBecas.b7_img_tutor_power_letter, setImgTutorPowerLetter);
+            setObjImg(ajaxResponse.result.requestBecas.b7_img_proof_address, setImgProofAddress);
+            setObjImg(ajaxResponse.result.requestBecas.b7_img_curp, setImgCurp);
+            setObjImg(ajaxResponse.result.requestBecas.b7_img_birth_certificate, setImgBirthCertificate);
+            setObjImg(ajaxResponse.result.requestBecas.b7_img_academic_transcript, setImgAcademicTranscript);
          }
       } catch (error) {
          console.log(error);
@@ -2591,10 +2609,10 @@ const RequestBecaView = () => {
                                        )}
                                        {auth.role_id < ROLE_ADMIN && folio > 0 && ["TERMINADA", "EN REVISION"].includes(formData.status) && (
                                           <Box sx={{ display: "flex", flexDirection: "row-reverse", pt: 2 }}>
-                                             <Button color="primary" variant="contained" onClick={handleClickFinishRevision} sx={{ mr: 1 }}>
+                                             <Button color="primary" variant="contained" onClick={handleClickFinishReview} sx={{ mr: 1 }}>
                                                 TERMINAR REVISIÓN
                                              </Button>
-                                             <Button color="secondary" variant="contained" onClick={handleBack} sx={{ mr: 1 }}>
+                                             <Button color="secondary" variant="contained" onClick={handleClickSavehReview} sx={{ mr: 1 }}>
                                                 GUARDAR
                                              </Button>
                                           </Box>
