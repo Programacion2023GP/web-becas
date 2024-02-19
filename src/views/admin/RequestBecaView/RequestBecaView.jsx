@@ -54,7 +54,7 @@ import InputComponentv2, { InputComponentv3 } from "../../../components/Form/Inp
 import IconDelete from "../../../components/icons/IconDelete";
 import FamilyDT, { monthlyIncome } from "./FamilyDT";
 import { useFamilyContext } from "../../../context/FamilyContext";
-import { validateSetImage } from "../../../utils/Validations";
+import { validateImageRequired } from "../../../utils/Validations";
 
 const RequestBecaView = () => {
    const { auth } = useAuthContext();
@@ -618,12 +618,12 @@ const RequestBecaView = () => {
          values.b7_img_birth_certificate = imgBirthCertificate.length == 0 ? "" : imgBirthCertificate[0].file;
          values.b7_img_academic_transcript = imgAcademicTranscript.length == 0 ? "" : imgAcademicTranscript[0].file;
 
-         if (!validateSetImage(values.b7_img_tutor_ine, "La foto de la INE es requerida")) return;
-         if (isTutor && !validateSetImage(values.b7_img_tutor_power_letter, "La foto de la Carta Poder es requerida")) return;
-         if (!validateSetImage(values.b7_img_proof_address, "La foto del Comprobante de Domicilio es requerida")) return;
-         if (!validateSetImage(values.b7_img_curp, "La foto de la CURP es requerida")) return;
-         if (!validateSetImage(values.b7_img_birth_certificate, "La foto del Acta de Nacimiento es requerida")) return;
-         if (!validateSetImage(values.b7_img_academic_transcript, "La foto del Certificado Estudiantil es requerida")) return;
+         if (!validateImageRequired(values.b7_img_tutor_ine, "La foto de la INE es requerida")) return;
+         if (isTutor && !validateImageRequired(values.b7_img_tutor_power_letter, "La foto de la Carta Poder es requerida")) return;
+         if (!validateImageRequired(values.b7_img_proof_address, "La foto del Comprobante de Domicilio es requerida")) return;
+         if (!validateImageRequired(values.b7_img_curp, "La foto de la CURP es requerida")) return;
+         if (!validateImageRequired(values.b7_img_birth_certificate, "La foto del Acta de Nacimiento es requerida")) return;
+         if (!validateImageRequired(values.b7_img_academic_transcript, "La foto del Certificado Estudiantil es requerida")) return;
 
          values.b7_finished = true;
          values.end_date = formatDatetimeToSQL(new Date());

@@ -1,6 +1,6 @@
 import Toast from "./Toast";
 
-export const validateSetImage = (valuesImg, msg = "Imagen requerida") => {
+export const validateImageRequired = (valuesImg, msg = "Imagen requerida") => {
    if (
       valuesImg == null ||
       valuesImg == "null" ||
