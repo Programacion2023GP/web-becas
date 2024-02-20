@@ -183,7 +183,7 @@ const RequestBecaDT = () => {
          if (current_status == "TERMINADA") {
             const axiosResponse = await updateStatusBeca(folio, "EN REVISION");
             Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
-         }
+         }  
          location.hash = `/admin/solicitud-beca/pagina/9/folio/${folio}`;
       } catch (error) {
          console.log(error);

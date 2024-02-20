@@ -74,7 +74,7 @@ export default function RequestReportPDF({ obj }) {
                ],
                tBodyCells: [
                   { colSpan: null, style: valueStyle, value: obj.tutor_curp },
-                  { colSpan: null, style: valueStyle, value: obj.relationship },
+                  { colSpan: null, style: valueStyle, value: obj.tutor_relationship },
                   { colSpan: null, style: valueStyle, value: `${obj.tutor_name} ${obj.tutor_paternal_last_name} ${obj.tutor_maternal_last_name}` },
                   { colSpan: null, style: valueStyle, value: formatPhone(obj.tutor_phone) }
                ]
