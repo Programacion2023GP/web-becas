@@ -85,7 +85,8 @@ const RequestBecaView = () => {
    const { schools, getSchoolsSelectIndex } = useSchoolContext();
    const { getStudentByCURP } = useStudentContext();
    const { getTutorByCURP } = useTutorContext();
-   const { formData, setFormData, resetFormData, getRequestBecasByFolio, createRequestBeca, updateRequestBeca, saveBeca, requestBeca } = useRequestBecaContext();
+   const { formData, setFormData, resetFormData, getRequestBecasByFolio, createRequestBeca, updateRequestBeca, saveBeca, requestBeca, saveOrFinishReview } =
+      useRequestBecaContext();
 
    const [isTutor, setIsTutor] = useState(false); // es true cuando el tutor no es el padre ni la madre
    const [imgTutorIne, setImgTutorIne] = useState([]);
@@ -761,25 +762,28 @@ const RequestBecaView = () => {
                // id: 0,
                // folio: Yup.number("solo números").required("Folio requerido"),
                // b7_img_tutor_ine: Yup.string().trim().required("INE requerida"),
-               b7_approved_tutor_ine: auth.role_id <= ROLE_ADMIN && formData.status == "TERMINADA" && Yup.bool().required("Aprueba o Desaprueba el documento."),
+               b7_approved_tutor_ine:
+                  auth.role_id <= ROLE_ADMIN && ["TERMINADA", "EN REVISIÓN"].includes(formData.status) && Yup.bool().required("Aprueba o Desaprueba el documento."),
                // b7_comments_tutor_ine: "",
                // b7_img_tutor_power_letter: isTutor && Yup.string().trim().required("Carta Poder requerida"),
                b7_approved_tutor_power_letter:
-                  auth.role_id <= ROLE_ADMIN && formData.status == "TERMINADA" && Yup.bool().required("Aprueba o Desaprueba el documento."),
+                  auth.role_id <= ROLE_ADMIN && ["TERMINADA", "EN REVISIÓN"].includes(formData.status) && Yup.bool().required("Aprueba o Desaprueba el documento."),
                // b7_comments_tutor_power_letter: "",
                // b7_img_proof_address: Yup.string().trim().required("Comprobante de Domicilio requerida"),
-               b7_approved_proof_address: auth.role_id <= ROLE_ADMIN && formData.status == "TERMINADA" && Yup.bool().required("Aprueba o Desaprueba el documento."),
+               b7_approved_proof_address:
+                  auth.role_id <= ROLE_ADMIN && ["TERMINADA", "EN REVISIÓN"].includes(formData.status) && Yup.bool().required("Aprueba o Desaprueba el documento."),
                // b7_comments_proof_address: "",
                // b7_img_curp: Yup.string().trim().required("CURP requerida"),
-               b7_approved_curp: auth.role_id <= ROLE_ADMIN && formData.status == "TERMINADA" && Yup.bool().required("Aprueba o Desaprueba el documento."),
+               b7_approved_curp:
+                  auth.role_id <= ROLE_ADMIN && ["TERMINADA", "EN REVISIÓN"].includes(formData.status) && Yup.bool().required("Aprueba o Desaprueba el documento."),
                // b7_comments_curp: "",
                // b7_img_birth_certificate: Yup.string().trim().required("Acta de Nacimiento requerida"),
                b7_approved_birth_certificate:
-                  auth.role_id <= ROLE_ADMIN && formData.status == "TERMINADA" && Yup.bool().required("Aprueba o Desaprueba el documento."),
+                  auth.role_id <= ROLE_ADMIN && ["TERMINADA", "EN REVISIÓN"].includes(formData.status) && Yup.bool().required("Aprueba o Desaprueba el documento."),
                // b7_comments_birth_certificate: "",
                // b7_img_academic_transcript: Yup.string().trim().required("Constancia Estudiantil con Calificaciones requerida"),
                b7_approved_academic_transcript:
-                  auth.role_id <= ROLE_ADMIN && formData.status == "TERMINADA" && Yup.bool().required("Aprueba o Desaprueba el documento.")
+                  auth.role_id <= ROLE_ADMIN && ["TERMINADA", "EN REVISIÓN"].includes(formData.status) && Yup.bool().required("Aprueba o Desaprueba el documento.")
                // b7_comments_academic_transcript: ""
             });
             break;
@@ -813,25 +817,40 @@ const RequestBecaView = () => {
       );
    };
 
-   const handleClickBtnCheckApproved = (setFieldValue, field) => {
+   const handleClickBtnCheckApproved = (setFieldValue, fieldApproved, fieldComments) => {
       try {
-         setFieldValue(field, true);
+         setFieldValue(fieldApproved, true);
+         setFieldValue(fieldComments, "Archivo cargado correctamente.");
+      } catch (error) {}
+   };
+   const handleClickBtnCheckDecline = (setFieldValue, fieldApproved, fieldComments) => {
+      try {
+         setFieldValue(fieldApproved, false);
+         setFieldValue(fieldComments, "");
       } catch (error) {}
    };
 
-   const ButtonsApprovedDocument = ({ setFieldValue, field, name = "documento", approved = true }) => {
+   const ButtonsApprovedDocument = ({ setFieldValue, fieldApproved, fieldComments, name = "documento", approved = true }) => {
       const iconSize = 65;
       return (
          <>
             <Icon sx={{ fontSize: iconSize }}>{approved ? <IconCircleCheck size={iconSize} color="green" /> : <IconCircleX size={iconSize} color="red" />}</Icon>
             <ButtonGroup sx={{ mb: 1 }}>
                <Tooltip title={`Aprobar ${name}`} placement="top">
-                  <Button variant={approved ? "contained" : "outlined"} color="success" onClick={() => handleClickBtnCheckApproved(setFieldValue, field)}>
+                  <Button
+                     variant={approved ? "contained" : "outlined"}
+                     color="success"
+                     onClick={() => handleClickBtnCheckApproved(setFieldValue, fieldApproved, fieldComments)}
+                  >
                      <IconCircleCheck />
                   </Button>
                </Tooltip>
                <Tooltip title={`Rechazar ${name}`} placement="top">
-                  <Button variant={!approved ? "contained" : "outlined"} color="error" onClick={() => setFieldValue(field, false)}>
+                  <Button
+                     variant={!approved ? "contained" : "outlined"}
+                     color="error"
+                     onClick={() => handleClickBtnCheckDecline(setFieldValue, fieldApproved, fieldComments)}
+                  >
                      <IconCircleX />
                   </Button>
                </Tooltip>
@@ -843,21 +862,59 @@ const RequestBecaView = () => {
       );
    };
 
-   const handleClickFinishReview = () => {
+   const handleClickSavehReview = async (values) => {
       try {
-         console.log("estoy en el handleClickFinishReview() ");
+         console.log("estoy en el handleClickSavehReview()");
+         values.action = "save";
+         await setFormData({ ...formData, ...values });
+         // console.log("formData en submit3", formData);
+
+         setLoadingAction(true);
+         const axiosResponse = await saveOrFinishReview(folio, pagina, values);
+         setLoadingAction(false);
+
+         if (axiosResponse.status_code != 200) {
+            Toast.Success(axiosResponse.alert_text);
+            return Toast.Warning(axiosResponse.alert_title);
+         }
+         Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
+         window.location.hash = "/admin/solicitudes/";
       } catch (error) {
-         console.log(error);
-         Toast.Error(error);
+         console.error(error);
+      } finally {
       }
    };
-
-   const handleClickSavehReview = () => {
+   const handleClickFinishReview = async (values) => {
       try {
-         console.log("estoy en el handleClickSavehReview() ");
+         console.log("estoy en el handleClickFinishReview()", values);
+         if (
+            Boolean(values.b7_approved_tutor_ine) == false ||
+            Boolean(values.b7_approved_proof_address) == false ||
+            Boolean(values.b7_approved_curp) == false ||
+            Boolean(values.b7_approved_birth_certificate) == false ||
+            Boolean(values.b7_approved_academic_transcript) == false
+         )
+            return Toast.Info("Solo al tener todos los docuemntos aprobados puedes finalizar la revisión");
+         if (isTutor && Boolean(values.b7_approved_tutor_power_letter) == false)
+            return Toast.Info("Solo al tener todos los docuemntos aprobados puedes finalizar la revisión");
+
+         values.action = "finish";
+         await setFormData({ ...formData, ...values });
+         // console.log("formData en submit3", formData);
+
+         setLoadingAction(true);
+         const axiosResponse = await saveOrFinishReview(folio, pagina, values);
+         setLoadingAction(false);
+
+         if (axiosResponse.status_code != 200) {
+            Toast.Success(axiosResponse.alert_text);
+            return Toast.Warning(axiosResponse.alert_title);
+         }
+         Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
+         window.location.hash = "/admin/solicitudes/";
       } catch (error) {
-         console.log(error);
-         Toast.Error(error);
+         console.error(error);
+      } finally {
       }
    };
 
@@ -891,6 +948,7 @@ const RequestBecaView = () => {
          // console.log("isTutor :c", isTutor);
          if (pagina == 9) {
             await setIsTutor(ajaxResponse.result.requestBecas.tutor_relationship_id > 2 ? true : false);
+            console.log("holaa soy pagina9 - siTutor:", isTutor, ajaxResponse.result.requestBecas.tutor_relationship_id);
             setObjImg(ajaxResponse.result.requestBecas.b7_img_tutor_ine, setImgTutorIne);
             if (isTutor) setObjImg(ajaxResponse.result.requestBecas.b7_img_tutor_power_letter, setImgTutorPowerLetter);
             setObjImg(ajaxResponse.result.requestBecas.b7_img_proof_address, setImgProofAddress);
@@ -2238,7 +2296,7 @@ const RequestBecaView = () => {
                                                    accept={"image/*"}
                                                 />
                                              </Grid>
-                                             {auth.role_id <= ROLE_ADMIN && formData.status == "TERMINADA" && (
+                                             {auth.role_id <= ROLE_ADMIN && ["TERMINADA", "EN REVISIÓN"].includes(formData.status) && (
                                                 <>
                                                    {/* Botones */}
                                                    <Grid
@@ -2248,7 +2306,8 @@ const RequestBecaView = () => {
                                                    >
                                                       <ButtonsApprovedDocument
                                                          setFieldValue={setFieldValue}
-                                                         field={"b7_approved_tutor_ine"}
+                                                         fieldApproved={"b7_approved_tutor_ine"}
+                                                         fieldComments={"b7_comments_tutor_ine"}
                                                          approved={values.b7_approved_tutor_ine}
                                                          name="INE del tutor"
                                                       />
@@ -2305,7 +2364,7 @@ const RequestBecaView = () => {
                                                       accept={"image/*"}
                                                    />
                                                 </Grid>
-                                                {auth.role_id <= ROLE_ADMIN && formData.status == "TERMINADA" && (
+                                                {auth.role_id <= ROLE_ADMIN && ["TERMINADA", "EN REVISIÓN"].includes(formData.status) && (
                                                    <>
                                                       {/* Botones */}
                                                       <Grid
@@ -2315,7 +2374,8 @@ const RequestBecaView = () => {
                                                       >
                                                          <ButtonsApprovedDocument
                                                             setFieldValue={setFieldValue}
-                                                            field={"b7_approved_tutor_power_letter"}
+                                                            fieldApproved={"b7_approved_tutor_power_letter"}
+                                                            fieldComments={"b7_comments_tutor_power_letter"}
                                                             approved={values.b7_approved_tutor_power_letter}
                                                             name="Carta Poder"
                                                          />
@@ -2369,7 +2429,7 @@ const RequestBecaView = () => {
                                                    accept={"image/*"}
                                                 />
                                              </Grid>
-                                             {auth.role_id <= ROLE_ADMIN && formData.status == "TERMINADA" && (
+                                             {auth.role_id <= ROLE_ADMIN && ["TERMINADA", "EN REVISIÓN"].includes(formData.status) && (
                                                 <>
                                                    {/* Botones */}
                                                    <Grid
@@ -2379,7 +2439,8 @@ const RequestBecaView = () => {
                                                    >
                                                       <ButtonsApprovedDocument
                                                          setFieldValue={setFieldValue}
-                                                         field={"b7_approved_proof_address"}
+                                                         fieldApproved={"b7_approved_proof_address"}
+                                                         fieldComments={"b7_comments_proof_address"}
                                                          approved={values.b7_approved_proof_address}
                                                          name="Comprobante de Domicilio"
                                                       />
@@ -2432,7 +2493,7 @@ const RequestBecaView = () => {
                                                    accept={"image/*"}
                                                 />
                                              </Grid>
-                                             {auth.role_id <= ROLE_ADMIN && formData.status == "TERMINADA" && (
+                                             {auth.role_id <= ROLE_ADMIN && ["TERMINADA", "EN REVISIÓN"].includes(formData.status) && (
                                                 <>
                                                    {/* Botones */}
                                                    <Grid
@@ -2442,7 +2503,8 @@ const RequestBecaView = () => {
                                                    >
                                                       <ButtonsApprovedDocument
                                                          setFieldValue={setFieldValue}
-                                                         field={"b7_approved_curp"}
+                                                         fieldApproved={"b7_approved_curp"}
+                                                         fieldComments={"b7_comments_curp"}
                                                          approved={values.b7_approved_curp}
                                                          name="CURP"
                                                       />
@@ -2491,7 +2553,7 @@ const RequestBecaView = () => {
                                                    accept={"image/*"}
                                                 />
                                              </Grid>
-                                             {auth.role_id <= ROLE_ADMIN && formData.status == "TERMINADA" && (
+                                             {auth.role_id <= ROLE_ADMIN && ["TERMINADA", "EN REVISIÓN"].includes(formData.status) && (
                                                 <>
                                                    {/* Botones */}
                                                    <Grid
@@ -2501,7 +2563,8 @@ const RequestBecaView = () => {
                                                    >
                                                       <ButtonsApprovedDocument
                                                          setFieldValue={setFieldValue}
-                                                         field={"b7_approved_birth_certificate"}
+                                                         fieldApproved={"b7_approved_birth_certificate"}
+                                                         fieldComments={"b7_comments_birth_certificate"}
                                                          approved={values.b7_approved_birth_certificate}
                                                          name="Acta de Nacimiento"
                                                       />
@@ -2554,7 +2617,7 @@ const RequestBecaView = () => {
                                                    accept={"image/*"}
                                                 />
                                              </Grid>
-                                             {auth.role_id <= ROLE_ADMIN && formData.status == "TERMINADA" && (
+                                             {auth.role_id <= ROLE_ADMIN && ["TERMINADA", "EN REVISIÓN"].includes(formData.status) && (
                                                 <>
                                                    {/* Botones */}
                                                    <Grid
@@ -2564,7 +2627,8 @@ const RequestBecaView = () => {
                                                    >
                                                       <ButtonsApprovedDocument
                                                          setFieldValue={setFieldValue}
-                                                         field={"b7_approved_academic_transcript"}
+                                                         fieldApproved={"b7_approved_academic_transcript"}
+                                                         fieldComments={"b7_comments_academic_transcript"}
                                                          approved={values.b7_approved_academic_transcript}
                                                          name="Acta de Nacimiento"
                                                       />
@@ -2607,12 +2671,12 @@ const RequestBecaView = () => {
                                        {folio > 0 && ["", "ALTA"].includes(formData.status) && (
                                           <ButtonsBeforeOrNext isSubmitting={isSubmitting} setValues={setValues} />
                                        )}
-                                       {auth.role_id < ROLE_ADMIN && folio > 0 && ["TERMINADA", "EN REVISION"].includes(formData.status) && (
+                                       {auth.role_id < ROLE_ADMIN && folio > 0 && ["TERMINADA", "EN REVISIÓN"].includes(formData.status) && (
                                           <Box sx={{ display: "flex", flexDirection: "row-reverse", pt: 2 }}>
-                                             <Button color="primary" variant="contained" onClick={handleClickFinishReview} sx={{ mr: 1 }}>
+                                             <Button color="primary" variant="contained" onClick={() => handleClickFinishReview(values)} sx={{ mr: 1 }}>
                                                 TERMINAR REVISIÓN
                                              </Button>
-                                             <Button color="secondary" variant="contained" onClick={handleClickSavehReview} sx={{ mr: 1 }}>
+                                             <Button color="secondary" variant="contained" onClick={() => handleClickSavehReview(values)} sx={{ mr: 1 }}>
                                                 GUARDAR
                                              </Button>
                                           </Box>

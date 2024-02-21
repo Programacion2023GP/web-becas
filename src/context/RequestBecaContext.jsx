@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { Axios, useAuthContext } from "./AuthContext";
 import { CorrectRes, ErrorRes } from "../utils/Response";
+import { ROLE_ADMIN } from "./GlobalContext";
 
 const RequestBecaContext = createContext();
 
@@ -139,6 +140,25 @@ export default function RequestBecaContextProvider({ children }) {
    const [requestBeca, setRequestBeca] = useState(null);
    const [formData, setFormData] = useState(formDataInitialState);
    const [openDialog, setOpenDialog] = useState(false);
+
+   const saveOrFinishReview = async (folio, page, beca) => {
+      try {
+         let res = CorrectRes;
+         const axiosData = await Axios.post(`/documents/folio/${folio}/page/${page}/saveOrFinishReview`, beca);
+         res = axiosData.data.data;
+         if (auth.role_id <= ROLE_ADMIN) getRequestBecas();
+         else getRequestBecasByUser(auth.id);
+         // setRequestBecas(axiosData.data.data.result);
+         // console.log("requestBecas", requestBecas);
+
+         return res;
+      } catch (error) {
+         const res = ErrorRes;
+         console.log(error);
+         res.message = error;
+         res.alert_text = error;
+      }
+   };
 
    const toggleDrawer = (open) => (event) => {
       try {
@@ -374,7 +394,8 @@ export default function RequestBecaContextProvider({ children }) {
             getRequestBecasByFolio,
             saveBeca,
             getReportRequestByFolio,
-            updateStatusBeca
+            updateStatusBeca,
+            saveOrFinishReview
          }}
       >
          {children}

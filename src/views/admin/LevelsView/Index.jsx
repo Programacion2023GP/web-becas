@@ -42,7 +42,7 @@ const LevelsView = () => {
          <LevelDT />
          {/* </MainCard> */}
 
-         <ChartComponent />
+         {/* <ChartComponent /> */}
 
          <LevelForm />
       </>

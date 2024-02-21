@@ -93,6 +93,9 @@ export default function DataTableComponent({
    handleClickAdd,
    createData,
    onRowEditCompleteContinue = null,
+   toolBar = false,
+   positionBtnsToolbar = "start",
+   toolbarContent,
    updateData,
    refreshTable,
    btnAdd = true,
@@ -297,7 +300,12 @@ export default function DataTableComponent({
       return (
          <div className="flex flex-wrap gap-2">
             {/* <Button label="New" icon="pi pi-plus" severity="success" onClick={openNew} /> */}
-            <Button variant="contained" color="error" startIcon={<IconDelete />} onClick={confirmDeleteSelected} disabled={!selectedData || !selectedData.length}>
+            <Button
+               variant="contained"
+               color="error"
+               startIcon={<IconDelete />}
+               onClick={confirmDeleteSelected} /* disabled={!selectedData || !selectedData.length} */
+            >
                Eliminar Seleccionados
             </Button>
          </div>
@@ -377,7 +385,15 @@ export default function DataTableComponent({
       <div className="card p-fluid">
          {/* <Tooltip target=".export-buttons>button" position="bottom" /> */}
          <Card>
-            {/* {rowEdit && <Toolbar className="mb-4" left={leftToolbarTemplate}></Toolbar>} */}
+            {toolBar && (
+               <Toolbar
+                  className="mb-4"
+                  start={positionBtnsToolbar == "start" && toolbarContent}
+                  center={positionBtnsToolbar == "center" && toolbarContent}
+                  end={positionBtnsToolbar == "end" && toolbarContent}
+                  style={{ marginBottom: "1px", paddingBlock: "10px" }}
+               ></Toolbar>
+            )}
 
             <DataTable
                id={idName}

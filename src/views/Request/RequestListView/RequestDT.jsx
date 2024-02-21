@@ -9,7 +9,7 @@ import { QuestionAlertConfig } from "../../../utils/sAlert";
 import Toast from "../../../utils/Toast";
 import { ROLE_ADMIN, ROLE_SUPER_ADMIN, useGlobalContext } from "../../../context/GlobalContext";
 import DataTableComponent from "../../../components/DataTableComponent";
-import { IconChecklist, IconEye, IconPrinter } from "@tabler/icons";
+import { IconBan, IconChecklist, IconEye, IconFileSpreadsheet, IconPrinter } from "@tabler/icons";
 import { formatDatetime } from "../../../utils/Formats";
 import { Link } from "react-router-dom";
 import { useAuthContext } from "../../../context/AuthContext";
@@ -38,7 +38,22 @@ const RequestBecaDT = () => {
       setFormTitle,
       updateStatusBeca
    } = useRequestBecaContext();
-   const globalFilterFields = ["folio", "code", "level", "school", "curp", "name", "paternal_last_name", "maternal_last_name", "average", "status", "created_at"];
+   const globalFilterFields = [
+      "folio",
+      "code",
+      "level",
+      "school",
+      "curp",
+      "name",
+      "paternal_last_name",
+      "maternal_last_name",
+      "average",
+      "status",
+      "current_page",
+      "created_at",
+      "end_date",
+      "socioeconomic_study"
+   ];
    const { getIndexByFolio } = useFamilyContext();
 
    const [openDialogPreview, setOpenDialogPreview] = useState(false);
@@ -137,6 +152,11 @@ const RequestBecaDT = () => {
          <b>{obj.current_page}</b>
       </Typography>
    );
+   const SocioeconomicStudyBodyTemplate = (obj) => (
+      <Typography textAlign={"center"}>
+         <b>{obj.socioeconomic_study}</b>
+      </Typography>
+   );
    const RequestDateBodyTemplate = (obj) => <Typography textAlign={"center"}>{formatDatetime(obj.created_at)}</Typography>;
    const EndDateBodyTemplate = (obj) => <Typography textAlign={"center"}>{formatDatetime(obj.end_date)}</Typography>;
    //#endregion BODY TEMPLATES
@@ -149,7 +169,8 @@ const RequestBecaDT = () => {
       { field: "status", header: "Estatus", sortable: true, functionEdit: null, body: StatusBodyTemplate },
       { field: "current_page", header: "Página", sortable: true, functionEdit: null, body: CurrentBodyTemplate, filterField: null },
       { field: "created_at", header: "Fecha de Solicitud", sortable: true, functionEdit: null, body: RequestDateBodyTemplate },
-      { field: "end_date", header: "Fecha de Termino", sortable: true, functionEdit: null, body: EndDateBodyTemplate }
+      { field: "end_date", header: "Fecha de Termino", sortable: true, functionEdit: null, body: EndDateBodyTemplate },
+      { field: "socioeconomic_study", header: "Estudio Socio-Económico", sortable: true, functionEdit: null, body: SocioeconomicStudyBodyTemplate }
    ];
    auth.role_id === ROLE_SUPER_ADMIN &&
       columns.push(
@@ -181,9 +202,9 @@ const RequestBecaDT = () => {
    const handleClickValidateDocuments = async (folio, current_status) => {
       try {
          if (current_status == "TERMINADA") {
-            const axiosResponse = await updateStatusBeca(folio, "EN REVISION");
+            const axiosResponse = await updateStatusBeca(folio, "EN REVISIÓN");
             Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
-         }  
+         }
          location.hash = `/admin/solicitud-beca/pagina/9/folio/${folio}`;
       } catch (error) {
          console.log(error);
@@ -214,12 +235,12 @@ const RequestBecaDT = () => {
       }
    };
 
-   const handleClickDelete = async (id, name) => {
+   const handleClickCancel = async (id, folio, name) => {
       try {
-         mySwal.fire(QuestionAlertConfig(`Estas seguro de eliminar la solicitu con folio #${name}`)).then(async (result) => {
+         mySwal.fire(QuestionAlertConfig(`Estas seguro de cancelar la solicitud con folio #${folio}`, "CANCELAR", "NO CANCELAR")).then(async (result) => {
             if (result.isConfirmed) {
                setLoadingAction(true);
-               const axiosResponse = await deleteRequestBeca(id);
+               const axiosResponse = await updateStatusBeca(folio, "CANCELADA");
                setLoadingAction(false);
                Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
             }
@@ -244,25 +265,26 @@ const RequestBecaDT = () => {
    // };
 
    const ButtonsAction = ({ id, name, current_page, obj }) => {
+      if (["CANCELADA"].includes(obj.status)) return;
       return (
          <ButtonGroup variant="outlined">
-            {auth.role_id <= ROLE_ADMIN && obj.status == "TERMINADA" && (
-               <>
-                  <Tooltip title={`Ver Solicitud ${singularName}`} placement="top">
-                     <Button color="dark" onClick={() => handleClickView(obj)}>
-                        <IconEye />
-                     </Button>
-                  </Tooltip>
-                  <Tooltip title={`Validar Documentos del Folio ${singularName}`} placement="top">
-                     <Button color="info" onClick={() => handleClickValidateDocuments(obj.folio, obj.status)}>
-                        <IconChecklist />
-                     </Button>
-                  </Tooltip>
-               </>
+            {auth.role_id <= ROLE_ADMIN && !["ALTA"].includes(obj.status) && (
+               <Tooltip title={`Ver Solicitud ${singularName}`} placement="top">
+                  <Button color="dark" onClick={() => handleClickView(obj)}>
+                     <IconEye />
+                  </Button>
+               </Tooltip>
+            )}
+            {auth.role_id <= ROLE_ADMIN && ["TERMINADA", "EN REVISIÓN"].includes(obj.status) && (
+               <Tooltip title={`Validar Documentos del Folio ${singularName}`} placement="top">
+                  <Button color="dark" onClick={() => handleClickValidateDocuments(obj.folio, obj.status)}>
+                     <IconChecklist />
+                  </Button>
+               </Tooltip>
             )}
             {obj.end_date == null && (
                <Tooltip title={`Solicitud ${name}`} placement="top">
-                  <Button color="primary">
+                  <Button color="dark">
                      <Link to={`/admin/solicitud-beca/pagina/${current_page}/folio/${id}`} target="_blank" style={{ textDecoration: "none" }}>
                         Continuar
                      </Link>
@@ -281,12 +303,12 @@ const RequestBecaDT = () => {
                <Button color="info" onClick={() => handleClickEdit(id)}>
                   <IconEdit />
                </Button>
-            </Tooltip>
-            <Tooltip title={`Eliminar ${singularName}`} placement="top">
-               <Button color="error" onClick={() => handleClickDelete(id, name)}>
-                  <IconDelete />
-               </Button>
             </Tooltip> */}
+            <Tooltip title={`Cancelar ${singularName}`} placement="top">
+               <Button color="error" onClick={() => handleClickCancel(id, obj.folio, name)}>
+                  <IconBan />
+               </Button>
+            </Tooltip>
             {/* {auth.role_id == ROLE_SUPER_ADMIN && (
                <Tooltip title={active ? "Desactivar" : "Reactivar"} placement="right">
                   <Button color="dark" onClick={() => handleClickDisEnable(id, name, active)} sx={{}}>
@@ -295,6 +317,30 @@ const RequestBecaDT = () => {
                </Tooltip>
             )} */}
          </ButtonGroup>
+      );
+   };
+
+   const handleClickExportPublic = () => {
+      try {
+         Toast.Info("no se cual es el formato, ya lo pedi");
+      } catch (error) {}
+   };
+   const handleClickExportContraloria = () => {
+      try {
+         Toast.Info("no se cual es el formato, ya lo pedi");
+      } catch (error) {}
+   };
+
+   const toolbarContent = () => {
+      return (
+         <div className="flex flex-wrap gap-2">
+            <Button variant="contained" color="success" startIcon={<IconFileSpreadsheet />} onClick={handleClickExportPublic} sx={{ mx: 1 }}>
+               Exprotar al público
+            </Button>
+            <Button variant="contained" color="success" startIcon={<IconFileSpreadsheet />} onClick={handleClickExportContraloria} sx={{ mx: 1 }}>
+               Exprotar para contraloria
+            </Button>
+         </div>
       );
    };
 
@@ -334,6 +380,9 @@ const RequestBecaDT = () => {
             handleClickAdd={handleClickAdd}
             rowEdit={false}
             refreshTable={getRequestBecas}
+            toolBar={auth.role_id <= ROLE_ADMIN ? true : false}
+            positionBtnsToolbar="center"
+            toolbarContent={toolbarContent}
          />
 
          {/* <PDFTable /> */}
