@@ -204,6 +204,24 @@ export default function AuthContextProvider({ children }) {
       }
    };
 
+   const changePasswordAuth = async ({ password, new_password }) => {
+      try {
+         const postData = {
+            password,
+            new_password
+         };
+         // console.log(postData);
+         const { data } = await Axios.post(`/users/changePasswordAuth`, postData);
+         // console.log("el data register:", data);
+         if (data.data.status_code == 200 && data.data.alert_icon == "success") sAlert.Success(data.data.alert_text, null);
+         return data.data;
+      } catch (error) {
+         console.log(error);
+         sAlert.Error("Parece que hay un error, intenta más tarde");
+         return error;
+      }
+   };
+
    // useEffect(() => {
    //    console.log("el useEffect de AuthContext");
    //    const asyncCall = async () => await loggedInCheck();
@@ -213,6 +231,10 @@ export default function AuthContextProvider({ children }) {
    // console.log("el auth en el context: ", auth);
    // if (auth === null) return;
 
-   return <AuthContext.Provider value={{ register, login, auth, loggedInCheck, logout, permissionRead, validateAccessPage }}>{children}</AuthContext.Provider>;
+   return (
+      <AuthContext.Provider value={{ register, login, auth, loggedInCheck, logout, permissionRead, validateAccessPage, changePasswordAuth }}>
+         {children}
+      </AuthContext.Provider>
+   );
 }
 export const useAuthContext = () => useContext(AuthContext);

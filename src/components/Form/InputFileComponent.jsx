@@ -37,6 +37,7 @@ export const setObjImg = (img, setImg) => {
 *
 */
 //  ===================================== COMPONENTE =====================================
+const MB = 1048576; //2621440=2.5MB
 
 const InputFileComponent = ({ idName, label, inputProps, filePreviews, setFilePreviews, error, touched, multiple, maxImages = -1, accept = null }) => {
    const [uploadProgress, setUploadProgress] = useState(0);
@@ -67,6 +68,8 @@ const InputFileComponent = ({ idName, label, inputProps, filePreviews, setFilePr
       // Puedes manejar los archivos aceptados aquí y mostrar las vistas previas.
       acceptedFiles.forEach((file) => {
          const reader = new FileReader();
+
+         if (file.size >= MB) return Toast.Info("el archivo es demasiado pesado, intenta con un archivo menor a 1MB");
 
          reader.onload = async (e) => {
             const preview = {
@@ -157,6 +160,9 @@ const InputFileComponent = ({ idName, label, inputProps, filePreviews, setFilePr
                               ))}
                            </aside>
                         </div>
+                        <small style={{ marginTop: "-10px", fontStyle: "italic", fontSize: "11px" }}>
+                           Tamaño maximo del archivo soportado: <b>1MB MAX.</b>
+                        </small>
                      </div>
                      {touched && error && (
                         <FormHelperText error id={`ht-${idName}`}>
