@@ -9,7 +9,7 @@ import { QuestionAlertConfig } from "../../../utils/sAlert";
 import Toast from "../../../utils/Toast";
 import { ROLE_ADMIN, ROLE_SUPER_ADMIN, useGlobalContext } from "../../../context/GlobalContext";
 import DataTableComponent from "../../../components/DataTableComponent";
-import { IconBan, IconChecklist, IconEye, IconFileSpreadsheet, IconPrinter } from "@tabler/icons";
+import { IconBan, IconChecklist, IconClipboardText, IconEye, IconFileSpreadsheet, IconPrinter } from "@tabler/icons";
 import { formatDatetime } from "../../../utils/Formats";
 import { Link } from "react-router-dom";
 import { useAuthContext } from "../../../context/AuthContext";
@@ -212,6 +212,15 @@ const RequestBecaDT = () => {
       }
    };
 
+   const handleClickSocioeconomicEvaluation = async (folio, current_status) => {
+      try {
+         console.log("no se como");
+      } catch (error) {
+         console.log(error);
+         Toast.Error(error);
+      }
+   };
+
    const handleClickAdd = () => {
       try {
          location.hash = "/admin/solicitud-beca";
@@ -268,10 +277,26 @@ const RequestBecaDT = () => {
       if (["CANCELADA"].includes(obj.status)) return;
       return (
          <ButtonGroup variant="outlined">
+            {obj.end_date == null && (
+               <Tooltip title={`Solicitud ${name}`} placement="top">
+                  <Button color="dark">
+                     <Link to={`/admin/solicitud-beca/pagina/${current_page}/folio/${id}`} target="_blank" style={{ textDecoration: "none" }}>
+                        Continuar
+                     </Link>
+                  </Button>
+               </Tooltip>
+            )}
             {auth.role_id <= ROLE_ADMIN && !["ALTA"].includes(obj.status) && (
                <Tooltip title={`Ver Solicitud ${singularName}`} placement="top">
                   <Button color="dark" onClick={() => handleClickView(obj)}>
                      <IconEye />
+                  </Button>
+               </Tooltip>
+            )}
+            {!["ALTA"].includes(obj.status) && (
+               <Tooltip title={`Ver Solicitud ${singularName}`} placement="top">
+                  <Button color="success" onClick={() => handleClickView(obj)}>
+                     <TaskAltIcon />
                   </Button>
                </Tooltip>
             )}
@@ -282,33 +307,23 @@ const RequestBecaDT = () => {
                   </Button>
                </Tooltip>
             )}
-            {obj.end_date == null && (
-               <Tooltip title={`Solicitud ${name}`} placement="top">
-                  <Button color="dark">
-                     <Link to={`/admin/solicitud-beca/pagina/${current_page}/folio/${id}`} target="_blank" style={{ textDecoration: "none" }}>
-                        Continuar
-                     </Link>
+            {auth.role_id <= ROLE_ADMIN && ["EN EVALUACIÓN"].includes(obj.status) && (
+               <Tooltip title={`Evaluar Formulario Documentos del Folio ${singularName}`} placement="top">
+                  <Button color="dark" onClick={() => handleClickSocioeconomicEvaluation(obj.folio, obj.status)}>
+                     <IconClipboardText />
                   </Button>
                </Tooltip>
             )}
-            {auth.role_id <= ROLE_ADMIN ||
-               (obj.status == "TERMINADA" && (
-                  <Tooltip title={`Ver Solicitud ${singularName}`} placement="top">
-                     <Button color="success" onClick={() => handleClickView(obj)}>
-                        <TaskAltIcon />
-                     </Button>
-                  </Tooltip>
-               ))}
-            {/* <Tooltip title={`Editar ${singularName}`} placement="top">
-               <Button color="info" onClick={() => handleClickEdit(id)}>
-                  <IconEdit />
-               </Button>
-            </Tooltip> */}
             <Tooltip title={`Cancelar ${singularName}`} placement="top">
                <Button color="error" onClick={() => handleClickCancel(id, obj.folio, name)}>
                   <IconBan />
                </Button>
             </Tooltip>
+            {/* <Tooltip title={`Editar ${singularName}`} placement="top">
+               <Button color="info" onClick={() => handleClickEdit(id)}>
+                  <IconEdit />
+               </Button>
+            </Tooltip> */}
             {/* {auth.role_id == ROLE_SUPER_ADMIN && (
                <Tooltip title={active ? "Desactivar" : "Reactivar"} placement="right">
                   <Button color="dark" onClick={() => handleClickDisEnable(id, name, active)} sx={{}}>
