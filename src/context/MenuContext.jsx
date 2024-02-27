@@ -60,7 +60,7 @@ export default function MenuContextProvider({ children }) {
          // setMenu([]);
          let res = CorrectRes;
          const axiosData = await Axios.post(`/menus/getIdByUrl`, dataPost);
-         console.log("axiosData", axiosData);
+         // console.log("axiosData", axiosData);
 
          res = axiosData.data.data;
          // console.log(res);
@@ -215,12 +215,23 @@ export default function MenuContextProvider({ children }) {
                };
 
                // #permisos
-               _checkMenus.push({ id: hm.id, isChecked: false, permissions: ["read"] });
+               _checkMenus.push({
+                  id: hm.id,
+                  isChecked: false,
+                  permissions: {
+                     read: false,
+                     create: false,
+                     update: false,
+                     delete: false,
+                     more_permissions: []
+                  }
+               });
                // #permisos
 
                _childrenMenus = res.result.menus.filter((chm) => chm.belongs_to == hm.id);
                _childrenMenus.map((iCh) => {
-                  let others_permissions = iCh.others_permissions == null ? [] : iCh.others_permissions.split("|");
+                  let others_permissions = iCh.others_permissions == null ? [] : iCh.others_permissions.split(",");
+                  others_permissions = others_permissions.map((op) => op.trim());
                   const child = {
                      id: iCh.id,
                      title: iCh.menu,
@@ -232,15 +243,25 @@ export default function MenuContextProvider({ children }) {
                   item.children.push(child);
 
                   // #permisos
-                  _checkMenus.push({ id: iCh.id, isChecked: false, permissions: ["read"] });
+                  _checkMenus.push({
+                     id: iCh.id,
+                     isChecked: false,
+                     permissions: {
+                        read: false,
+                        create: false,
+                        update: false,
+                        delete: false,
+                        more_permissions: []
+                     }
+                  });
                   // #permisos
                });
                items.push(item);
             });
-            console.log("los items", items);
+            // console.log("los items", items);
             setMenus(items);
             setCheckMenus(_checkMenus);
-            console.log("los checkMenus", checkMenus);
+            // console.log("los checkMenus", checkMenus);
          } else setMenus(axiosData.data.data.result);
          // console.log("menus", menus);
          showMyMenus();

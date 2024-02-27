@@ -17,7 +17,7 @@ const formDataInitialState = {
 };
 
 export default function RoleContextProvider({ children }) {
-   const { auth } = useAuthContext();
+   const { auth, validateAccessPage } = useAuthContext();
    const singularName = "Rol"; //Escribirlo siempre letra Capital
    const pluralName = "Roles"; //Escribirlo siempre letra Capital
 
@@ -51,6 +51,23 @@ export default function RoleContextProvider({ children }) {
       } catch (error) {
          console.log("Error en resetRoleSelect:", error);
       }
+   };
+
+   const updatePermissions = async (role) => {
+      let res = CorrectRes;
+      try {
+         const axiosData = await Axios.post("/roles/updatePermissions", role);
+         res = axiosData.data.data;
+         // getRoles();
+         validateAccessPage(); // actualizar permisos en el auth
+         return res;
+      } catch (error) {
+         res = ErrorRes;
+         console.log(error);
+         res.message = error;
+         res.alert_text = error;
+      }
+      return res;
    };
 
    const getRoles = async () => {
@@ -110,7 +127,7 @@ export default function RoleContextProvider({ children }) {
 
    const showRoleSelect = async (id) => {
       try {
-         console.log("showRoleSelect");
+         // console.log("showRoleSelect");
          let res = CorrectRes;
          const axiosData = await Axios.get(`/roles/${id}`);
          setOpenDialog(true);
@@ -226,7 +243,8 @@ export default function RoleContextProvider({ children }) {
             roleSelect,
             setRoleSelect,
             resetRoleSelect,
-            showRoleSelect
+            showRoleSelect,
+            updatePermissions
          }}
       >
          {children}

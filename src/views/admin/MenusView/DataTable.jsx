@@ -23,9 +23,14 @@ const MenuDT = () => {
    const { auth } = useAuthContext();
    const { setLoading, setLoadingAction, setOpenDialog } = useGlobalContext();
    const { singularName, menu, menus, getMenus, showMenu, deleteMenu, DisEnableMenu, resetFormData, resetMenu, setTextBtnSumbit, setFormTitle } = useMenuContext();
-   const globalFilterFields = ["icon", "menu", "caption", "patern", "order", "url", "others_permissions", "active", "created_at"];
+   const globalFilterFields = ["id", "icon", "menu", "caption", "patern", "order", "url", "others_permissions", "active", "created_at"];
 
    // #region BodysTemplate
+   const IDBodyTemplate = (obj) => (
+      <Typography textAlign={"center"}>
+         <b>{obj.id}</b>
+      </Typography>
+   );
    const IconBodyTemplate = (obj) => {
       // const Icon = React.createElement(obj.icon ? obj.icon : IconPointFilled);
       const Icon = tablerIcons[`${obj.icon}`];
@@ -89,6 +94,7 @@ const MenuDT = () => {
    // #endregion BodysTemplate
 
    const columns = [
+      { field: "id", header: "ID", sortable: true, functionEdit: null, body: IDBodyTemplate },
       { field: "icon", header: "Icono", sortable: true, functionEdit: null, body: IconBodyTemplate, filterField: null },
       { field: "menu", header: "Menu", sortable: true, functionEdit: null, body: MenuBodyTemplate, filterField: null },
       { field: "level", header: "Info", sortable: true, functionEdit: null, body: InfoBodyTemplate, filterField: null },
