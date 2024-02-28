@@ -71,19 +71,20 @@ const FormSelect = ({ setOpenDialogTable }) => {
                : axiosResponse.result.more_permissions === null
                ? []
                : axiosResponse.result.more_permissions.split(",");
-         console.log("permissions.more_permissions", permissions.more_permissions);
+         // console.log("permissions.more_permissions", permissions.more_permissions);
 
          let newCheckMenus = [];
          if (
             permissions.read === "todas" &&
             permissions.create === "todas" &&
             permissions.update === "todas" &&
-            permissions.delete === "todas" &&
-            permissions.more_permissions === "todas"
+            permissions.delete === "todas"
+            // && permissions.more_permissions === "todas"
          )
             newCheckMenus = checkMenus.map((check) => {
                check.isChecked = true;
-               check.permissions = { read: true, create: true, update: true, delete: true, more_permissions: ["todas"] };
+               check.permissions = { read: true, create: true, update: true, delete: true, more_permissions: [] };
+               // check.permissions = { read: true, create: true, update: true, delete: true, more_permissions: ["todas"] };
                return check;
             });
          else {
@@ -97,15 +98,22 @@ const FormSelect = ({ setOpenDialogTable }) => {
                // console.log(`${permissions.more_permissions}includes(${check.id.toString()})`);
                check.permissions.more_permissions = [];
                if (permissions.more_permissions === "todas") check.permissions.more_permissions = ["todas"];
-               else {
-                  permissions.more_permissions.map((mp) => {
-                     console.log("el mp", mp);
-                     // else check.permissions.more_permissions = permissions.more_permissions;
-                  });
-               }
+               // else check.permissions.more_permissions = permissions.more_permissions;
+               // else {
+               //    permissions.more_permissions.map((mp) => {
+               //       console.log("el mp", mp);
+               //       // else check.permissions.more_permissions = permissions.more_permissions;
+               //    });
+               // }
                return check;
             });
          }
+         permissions.more_permissions.map((mp) => {
+            // console.log("el mp", mp);
+            const id = mp.split("@")[0];
+            newCheckMenus.find((check) => check.id === Number(id) && check.permissions.more_permissions.push(mp));
+            // else check.permissions.more_permissions = permissions.more_permissions;
+         });
          setCheckMenus(newCheckMenus);
          // console.log("FormSelect - checkMenus", checkMenus);
       } catch (error) {
@@ -185,11 +193,8 @@ const FormSelect = ({ setOpenDialogTable }) => {
             if (check.permissions.delete) values.delete.push(check.id);
             if (check.permissions.more_permissions.length > 0) {
                check.permissions.more_permissions.map((permission) => {
-                  // count_more_permissions;
                   values.more_permissions.push(permission);
-                  // values.more_permissions.push(`${check.id}@${permission}`);
                });
-               // console.log("tengo more_permissions en:", check.permissions.more_permissions);
             }
          });
          menus.map((m) => m.children.map((mc) => (count_more_permissions += mc.others_permissions.length)));
@@ -203,8 +208,9 @@ const FormSelect = ({ setOpenDialogTable }) => {
          else values.update = values.update.join();
          if (values.delete.length == totalMenus) values.delete = "todas";
          else values.delete = values.delete.join();
-         if (values.more_permissions.length > 0 && values.more_permissions.length == count_more_permissions) values.more_permissions = "todas";
-         else values.more_permissions = values.more_permissions.join();
+         // if (values.more_permissions.length > 0 && values.more_permissions.length == count_more_permissions) values.more_permissions = "todas";
+         // else
+         values.more_permissions = values.more_permissions.join();
          // console.log("valuesFinal", values);
          // return;
          const axiosResponse = await updatePermissions(values);

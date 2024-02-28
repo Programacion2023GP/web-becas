@@ -27,6 +27,8 @@ import MenuContextProvider from "../context/MenuContext";
 import MenusView from "../views/admin/MenusView/Index";
 import RoleContextProvider from "../context/RoleContext";
 import RolesView from "../views/admin/RolesView/Index";
+import AnswerScoreContextProvider from "../context/AnswerScoreContext";
+import AnswersScoresView from "../views/admin/AnswersScoresView/Index";
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import("../views/dashboard/Default")));
@@ -152,6 +154,15 @@ const MainRoutes = {
                      </PerimeterContextProvider>
                   </CommunityContextProvider>
                )
+            },
+            {
+               path: "respuestas-y-puntajes",
+               element: (
+                  <AnswerScoreContextProvider>
+                     <AnswersScoresView />
+                  </AnswerScoreContextProvider>
+               )
+               // loader: loaderIndex
             }
          ]
       },

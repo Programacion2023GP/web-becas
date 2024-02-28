@@ -9,10 +9,10 @@ import { QuestionAlertConfig } from "../../../utils/sAlert";
 import Toast from "../../../utils/Toast";
 import { ROLE_ADMIN, ROLE_SUPER_ADMIN, useGlobalContext } from "../../../context/GlobalContext";
 import DataTableComponent from "../../../components/DataTableComponent";
-import { IconBan, IconChecklist, IconClipboardText, IconEye, IconFileSpreadsheet, IconPrinter } from "@tabler/icons";
+import { IconAbacus, IconBan, IconChecklist, IconClipboardText, IconEye, IconFileSpreadsheet, IconPrinter } from "@tabler/icons";
 import { formatDatetime } from "../../../utils/Formats";
 import { Link } from "react-router-dom";
-import { useAuthContext } from "../../../context/AuthContext";
+import { idPage, useAuthContext } from "../../../context/AuthContext";
 import { IconCircleCheckFilled } from "@tabler/icons-react";
 import { IconCircleXFilled } from "@tabler/icons-react";
 import { Box } from "@mui/system";
@@ -287,34 +287,34 @@ const RequestBecaDT = () => {
                </Tooltip>
             )}
             {auth.role_id <= ROLE_ADMIN && !["ALTA"].includes(obj.status) && (
-               <Tooltip title={`Ver Solicitud ${singularName}`} placement="top">
+               <Tooltip title={`Ver Solicitud ${name}`} placement="top">
                   <Button color="dark" onClick={() => handleClickView(obj)}>
                      <IconEye />
                   </Button>
                </Tooltip>
             )}
             {!["ALTA"].includes(obj.status) && (
-               <Tooltip title={`Ver Solicitud ${singularName}`} placement="top">
+               <Tooltip title={`Ver Solicitud ${name}`} placement="top">
                   <Button color="success" onClick={() => handleClickView(obj)}>
                      <TaskAltIcon />
                   </Button>
                </Tooltip>
             )}
-            {auth.role_id <= ROLE_ADMIN && ["TERMINADA", "EN REVISIÓN"].includes(obj.status) && (
-               <Tooltip title={`Validar Documentos del Folio ${singularName}`} placement="top">
+            {auth.permissions.more_permissions.includes(`${idPage}@Validar Documentos`) && ["TERMINADA", "EN REVISIÓN"].includes(obj.status) && (
+               <Tooltip title={`Validar Documentos del Folio ${name}`} placement="top">
                   <Button color="dark" onClick={() => handleClickValidateDocuments(obj.folio, obj.status)}>
                      <IconChecklist />
                   </Button>
                </Tooltip>
             )}
-            {auth.role_id <= ROLE_ADMIN && ["EN EVALUACIÓN"].includes(obj.status) && (
-               <Tooltip title={`Evaluar Formulario Documentos del Folio ${singularName}`} placement="top">
+            {auth.permissions.more_permissions.includes(`${idPage}@Evaluar`) && ["EN EVALUACIÓN"].includes(obj.status) && (
+               <Tooltip title={`Evaluar Estudio Socio-Económico del Folio ${name}`} placement="top">
                   <Button color="dark" onClick={() => handleClickSocioeconomicEvaluation(obj.folio, obj.status)}>
-                     <IconClipboardText />
+                     <IconAbacus />
                   </Button>
                </Tooltip>
             )}
-            <Tooltip title={`Cancelar ${singularName}`} placement="top">
+            <Tooltip title={`Cancelar Folio ${name}`} placement="top">
                <Button color="error" onClick={() => handleClickCancel(id, obj.folio, name)}>
                   <IconBan />
                </Button>
@@ -349,12 +349,16 @@ const RequestBecaDT = () => {
    const toolbarContent = () => {
       return (
          <div className="flex flex-wrap gap-2">
-            <Button variant="contained" color="success" startIcon={<IconFileSpreadsheet />} onClick={handleClickExportPublic} sx={{ mx: 1 }}>
-               Exprotar al público
-            </Button>
-            <Button variant="contained" color="success" startIcon={<IconFileSpreadsheet />} onClick={handleClickExportContraloria} sx={{ mx: 1 }}>
-               Exprotar para contraloria
-            </Button>
+            {auth.permissions.more_permissions.includes(`${idPage}@Exportar Lista Publica`) && (
+               <Button variant="contained" color="success" startIcon={<IconFileSpreadsheet />} onClick={handleClickExportPublic} sx={{ mx: 1 }}>
+                  Exprotar al público
+               </Button>
+            )}
+            {auth.permissions.more_permissions.includes(`${idPage}@Exportar Lista Contraloria`)(
+               <Button variant="contained" color="success" startIcon={<IconFileSpreadsheet />} onClick={handleClickExportContraloria} sx={{ mx: 1 }}>
+                  Exprotar para contraloria
+               </Button>
+            )}
          </div>
       );
    };

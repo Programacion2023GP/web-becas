@@ -12,9 +12,12 @@ Axios.defaults.headers.common = {
    Authorization: `Bearer ${localStorage.getItem("token") || ""}`
 };
 
+export let idPage = 0;
+
 export default function AuthContextProvider({ children }) {
    const [auth, setAuth] = useState(JSON.parse(localStorage.getItem("auth")) || null);
    const [permissionRead, setPermissionRead] = useState(false);
+   // const [idPage, setIdPage] = useState(0);
 
    const register = async ({ username, email, password, role }) => {
       try {
@@ -129,6 +132,7 @@ export default function AuthContextProvider({ children }) {
          let idPage;
          if (menu !== null) {
             if (auth.read === undefined) return logout(401);
+            idPage = menu;
             pagesRead = auth.read.split(",");
             // console.log(menu.id);
             idPage = menu.id.toString();

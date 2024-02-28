@@ -193,7 +193,7 @@ const MenuDT = () => {
       try {
          // console.log("cargar listado", menus);
          await menus.map((obj, index) => {
-            console.log(obj);
+            // console.log(obj);
             let register = obj;
             register.key = index + 1;
             register.actions = <ButtonsAction id={obj.id} name={obj.menu} active={obj.active} />;

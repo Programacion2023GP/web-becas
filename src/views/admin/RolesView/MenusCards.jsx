@@ -51,9 +51,9 @@ const MenusCards = () => {
       let value = target.value.split("@")[1];
       if (!["menu", "read", "create", "update", "delete"].includes(value)) value = target.value;
       const isChecked = target.checked;
-      console.log("handleCheckboxChange()->id", id);
-      console.log("handleCheckboxChange()->value", value);
-      console.log("handleCheckboxChange()->isChecked", isChecked);
+      // console.log("handleCheckboxChange()->id", id);
+      // console.log("handleCheckboxChange()->value", value);
+      // console.log("handleCheckboxChange()->isChecked", isChecked);
       let _checkMenus = [...checkMenus];
       // console.log("_checkMenus", _checkMenus);
       _checkMenus = _checkMenus.map((check) => {
@@ -71,8 +71,8 @@ const MenusCards = () => {
                if (isChecked) {
                   if (!check.permissions.more_permissions.includes(value)) check.permissions.more_permissions.push(value);
                } else {
-                  console.log("quitar permiso:", value);
-                  console.log("check.permissions.more_permissions", check.permissions.more_permissions);
+                  // console.log("quitar permiso:", value);
+                  // console.log("check.permissions.more_permissions", check.permissions.more_permissions);
                   // if (check.permissions.more_permissions == ["todas"]) console.log("tiene todsa");
                   const new_more_permissions = check.permissions.more_permissions.filter((permission) => permission !== value);
                   check.permissions.more_permissions = new_more_permissions;
@@ -89,12 +89,12 @@ const MenusCards = () => {
 
    const CardMenu = ({ id = 0, title = "", others_permissions = [], isChecked }) => {
       // console.log("others_permissions", others_permissions);
-
       return (
          <Card sx={{ p: 0 }} className={classes.cardChildren}>
             <Grid xs={12} sx={{ m: 0 }}>
                <FormControlLabel
                   value={`${id}@read`}
+                  id={`${id}@read`}
                   control={<Checkbox defaultChecked={isChecked} onChange={(e) => handleCheckboxChange(e.target)} />}
                   label={
                      <Typography variant="h3" className={classes.titleChildren}>
@@ -107,6 +107,7 @@ const MenusCards = () => {
             <Masonry columns={others_permissions.length == 0 ? 4 : 3} spacing={2} sx={{ backgroundColor: "white", p: 0, m: 0, textAlign: "center" }}>
                <FormControlLabel
                   value={`${id}@read`}
+                  id={`${id}@read`}
                   control={
                      <Checkbox
                         defaultChecked={checkMenus.some((check) => check.id === id && check.permissions.read)}
@@ -118,6 +119,7 @@ const MenusCards = () => {
                />
                <FormControlLabel
                   value={`${id}@create`}
+                  id={`${id}@create`}
                   control={
                      <Checkbox
                         defaultChecked={checkMenus.some((check) => check.id === id && check.permissions.create)}
@@ -129,6 +131,7 @@ const MenusCards = () => {
                />
                <FormControlLabel
                   value={`${id}@update`}
+                  id={`${id}@update`}
                   control={
                      <Checkbox
                         defaultChecked={checkMenus.some((check) => check.id === id && check.permissions.update)}
@@ -140,6 +143,7 @@ const MenusCards = () => {
                />
                <FormControlLabel
                   value={`${id}@delete`}
+                  id={`${id}@delete`}
                   control={
                      <Checkbox
                         defaultChecked={checkMenus.some((check) => check.id === id && check.permissions.delete)}
@@ -153,6 +157,7 @@ const MenusCards = () => {
                   <FormControlLabel
                      key={`COP_${id}_${opIndex}`}
                      value={`${op}`}
+                     id={`${op}`}
                      control={
                         <Checkbox
                            defaultChecked={checkMenus.some(
@@ -180,6 +185,7 @@ const MenusCards = () => {
             <Box textAlign={"center"} mb={1}>
                <FormControlLabel
                   value={`${id}@menu`}
+                  id={`${id}@menu`}
                   control={<Checkbox defaultChecked={isChecked} onChange={(e) => handleCheckboxChange(e.target)} />}
                   label={
                      <Typography variant="h3" className={classes.titleHeader}>
@@ -191,17 +197,15 @@ const MenusCards = () => {
             </Box>
 
             <Masonry columns={children.length == 1 ? 1 : 2} spacing={2} sx={{ backgroundColor: "white", p: 0, m: 0 }}>
-               {children.map((m) => {
-                  return (
-                     <CardMenu
-                        key={`CMC_${m.id}`}
-                        id={m.id}
-                        title={m.title}
-                        others_permissions={m.others_permissions}
-                        isChecked={checkMenus.some((check) => check.id === m.id && check.isChecked)}
-                     />
-                  );
-               })}
+               {children.map((m) => (
+                  <CardMenu
+                     key={`CMC_${m.id}`}
+                     id={m.id}
+                     title={m.title}
+                     others_permissions={m.others_permissions}
+                     isChecked={checkMenus.some((check) => check.id === m.id && check.isChecked)}
+                  />
+               ))}
             </Masonry>
          </Card>
       );
@@ -211,7 +215,7 @@ const MenusCards = () => {
       // console.log("menus para permisos", menus);
       // console.log("checks para permisos", checkMenus);
       // console.log(menus);
-   }, [checkMenus]);
+   }, []);
 
    return (
       <>
@@ -229,18 +233,16 @@ const MenusCards = () => {
          </Box>
          <Box sx={{ width: "100%", height: "60vh", overflowY: "auto" }}>
             <Masonry columns={3} spacing={2}>
-               {menus.map((m) => {
-                  return (
-                     <CardHeaderMenu
-                        key={`CM_${m.id}`}
-                        id={m.id}
-                        title={m.title}
-                        children={m.children}
-                        // isChecked={checks.map((check) => index == m.id && !check)}
-                        isChecked={checkMenus.some((check) => check.id === m.id && check.isChecked)}
-                     />
-                  );
-               })}
+               {menus.map((m) => (
+                  <CardHeaderMenu
+                     key={`CM_${m.id}`}
+                     id={m.id}
+                     title={m.title}
+                     children={m.children}
+                     // isChecked={checks.map((check) => index == m.id && !check)}
+                     isChecked={checkMenus.some((check) => check.id === m.id && check.isChecked)}
+                  />
+               ))}
             </Masonry>
          </Box>
       </>
