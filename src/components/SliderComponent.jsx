@@ -202,6 +202,14 @@ export const SliderWithScoreComponent = ({ width = 150, min = 0, max = 100, defa
                   label: `${min}`
                },
                {
+                  value: value[0],
+                  label: `${value[0]}`
+               },
+               {
+                  value: value[1],
+                  label: `${value[1]}`
+               },
+               {
                   value: max,
                   label: `${max}`
                }

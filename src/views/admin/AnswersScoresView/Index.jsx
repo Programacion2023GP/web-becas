@@ -47,7 +47,7 @@ const AnswersScoresView = () => {
                   secondary={
                      <Fragment>
                         {optionsByRange ? (
-                           <Box sx={{ width: 300, display: "flex" }}>
+                           <Box sx={{ width: 320, display: "flex" }}>
                               <SliderWithScoreComponent
                                  width={300}
                                  min={1}
