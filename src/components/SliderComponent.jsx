@@ -1,10 +1,13 @@
-import * as React from "react";
 import PropTypes from "prop-types";
 import Slider, { SliderThumb } from "@mui/material/Slider";
 import { styled } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
 import Box from "@mui/material/Box";
+import { IconEqual } from "@tabler/icons";
+import { Divider } from "@mui/material";
+import { InputComponentv3 } from "./Form/InputComponent2";
+import { useState } from "react";
 
 function ValueLabelComponent(props) {
    const { children, value } = props;
@@ -153,17 +156,72 @@ AirbnbThumbComponent.propTypes = {
    children: PropTypes.node
 };
 
-const SliderComponent = ({ width = 150, min = 0, max = 100, values, setValues }) => {
+const SliderComponent = ({ width = 150, min = 0, max = 100, defaultValue = [20, 40], values, setValues }) => {
    const handleChange = (e) => {
-      console.log(e);
+      // console.log(e);
       const values = e.target.value;
-      // console.log(values);
+      console.log(values);
       setValues(values);
    };
    console.log(values);
    return (
       <Box sx={{ width: width, my: 3 }}>
-         <PrettoSlider valueLabelDisplay="on" aria-label="pretto slider" size="small" defaultValue={[20, 40]} onChange={handleChange} min={min} max={max} />
+         <PrettoSlider valueLabelDisplay="on" aria-label="pretto slider" size="small" defaultValue={defaultValue} onChange={handleChange} min={min} max={max} />
+      </Box>
+   );
+};
+
+export const SliderWithScoreComponent = ({ width = 150, min = 0, max = 100, defaultValue = [20, 40], values, handleChangeContinue, idName }) => {
+   const [value, setValue] = useState(defaultValue);
+
+   const handleChange = (event, newValue) => {
+      setValue(newValue);
+   };
+   const handleChangeCommitted = async (event, newValue) => {
+      console.log("Slider value after change:", newValue);
+      // handleChangeContinue(newValue);
+   };
+   return (
+      <Box sx={{ width: width, my: 3, display: "flex" }}>
+         <PrettoSlider
+            id={`slide_${idName}`}
+            name={`slide_${idName}`}
+            valueLabelDisplay="on"
+            aria-label="pretto slider"
+            aria-labelledby="continuous-slider"
+            size="small"
+            value={value}
+            defaultValue={defaultValue}
+            onChange={handleChange}
+            onChangeCommitted={handleChangeCommitted}
+            min={min}
+            max={max}
+            marks={[
+               {
+                  value: min,
+                  label: `${min}`
+               },
+               {
+                  value: max,
+                  label: `${max}`
+               }
+            ]}
+         />
+         <IconEqual style={{ marginLeft: 10, marginTop: 4 }} width={150} />
+         <InputComponentv3
+            idName={idName}
+            label={"pts."}
+            type="number"
+            value=""
+            placeholder={"0"}
+            setFieldValue={""}
+            onChange={""}
+            onBlur={""}
+            error={""}
+            touched={""}
+         />
+
+         <Divider orientation="vertical" sx={{ mx: 1 }} />
       </Box>
    );
 };

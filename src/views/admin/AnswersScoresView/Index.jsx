@@ -15,13 +15,19 @@ import ChartComponent from "../../../components/ChartComponent";
 import TabsComponent from "../../../components/TabsComponent";
 import { InputComponentv3 } from "../../../components/Form/InputComponent2";
 import { Box } from "@mui/system";
-import SliderComponent from "../../../components/SliderComponent";
+import SliderComponent, { SliderWithScoreComponent } from "../../../components/SliderComponent";
 
 const AnswersScoresView = () => {
    // const { result } = useLoaderData();
    const { setLoading } = useGlobalContext();
    const { pluralName, answerScore, getAnswerScores } = useAnswerScoreContext();
    const [values1, setValues1] = useState([0, 10]);
+
+   const handleChangeContinue = (values) => {
+      console.log("values", values);
+      setValues1(values);
+      console.log("values1", values1);
+   };
 
    const ItemContainer = ({ question = "¿La pregunta?", options = [{ answer: "Opción 1", score: 0 }], optionsByRange = false }) => {
       return (
@@ -41,8 +47,15 @@ const AnswersScoresView = () => {
                   secondary={
                      <Fragment>
                         {optionsByRange ? (
-                           <Box sx={{ width: 300 }}>
-                              <SliderComponent width={300} min={0} max={100} values={values1} setValues={setValues1} />
+                           <Box sx={{ width: 300, display: "flex" }}>
+                              <SliderWithScoreComponent
+                                 width={300}
+                                 min={1}
+                                 max={20}
+                                 defaultValue={[1, 5]}
+                                 values={values1}
+                                 handleChangeContinue={handleChangeContinue}
+                              />
                            </Box>
                         ) : (
                            <InputComponentv3
@@ -84,7 +97,8 @@ const AnswersScoresView = () => {
    useEffect(() => {
       try {
          setLoading(true);
-         getAnswerScores();
+         // getAnswerScores();
+         setLoading(false);
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -102,7 +116,7 @@ const AnswersScoresView = () => {
          <Typography variant="h1" color={"#1E2126"} mb={2} textAlign={"center"}>
             {pluralName.toUpperCase()}
          </Typography>
-         <AnswerScoreDT />
+         {/* <AnswerScoreDT /> */}
          <TabsComponent TabsTitles={titles} TabsContainer={containers} />
          {/* </MainCard> */}
 
