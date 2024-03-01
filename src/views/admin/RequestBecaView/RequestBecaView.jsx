@@ -1763,7 +1763,7 @@ const RequestBecaView = () => {
                                                 <FormControl fullWidth sx={{ mb: 5 }}>
                                                    <FormLabel id="b4_roof_material-label">
                                                       <Typography variant="h4" component={"p"} mb={1}>
-                                                         <li>Material del techo de la vivienda (si está hecho de más de un matgerial, marca el que predomine):</li>
+                                                         <li>Material del techo de la vivienda (si está hecho de más de un material, marca el que predomine):</li>
                                                       </Typography>
                                                    </FormLabel>
                                                    {/* <ToggleButtonGroup color="primary" value={houseIs} exclusive onClick={handleHouseIs}>
@@ -1798,7 +1798,7 @@ const RequestBecaView = () => {
                                                 <FormControl fullWidth sx={{ mb: 5 }}>
                                                    <FormLabel id="b4_floor_material-label">
                                                       <Typography variant="h4" component={"p"} mb={1}>
-                                                         <li>Material del piso de la vivienda (si está hecho de más de un matgerial, marca el que predomine):</li>
+                                                         <li>Material del piso de la vivienda (si está hecho de más de un material, marca el que predomine):</li>
                                                       </Typography>
                                                    </FormLabel>
                                                    {/* <ToggleButtonGroup color="primary" value={houseIs} exclusive onClick={handleHouseIs}>

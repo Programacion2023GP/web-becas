@@ -91,11 +91,11 @@ const PrettoSlider = styled(Slider)({
    },
    "& .MuiSlider-valueLabel": {
       lineHeight: 1.2,
-      fontSize: 12,
+      fontSize: 10,
       background: "unset",
       padding: 0,
-      width: 23, //32,
-      height: 23, //32,
+      width: 24, //32,
+      height: 24, //32,
       borderRadius: "50% 50% 50% 0",
       backgroundColor: "#52af77",
       transformOrigin: "bottom left",
@@ -171,7 +171,21 @@ const SliderComponent = ({ width = 150, min = 0, max = 100, defaultValue = [20, 
    );
 };
 
-export const SliderWithScoreComponent = ({ width = 150, min = 0, max = 100, defaultValue = [20, 40], values, handleChangeContinue, idName }) => {
+export const SliderWithScoreComponent = ({
+   width = 150,
+   min = 0,
+   max = 100,
+   defaultValue = [20, 40],
+   values,
+   handleChangeContinue,
+   idName,
+   valueInput,
+   setFieldValue,
+   onChange,
+   onBlur,
+   error,
+   touched
+}) => {
    const [value, setValue] = useState(defaultValue);
 
    const handleChange = (event, newValue) => {
@@ -182,7 +196,7 @@ export const SliderWithScoreComponent = ({ width = 150, min = 0, max = 100, defa
       // handleChangeContinue(newValue);
    };
    return (
-      <Box sx={{ width: width, my: 3, display: "flex" }}>
+      <Box sx={{ width: width, my: 3, mx: 2, display: "flex" }}>
          <PrettoSlider
             id={`slide_${idName}`}
             name={`slide_${idName}`}
@@ -215,18 +229,20 @@ export const SliderWithScoreComponent = ({ width = 150, min = 0, max = 100, defa
                }
             ]}
          />
-         <IconEqual style={{ marginLeft: 10, marginTop: 4 }} width={150} />
+         <IconEqual style={{ marginLeft: 5, marginTop: 4 }} width={150} />
          <InputComponentv3
             idName={idName}
             label={"pts."}
             type="number"
-            value=""
+            value={valueInput}
             placeholder={"0"}
-            setFieldValue={""}
-            onChange={""}
-            onBlur={""}
-            error={""}
-            touched={""}
+            setFieldValue={setFieldValue}
+            onChange={onChange}
+            onBlur={onBlur}
+            error={error}
+            touched={touched}
+            fullWidth={false}
+            width={"10px"}
          />
 
          <Divider orientation="vertical" sx={{ mx: 1 }} />

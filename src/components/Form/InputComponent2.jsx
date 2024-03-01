@@ -121,6 +121,7 @@ export const InputComponentv3 = ({
    disabled,
    size = "small",
    textAlign = "center",
+   fullWidth = true,
    ...prop
 }) => {
    const showErrorInput = (section, msg, formHelperText = false) => {
@@ -141,7 +142,7 @@ export const InputComponentv3 = ({
    };
 
    return (
-      <FormControl fullWidth sx={{ display: "flex", flexDirection: "row", alignItems: "flex-end" }}>
+      <FormControl fullWidth={fullWidth} sx={{ display: "flex", flexDirection: "row", alignItems: "flex-end" }}>
          <TextField
             id={idName}
             name={idName}

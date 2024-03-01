@@ -50,7 +50,15 @@ export default function TabsComponent({ TabsTitles = [], TabsContainer = [] }) {
    return (
       <Box sx={{ bgcolor: "background.paper", width: "100%" }}>
          <AppBar position="static">
-            <Tabs value={value} onChange={handleChange} indicatorColor="secondary" textColor="inherit" variant="fullWidth" aria-label="full width tabs example">
+            <Tabs
+               value={value}
+               onChange={handleChange}
+               sx={{ backgroundColor: "green" }}
+               indicatorColor="secondary"
+               textColor="inherit"
+               variant="fullWidth"
+               aria-label="full width tabs example"
+            >
                {TabsTitles.map((title, index) => (
                   <Tab key={`title_${index}`} label={title} {...a11yProps(index)} />
                ))}

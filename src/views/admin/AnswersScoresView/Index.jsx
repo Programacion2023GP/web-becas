@@ -21,78 +21,6 @@ const AnswersScoresView = () => {
    // const { result } = useLoaderData();
    const { setLoading } = useGlobalContext();
    const { pluralName, answerScore, getAnswerScores } = useAnswerScoreContext();
-   const [values1, setValues1] = useState([0, 10]);
-
-   const handleChangeContinue = (values) => {
-      console.log("values", values);
-      setValues1(values);
-      console.log("values1", values1);
-   };
-
-   const ItemContainer = ({ question = "¿La pregunta?", options = [{ answer: "Opción 1", score: 0 }], optionsByRange = false }) => {
-      return (
-         <List sx={{ width: "100%", bgcolor: "background.paper" }}>
-            <DialogContentText id="alert-dialog-slide-description" component={"div"}>
-               {/* <Divider variant="inset" component="li" /> */}
-               {/* <ListItemButton alignItems="flex-start" onClick={() => handleClick(id, full_name)}> */}
-               {/* <ListItemAvatar>
-               <Avatar {...stringAvatar(full_name)} />
-            </ListItemAvatar> */}
-               <ListItemText
-                  primary={
-                     <Typography variant="h4" component={"b"}>
-                        {question}
-                     </Typography>
-                  }
-                  secondary={
-                     <Fragment>
-                        {optionsByRange ? (
-                           <Box sx={{ width: 320, display: "flex" }}>
-                              <SliderWithScoreComponent
-                                 width={300}
-                                 min={1}
-                                 max={20}
-                                 defaultValue={[1, 5]}
-                                 values={values1}
-                                 handleChangeContinue={handleChangeContinue}
-                              />
-                           </Box>
-                        ) : (
-                           <InputComponentv3
-                              idName="b5_beds"
-                              label="Camas"
-                              type="number"
-                              value={1}
-                              placeholder="0"
-                              // setFieldValue={{}}
-                              // onChange={{}}
-                              // onBlur={{}}
-                              inputProps={{ min: 0, max: 100000 }}
-                              // disabled={values.id == 0 ? false : true}
-                              // error={{}}
-                              // touched={{}}
-                              // setStepFailed={{}}
-                              // step={7}
-                              size="normal"
-                              // error={errors.b5_beds && touched.b5_beds}
-                              // helperText={errors.b5_beds && touched.b5_beds && showErrorInput(4, errors.b5_beds)}
-                           />
-                        )}
-                     </Fragment>
-                  }
-               />
-               {/* </ListItemButton> */}
-               <Divider variant="inset" component="li" sx={{ marginLeft: "0px;" }} />
-            </DialogContentText>
-         </List>
-      );
-   };
-   const ListContainer = () => {
-      return <ItemContainer question="Cantidad de miembros en la casa" options={2} optionsByRange={true} />;
-   };
-
-   const titles = ["DATOS FAMILIARES", "DATOS ECONÓMICOS", "DATOS DE VIVIENDA", "EQUIPAMIENTO DOMÉSTICO", "PRGRAMA DE BECAS"];
-   const containers = [<ListContainer />, <ListContainer />, <ListContainer />, <ListContainer />, <ListContainer />];
 
    useEffect(() => {
       try {
@@ -117,7 +45,6 @@ const AnswersScoresView = () => {
             {pluralName.toUpperCase()}
          </Typography>
          {/* <AnswerScoreDT /> */}
-         <TabsComponent TabsTitles={titles} TabsContainer={containers} />
          {/* </MainCard> */}
 
          {/* <ChartComponent /> */}
