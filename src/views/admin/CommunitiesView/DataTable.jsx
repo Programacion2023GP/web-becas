@@ -169,11 +169,13 @@ const CommunityDT = () => {
                   <IconEdit />
                </Button>
             </Tooltip> */}
-            <Tooltip title={`Asignar Perimetro a ${singularName}`} placement="top">
-               <Button color="info" onClick={() => handleClickAssign(id, name)}>
-                  <IconCirclesRelation />
-               </Button>
-            </Tooltip>
+            {auth.permissions.more_permissions.includes("13@Asignar Perímetro") && (
+               <Tooltip title={`Asignar Perímetro a ${singularName}`} placement="top">
+                  <Button color="info" onClick={() => handleClickAssign(id, name)}>
+                     <IconCirclesRelation />
+                  </Button>
+               </Tooltip>
+            )} 
             {/* <Tooltip title={`Eliminar ${singularName}`} placement="top">
                <Button color="error" onClick={() => handleClickDelete(id, name)}>
                   <IconDelete />
@@ -221,6 +223,7 @@ const CommunityDT = () => {
             data={data}
             globalFilterFields={globalFilterFields}
             headerFilters={false}
+            btnAdd={auth.permissions.create}
             handleClickAdd={handleClickAdd}
             rowEdit={false}
             refreshTable={getCommunities}

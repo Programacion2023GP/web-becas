@@ -19,12 +19,14 @@ import InputsCommunityComponent, { getCommunity } from "../../../components/Form
 import { handleInputFormik } from "../../../utils/Formats";
 import SwitchComponent from "../../../components/SwitchComponent";
 import { Label } from "@mui/icons-material";
+import { useAuthContext } from "../../../context/AuthContext";
 // import InputComponent from "../Form/InputComponent";
 
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
 const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
 
 const MenuForm = () => {
+   const { auth } = useAuthContext();
    const { openDialog, setOpenDialog, toggleDrawer, setLoadingAction } = useGlobalContext();
    const { singularName, menus, createMenu, updateMenu, formData, setFormData, textBtnSubmit, resetFormData, setTextBtnSumbit, formTitle, setFormTitle, headerMenus } =
       useMenuContext();
@@ -335,17 +337,19 @@ const MenuForm = () => {
                            </Button>
                         </Tooltip>
                      </Grid>
-                     <LoadingButton
-                        type="submit"
-                        disabled={isSubmitting}
-                        loading={isSubmitting}
-                        // loadingPosition="start"
-                        variant="contained"
-                        fullWidth
-                        size="large"
-                     >
-                        {textBtnSubmit}
-                     </LoadingButton>
+                     {((textBtnSubmit === "AGREGAR" && auth.permissions.create) || (textBtnSubmit === "GUARDAR" && auth.permissions.update)) && (
+                        <LoadingButton
+                           type="submit"
+                           disabled={isSubmitting}
+                           loading={isSubmitting}
+                           // loadingPosition="start"
+                           variant="contained"
+                           fullWidth
+                           size="large"
+                        >
+                           {textBtnSubmit}
+                        </LoadingButton>
+                     )}
                      <ButtonGroup variant="outlined" fullWidth>
                         <Button
                            type="reset"

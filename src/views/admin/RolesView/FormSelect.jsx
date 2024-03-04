@@ -298,7 +298,7 @@ const FormSelect = ({ setOpenDialogTable }) => {
                         disabled={false}
                      />
                   </Grid>
-                  {auth.permissions.update && (
+                  {auth.permissions.more_permissions.includes("6@Asignar Permisos") && (
                      <Grid xs={12} sm={2} sx={{ mb: 1 }}>
                         <LoadingButton
                            type="submit"
@@ -309,9 +309,7 @@ const FormSelect = ({ setOpenDialogTable }) => {
                            fullWidth
                            size="large"
                         >
-                           {" "}
                            GUARDAR
-                           {/* {textBtnSubmit} */}
                         </LoadingButton>
                      </Grid>
                   )}

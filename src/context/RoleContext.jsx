@@ -78,6 +78,7 @@ export default function RoleContextProvider({ children }) {
          setRoles(axiosData.data.data.result);
          // console.log("roles", roles);
          showRoleSelect(auth.role_id);
+         getRolesSelectIndex();
          return res;
       } catch (error) {
          const res = ErrorRes;

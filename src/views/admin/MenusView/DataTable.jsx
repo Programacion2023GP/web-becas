@@ -167,11 +167,13 @@ const MenuDT = () => {
    const ButtonsAction = ({ id, name, active }) => {
       return (
          <ButtonGroup variant="outlined">
-            <Tooltip title={`Editar ${singularName}`} placement="top">
-               <Button color="info" onClick={() => handleClickEdit(id)}>
-                  <IconEdit />
-               </Button>
-            </Tooltip>
+            {auth.permissions.update && (
+               <Tooltip title={`Editar ${singularName}`} placement="top">
+                  <Button color="info" onClick={() => handleClickEdit(id)}>
+                     <IconEdit />
+                  </Button>
+               </Tooltip>
+            )}
             {/* <Tooltip title={`Eliminar ${singularName}`} placement="top">
                <Button color="error" onClick={() => handleClickDelete(id, name)}>
                   <IconDelete />
@@ -218,11 +220,11 @@ const MenuDT = () => {
          data={data}
          globalFilterFields={globalFilterFields}
          headerFilters={false}
+         btnAdd={false}
          handleClickAdd={handleClickAdd}
          rowEdit={false}
          refreshTable={getMenus}
          btnsExport={false}
-         btnAdd={false}
          scrollHeight="63vh"
       />
    );

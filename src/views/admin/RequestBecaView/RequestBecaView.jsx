@@ -1013,11 +1013,13 @@ const RequestBecaView = () => {
                   El presente cuestionario tiene por objetivo conocer el perfil de los aspirantes a obtener una beca del <b>R. Ayuntamiento de Gómez Palacio</b>. La
                   información proporcionada de aqui debe ser completamente verdadera, por ello, lee con atención cada pregunta y contesta adecuadamente.
                </Typography>
-               <Link to={"pagina/1"}>
-                  <Button onClick={handleReset} variant="contained" fullWidth>
-                     COMENZAR SOLICITUD
-                  </Button>
-               </Link>
+               {auth.permissions.create && (
+                  <Link to={"pagina/1"}>
+                     <Button onClick={handleReset} variant="contained" fullWidth>
+                        COMENZAR SOLICITUD
+                     </Button>
+                  </Link>
+               )}
             </Box>
          ) : (
             <>

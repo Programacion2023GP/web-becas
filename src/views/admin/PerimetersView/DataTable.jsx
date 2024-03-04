@@ -122,11 +122,13 @@ const PerimeterDT = () => {
    const ButtonsAction = ({ id, name, active }) => {
       return (
          <ButtonGroup variant="outlined">
-            <Tooltip title={`Editar ${singularName}`} placement="top">
-               <Button color="info" onClick={() => handleClickEdit(id)}>
-                  <IconEdit />
-               </Button>
-            </Tooltip>
+            {auth.permissions.update && (
+               <Tooltip title={`Editar ${singularName}`} placement="top">
+                  <Button color="info" onClick={() => handleClickEdit(id)}>
+                     <IconEdit />
+                  </Button>
+               </Tooltip>
+            )}
             {/* <Tooltip title={`Eliminar ${singularName}`} placement="top">
                <Button color="error" onClick={() => handleClickDelete(id, name)}>
                   <IconDelete />
@@ -173,6 +175,7 @@ const PerimeterDT = () => {
          data={data}
          globalFilterFields={globalFilterFields}
          headerFilters={false}
+         btnAdd={auth.permissions.create}
          handleClickAdd={handleClickAdd}
          rowEdit={false}
          refreshTable={getPerimeters}

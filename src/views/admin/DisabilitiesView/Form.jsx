@@ -190,7 +190,7 @@ const DisabilityForm = () => {
                            color="secondary"
                            fullWidth
                            size="large"
-                           sx={{ mt: 1 }}
+                           sx={{ mt: 1, display: "none" }}
                            onClick={() => handleReset(resetForm, setFieldValue, values.id, values.code)}
                         >
                            LIMPIAR
