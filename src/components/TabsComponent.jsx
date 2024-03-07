@@ -7,6 +7,8 @@ import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import { useState } from "react";
+import { Button } from "@mui/material";
+import { LoadingButton } from "@mui/lab";
 
 function TabPanel(props) {
    const { children, value, index, ...other } = props;
@@ -62,6 +64,21 @@ export default function TabsComponent({ TabsTitles = [], TabsContainer = [] }) {
                {TabsTitles.map((title, index) => (
                   <Tab key={`title_${index}`} label={title} {...a11yProps(index)} />
                ))}
+               <LoadingButton
+                  type="submit"
+                  // disabled={isSubmitting}
+                  // loading={isSubmitting}
+                  // loadingPosition="start"
+                  variant="contained"
+                  fullWidth={false}
+                  sx={{ width: "auto" }}
+                  size="large"
+               >
+                  {"GUARDAR CONFIGURACIÓN"}
+               </LoadingButton>
+               {/* <Button color="info" variant="contained" sx={{ width: "auto" }}>
+                  GUARDAR CONFIGURACIÓN
+               </Button> */}
             </Tabs>
          </AppBar>
          {/* <SwipeableViews axis={theme.direction === "rtl" ? "x-reverse" : "x"} index={value} onChangeIndex={handleChangeIndex}> */}

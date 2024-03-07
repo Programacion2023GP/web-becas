@@ -149,102 +149,102 @@ const AnswerScoreForm = () => {
    }) => {
       return (
          <>
-            <Formik initialValues={formData} validationSchema={validationSchema} onSubmit={onSubmit}>
-               {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
-                  <Grid container spacing={2} component={"form"} onSubmit={handleSubmit} display={"flex"} alignItems={"center"}>
-                     {/* <Field id="id" name="id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} /> */}
-                     <ListItemText
-                        primary={
-                           <Box display={"flex"} alignItems={"center"} justifyContent={"space-between"} mb={1} mt={1}>
-                              <Typography variant="h4" component={"b"}>
-                                 {question}
-                              </Typography>
-                              <ButtonGroup>
-                                 <LoadingButton
-                                    type="submit"
-                                    disabled={isSubmitting}
-                                    loading={isSubmitting}
-                                    // loadingPosition="start"
-                                    variant="contained"
-                                    // fullWidth
-                                    size="small"
-                                 >
-                                    {textBtnSubmit}
-                                 </LoadingButton>
-                                 <Button type="reset" variant="outlined" color="error" size="small" onClick={() => handleCancel(resetForm)}>
-                                    CANCELAR
-                                 </Button>
-                              </ButtonGroup>
-                              <Button
-                                 type="button"
-                                 color="info"
-                                 fullWidth
-                                 id={`btnModify_${question}`}
-                                 sx={{ mt: 1, display: "none" }}
-                                 onClick={() => handleModify(setValues)}
-                              >
-                                 setValues
-                              </Button>
+            {/* <Formik initialValues={formData} validationSchema={validationSchema} onSubmit={onSubmit}>
+               {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => ( */}
+            <Grid container spacing={2} display={"flex"} alignItems={"center"}>
+               {/* <Field id="id" name="id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} /> */}
+               <ListItemText
+                  primary={
+                     <Box display={"flex"} alignItems={"center"} justifyContent={"space-between"} mb={1} mt={1}>
+                        <Typography variant="h4" component={"b"}>
+                           {question}
+                        </Typography>
+                        {/* <ButtonGroup>
+                           <LoadingButton
+                              type="submit"
+                              disabled={isSubmitting}
+                              loading={isSubmitting}
+                              // loadingPosition="start"
+                              variant="contained"
+                              // fullWidth
+                              size="small"
+                           >
+                              {textBtnSubmit}
+                           </LoadingButton>
+                           <Button type="reset" variant="outlined" color="error" size="small" onClick={() => handleCancel(resetForm)}>
+                              CANCELAR
+                           </Button>
+                        </ButtonGroup> */}
+                        {/* <Button
+                           type="button"
+                           color="info"
+                           fullWidth
+                           id={`btnModify_${question}`}
+                           sx={{ mt: 1, display: "none" }}
+                           onClick={() => handleModify(setValues)}
+                        >
+                           setValues
+                        </Button> */}
+                     </Box>
+                  }
+                  secondary={
+                     <Fragment>
+                        {optionsByRange ? (
+                           <Box sx={{ width: "100%", display: "flex", overflowX: "auto", mb: 2 }}>
+                              {optionsRange.map((or, index) => (
+                                 <SliderWithScoreComponent
+                                    key={index}
+                                    width={`${100 / optionsRange.length}%`}
+                                    min={or.min}
+                                    max={or.max}
+                                    defaultValue={or.defaultValue}
+                                    values={or.values}
+                                    handleChangeContinue={or.handleChangeContinue}
+                                    idName={or.idName}
+                                    // valueInput={values[or.idName]}
+                                    // setFieldValue={setFieldValue}
+                                    // onChange={handleChange}
+                                    // onBlur={handleBlur}
+                                    // error={errors[or.idName]}
+                                    // touched={touched[or.idName]}
+                                 />
+                              ))}
                            </Box>
-                        }
-                        secondary={
-                           <Fragment>
-                              {optionsByRange ? (
-                                 <Box sx={{ width: "100%", display: "flex", overflowX: "auto", mb: 2 }}>
-                                    {optionsRange.map((or, index) => (
-                                       <SliderWithScoreComponent
-                                          key={index}
-                                          width={`${100 / optionsRange.length}%`}
-                                          min={or.min}
-                                          max={or.max}
-                                          defaultValue={or.defaultValue}
-                                          values={or.values}
-                                          handleChangeContinue={or.handleChangeContinue}
-                                          idName={or.idName}
-                                          valueInput={values[or.idName]}
-                                          setFieldValue={setFieldValue}
-                                          onChange={handleChange}
-                                          onBlur={handleBlur}
-                                          error={errors[or.idName]}
-                                          touched={touched[or.idName]}
-                                       />
-                                    ))}
-                                 </Box>
-                              ) : (
-                                 <Box sx={{ width: "100%", display: "flex", overflowX: "auto", mb: 5 }}>
-                                    {options.map((op, index) => (
-                                       <>
-                                          <InputComponentv3
-                                             key={index}
-                                             idName={op.idName}
-                                             label={op.label}
-                                             type={op.type}
-                                             value={op.score}
-                                             placeholder="0"
-                                             setFieldValue={setFieldValue}
-                                             onChange={handleChange}
-                                             onBlur={handleBlur}
-                                             error={errors[op.idName]}
-                                             touched={touched[op.idName]}
-                                             inputProps={{ min: 0, max: 100 }}
-                                             // disabled={values.id == 0 ? false : true}
-                                             // setStepFailed={{}}
-                                             // step={7}
-                                             size="normal"
-                                             // error={errors.b5_beds && touched.b5_beds}
-                                             // helperText={errors.b5_beds && touched.b5_beds && showErrorInput(4, errors.b5_beds)}
-                                          />
-                                          <Divider orientation="vertical" sx={{ mx: 1 }} />
-                                       </>
-                                    ))}
-                                 </Box>
-                              )}
-                           </Fragment>
-                        }
-                     />
-                  </Grid>
-               )}
-            </Formik>
+                        ) : (
+                           <Box sx={{ width: "100%", display: "flex", overflowX: "auto", mb: 5 }}>
+                              {options.map((op, index) => (
+                                 <>
+                                    <InputComponentv3
+                                       key={index}
+                                       idName={op.idName}
+                                       label={op.label}
+                                       type={op.type}
+                                       value={op.score}
+                                       placeholder="0"
+                                       setFieldValue={setFieldValue}
+                                       onChange={handleChange}
+                                       onBlur={handleBlur}
+                                       error={errors[op.idName]}
+                                       touched={touched[op.idName]}
+                                       inputProps={{ min: 0, max: 100 }}
+                                       // disabled={values.id == 0 ? false : true}
+                                       // setStepFailed={{}}
+                                       // step={7}
+                                       size="normal"
+                                       // error={errors.b5_beds && touched.b5_beds}
+                                       // helperText={errors.b5_beds && touched.b5_beds && showErrorInput(4, errors.b5_beds)}
+                                    />
+                                    <Divider orientation="vertical" sx={{ mx: 1 }} />
+                                 </>
+                              ))}
+                           </Box>
+                        )}
+                     </Fragment>
+                  }
+               />
+            </Grid>
+            {/* )}
+            </Formik> */}
             <Divider variant="inset" component="li" sx={{ marginLeft: "0px;" }} />
          </>
       );
@@ -510,6 +510,25 @@ const AnswerScoreForm = () => {
       }
    }, [formData]);
 
-   return <TabsComponent TabsTitles={titles} TabsContainer={containers} />;
+   return (
+      <Formik initialValues={formData} validationSchema={validationSchema} onSubmit={onSubmit}>
+         {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
+            <TabsComponent
+               TabsTitles={titles}
+               TabsContainer={containers}
+               // errors={errors}
+               // handleBlur={handleBlur}
+               // handleChange={handleChange}
+               // handleSubmit={handleSubmit}
+               // isSubmitting={isSubmitting}
+               // touched={touched}
+               // values={values}
+               // resetForm={resetForm}
+               // setFieldValue={setFieldValue}
+               // setValues={setValues}
+            />
+         )}
+      </Formik>
+   );
 };
 export default AnswerScoreForm;

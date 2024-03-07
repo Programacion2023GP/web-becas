@@ -82,34 +82,49 @@ const MainRoutes = {
          )
       },
       {
-         path: "usuarios",
-         element: (
-            <UserContextProvider>
-               <UsersView />
-            </UserContextProvider>
-         ),
-         loader: loaderIndexUsersView
+         path: "configuraciones",
+         children: [
+            {
+               path: "usuarios",
+               element: (
+                  <UserContextProvider>
+                     <UsersView />
+                  </UserContextProvider>
+               ),
+               loader: loaderIndexUsersView
+            },
+            {
+               path: "menus",
+               element: (
+                  <MenuContextProvider>
+                     <MenusView />
+                  </MenuContextProvider>
+               )
+               // loader: loaderIndexUsersView
+            },
+            {
+               path: "roles-y-permisos",
+               element: (
+                  <RoleContextProvider>
+                     <MenuContextProvider>
+                        <RolesView />
+                     </MenuContextProvider>
+                  </RoleContextProvider>
+               )
+               // loader: loaderIndex
+            },
+            {
+               path: "respuestas-y-puntajes",
+               element: (
+                  <AnswerScoreContextProvider>
+                     <AnswersScoresView />
+                  </AnswerScoreContextProvider>
+               )
+               // loader: loaderIndex
+            }
+         ]
       },
-      {
-         path: "menus",
-         element: (
-            <MenuContextProvider>
-               <MenusView />
-            </MenuContextProvider>
-         )
-         // loader: loaderIndexUsersView
-      },
-      {
-         path: "roles-y-permisos",
-         element: (
-            <RoleContextProvider>
-               <MenuContextProvider>
-                  <RolesView />
-               </MenuContextProvider>
-            </RoleContextProvider>
-         )
-         // loader: loaderIndex
-      },
+
       {
          path: "catalogos",
          children: [
@@ -154,15 +169,6 @@ const MainRoutes = {
                      </PerimeterContextProvider>
                   </CommunityContextProvider>
                )
-            },
-            {
-               path: "respuestas-y-puntajes",
-               element: (
-                  <AnswerScoreContextProvider>
-                     <AnswersScoresView />
-                  </AnswerScoreContextProvider>
-               )
-               // loader: loaderIndex
             }
          ]
       },
