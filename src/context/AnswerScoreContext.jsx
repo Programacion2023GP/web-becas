@@ -7,7 +7,9 @@ const AnswerScoreContext = createContext();
 
 const formDataInitialState = {
    id: 0,
-   answerScore: ""
+   familia_1_op1: 0,
+   familia_1_op2: 0,
+   familia_1_op3: 0
 };
 
 export default function AnswerScoreContextProvider({ children }) {

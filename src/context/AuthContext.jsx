@@ -13,9 +13,33 @@ Axios.defaults.headers.common = {
 };
 
 export let idPage = 0;
+const AuthinitialStatate = {
+   id: null,
+   username: "",
+   email: "",
+   email_verified_at: null,
+   role_id: null,
+   active: null,
+   created_at: "",
+   updated_at: null,
+   deleted_at: null,
+   role: "",
+   read: false,
+   create: false,
+   update: false,
+   delete: false,
+   more_permissions: [],
+   permissions: {
+      read: false,
+      create: false,
+      update: false,
+      delete: false,
+      more_permissions: []
+   }
+};
 
 export default function AuthContextProvider({ children }) {
-   const [auth, setAuth] = useState(JSON.parse(localStorage.getItem("auth")) || null);
+   const [auth, setAuth] = useState(JSON.parse(localStorage.getItem("auth")) || AuthinitialStatate);
    const [permissionRead, setPermissionRead] = useState(false);
    // const [idPage, setIdPage] = useState(0);
 

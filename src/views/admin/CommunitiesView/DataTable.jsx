@@ -22,7 +22,7 @@ import DataTableComponent from "../../../components/DataTableComponent";
 import { IconCircleCheckFilled } from "@tabler/icons-react";
 import { IconCircleXFilled } from "@tabler/icons-react";
 import { formatDatetime } from "../../../utils/Formats";
-import { useAuthContext } from "../../../context/AuthContext";
+import { idPage, useAuthContext } from "../../../context/AuthContext";
 import SwitchComponent from "../../../components/SwitchComponent";
 import { IconCirclesRelation } from "@tabler/icons-react";
 import { Box } from "@mui/system";
@@ -169,13 +169,14 @@ const CommunityDT = () => {
                   <IconEdit />
                </Button>
             </Tooltip> */}
-            {auth.permissions.more_permissions.includes("13@Asignar Perímetro") && (
+            {console.log(idPage)}
+            {auth.permissions.more_permissions.includes(`13@Asignar Perímetro`) && (
                <Tooltip title={`Asignar Perímetro a ${singularName}`} placement="top">
                   <Button color="info" onClick={() => handleClickAssign(id, name)}>
                      <IconCirclesRelation />
                   </Button>
                </Tooltip>
-            )} 
+            )}
             {/* <Tooltip title={`Eliminar ${singularName}`} placement="top">
                <Button color="error" onClick={() => handleClickDelete(id, name)}>
                   <IconDelete />

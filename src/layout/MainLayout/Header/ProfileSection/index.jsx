@@ -475,7 +475,7 @@ const ProfileSection = () => {
             )}
          </Popper>
 
-         {/* FORMULARIO COMPLEMENTARIO */}
+         {/* FORMULARIO CAMBIO DE CONTRASEÑA */}
          <Formik initialValues={formData} validationSchema={validationSchema} onSubmit={onSubmit}>
             {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
                <Dialog

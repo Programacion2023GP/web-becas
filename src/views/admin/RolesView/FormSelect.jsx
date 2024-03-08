@@ -10,7 +10,7 @@ import { LoadingButton } from "@mui/lab";
 import { Button, ButtonGroup } from "@mui/material";
 import Toast from "../../../utils/Toast";
 import { useGlobalContext } from "../../../context/GlobalContext";
-import { useAuthContext } from "../../../context/AuthContext";
+import { idPage, useAuthContext } from "../../../context/AuthContext";
 import { useMenuContext } from "../../../context/MenuContext";
 import { map } from "highcharts";
 
@@ -298,7 +298,7 @@ const FormSelect = ({ setOpenDialogTable }) => {
                         disabled={false}
                      />
                   </Grid>
-                  {auth.permissions.more_permissions.includes("6@Asignar Permisos") && (
+                  {auth.permissions.more_permissions.includes(`6@Asignar Permisos`) && (
                      <Grid xs={12} sm={2} sx={{ mb: 1 }}>
                         <LoadingButton
                            type="submit"

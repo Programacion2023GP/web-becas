@@ -101,7 +101,7 @@ const FirebaseLogin = ({ ...others }) => {
       if (inputUsername)
          validationSchema = Yup.object().shape({
             email: Yup.string().trim().required("Nombre de usario o Correo requerido"),
-            password: Yup.string().trim().min(3, "Mínimo 6 caracteres").required("Contraseña requerida")
+            password: Yup.string().trim().min(6, "Mínimo 6 caracteres").required("Contraseña requerida")
          });
       else
          validationSchema = Yup.object().shape({

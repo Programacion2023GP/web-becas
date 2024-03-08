@@ -36,10 +36,43 @@ import { handleInputFormik } from "../../../utils/Formats";
 import TabsComponent from "../../../components/TabsComponent";
 import { SliderWithScoreComponent } from "../../../components/SliderComponent";
 import { InputComponentv3 } from "../../../components/Form/InputComponent2";
+
 // import InputComponent from "../Form/InputComponent";
+import { useTheme } from "@mui/material/styles";
+import PropTypes from "prop-types";
+import AppBar from "@mui/material/AppBar";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
 
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
 const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
+
+function TabPanel(props) {
+   const { children, value, index, ...other } = props;
+
+   return (
+      <div role="tabpanel" hidden={value !== index} id={`full-width-tabpanel-${index}`} aria-labelledby={`full-width-tab-${index}`} {...other}>
+         {value === index && (
+            <Box sx={{ p: 3 }}>
+               <Typography>{children}</Typography>
+            </Box>
+         )}
+      </div>
+   );
+}
+
+TabPanel.propTypes = {
+   children: PropTypes.node,
+   index: PropTypes.number.isRequired,
+   value: PropTypes.number.isRequired
+};
+
+function a11yProps(index) {
+   return {
+      id: `full-width-tab-${index}`,
+      "aria-controls": `full-width-tabpanel-${index}`
+   };
+}
 
 const AnswerScoreForm = () => {
    const { openDialog, setOpenDialog, toggleDrawer, setLoadingAction } = useGlobalContext();
@@ -74,7 +107,7 @@ const AnswerScoreForm = () => {
 
    const onSubmit = async (values, { setSubmitting, setErrors, resetForm }) => {
       try {
-         // return console.log("values", values);
+         return console.log("onSubmit -> values", values);
          setLoadingAction(true);
          let axiosResponse;
          if (values.id == 0) axiosResponse = await createAnswerScore(values);
@@ -130,13 +163,13 @@ const AnswerScoreForm = () => {
    };
 
    const validationSchema = Yup.object().shape({
-      answerScore: Yup.string().trim().required("Nivel requerido")
+      familia_1_op1: Yup.string().trim().required("Nivel requerido")
    });
 
    const [values1, setValues1] = useState([0, 10]);
 
    const handleChangeContinue = (values) => {
-      console.log("values", values);
+      console.log("SliderValues", values);
       setValues1(values);
       console.log("values1", values1);
    };
@@ -145,8 +178,20 @@ const AnswerScoreForm = () => {
       question = "¿La pregunta?",
       optionsByRange = false,
       options = [{ score: 0, label: "opcion 1", type: "number", placeholder: "0", idName: "or1" }],
-      optionsRange = [{ width: 300, min: 1, max: 20, defaultValue: [1, 5], values: [1, 5], handleChangeContinue: handleChangeContinue, idName: "op1" }]
+      optionsRange = [{ width: 300, min: 1, max: 20, defaultValue: [1, 5], values: [1, 5], handleChangeContinue: handleChangeContinue, idName: "op1" }],
+      values,
+      handleBlur,
+      handleChange,
+      errors,
+      touched,
+      resetForm,
+      setFieldValue,
+      setValues
    }) => {
+      const styleTitle = { backgroundColor: "#E9ECEF", pl: 1, borderRadius: "5px 5px 0  0" };
+      const styleContent = { width: "100%", display: "flex", overflowX: "auto", p: 2, mb: 2, backgroundColor: "#E9ECEF", borderRadius: "0  0 5px 5px" };
+      console.log("ItemContainer->values", values);
+
       return (
          <>
             {/* <Formik initialValues={formData} validationSchema={validationSchema} onSubmit={onSubmit}>
@@ -155,7 +200,7 @@ const AnswerScoreForm = () => {
                {/* <Field id="id" name="id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} /> */}
                <ListItemText
                   primary={
-                     <Box display={"flex"} alignItems={"center"} justifyContent={"space-between"} mb={1} mt={1}>
+                     <Box display={"flex"} alignItems={"center"} justifyContent={"space-between"} py={1} sx={styleTitle}>
                         <Typography variant="h4" component={"b"}>
                            {question}
                         </Typography>
@@ -190,7 +235,7 @@ const AnswerScoreForm = () => {
                   secondary={
                      <Fragment>
                         {optionsByRange ? (
-                           <Box sx={{ width: "100%", display: "flex", overflowX: "auto", mb: 2 }}>
+                           <Box sx={styleContent}>
                               {optionsRange.map((or, index) => (
                                  <SliderWithScoreComponent
                                     key={index}
@@ -201,17 +246,17 @@ const AnswerScoreForm = () => {
                                     values={or.values}
                                     handleChangeContinue={or.handleChangeContinue}
                                     idName={or.idName}
-                                    // valueInput={values[or.idName]}
-                                    // setFieldValue={setFieldValue}
-                                    // onChange={handleChange}
-                                    // onBlur={handleBlur}
-                                    // error={errors[or.idName]}
-                                    // touched={touched[or.idName]}
+                                    valueInput={values[or.idName]}
+                                    setFieldValue={setFieldValue}
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    error={errors[or.idName]}
+                                    touched={touched[or.idName]}
                                  />
                               ))}
                            </Box>
                         ) : (
-                           <Box sx={{ width: "100%", display: "flex", overflowX: "auto", mb: 5 }}>
+                           <Box sx={styleContent}>
                               {options.map((op, index) => (
                                  <>
                                     <InputComponentv3
@@ -221,11 +266,11 @@ const AnswerScoreForm = () => {
                                        type={op.type}
                                        value={op.score}
                                        placeholder="0"
-                                       setFieldValue={setFieldValue}
-                                       onChange={handleChange}
-                                       onBlur={handleBlur}
-                                       error={errors[op.idName]}
-                                       touched={touched[op.idName]}
+                                       // setFieldValue={setFieldValue}
+                                       // onChange={handleChange}
+                                       // onBlur={handleBlur}
+                                       // error={errors[op.idName]}
+                                       // touched={touched[op.idName]}
                                        inputProps={{ min: 0, max: 100 }}
                                        // disabled={values.id == 0 ? false : true}
                                        // setStepFailed={{}}
@@ -249,7 +294,7 @@ const AnswerScoreForm = () => {
          </>
       );
    };
-   const ListFamilies = () => {
+   const ListFamilies = ({ values, handleBlur, handleChange, errors, touched, resetForm, setFieldValue, setValues }) => {
       return (
          <List sx={{ width: "100%", bgcolor: "background.paper" }}>
             <DialogContentText id="alert-dialog-slide-description" component={"div"}>
@@ -261,6 +306,14 @@ const AnswerScoreForm = () => {
                      { width: 300, min: 1, max: 20, defaultValue: [8, 14], values: [8, 14], handleChangeContinue: handleChangeContinue, idName: "familia_1_op2" },
                      { width: 300, min: 1, max: 20, defaultValue: [15, 20], values: [15, 20], handleChangeContinue: handleChangeContinue, idName: "familia_1_op3" }
                   ]}
+                  values={values}
+                  handleBlur={handleBlur}
+                  handleChange={handleChange}
+                  errors={errors}
+                  touched={touched}
+                  resetForm={resetForm}
+                  setFieldValue={setFieldValue}
+                  setValues={setValues}
                />
             </DialogContentText>
          </List>
@@ -497,8 +550,8 @@ const AnswerScoreForm = () => {
       );
    };
 
-   const titles = ["DATOS FAMILIARES", "DATOS ECONÓMICOS", "DATOS DE VIVIENDA", "EQUIPAMIENTO DOMÉSTICO", "PROGRAMA DE BECAS"];
-   const containers = [<ListFamilies />, <ListEconomic />, <ListHouse />, <ListHouseholdEquipment />, <ListBecas />];
+   const TabsTitles = ["DATOS FAMILIARES", "DATOS ECONÓMICOS", "DATOS DE VIVIENDA", "EQUIPAMIENTO DOMÉSTICO", "PROGRAMA DE BECAS"];
+   const TabsContainers = [<ListFamilies />, <ListEconomic />, <ListHouse />, <ListHouseholdEquipment />, <ListBecas />];
 
    useEffect(() => {
       try {
@@ -510,22 +563,29 @@ const AnswerScoreForm = () => {
       }
    }, [formData]);
 
+   const theme = useTheme();
+   const [tabValue, setTabValue] = useState(0);
+
+   const handleChangeTab = (event, newValue) => {
+      setTabValue(newValue);
+   };
+
    return (
       <Formik initialValues={formData} validationSchema={validationSchema} onSubmit={onSubmit}>
          {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
             <TabsComponent
-               TabsTitles={titles}
-               TabsContainer={containers}
-               // errors={errors}
-               // handleBlur={handleBlur}
-               // handleChange={handleChange}
-               // handleSubmit={handleSubmit}
-               // isSubmitting={isSubmitting}
-               // touched={touched}
-               // values={values}
-               // resetForm={resetForm}
-               // setFieldValue={setFieldValue}
-               // setValues={setValues}
+               TabsTitles={TabsTitles}
+               TabsContainer={TabsContainers}
+               errors={errors}
+               handleBlur={handleBlur}
+               handleChange={handleChange}
+               handleSubmit={handleSubmit}
+               isSubmitting={isSubmitting}
+               touched={touched}
+               values={values}
+               resetForm={resetForm}
+               setFieldValue={setFieldValue}
+               setValues={setValues}
             />
          )}
       </Formik>

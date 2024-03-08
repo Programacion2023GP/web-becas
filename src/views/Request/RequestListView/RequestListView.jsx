@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useRef, useState } from "react";
-import { useGlobalContext } from "../../../context/GlobalContext";
+import { ROLE_CIUDADANO, useGlobalContext } from "../../../context/GlobalContext";
 import { Box } from "@mui/system";
 import {
    Button,
@@ -96,7 +96,7 @@ const RequestListView = () => {
    return (
       <Box sx={{ width: "100%", height: "100%" }}>
          <Typography variant="h1" color={"#364152"} mb={2} textAlign={"center"}>
-            {auth.role_id < 3 ? "LISTADO DE SOLICITUDES".toUpperCase() : "MIS SOLICITUDES".toUpperCase()} 
+            {auth.role_id === ROLE_CIUDADANO ? "MIS SOLICITUDES".toUpperCase() : "LISTADO DE SOLICITUDES".toUpperCase()}
          </Typography>
          <RequestBecaDT />
       </Box>
