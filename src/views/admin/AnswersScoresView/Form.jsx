@@ -835,12 +835,87 @@ const AnswerScoreForm = () => {
                <TabPanel key={`container_${0}`} value={tabValue} index={0} dir={theme.direction}>
                   <List sx={{ width: "100%", bgcolor: "background.paper" }}>
                      <DialogContentText id="alert-dialog-slide-description" component={"div"}>
+                        {/* Pregunta 1  */}
                         <Grid container spacing={2} display={"flex"} alignItems={"center"}>
                            <ListItemText
                               primary={
                                  <Box display={"flex"} alignItems={"center"} justifyContent={"space-between"} py={1} sx={styleTitle}>
                                     <Typography variant="h4" component={"b"}>
-                                       {question}
+                                       {"Cantidad de miembros en la casa"}
+                                    </Typography>
+                                 </Box>
+                              }
+                              secondary={
+                                 <Fragment>
+                                    <Box sx={styleContent}>
+                                       <Box sx={{ width: width, my: 3, mx: 2, display: "flex" }}>
+                                          <PrettoSlider
+                                             id={`slide_${idName}`}
+                                             name={`slide_${idName}`}
+                                             valueLabelDisplay="on"
+                                             aria-label="pretto slider"
+                                             aria-labelledby="continuous-slider"
+                                             size="small"
+                                             value={valuesSlider}
+                                             defaultValue={defaultValue}
+                                             onChange={(e) => {
+                                                handleChange(e);
+                                                handleChangeSlider(e, newValue);
+                                             }}
+                                             onChangeCommitted={handleChangeCommitted}
+                                             min={1}
+                                             max={15}
+                                             marks={[
+                                                {
+                                                   value: 1,
+                                                   label: `${1}`
+                                                },
+                                                {
+                                                   value: valuesSlider[0],
+                                                   label: `${valuesSlider[0]}`
+                                                },
+                                                {
+                                                   value: valuesSlider[1],
+                                                   label: `${valuesSlider[1]}`
+                                                },
+                                                {
+                                                   value: 15,
+                                                   label: `${15}`
+                                                }
+                                             ]}
+                                          />
+                                          <IconEqual style={{ marginLeft: 5, marginTop: 4 }} width={150} />
+                                          <InputComponentv3
+                                             idName={"family_1_1"}
+                                             label={"pts."}
+                                             type="number"
+                                             value={values.family_1_1}
+                                             placeholder={"0"}
+                                             setFieldValue={setFieldValue}
+                                             onChange={onChange}
+                                             onBlur={onBlur}
+                                             error={error}
+                                             touched={touched}
+                                             fullWidth={false}
+                                             width={"10px"}
+                                          />
+
+                                          <Divider orientation="vertical" sx={{ mx: 1, backgroundColor: "white" }} />
+                                       </Box>
+                                       <Divider orientation="vertical" sx={{ mx: 1 }} />
+                                    </Box>
+                                 </Fragment>
+                              }
+                           />
+                        </Grid>
+                        <Divider variant="inset" component="li" sx={{ marginLeft: "0px;" }} />
+                        {/* Pregunta 2  */}
+                        <Grid container spacing={2} display={"flex"} alignItems={"center"}>
+                           <ListItemText
+                              primary={
+                                 <Box display={"flex"} alignItems={"center"} justifyContent={"space-between"} py={1} sx={styleTitle}>
+                                    <Typography variant="h4" component={"b"}>
+                                       {"Cantidad de miembros en la casa"}
                                     </Typography>
                                  </Box>
                               }
@@ -867,76 +942,6 @@ const AnswerScoreForm = () => {
                                           // error={errors.b5_beds && touched.b5_beds}
                                           // helperText={errors.b5_beds && touched.b5_beds && showErrorInput(4, errors.b5_beds)}
                                        />
-                                       <Divider orientation="vertical" sx={{ mx: 1 }} />
-                                    </Box>
-                                 </Fragment>
-                              }
-                           />
-                        </Grid>
-                        <Divider variant="inset" component="li" sx={{ marginLeft: "0px;" }} />
-                        <Grid container spacing={2} display={"flex"} alignItems={"center"}>
-                           <ListItemText
-                              primary={
-                                 <Box display={"flex"} alignItems={"center"} justifyContent={"space-between"} py={1} sx={styleTitle}>
-                                    <Typography variant="h4" component={"b"}>
-                                       {"Cantidad de miembros en la casa"}
-                                    </Typography>
-                                 </Box>
-                              }
-                              secondary={
-                                 <Fragment>
-                                    <Box sx={styleContent}>
-                                       <Box sx={{ width: width, my: 3, mx: 2, display: "flex" }}>
-                                          <PrettoSlider
-                                             id={`slide_${idName}`}
-                                             name={`slide_${idName}`}
-                                             valueLabelDisplay="on"
-                                             aria-label="pretto slider"
-                                             aria-labelledby="continuous-slider"
-                                             size="small"
-                                             value={valuesSlider}
-                                             defaultValue={defaultValue}
-                                             onChange={handleChange}
-                                             onChangeCommitted={handleChangeCommitted}
-                                             min={min}
-                                             max={max}
-                                             marks={[
-                                                {
-                                                   value: min,
-                                                   label: `${min}`
-                                                },
-                                                {
-                                                   value: value[0],
-                                                   label: `${value[0]}`
-                                                },
-                                                {
-                                                   value: value[1],
-                                                   label: `${value[1]}`
-                                                },
-                                                {
-                                                   value: max,
-                                                   label: `${max}`
-                                                }
-                                             ]}
-                                          />
-                                          <IconEqual style={{ marginLeft: 5, marginTop: 4 }} width={150} />
-                                          <InputComponentv3
-                                             idName={idName}
-                                             label={"pts."}
-                                             type="number"
-                                             value={valueInput}
-                                             placeholder={"0"}
-                                             setFieldValue={setFieldValue}
-                                             onChange={onChange}
-                                             onBlur={onBlur}
-                                             error={error}
-                                             touched={touched}
-                                             fullWidth={false}
-                                             width={"10px"}
-                                          />
-
-                                          <Divider orientation="vertical" sx={{ mx: 1, backgroundColor: "white" }} />
-                                       </Box>
                                     </Box>
                                  </Fragment>
                               }
