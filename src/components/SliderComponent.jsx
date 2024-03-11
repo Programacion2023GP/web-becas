@@ -186,10 +186,10 @@ export const SliderWithScoreComponent = ({
    error,
    touched
 }) => {
-   const [value, setValue] = useState(defaultValue);
+   const [valuesSlider, setValuesSlider] = useState(defaultValue);
 
    const handleChange = (event, newValue) => {
-      setValue(newValue);
+      setValuesSlider(newValue);
    };
    const handleChangeCommitted = async (event, newValue) => {
       console.log("Slider value after change:", newValue);
@@ -204,7 +204,7 @@ export const SliderWithScoreComponent = ({
             aria-label="pretto slider"
             aria-labelledby="continuous-slider"
             size="small"
-            value={value}
+            value={valuesSlider}
             defaultValue={defaultValue}
             onChange={handleChange}
             onChangeCommitted={handleChangeCommitted}
@@ -245,7 +245,7 @@ export const SliderWithScoreComponent = ({
             width={"10px"}
          />
 
-         <Divider orientation="vertical" sx={{ mx: 1 }} />
+         <Divider orientation="vertical" sx={{ mx: 1, backgroundColor: "white" }} />
       </Box>
    );
 };

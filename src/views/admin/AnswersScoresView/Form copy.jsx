@@ -74,9 +74,6 @@ function a11yProps(index) {
    };
 }
 
-const styleTitle = { backgroundColor: "#E9ECEF", pl: 1, borderRadius: "5px 5px 0  0" };
-const styleContent = { width: "100%", display: "flex", overflowX: "auto", p: 2, mb: 2, backgroundColor: "#E9ECEF", borderRadius: "0  0 5px 5px" };
-
 const AnswerScoreForm = () => {
    const { openDialog, setOpenDialog, toggleDrawer, setLoadingAction } = useGlobalContext();
    const {
@@ -789,18 +786,6 @@ const AnswerScoreForm = () => {
       setTabValue(newValue);
    };
 
-   // Slider
-   const [valuesSlider, setValuesSlider] = useState([1, 10]);
-
-   const handleChange = (event, newValue) => {
-      setValuesSlider(newValue);
-   };
-   const handleChangeCommitted = async (event, newValue) => {
-      console.log("Slider value after change:", newValue);
-      // handleChangeContinue(newValue);
-   };
-   // Slider
-
    return (
       <Formik initialValues={formData} validationSchema={validationSchema} onSubmit={onSubmit}>
          {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
@@ -832,121 +817,29 @@ const AnswerScoreForm = () => {
                      </LoadingButton>
                   </Tabs>
                </AppBar>
-               <TabPanel key={`container_${0}`} value={tabValue} index={0} dir={theme.direction}>
-                  <List sx={{ width: "100%", bgcolor: "background.paper" }}>
-                     <DialogContentText id="alert-dialog-slide-description" component={"div"}>
-                        <Grid container spacing={2} display={"flex"} alignItems={"center"}>
-                           <ListItemText
-                              primary={
-                                 <Box display={"flex"} alignItems={"center"} justifyContent={"space-between"} py={1} sx={styleTitle}>
-                                    <Typography variant="h4" component={"b"}>
-                                       {question}
-                                    </Typography>
-                                 </Box>
-                              }
-                              secondary={
-                                 <Fragment>
-                                    <Box sx={styleContent}>
-                                       <InputComponentv3
-                                          key={index}
-                                          idName={op.idName}
-                                          label={op.label}
-                                          type={op.type}
-                                          value={op.score}
-                                          placeholder="0"
-                                          // setFieldValue={setFieldValue}
-                                          // onChange={handleChange}
-                                          // onBlur={handleBlur}
-                                          // error={errors[op.idName]}
-                                          // touched={touched[op.idName]}
-                                          inputProps={{ min: 0, max: 100 }}
-                                          // disabled={values.id == 0 ? false : true}
-                                          // setStepFailed={{}}
-                                          // step={7}
-                                          size="normal"
-                                          // error={errors.b5_beds && touched.b5_beds}
-                                          // helperText={errors.b5_beds && touched.b5_beds && showErrorInput(4, errors.b5_beds)}
-                                       />
-                                       <Divider orientation="vertical" sx={{ mx: 1 }} />
-                                    </Box>
-                                 </Fragment>
-                              }
-                           />
-                        </Grid>
-                        <Divider variant="inset" component="li" sx={{ marginLeft: "0px;" }} />
-                        <Grid container spacing={2} display={"flex"} alignItems={"center"}>
-                           <ListItemText
-                              primary={
-                                 <Box display={"flex"} alignItems={"center"} justifyContent={"space-between"} py={1} sx={styleTitle}>
-                                    <Typography variant="h4" component={"b"}>
-                                       {"Cantidad de miembros en la casa"}
-                                    </Typography>
-                                 </Box>
-                              }
-                              secondary={
-                                 <Fragment>
-                                    <Box sx={styleContent}>
-                                       <Box sx={{ width: width, my: 3, mx: 2, display: "flex" }}>
-                                          <PrettoSlider
-                                             id={`slide_${idName}`}
-                                             name={`slide_${idName}`}
-                                             valueLabelDisplay="on"
-                                             aria-label="pretto slider"
-                                             aria-labelledby="continuous-slider"
-                                             size="small"
-                                             value={valuesSlider}
-                                             defaultValue={defaultValue}
-                                             onChange={handleChange}
-                                             onChangeCommitted={handleChangeCommitted}
-                                             min={min}
-                                             max={max}
-                                             marks={[
-                                                {
-                                                   value: min,
-                                                   label: `${min}`
-                                                },
-                                                {
-                                                   value: value[0],
-                                                   label: `${value[0]}`
-                                                },
-                                                {
-                                                   value: value[1],
-                                                   label: `${value[1]}`
-                                                },
-                                                {
-                                                   value: max,
-                                                   label: `${max}`
-                                                }
-                                             ]}
-                                          />
-                                          <IconEqual style={{ marginLeft: 5, marginTop: 4 }} width={150} />
-                                          <InputComponentv3
-                                             idName={idName}
-                                             label={"pts."}
-                                             type="number"
-                                             value={valueInput}
-                                             placeholder={"0"}
-                                             setFieldValue={setFieldValue}
-                                             onChange={onChange}
-                                             onBlur={onBlur}
-                                             error={error}
-                                             touched={touched}
-                                             fullWidth={false}
-                                             width={"10px"}
-                                          />
-
-                                          <Divider orientation="vertical" sx={{ mx: 1, backgroundColor: "white" }} />
-                                       </Box>
-                                    </Box>
-                                 </Fragment>
-                              }
-                           />
-                        </Grid>
-                        <Divider variant="inset" component="li" sx={{ marginLeft: "0px;" }} />
-                     </DialogContentText>
-                  </List>
-               </TabPanel>
+               {/* <SwipeableViews axis={theme.direction === "rtl" ? "x-reverse" : "x"} index={value} onChangeIndex={handleChangeIndex}> */}
+               {TabsContainers.map((container, index) => (
+                  <TabPanel key={`container_${index}`} value={tabValue} index={index} dir={theme.direction}>
+                     {console.log("values", values)}
+                     {cloneElement(container, { values, handleBlur, handleChange, errors, touched, resetForm, setFieldValue, setValues })}
+                  </TabPanel>
+               ))}
+               {/* </SwipeableViews> */}
             </Box>
+            // <TabsComponent
+            //    TabsTitles={TabsTitles}
+            //    TabsContainer={TabsContainers}
+            //    errors={errors}
+            //    handleBlur={handleBlur}
+            //    handleChange={handleChange}
+            //    handleSubmit={handleSubmit}
+            //    isSubmitting={isSubmitting}
+            //    touched={touched}
+            //    values={values}
+            //    resetForm={resetForm}
+            //    setFieldValue={setFieldValue}
+            //    setValues={setValues}
+            // />
          )}
       </Formik>
    );
