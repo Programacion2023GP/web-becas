@@ -170,7 +170,7 @@ const CommunityDT = () => {
                </Button>
             </Tooltip> */}
             {console.log(idPage)}
-            {auth.permissions.more_permissions.includes(`13@Asignar Perímetro`) && (
+            {auth.permissions.more_permissions.includes(`14@Asignar Perímetro`) && (
                <Tooltip title={`Asignar Perímetro a ${singularName}`} placement="top">
                   <Button color="info" onClick={() => handleClickAssign(id, name)}>
                      <IconCirclesRelation />

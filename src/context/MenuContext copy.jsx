@@ -35,7 +35,6 @@ export default function MenuContextProvider({ children }) {
    const [menuItems, setMenuItems] = useState({ items: [] });
    const [headerMenus, setHeaderMenus] = useState([]);
    const [permissionsByMenu, setPermissionsByMenu] = useState([]);
-   const [checkMaster, setCheckMaster] = useState(false);
    const [checkMenus, setCheckMenus] = useState([]);
 
    const resetFormData = () => {
@@ -320,7 +319,6 @@ export default function MenuContextProvider({ children }) {
          const axiosData = await Axios.post("/menus/create", menu);
          res = axiosData.data.data;
          getMenus();
-         showMyMenus();
       } catch (error) {
          res = ErrorRes;
          console.log(error);
@@ -337,7 +335,6 @@ export default function MenuContextProvider({ children }) {
          const axiosData = await Axios.post(`/menus/update/${menu.id}`, menu);
          res = axiosData.data.data;
          getMenus();
-         showMyMenus();
       } catch (error) {
          res = ErrorRes;
          console.log(error);
@@ -354,7 +351,6 @@ export default function MenuContextProvider({ children }) {
          const axiosData = await Axios.post(`/menus/destroy/${id}`);
          // console.log("deleteMenu() axiosData", axiosData.data);
          getMenus();
-         showMyMenus();
          res = axiosData.data.data;
          // console.log("res", res);
          return res;
@@ -403,8 +399,6 @@ export default function MenuContextProvider({ children }) {
             getHeaderMenusSelectIndex,
             permissionsByMenu,
             setPermissionsByMenu,
-            checkMaster,
-            setCheckMaster,
             checkMenus,
             setCheckMenus
          }}

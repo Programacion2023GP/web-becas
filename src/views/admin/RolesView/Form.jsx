@@ -169,6 +169,24 @@ const RoleForm = () => {
                            />
                         </Grid>
 
+                        {/* Página Principal */}
+                        <Grid xs={12} md={12} sx={{ mb: 3 }}>
+                           <TextField
+                              id="page_index"
+                              name="page_index"
+                              label="Página Principal *"
+                              type="text"
+                              value={values.page_index}
+                              placeholder="/admin"
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              // onInput={(e) => handleInputFormik(e, setFieldValue, "page_index", true)}
+                              fullWidth
+                              error={errors.page_index && touched.page_index}
+                              helperText={errors.page_index && touched.page_index && errors.page_index}
+                           />
+                        </Grid>
+
                         {/* Activar */}
                         <Grid xs={12} md={12} sx={{ mb: 3 }}>
                            <Tooltip title={values.active ? "Activo" : "Inactivo"} placement="right">

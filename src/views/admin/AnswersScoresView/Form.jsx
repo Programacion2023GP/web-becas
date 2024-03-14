@@ -17,6 +17,7 @@ import {
    Select,
    Switch,
    TextField,
+   Tooltip,
    Typography
 } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
@@ -25,7 +26,7 @@ import { FormControl } from "@mui/material";
 import { FormHelperText } from "@mui/material";
 import { Fragment, cloneElement, useMemo, useState } from "react";
 import { useAnswerScoreContext } from "../../../context/AnswerScoreContext";
-import { Box, width } from "@mui/system";
+import { Box } from "@mui/system";
 import { useEffect } from "react";
 import { ButtonGroup } from "@mui/material";
 import Toast from "../../../utils/Toast";
@@ -43,6 +44,8 @@ import PropTypes from "prop-types";
 import AppBar from "@mui/material/AppBar";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
+
+import { IconArrowsHorizontal, IconEqual } from "@tabler/icons";
 
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
 const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
@@ -181,7 +184,7 @@ const AnswerScoreForm = () => {
       question = "¿La pregunta?",
       optionsByRange = false,
       options = [{ score: 0, label: "opcion 1", type: "number", placeholder: "0", idName: "or1" }],
-      optionsRange = [{ width: 300, min: 1, max: 20, defaultValue: [1, 5], values: [1, 5], handleChangeContinue: handleChangeContinue, idName: "op1" }],
+      optionsRange = [{ width: 300, min: 1, max: 20, handleChangeContinue: handleChangeContinue, idName: "op1" }],
       values,
       handleBlur,
       handleChange,
@@ -197,8 +200,6 @@ const AnswerScoreForm = () => {
 
       return (
          <>
-            {/* <Formik initialValues={formData} validationSchema={validationSchema} onSubmit={onSubmit}>
-               {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => ( */}
             <Grid container spacing={2} display={"flex"} alignItems={"center"}>
                {/* <Field id="id" name="id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} /> */}
                <ListItemText
@@ -239,50 +240,85 @@ const AnswerScoreForm = () => {
                      <Fragment>
                         {optionsByRange ? (
                            <Box sx={styleContent}>
-                              {optionsRange.map((or, index) => (
-                                 <SliderWithScoreComponent
-                                    key={index}
-                                    width={`${100 / optionsRange.length}%`}
-                                    min={or.min}
-                                    max={or.max}
-                                    defaultValue={or.defaultValue}
-                                    values={or.values}
-                                    handleChangeContinue={or.handleChangeContinue}
-                                    idName={or.idName}
-                                    valueInput={values[or.idName]}
-                                    setFieldValue={setFieldValue}
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                    error={errors[or.idName]}
-                                    touched={touched[or.idName]}
-                                 />
-                              ))}
+                              {optionsRange.map((or, index) => {
+                                 console.log(or);
+                                 return (
+                                    <Box
+                                       sx={{ width: `${100 / optionsRange.length}%`, my: 3, mx: 2, display: "flex", alignItems: "center", justifyContent: "center" }}
+                                    >
+                                       <InputComponentv3
+                                          key={`${or.idName}_min`}
+                                          idName={`${or.idName}_min`}
+                                          label={""}
+                                          type="number"
+                                          value={values[`${or.idName}_min`]}
+                                          placeholder={"0"}
+                                          setFieldValue={setFieldValue}
+                                          onChange={handleChange}
+                                          onBlur={handleBlur}
+                                          error={errors[`${or.idName}_min`]}
+                                          touched={touched[`${or.idName}_min`]}
+                                          fullWidth={false}
+                                          sx={{ width: "50px" }}
+                                       />
+                                       <IconArrowsHorizontal key={`${or.idName}_iconArrow`} style={{ marginLeft: 5, marginRight: 15, marginTop: 4 }} />
+                                       <InputComponentv3
+                                          key={`${or.idName}_max`}
+                                          idName={`${or.idName}_max`}
+                                          label={""}
+                                          type="number"
+                                          value={values[`${or.idName}_max`]}
+                                          placeholder={"0"}
+                                          setFieldValue={setFieldValue}
+                                          onChange={handleChange}
+                                          onBlur={handleBlur}
+                                          error={errors[`${or.idName}_max`]}
+                                          touched={touched[`${or.idName}_max`]}
+                                          fullWidth={false}
+                                          sx={{ width: "50px" }}
+                                       />
+                                       <IconEqual style={{ marginLeft: 5, marginRight: 15, marginTop: 4 }} />
+                                       <InputComponentv3
+                                          key={`${or.idName}`}
+                                          idName={`${or.idName}`}
+                                          label={"pts."}
+                                          type="number"
+                                          value={values[`${or.idName}`]}
+                                          placeholder={"0"}
+                                          setFieldValue={setFieldValue}
+                                          onChange={handleChange}
+                                          onBlur={handleBlur}
+                                          error={errors[`${or.idName}`]}
+                                          touched={touched[`${or.idName}`]}
+                                          fullWidth={false}
+                                          sx={{ width: "50px" }}
+                                       />
+                                    </Box>
+                                 );
+                              })}
                            </Box>
                         ) : (
                            <Box sx={styleContent}>
                               {options.map((op, index) => (
                                  <>
-                                    <InputComponentv3
-                                       key={index}
-                                       idName={op.idName}
-                                       label={op.label}
-                                       type={op.type}
-                                       value={op.score}
-                                       placeholder="0"
-                                       // setFieldValue={setFieldValue}
-                                       // onChange={handleChange}
-                                       // onBlur={handleBlur}
-                                       // error={errors[op.idName]}
-                                       // touched={touched[op.idName]}
-                                       inputProps={{ min: 0, max: 100 }}
-                                       // disabled={values.id == 0 ? false : true}
-                                       // setStepFailed={{}}
-                                       // step={7}
-                                       size="normal"
-                                       // error={errors.b5_beds && touched.b5_beds}
-                                       // helperText={errors.b5_beds && touched.b5_beds && showErrorInput(4, errors.b5_beds)}
-                                    />
-                                    <Divider orientation="vertical" sx={{ mx: 1 }} />
+                                    <Box sx={{ width: `${100 / options.length}%`, my: 3, mx: 2, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                       <InputComponentv3
+                                          key={`${or.idName}`}
+                                          idName={`${op.idName}`}
+                                          label={`pts. - ${op.label}`}
+                                          type={op.type}
+                                          value={values[`${or.idName}`]}
+                                          placeholder={"0"}
+                                          setFieldValue={setFieldValue}
+                                          onChange={handleChange}
+                                          onBlur={handleBlur}
+                                          error={errors[`${or.idName}`]}
+                                          touched={touched[`${or.idName}`]}
+                                          fullWidth={false}
+                                          sx={{ width: "50px" }}
+                                       />
+                                    </Box>
+                                    <Divider orientation="vertical" sx={{ mr: 2, border: "1px solid", height: 75, alignSelf: "center" }} />
                                  </>
                               ))}
                            </Box>
@@ -291,8 +327,6 @@ const AnswerScoreForm = () => {
                   }
                />
             </Grid>
-            {/* )}
-            </Formik> */}
             <Divider variant="inset" component="li" sx={{ marginLeft: "0px;" }} />
          </>
       );
@@ -414,7 +448,7 @@ const AnswerScoreForm = () => {
                   question="Material del techo de la vivienda (si está hecho de más de un material, marca el que predomine):"
                   optionsByRange={false}
                   options={[
-                     { score: 0, label: "Lamina (de cartón, de asbesto, madera)", type: "number", placeholder: "0", idName: "house_2_1" },
+                     { score: 0, label: "Lámina (de cartón, de asbesto, madera)", type: "number", placeholder: "0", idName: "house_2_1" },
                      { score: 0, label: "Firme de concreto", type: "number", placeholder: "0", idName: "house_2_2" }
                   ]}
                />
@@ -424,7 +458,7 @@ const AnswerScoreForm = () => {
                   options={[
                      { score: 0, label: "Tierra", type: "number", placeholder: "0", idName: "house_3_1" },
                      { score: 0, label: "Cemento", type: "number", placeholder: "0", idName: "house_3_2" },
-                     { score: 0, label: "Mosaico, loseta, madera laminada", type: "number", placeholder: "0", idName: "house_3_3" }
+                     { score: 0, label: "Mosaico, loseta, madera Láminada", type: "number", placeholder: "0", idName: "house_3_3" }
                   ]}
                />
             </DialogContentText>
@@ -789,18 +823,6 @@ const AnswerScoreForm = () => {
       setTabValue(newValue);
    };
 
-   // Slider
-   const [valuesSlider, setValuesSlider] = useState([1, 10]);
-
-   const handleChange = (event, newValue) => {
-      setValuesSlider(newValue);
-   };
-   const handleChangeCommitted = async (event, newValue) => {
-      console.log("Slider value after change:", newValue);
-      // handleChangeContinue(newValue);
-   };
-   // Slider
-
    return (
       <Formik initialValues={formData} validationSchema={validationSchema} onSubmit={onSubmit}>
          {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
@@ -832,6 +854,11 @@ const AnswerScoreForm = () => {
                      </LoadingButton>
                   </Tabs>
                </AppBar>
+               {/* <TabPanel key={`container_${0}`} value={tabValue} index={0} dir={theme.direction}>
+                  {TabsContainers[0]}
+               </TabPanel> */}
+
+               {/* SECCION 1 */}
                <TabPanel key={`container_${0}`} value={tabValue} index={0} dir={theme.direction}>
                   <List sx={{ width: "100%", bgcolor: "background.paper" }}>
                      <DialogContentText id="alert-dialog-slide-description" component={"div"}>
@@ -848,43 +875,37 @@ const AnswerScoreForm = () => {
                               secondary={
                                  <Fragment>
                                     <Box sx={styleContent}>
-                                       <Box sx={{ width: width, my: 3, mx: 2, display: "flex" }}>
-                                          <PrettoSlider
-                                             id={`slide_${idName}`}
-                                             name={`slide_${idName}`}
-                                             valueLabelDisplay="on"
-                                             aria-label="pretto slider"
-                                             aria-labelledby="continuous-slider"
-                                             size="small"
-                                             value={valuesSlider}
-                                             defaultValue={defaultValue}
-                                             onChange={(e) => {
-                                                handleChange(e);
-                                                handleChangeSlider(e, newValue);
-                                             }}
-                                             onChangeCommitted={handleChangeCommitted}
-                                             min={1}
-                                             max={15}
-                                             marks={[
-                                                {
-                                                   value: 1,
-                                                   label: `${1}`
-                                                },
-                                                {
-                                                   value: valuesSlider[0],
-                                                   label: `${valuesSlider[0]}`
-                                                },
-                                                {
-                                                   value: valuesSlider[1],
-                                                   label: `${valuesSlider[1]}`
-                                                },
-                                                {
-                                                   value: 15,
-                                                   label: `${15}`
-                                                }
-                                             ]}
+                                       <Box sx={{ width: `${100 / 3}%`, my: 3, mx: 2, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                          <InputComponentv3
+                                             idName={"family_1_1_min"}
+                                             label={""}
+                                             type="number"
+                                             value={values.family_1_1_min}
+                                             placeholder={"0"}
+                                             setFieldValue={setFieldValue}
+                                             onChange={handleChange}
+                                             onBlur={handleBlur}
+                                             // error={error}
+                                             // touched={touched}
+                                             fullWidth={false}
+                                             sx={{ width: "50px" }}
                                           />
-                                          <IconEqual style={{ marginLeft: 5, marginTop: 4 }} width={150} />
+                                          <IconArrowsHorizontal style={{ marginLeft: 5, marginRight: 15, marginTop: 4 }} />
+                                          <InputComponentv3
+                                             idName={"family_1_1_max"}
+                                             label={""}
+                                             type="number"
+                                             value={values.family_1_1_max}
+                                             placeholder={"0"}
+                                             setFieldValue={setFieldValue}
+                                             onChange={handleChange}
+                                             onBlur={handleBlur}
+                                             // error={error}
+                                             // touched={touched}
+                                             fullWidth={false}
+                                             sx={{ width: "50px" }}
+                                          />
+                                          <IconEqual style={{ marginLeft: 5, marginRight: 15, marginTop: 4 }} />
                                           <InputComponentv3
                                              idName={"family_1_1"}
                                              label={"pts."}
@@ -892,62 +913,652 @@ const AnswerScoreForm = () => {
                                              value={values.family_1_1}
                                              placeholder={"0"}
                                              setFieldValue={setFieldValue}
-                                             onChange={onChange}
-                                             onBlur={onBlur}
-                                             error={error}
-                                             touched={touched}
+                                             onChange={handleChange}
+                                             onBlur={handleBlur}
+                                             // error={error}
+                                             // touched={touched}
                                              fullWidth={false}
-                                             width={"10px"}
+                                             sx={{ width: "50px" }}
                                           />
-
-                                          <Divider orientation="vertical" sx={{ mx: 1, backgroundColor: "white" }} />
                                        </Box>
-                                       <Divider orientation="vertical" sx={{ mx: 1 }} />
+                                       <Divider orientation="vertical" sx={{ mr: 2, border: "1px solid", height: 75, alignSelf: "center" }} />
+                                       <Box sx={{ width: `${100 / 3}%`, my: 3, mx: 2, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                          <InputComponentv3
+                                             idName={"family_1_2_min"}
+                                             label={""}
+                                             type="number"
+                                             value={values.family_1_2_min}
+                                             placeholder={"0"}
+                                             setFieldValue={setFieldValue}
+                                             onChange={handleChange}
+                                             onBlur={handleBlur}
+                                             // error={error}
+                                             // touched={touched}
+                                             fullWidth={false}
+                                             sx={{ width: "50px", textAlign: "center" }}
+                                          />
+                                          <IconArrowsHorizontal style={{ marginLeft: 5, marginRight: 15, marginTop: 4 }} />
+                                          <InputComponentv3
+                                             idName={"family_1_2_max"}
+                                             label={""}
+                                             type="number"
+                                             value={values.family_1_2_max}
+                                             placeholder={"0"}
+                                             setFieldValue={setFieldValue}
+                                             onChange={handleChange}
+                                             onBlur={handleBlur}
+                                             // error={error}
+                                             // touched={touched}
+                                             fullWidth={false}
+                                             sx={{ width: "50px" }}
+                                          />
+                                          <IconEqual style={{ marginLeft: 5, marginRight: 15, marginTop: 4 }} />
+                                          <InputComponentv3
+                                             idName={"family_1_2"}
+                                             label={"pts."}
+                                             type="number"
+                                             value={values.family_1_2}
+                                             placeholder={"0"}
+                                             setFieldValue={setFieldValue}
+                                             onChange={handleChange}
+                                             onBlur={handleBlur}
+                                             // error={error}
+                                             // touched={touched}
+                                             fullWidth={false}
+                                             sx={{ width: "50px" }}
+                                          />
+                                       </Box>
+                                       <Divider orientation="vertical" sx={{ mr: 2, border: "1px solid", height: 75, alignSelf: "center" }} />
+                                       <Box sx={{ width: `${100 / 3}%`, my: 3, mx: 2, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                          <InputComponentv3
+                                             idName={"family_1_3_min"}
+                                             label={""}
+                                             type="number"
+                                             value={values.family_1_3_min}
+                                             placeholder={"0"}
+                                             setFieldValue={setFieldValue}
+                                             onChange={handleChange}
+                                             onBlur={handleBlur}
+                                             // error={error}
+                                             // touched={touched}
+                                             fullWidth={false}
+                                             sx={{ width: "50px", textAlign: "center" }}
+                                          />
+                                          <IconArrowsHorizontal style={{ marginLeft: 5, marginRight: 15, marginTop: 4 }} />
+                                          <InputComponentv3
+                                             idName={"family_1_3_max"}
+                                             label={""}
+                                             type="number"
+                                             value={values.family_1_3_max}
+                                             placeholder={"0"}
+                                             setFieldValue={setFieldValue}
+                                             onChange={handleChange}
+                                             onBlur={handleBlur}
+                                             // error={error}
+                                             // touched={touched}
+                                             fullWidth={false}
+                                             sx={{ width: "50px" }}
+                                          />
+                                          <IconEqual style={{ marginLeft: 5, marginRight: 15, marginTop: 4 }} />
+                                          <InputComponentv3
+                                             idName={"family_1_3"}
+                                             label={"pts."}
+                                             type="number"
+                                             value={values.family_1_3}
+                                             placeholder={"0"}
+                                             setFieldValue={setFieldValue}
+                                             onChange={handleChange}
+                                             onBlur={handleBlur}
+                                             // error={error}
+                                             // touched={touched}
+                                             fullWidth={false}
+                                             sx={{ width: "50px" }}
+                                          />
+                                       </Box>
                                     </Box>
                                  </Fragment>
                               }
                            />
                         </Grid>
                         <Divider variant="inset" component="li" sx={{ marginLeft: "0px;" }} />
-                        {/* Pregunta 2  */}
+                     </DialogContentText>
+                  </List>
+               </TabPanel>
+               {/* SECCION 2 */}
+               <TabPanel key={`container_${1}`} value={tabValue} index={1} dir={theme.direction}>
+                  <List sx={{ width: "100%", bgcolor: "background.paper" }}>
+                     <DialogContentText id="alert-dialog-slide-description" component={"div"}>
+                        {/* Pregunta 1 - 2  */}
                         <Grid container spacing={2} display={"flex"} alignItems={"center"}>
                            <ListItemText
                               primary={
                                  <Box display={"flex"} alignItems={"center"} justifyContent={"space-between"} py={1} sx={styleTitle}>
                                     <Typography variant="h4" component={"b"}>
-                                       {"Cantidad de miembros en la casa"}
+                                       {"Ingresos totales menusales"}
                                     </Typography>
                                  </Box>
                               }
                               secondary={
                                  <Fragment>
                                     <Box sx={styleContent}>
-                                       <InputComponentv3
-                                          key={index}
-                                          idName={op.idName}
-                                          label={op.label}
-                                          type={op.type}
-                                          value={op.score}
-                                          placeholder="0"
-                                          // setFieldValue={setFieldValue}
-                                          // onChange={handleChange}
-                                          // onBlur={handleBlur}
-                                          // error={errors[op.idName]}
-                                          // touched={touched[op.idName]}
-                                          inputProps={{ min: 0, max: 100 }}
-                                          // disabled={values.id == 0 ? false : true}
-                                          // setStepFailed={{}}
-                                          // step={7}
-                                          size="normal"
-                                          // error={errors.b5_beds && touched.b5_beds}
-                                          // helperText={errors.b5_beds && touched.b5_beds && showErrorInput(4, errors.b5_beds)}
-                                       />
+                                       <Box sx={{ width: `${100 / 3}%`, my: 3, mx: 2, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                          <InputComponentv3
+                                             idName={"economic_1_1_min"}
+                                             label={""}
+                                             type="number"
+                                             value={values.economic_1_1_min}
+                                             placeholder={"0"}
+                                             setFieldValue={setFieldValue}
+                                             onChange={handleChange}
+                                             onBlur={handleBlur}
+                                             // error={error}
+                                             // touched={touched}
+                                             fullWidth={false}
+                                             sx={{ width: "50px" }}
+                                          />
+                                          <IconArrowsHorizontal style={{ marginLeft: 5, marginRight: 15, marginTop: 4 }} />
+                                          <InputComponentv3
+                                             idName={"economic_1_1_max"}
+                                             label={""}
+                                             type="number"
+                                             value={values.economic_1_1_max}
+                                             placeholder={"0"}
+                                             setFieldValue={setFieldValue}
+                                             onChange={handleChange}
+                                             onBlur={handleBlur}
+                                             // error={error}
+                                             // touched={touched}
+                                             fullWidth={false}
+                                             sx={{ width: "50px" }}
+                                          />
+                                          <IconEqual style={{ marginLeft: 5, marginRight: 15, marginTop: 4 }} />
+                                          <InputComponentv3
+                                             idName={"economic_1_1"}
+                                             label={"pts."}
+                                             type="number"
+                                             value={values.economic_1_1}
+                                             placeholder={"0"}
+                                             setFieldValue={setFieldValue}
+                                             onChange={handleChange}
+                                             onBlur={handleBlur}
+                                             // error={error}
+                                             // touched={touched}
+                                             fullWidth={false}
+                                             sx={{ width: "50px" }}
+                                          />
+                                       </Box>
+                                       <Divider orientation="vertical" sx={{ mr: 2, border: "1px solid", height: 75, alignSelf: "center" }} />
+                                       <Box sx={{ width: `${100 / 3}%`, my: 3, mx: 2, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                          <InputComponentv3
+                                             idName={"economic_1_2_min"}
+                                             label={""}
+                                             type="number"
+                                             value={values.economic_1_2_min}
+                                             placeholder={"0"}
+                                             setFieldValue={setFieldValue}
+                                             onChange={handleChange}
+                                             onBlur={handleBlur}
+                                             // error={error}
+                                             // touched={touched}
+                                             fullWidth={false}
+                                             sx={{ width: "50px", textAlign: "center" }}
+                                          />
+                                          <IconArrowsHorizontal style={{ marginLeft: 5, marginRight: 15, marginTop: 4 }} />
+                                          <InputComponentv3
+                                             idName={"economic_1_2_max"}
+                                             label={""}
+                                             type="number"
+                                             value={values.economic_1_2_max}
+                                             placeholder={"0"}
+                                             setFieldValue={setFieldValue}
+                                             onChange={handleChange}
+                                             onBlur={handleBlur}
+                                             // error={error}
+                                             // touched={touched}
+                                             fullWidth={false}
+                                             sx={{ width: "50px" }}
+                                          />
+                                          <IconEqual style={{ marginLeft: 5, marginRight: 15, marginTop: 4 }} />
+                                          <InputComponentv3
+                                             idName={"economic_1_2"}
+                                             label={"pts."}
+                                             type="number"
+                                             value={values.economic_1_2}
+                                             placeholder={"0"}
+                                             setFieldValue={setFieldValue}
+                                             onChange={handleChange}
+                                             onBlur={handleBlur}
+                                             // error={error}
+                                             // touched={touched}
+                                             fullWidth={false}
+                                             sx={{ width: "50px" }}
+                                          />
+                                       </Box>
+                                       <Divider orientation="vertical" sx={{ mr: 2, border: "1px solid", height: 75, alignSelf: "center" }} />
+                                       <Box sx={{ width: `${100 / 3}%`, my: 3, mx: 2, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                          <InputComponentv3
+                                             idName={"economic_1_3_min"}
+                                             label={""}
+                                             type="number"
+                                             value={values.economic_1_3_min}
+                                             placeholder={"0"}
+                                             setFieldValue={setFieldValue}
+                                             onChange={handleChange}
+                                             onBlur={handleBlur}
+                                             // error={error}
+                                             // touched={touched}
+                                             fullWidth={false}
+                                             sx={{ width: "50px", textAlign: "center" }}
+                                          />
+                                          <IconArrowsHorizontal style={{ marginLeft: 5, marginRight: 15, marginTop: 4 }} />
+                                          <InputComponentv3
+                                             idName={"economic_1_3_max"}
+                                             label={""}
+                                             type="number"
+                                             value={values.economic_1_3_max}
+                                             placeholder={"0"}
+                                             setFieldValue={setFieldValue}
+                                             onChange={handleChange}
+                                             onBlur={handleBlur}
+                                             // error={error}
+                                             // touched={touched}
+                                             fullWidth={false}
+                                             sx={{ width: "50px" }}
+                                          />
+                                          <IconEqual style={{ marginLeft: 5, marginRight: 15, marginTop: 4 }} />
+                                          <InputComponentv3
+                                             idName={"economic_1_3"}
+                                             label={"pts."}
+                                             type="number"
+                                             value={values.economic_1_3}
+                                             placeholder={"0"}
+                                             setFieldValue={setFieldValue}
+                                             onChange={handleChange}
+                                             onBlur={handleBlur}
+                                             // error={error}
+                                             // touched={touched}
+                                             fullWidth={false}
+                                             sx={{ width: "50px" }}
+                                          />
+                                       </Box>
                                     </Box>
                                  </Fragment>
                               }
                            />
                         </Grid>
                         <Divider variant="inset" component="li" sx={{ marginLeft: "0px;" }} />
+                        {/* Pregunta 2 - 2  */}
+                        <Grid container spacing={2} display={"flex"} alignItems={"center"}>
+                           <ListItemText
+                              primary={
+                                 <Box display={"flex"} alignItems={"center"} justifyContent={"space-between"} py={1} sx={styleTitle}>
+                                    <Typography variant="h4" component={"b"}>
+                                       {"Egresos totales menusales"}
+                                    </Typography>
+                                 </Box>
+                              }
+                              secondary={
+                                 <Fragment>
+                                    <Box sx={styleContent}>
+                                       <Box sx={{ width: `${100 / 3}%`, my: 3, mx: 2, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                          <InputComponentv3
+                                             idName={"economic_2_1_min"}
+                                             label={""}
+                                             type="number"
+                                             value={values.economic_2_1_min}
+                                             placeholder={"0"}
+                                             setFieldValue={setFieldValue}
+                                             onChange={handleChange}
+                                             onBlur={handleBlur}
+                                             // error={error}
+                                             // touched={touched}
+                                             fullWidth={false}
+                                             sx={{ width: "50px" }}
+                                          />
+                                          <IconArrowsHorizontal style={{ marginLeft: 5, marginRight: 15, marginTop: 4 }} />
+                                          <InputComponentv3
+                                             idName={"economic_2_1_max"}
+                                             label={""}
+                                             type="number"
+                                             value={values.economic_2_1_max}
+                                             placeholder={"0"}
+                                             setFieldValue={setFieldValue}
+                                             onChange={handleChange}
+                                             onBlur={handleBlur}
+                                             // error={error}
+                                             // touched={touched}
+                                             fullWidth={false}
+                                             sx={{ width: "50px" }}
+                                          />
+                                          <IconEqual style={{ marginLeft: 5, marginRight: 15, marginTop: 4 }} />
+                                          <InputComponentv3
+                                             idName={"economic_2_1"}
+                                             label={"pts."}
+                                             type="number"
+                                             value={values.economic_2_1}
+                                             placeholder={"0"}
+                                             setFieldValue={setFieldValue}
+                                             onChange={handleChange}
+                                             onBlur={handleBlur}
+                                             // error={error}
+                                             // touched={touched}
+                                             fullWidth={false}
+                                             sx={{ width: "50px" }}
+                                          />
+                                       </Box>
+                                       <Divider orientation="vertical" sx={{ mr: 2, border: "1px solid", height: 75, alignSelf: "center" }} />
+                                       <Box sx={{ width: `${100 / 3}%`, my: 3, mx: 2, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                          <InputComponentv3
+                                             idName={"economic_2_2_min"}
+                                             label={""}
+                                             type="number"
+                                             value={values.economic_2_2_min}
+                                             placeholder={"0"}
+                                             setFieldValue={setFieldValue}
+                                             onChange={handleChange}
+                                             onBlur={handleBlur}
+                                             // error={error}
+                                             // touched={touched}
+                                             fullWidth={false}
+                                             sx={{ width: "50px", textAlign: "center" }}
+                                          />
+                                          <IconArrowsHorizontal style={{ marginLeft: 5, marginRight: 15, marginTop: 4 }} />
+                                          <InputComponentv3
+                                             idName={"economic_2_2_max"}
+                                             label={""}
+                                             type="number"
+                                             value={values.economic_2_2_max}
+                                             placeholder={"0"}
+                                             setFieldValue={setFieldValue}
+                                             onChange={handleChange}
+                                             onBlur={handleBlur}
+                                             // error={error}
+                                             // touched={touched}
+                                             fullWidth={false}
+                                             sx={{ width: "50px" }}
+                                          />
+                                          <IconEqual style={{ marginLeft: 5, marginRight: 15, marginTop: 4 }} />
+                                          <InputComponentv3
+                                             idName={"economic_2_2"}
+                                             label={"pts."}
+                                             type="number"
+                                             value={values.economic_2_2}
+                                             placeholder={"0"}
+                                             setFieldValue={setFieldValue}
+                                             onChange={handleChange}
+                                             onBlur={handleBlur}
+                                             // error={error}
+                                             // touched={touched}
+                                             fullWidth={false}
+                                             sx={{ width: "50px" }}
+                                          />
+                                       </Box>
+                                       <Divider orientation="vertical" sx={{ mr: 2, border: "1px solid", height: 75, alignSelf: "center" }} />
+                                       <Box sx={{ width: `${100 / 3}%`, my: 3, mx: 2, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                          <InputComponentv3
+                                             idName={"economic_2_3_min"}
+                                             label={""}
+                                             type="number"
+                                             value={values.economic_2_3_min}
+                                             placeholder={"0"}
+                                             setFieldValue={setFieldValue}
+                                             onChange={handleChange}
+                                             onBlur={handleBlur}
+                                             // error={error}
+                                             // touched={touched}
+                                             fullWidth={false}
+                                             sx={{ width: "50px", textAlign: "center" }}
+                                          />
+                                          <IconArrowsHorizontal style={{ marginLeft: 5, marginRight: 15, marginTop: 4 }} />
+                                          <InputComponentv3
+                                             idName={"economic_2_3_max"}
+                                             label={""}
+                                             type="number"
+                                             value={values.economic_2_3_max}
+                                             placeholder={"0"}
+                                             setFieldValue={setFieldValue}
+                                             onChange={handleChange}
+                                             onBlur={handleBlur}
+                                             // error={error}
+                                             // touched={touched}
+                                             fullWidth={false}
+                                             sx={{ width: "50px" }}
+                                          />
+                                          <IconEqual style={{ marginLeft: 5, marginRight: 15, marginTop: 4 }} />
+                                          <InputComponentv3
+                                             idName={"economic_2_3"}
+                                             label={"pts."}
+                                             type="number"
+                                             value={values.economic_2_3}
+                                             placeholder={"0"}
+                                             setFieldValue={setFieldValue}
+                                             onChange={handleChange}
+                                             onBlur={handleBlur}
+                                             // error={error}
+                                             // touched={touched}
+                                             fullWidth={false}
+                                             sx={{ width: "50px" }}
+                                          />
+                                       </Box>
+                                    </Box>
+                                 </Fragment>
+                              }
+                           />
+                        </Grid>
+                        <Divider variant="inset" component="li" sx={{ marginLeft: "0px;" }} />
+                     </DialogContentText>
+                  </List>
+               </TabPanel>
+               {/* SECCION 3 */}
+               <TabPanel key={`container_${2}`} value={tabValue} index={2} dir={theme.direction}>
+                  <List sx={{ width: "100%", bgcolor: "background.paper" }}>
+                     <DialogContentText id="alert-dialog-slide-description" component={"div"}>
+                        {/* Pregunta 1 - 2  */}
+                        <Grid container spacing={2} display={"flex"} alignItems={"center"}>
+                           <ListItemText
+                              primary={
+                                 <Box display={"flex"} alignItems={"center"} justifyContent={"space-between"} py={1} sx={styleTitle}>
+                                    <Typography variant="h4" component={"b"}>
+                                       {"La casa donde vives es:"}
+                                    </Typography>
+                                 </Box>
+                              }
+                              secondary={
+                                 <Fragment>
+                                    <Box sx={styleContent}>
+                                       <Box sx={{ width: `${100 / 4}%`, my: 3, mx: 2, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                          <InputComponentv3
+                                             idName={"house_1_1"}
+                                             label={"pts. - Propia"}
+                                             type="number"
+                                             value={values.house_1_1}
+                                             placeholder={"0"}
+                                             setFieldValue={setFieldValue}
+                                             onChange={handleChange}
+                                             onBlur={handleBlur}
+                                             // error={error}
+                                             // touched={touched}
+                                             fullWidth={false}
+                                             sx={{ width: "50px" }}
+                                          />
+                                       </Box>
+                                       <Divider orientation="vertical" sx={{ mr: 2, border: "1px solid", height: 75, alignSelf: "center" }} />
+                                       <Box sx={{ width: `${100 / 4}%`, my: 3, mx: 2, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                          <InputComponentv3
+                                             idName={"house_1_2"}
+                                             label={"pts. - Prestada"}
+                                             type="number"
+                                             value={values.house_1_2}
+                                             placeholder={"0"}
+                                             setFieldValue={setFieldValue}
+                                             onChange={handleChange}
+                                             onBlur={handleBlur}
+                                             // error={error}
+                                             // touched={touched}
+                                             fullWidth={false}
+                                             sx={{ width: "50px" }}
+                                          />
+                                       </Box>
+                                       <Divider orientation="vertical" sx={{ mr: 2, border: "1px solid", height: 75, alignSelf: "center" }} />
+                                       <Box sx={{ width: `${100 / 4}%`, my: 3, mx: 2, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                          <InputComponentv3
+                                             idName={"house_1_3"}
+                                             label={"pts. - Alquilada"}
+                                             type="number"
+                                             value={values.house_1_3}
+                                             placeholder={"0"}
+                                             setFieldValue={setFieldValue}
+                                             onChange={handleChange}
+                                             onBlur={handleBlur}
+                                             // error={error}
+                                             // touched={touched}
+                                             fullWidth={false}
+                                             sx={{ width: "50px" }}
+                                          />
+                                       </Box>
+                                       <Divider orientation="vertical" sx={{ mr: 2, border: "1px solid", height: 75, alignSelf: "center" }} />
+                                       <Box sx={{ width: `${100 / 4}%`, my: 3, mx: 2, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                          <InputComponentv3
+                                             idName={"house_1_4"}
+                                             label={"pts. - Otra"}
+                                             type="number"
+                                             value={values.house_1_4}
+                                             placeholder={"0"}
+                                             setFieldValue={setFieldValue}
+                                             onChange={handleChange}
+                                             onBlur={handleBlur}
+                                             // error={error}
+                                             // touched={touched}
+                                             fullWidth={false}
+                                             sx={{ width: "50px" }}
+                                          />
+                                       </Box>
+                                    </Box>
+                                 </Fragment>
+                              }
+                           />
+                        </Grid>
+                        <Divider variant="inset" component="li" sx={{ marginLeft: "0px;" }} />
+                        {/* Pregunta 2 - 2  */}
+                        <Grid container spacing={2} display={"flex"} alignItems={"center"}>
+                           <ListItemText
+                              primary={
+                                 <Box display={"flex"} alignItems={"center"} justifyContent={"space-between"} py={1} sx={styleTitle}>
+                                    <Typography variant="h4" component={"b"}>
+                                       {"Material del techo de la vivienda:"}
+                                    </Typography>
+                                 </Box>
+                              }
+                              secondary={
+                                 <Fragment>
+                                    <Box sx={styleContent}>
+                                       <Box sx={{ width: `${100 / 2}%`, my: 3, mx: 2, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                          <InputComponentv3
+                                             idName={"house_2_1"}
+                                             label={"pts. - Lámina"}
+                                             type="number"
+                                             value={values.house_2_1}
+                                             placeholder={"0"}
+                                             setFieldValue={setFieldValue}
+                                             onChange={handleChange}
+                                             onBlur={handleBlur}
+                                             // error={error}
+                                             // touched={touched}
+                                             fullWidth={false}
+                                             sx={{ width: "50px" }}
+                                          />
+                                       </Box>
+                                       <Divider orientation="vertical" sx={{ mr: 2, border: "1px solid", height: 75, alignSelf: "center" }} />
+                                       <Box sx={{ width: `${100 / 2}%`, my: 3, mx: 2, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                          <InputComponentv3
+                                             idName={"house_2_2"}
+                                             label={"pts. - Firme de concreto"}
+                                             type="number"
+                                             value={values.house_2_2}
+                                             placeholder={"0"}
+                                             setFieldValue={setFieldValue}
+                                             onChange={handleChange}
+                                             onBlur={handleBlur}
+                                             // error={error}
+                                             // touched={touched}
+                                             fullWidth={false}
+                                             sx={{ width: "50px" }}
+                                          />
+                                       </Box>
+                                    </Box>
+                                 </Fragment>
+                              }
+                           />
+                        </Grid>
+                        <Divider variant="inset" component="li" sx={{ marginLeft: "0px;" }} />
+                        {/* Pregunta 3 - 2  */}
+                        <Grid container spacing={2} display={"flex"} alignItems={"center"}>
+                           <ListItemText
+                              primary={
+                                 <Box display={"flex"} alignItems={"center"} justifyContent={"space-between"} py={1} sx={styleTitle}>
+                                    <Typography variant="h4" component={"b"}>
+                                       {"Material del piso de la vivienda:"}
+                                    </Typography>
+                                 </Box>
+                              }
+                              secondary={
+                                 <Fragment>
+                                    <Box sx={styleContent}>
+                                       <Box sx={{ width: `${100 / 3}%`, my: 3, mx: 2, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                          <InputComponentv3
+                                             idName={"house_3_1"}
+                                             label={"pts. - Tierra"}
+                                             type="number"
+                                             value={values.house_3_1}
+                                             placeholder={"0"}
+                                             setFieldValue={setFieldValue}
+                                             onChange={handleChange}
+                                             onBlur={handleBlur}
+                                             // error={error}
+                                             // touched={touched}
+                                             fullWidth={false}
+                                             sx={{ width: "50px" }}
+                                          />
+                                       </Box>
+                                       <Divider orientation="vertical" sx={{ mr: 2, border: "1px solid", height: 75, alignSelf: "center" }} />
+                                       <Box sx={{ width: `${100 / 3}%`, my: 3, mx: 2, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                          <InputComponentv3
+                                             idName={"house_3_2"}
+                                             label={"pts. - Cemento"}
+                                             type="number"
+                                             value={values.house_3_2}
+                                             placeholder={"0"}
+                                             setFieldValue={setFieldValue}
+                                             onChange={handleChange}
+                                             onBlur={handleBlur}
+                                             // error={error}
+                                             // touched={touched}
+                                             fullWidth={false}
+                                             sx={{ width: "50px" }}
+                                          />
+                                       </Box>
+                                       <Divider orientation="vertical" sx={{ mr: 2, border: "1px solid", height: 75, alignSelf: "center" }} />
+                                       <Box sx={{ width: `${100 / 3}%`, my: 3, mx: 2, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                          <InputComponentv3
+                                             idName={"house_3_3"}
+                                             label={"pts. - Mosaico, loseta, madera Láminada"}
+                                             type="number"
+                                             value={values.house_3_3}
+                                             placeholder={"0"}
+                                             setFieldValue={setFieldValue}
+                                             onChange={handleChange}
+                                             onBlur={handleBlur}
+                                             // error={error}
+                                             // touched={touched}
+                                             fullWidth={false}
+                                             sx={{ width: "50px" }}
+                                          />
+                                       </Box>
+                                    </Box>
+                                 </Fragment>
+                              }
+                           />
+                        </Grid>
                      </DialogContentText>
                   </List>
                </TabPanel>

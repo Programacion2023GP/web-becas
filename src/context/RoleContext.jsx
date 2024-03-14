@@ -162,7 +162,7 @@ export default function RoleContextProvider({ children }) {
    const updateRole = async (role) => {
       let res = CorrectRes;
       try {
-         const axiosData = await Axios.put("/roles", role);
+         const axiosData = await Axios.post("/roles/update", role);
          res = axiosData.data.data;
          getRoles();
          // return res;
@@ -178,7 +178,7 @@ export default function RoleContextProvider({ children }) {
    const deleteRole = async (id) => {
       try {
          let res = CorrectRes;
-         const axiosData = await Axios.delete(`/roles/${id}`);
+         const axiosData = await Axios.delete(`/roles/destoy/${id}`);
          // console.log("deleteRole() axiosData", axiosData.data);
          getRoles();
          res = axiosData.data.data;

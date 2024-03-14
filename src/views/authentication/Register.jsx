@@ -36,7 +36,7 @@ const Register = () => {
    const matchDownSM = useMediaQuery(theme.breakpoints.down("md"));
 
    return auth ? (
-      <Navigate to={"/admin"} />
+      <Navigate to={auth.page_index ?? "/admin"} />
    ) : (
       <>
          <AuthWrapper className="bg-login">

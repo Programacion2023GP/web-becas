@@ -1769,7 +1769,7 @@ const RequestBecaView = () => {
                                                       </Typography>
                                                    </FormLabel>
                                                    {/* <ToggleButtonGroup color="primary" value={houseIs} exclusive onClick={handleHouseIs}>
-                                                <ToggleButton value="1@Lamina">Lamina (de cartón, de asbesto, madera)</ToggleButton>
+                                                <ToggleButton value="1@Lámina">Lámina (de cartón, de asbesto, madera)</ToggleButton>
                                                 <ToggleButton value="2@Concreto">Firme de concreto</ToggleButton>
                                              </ToggleButtonGroup> */}
                                                    <RadioGroup
@@ -1783,9 +1783,9 @@ const RequestBecaView = () => {
                                                    >
                                                       <FormControlLabel
                                                          sx={{ mr: 5 }}
-                                                         value="1@Lamina"
+                                                         value="1@Lámina"
                                                          control={<Radio />}
-                                                         label="Lamina (de cartón, de asbesto, madera)"
+                                                         label="Lámina (de cartón, de asbesto, madera)"
                                                       />
                                                       <FormControlLabel sx={{ mr: 5 }} value="2@Concreto" control={<Radio />} label="Firme de concreto" />
                                                    </RadioGroup>
@@ -1806,7 +1806,7 @@ const RequestBecaView = () => {
                                                    {/* <ToggleButtonGroup color="primary" value={houseIs} exclusive onClick={handleHouseIs}>
                                                 <ToggleButton value="1@Tierra">Tierra</ToggleButton>
                                                 <ToggleButton value="2@Cemento">Cemento</ToggleButton>
-                                                <ToggleButton value="3@Mosaico">Mosaico, loseta, madera laminada</ToggleButton>
+                                                <ToggleButton value="3@Mosaico">Mosaico, loseta, madera Láminada</ToggleButton>
                                              </ToggleButtonGroup> */}
                                                    <RadioGroup
                                                       row
@@ -1823,7 +1823,7 @@ const RequestBecaView = () => {
                                                          sx={{ mr: 5 }}
                                                          value="2@Mosaico"
                                                          control={<Radio />}
-                                                         label="Mosaico, loseta, madera laminada"
+                                                         label="Mosaico, loseta, madera Láminada"
                                                       />
                                                    </RadioGroup>
                                                    {touched.b4_floor_material && errors.b4_floor_material && (

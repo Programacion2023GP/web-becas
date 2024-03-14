@@ -20,11 +20,12 @@ const RoleDT = () => {
    const { auth } = useAuthContext();
    const { setLoading, setLoadingAction, setOpenDialog } = useGlobalContext();
    const { singularName, role, roles, getRoles, showRole, deleteRole, DisEnableRole, resetFormData, resetRole, setTextBtnSumbit, setFormTitle } = useRoleContext();
-   const globalFilterFields = ["role", "description", "active", "created_at"];
+   const globalFilterFields = ["role", "description", "page_index", "active", "created_at"];
 
    // #region BodysTemplate
    const RoleBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.role}</Typography>;
-   const DescriptionBodyTemplate = (obj) => <Typography textAlign={"description"}>{obj.description}</Typography>;
+   const DescriptionBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.description}</Typography>;
+   const PageIndexBodyTemplate = (obj) => <Typography textAlign={"center"}>{obj.page_index}</Typography>;
 
    const ActiveBodyTemplate = (obj) => (
       <Typography textAlign={"center"}>
@@ -37,7 +38,8 @@ const RoleDT = () => {
 
    const columns = [
       { field: "role", header: "Role", sortable: true, functionEdit: null, body: RoleBodyTemplate, filterField: null },
-      { field: "description", header: "Descripción", sortable: true, functionEdit: null, body: DescriptionBodyTemplate, filterField: null }
+      { field: "description", header: "Descripción", sortable: true, functionEdit: null, body: DescriptionBodyTemplate, filterField: null },
+      { field: "page_index", header: "Página Principal", sortable: true, functionEdit: null, body: PageIndexBodyTemplate, filterField: null }
    ];
    auth.role_id === ROLE_SUPER_ADMIN &&
       columns.push(

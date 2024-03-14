@@ -300,25 +300,27 @@ const RequestBecaDT = () => {
                   </Button>
                </Tooltip>
             )}
-            {auth.permissions.more_permissions.includes([`15@Validar Documentos`, `16@Validar Documentos`]) && ["TERMINADA", "EN REVISIÓN"].includes(obj.status) && (
+            {auth.permissions.more_permissions.includes([`16@Validar Documentos`, `16@Validar Documentos`]) && ["TERMINADA", "EN REVISIÓN"].includes(obj.status) && (
                <Tooltip title={`Validar Documentos del Folio ${name}`} placement="top">
                   <Button color="dark" onClick={() => handleClickValidateDocuments(obj.folio, obj.status)}>
                      <IconChecklist />
                   </Button>
                </Tooltip>
             )}
-            {auth.permissions.more_permissions.includes([`15@Evaluar`, `16@Evaluar`]) && ["EN EVALUACIÓN"].includes(obj.status) && (
+            {auth.permissions.more_permissions.includes([`16@Evaluar`]) && ["EN EVALUACIÓN"].includes(obj.status) && (
                <Tooltip title={`Evaluar Estudio Socio-Económico del Folio ${name}`} placement="top">
                   <Button color="dark" onClick={() => handleClickSocioeconomicEvaluation(obj.folio, obj.status)}>
                      <IconAbacus />
                   </Button>
                </Tooltip>
             )}
-            <Tooltip title={`Cancelar Folio ${name}`} placement="top">
-               <Button color="error" onClick={() => handleClickCancel(id, obj.folio, name)}>
-                  <IconBan />
-               </Button>
-            </Tooltip>
+            {auth.permissions.more_permissions.includes([`16@Cancelar`, `17@Cancelar`]) && (
+               <Tooltip title={`Cancelar Folio ${name}`} placement="top">
+                  <Button color="error" onClick={() => handleClickCancel(id, obj.folio, name)}>
+                     <IconBan />
+                  </Button>
+               </Tooltip>
+            )}
             {/* <Tooltip title={`Editar ${singularName}`} placement="top">
                <Button color="info" onClick={() => handleClickEdit(id)}>
                   <IconEdit />
@@ -349,12 +351,12 @@ const RequestBecaDT = () => {
    const toolbarContent = () => {
       return (
          <div className="flex flex-wrap gap-2">
-            {auth.permissions.more_permissions.includes([`15@Exportar Lista Pública`, `16@Exportar Lista Pública`]) && (
+            {auth.permissions.more_permissions.includes([`16@Exportar Lista Pública`, `16@Exportar Lista Pública`]) && (
                <Button variant="contained" color="success" startIcon={<IconFileSpreadsheet />} onClick={handleClickExportPublic} sx={{ mx: 1 }}>
                   Exprotar al público
                </Button>
             )}
-            {auth.permissions.more_permissions.includes([`15@Exportar Lista Contraloria`, `16@Exportar Lista Contraloria`]) && (
+            {auth.permissions.more_permissions.includes([`16@Exportar Lista Contraloria`, `16@Exportar Lista Contraloria`]) && (
                <Button variant="contained" color="success" startIcon={<IconFileSpreadsheet />} onClick={handleClickExportContraloria} sx={{ mx: 1 }}>
                   Exprotar para contraloria
                </Button>
