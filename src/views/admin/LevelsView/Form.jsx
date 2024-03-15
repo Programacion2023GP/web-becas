@@ -49,10 +49,12 @@ const LevelForm = () => {
          let axiosResponse;
          if (values.id == 0) axiosResponse = await createLevel(values);
          else axiosResponse = await updateLevel(values);
-         resetForm();
-         resetFormData();
-         setTextBtnSumbit("AGREGAR");
-         setFormTitle(`REGISTRAR ${singularName.toUpperCase()}`);
+         if (axiosResponse.status === 200) {
+            resetForm();
+            resetFormData();
+            setTextBtnSumbit("AGREGAR");
+            setFormTitle(`REGISTRAR ${singularName.toUpperCase()}`);
+         }
          setSubmitting(false);
          setLoadingAction(false);
          Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);

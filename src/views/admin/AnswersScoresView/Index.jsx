@@ -20,12 +20,13 @@ import SliderComponent, { SliderWithScoreComponent } from "../../../components/S
 const AnswersScoresView = () => {
    // const { result } = useLoaderData();
    const { setLoading } = useGlobalContext();
-   const { pluralName, answerScore, getAnswerScores } = useAnswerScoreContext();
+   const { pluralName, answerScore, getAnswerScores, getAnswerScoreActive } = useAnswerScoreContext();
 
    useEffect(() => {
       try {
          setLoading(true);
-         // getAnswerScores();
+         getAnswerScoreActive();
+         getAnswerScores();
          setLoading(false);
       } catch (error) {
          console.log(error);
