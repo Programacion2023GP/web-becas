@@ -202,65 +202,90 @@ export default function AnswerScoreContextProvider({ children }) {
       console.log("fillAnswerScore -> answer_score", answer_score);
       if (!answer_score) return;
       answerScore.id = answer_score.id;
-      const familys = answer_score.family_1.split(",");
+      const familys = [];
+      familys.push(answer_score.family_1.split(","));
       console.log("familys", familys);
-      familys.map((r, i) => {
-         let q = 1;
-         console.log("reg", r);
-         const reg = r.trim();
-         console.log("reg", reg);
-         const op = reg.split(":")[0];
-         console.log("op", op);
-         const data = reg.split(":")[1];
-         console.log("data", data);
-         const min = data.split("-")[0];
-         const max = data.split("-")[1].split("=")[0];
-         const pts = data.split("=")[1];
-         console.log("dataReal: ", `family_${i}_${op}_min= ${min}-${max}=${pts}`);
-         answerScore[`family_${q}_${op}_min`] = Number(min);
-         answerScore[`family_${q}_${op}_max`] = Number(max);
-         answerScore[`family_${q}_${op}`] = Number(pts);
-         q++;
+      familys.map((questions, qi) => {
+         questions.map((r, i) => {
+            let q = qi + 1;
+            console.log("reg", r);
+            const reg = r.trim();
+            console.log("reg", reg);
+            const op = reg.split(":")[0];
+            console.log("op", op);
+            const data = reg.split(":")[1];
+            console.log("data", data);
+            const min = data.split("-")[0];
+            const max = data.split("-")[1].split("=")[0];
+            const pts = data.split("=")[1];
+            console.log("dataReal: ", `family_${q}_${op}_min= ${min}-${max}=${pts}`);
+            answerScore[`family_${q}_${op}_min`] = Number(min);
+            answerScore[`family_${q}_${op}_max`] = Number(max);
+            answerScore[`family_${q}_${op}`] = Number(pts);
+         });
       });
 
-      const economics = answer_score.economic_1.split(",");
-      economics.map((r, i) => {
-         let q = 1;
-         console.log("reg", r);
-         const reg = r.trim();
-         console.log("reg", reg);
-         const op = reg.split(":")[0];
-         console.log("op", op);
-         const data = reg.split(":")[1];
-         console.log("data", data);
-         const min = data.split("-")[0];
-         const max = data.split("-")[1].split("=")[0];
-         const pts = data.split("=")[1];
-         console.log("dataReal: ", `economic_${i}_${op}_min= ${min}-${max}=${pts}`);
-         answerScore[`economic_${q}_${op}_min`] = Number(min);
-         answerScore[`economic_${q}_${op}_max`] = Number(max);
-         answerScore[`economic_${q}_${op}`] = Number(pts);
-         q++;
+      const economics = [];
+      economics.push(answer_score.economic_1.split(","));
+      economics.push(answer_score.economic_2.split(","));
+      console.log(economics);
+      economics.map((questions, qi) => {
+         questions.map((r, i) => {
+            let q = qi + 1;
+            console.log("reg", r);
+            const reg = r.trim();
+            console.log("reg", reg);
+            const op = reg.split(":")[0];
+            console.log("op", op);
+            const data = reg.split(":")[1];
+            console.log("data", data);
+            const min = data.split("-")[0];
+            const max = data.split("-")[1].split("=")[0];
+            const pts = data.split("=")[1];
+            console.log("dataReal: ", `economic_${q}_${op}_min= ${min}-${max}=${pts}`);
+            answerScore[`economic_${q}_${op}_min`] = Number(min);
+            answerScore[`economic_${q}_${op}_max`] = Number(max);
+            answerScore[`economic_${q}_${op}`] = Number(pts);
+         });
       });
 
-      // answerScore.economic_1_1_min = answer_score.economic_1_1_min;
-      // answerScore.economic_1_1_max = answer_score.economic_1_1_max;
-      // answerScore.economic_1_1 = answer_score.economic_1_1;
-      // answerScore.economic_1_2_min = answer_score.economic_1_2_min;
-      // answerScore.economic_1_2_max = answer_score.economic_1_2_max;
-      // answerScore.economic_1_2 = answer_score.economic_1_2;
-      // answerScore.economic_1_3_min = answer_score.economic_1_3_min;
-      // answerScore.economic_1_3_max = answer_score.economic_1_3_max;
-      // answerScore.economic_1_3 = answer_score.economic_1_3;
-      // answerScore.economic_2_1_min = answer_score.economic_2_1_min;
-      // answerScore.economic_2_1_max = answer_score.economic_2_1_max;
-      // answerScore.economic_2_1 = answer_score.economic_2_1;
-      // answerScore.economic_2_2_min = answer_score.economic_2_2_min;
-      // answerScore.economic_2_2_max = answer_score.economic_2_2_max;
-      // answerScore.economic_2_2 = answer_score.economic_2_2;
-      // answerScore.economic_2_3_min = answer_score.economic_2_3_min;
-      // answerScore.economic_2_3_max = answer_score.economic_2_3_max;
-      // answerScore.economic_2_3 = answer_score.economic_2_3;
+      const houses = [];
+      console.log(answer_score.house_1);
+      houses.push(answer_score.house_1.split(","));
+      houses.push(answer_score.house_2.split(","));
+      houses.push(answer_score.house_3.split(","));
+      console.log(houses);
+      houses.map((questions, qi) => {
+         questions.map((r, i) => {
+            let q = qi + 1;
+            console.log("reg", r);
+            const reg = r.trim();
+            console.log("reg", reg);
+            const op = reg.split(":")[0];
+            console.log("op", op);
+            const pts = reg.split(":")[1];
+            console.log("data", pts);
+            console.log("dataReal: ", `house_${q}_${op}_min= ${pts}`);
+            answerScore[`house_${q}_${op}`] = Number(pts);
+         });
+      });
+
+      const mappingQuestions = (obj, arrayQuestions, questionName, typeOption) => {
+         houses.map((questions, qi) => {
+            questions.map((r, i) => {
+               let q = qi + 1;
+               console.log("reg", r);
+               const reg = r.trim();
+               console.log("reg", reg);
+               const op = reg.split(":")[0];
+               console.log("op", op);
+               const pts = reg.split(":")[1];
+               console.log("data", pts);
+               console.log("dataReal: ", `house_${q}_${op}_min= ${pts}`);
+               answerScore[`house_${q}_${op}`] = Number(pts);
+            });
+         });
+      };
 
       // answerScore.house_1_1 = answer_score.house_1_1;
       // answerScore.house_1_2 = answer_score.house_1_2;
