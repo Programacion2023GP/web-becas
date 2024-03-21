@@ -122,6 +122,7 @@ const AnswerScoreForm = () => {
    }) => {
       const styleTitle = { backgroundColor: "#E9ECEF", pl: 1, borderRadius: "5px 5px 0  0" };
       const styleContent = { width: "100%", display: "flex", overflowX: "auto", p: 2, mb: 2, backgroundColor: "#E9ECEF", borderRadius: "0  0 5px 5px" };
+      const widthInput = "75px";
 
       return (
          <>
@@ -169,7 +170,7 @@ const AnswerScoreForm = () => {
                                              error={errors[`${or.idName}_min`]}
                                              touched={touched[`${or.idName}_min`]}
                                              fullWidth={false}
-                                             sx={{ width: "50px", minWidth: "50px" }}
+                                             sx={{ width: widthInput, minWidth: widthInput }}
                                           />
                                           <IconArrowsHorizontal
                                              key={`${or.idName}_iconArrow`}
@@ -188,7 +189,7 @@ const AnswerScoreForm = () => {
                                              error={errors[`${or.idName}_max`]}
                                              touched={touched[`${or.idName}_max`]}
                                              fullWidth={false}
-                                             sx={{ width: "50px", minWidth: "50px" }}
+                                             sx={{ width: widthInput, minWidth: widthInput }}
                                           />
                                           <IconEqual style={{ marginLeft: 5, marginRight: 15, marginTop: 4 }} />
                                           <InputComponentv3
@@ -204,7 +205,7 @@ const AnswerScoreForm = () => {
                                              error={errors[`${or.idName}`]}
                                              touched={touched[`${or.idName}`]}
                                              fullWidth={false}
-                                             sx={{ width: "50px", minWidth: "50px" }}
+                                             sx={{ width: widthInput, minWidth: widthInput }}
                                           />
                                        </Box>
                                        {index + 1 < optionsRange.length && (
@@ -620,13 +621,13 @@ const AnswerScoreForm = () => {
                   question="Ponderar Servicios:"
                   optionsByRange={false}
                   options={[
-                     { idName: "services_1", label: "Agua Potable", type: "number", placeholder: "0", score: 0 },
-                     { idName: "services_2", label: "Luz Eléctrica", type: "number", placeholder: "0", score: 0 },
-                     { idName: "services_3", label: "Drenaje", type: "number", placeholder: "0", score: 0 },
-                     { idName: "services_4", label: "Pavimento", type: "number", placeholder: "0", score: 0 },
-                     { idName: "services_5", label: "Automóvil", type: "number", placeholder: "0", score: 0 },
-                     { idName: "services_6", label: "Línea Telefónica", type: "number", placeholder: "0", score: 0 },
-                     { idName: "services_7", label: "Internet", type: "number", placeholder: "0", score: 0 }
+                     { idName: "service_1", label: "Agua Potable", type: "number", placeholder: "0", score: 0 },
+                     { idName: "service_2", label: "Luz Eléctrica", type: "number", placeholder: "0", score: 0 },
+                     { idName: "service_3", label: "Drenaje", type: "number", placeholder: "0", score: 0 },
+                     { idName: "service_4", label: "Pavimento", type: "number", placeholder: "0", score: 0 },
+                     { idName: "service_5", label: "Automóvil", type: "number", placeholder: "0", score: 0 },
+                     { idName: "service_6", label: "Línea Telefónica", type: "number", placeholder: "0", score: 0 },
+                     { idName: "service_7", label: "Internet", type: "number", placeholder: "0", score: 0 }
                   ]}
                   values={values}
                   handleBlur={handleBlur}
@@ -867,13 +868,13 @@ const AnswerScoreForm = () => {
       household_equipment_9_3_max: Yup.number().min(0, "Éste valor no es valido").required("Valor Máximo requerido"),
       household_equipment_9_3: Yup.number().min(0, "Éste valor no es valido").required("Ponderación requerido"),
 
-      services_1: Yup.number().min(0, "Éste valor no es valido").required("Ponderación requerido"),
-      services_2: Yup.number().min(0, "Éste valor no es valido").required("Ponderación requerido"),
-      services_3: Yup.number().min(0, "Éste valor no es valido").required("Ponderación requerido"),
-      services_4: Yup.number().min(0, "Éste valor no es valido").required("Ponderación requerido"),
-      services_5: Yup.number().min(0, "Éste valor no es valido").required("Ponderación requerido"),
-      services_6: Yup.number().min(0, "Éste valor no es valido").required("Ponderación requerido"),
-      services_7: Yup.number().min(0, "Éste valor no es valido").required("Ponderación requerido"),
+      service_1: Yup.number().min(0, "Éste valor no es valido").required("Ponderación requerido"),
+      service_2: Yup.number().min(0, "Éste valor no es valido").required("Ponderación requerido"),
+      service_3: Yup.number().min(0, "Éste valor no es valido").required("Ponderación requerido"),
+      service_4: Yup.number().min(0, "Éste valor no es valido").required("Ponderación requerido"),
+      service_5: Yup.number().min(0, "Éste valor no es valido").required("Ponderación requerido"),
+      service_6: Yup.number().min(0, "Éste valor no es valido").required("Ponderación requerido"),
+      service_7: Yup.number().min(0, "Éste valor no es valido").required("Ponderación requerido"),
 
       scholarship_1: Yup.number().min(0, "Éste valor no es valido").required("Ponderación requerido"),
       scholarship_2: Yup.number().min(0, "Éste valor no es valido").required("Ponderación requerido"),

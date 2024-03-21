@@ -741,13 +741,13 @@ const AnswerScoreForm = () => {
                   question="Ponderar Servicios:"
                   optionsByRange={false}
                   options={[
-                     { score: 0, label: "Agua Potable", type: "number", placeholder: "0", idName: "services_1" },
-                     { score: 0, label: "Luz Eléctrica", type: "number", placeholder: "0", idName: "services_2" },
-                     { score: 0, label: "Drenaje", type: "number", placeholder: "0", idName: "services_3" },
-                     { score: 0, label: "Pavimento", type: "number", placeholder: "0", idName: "services_4" },
-                     { score: 0, label: "Automóvil", type: "number", placeholder: "0", idName: "services_5" },
-                     { score: 0, label: "Línea Telefónica", type: "number", placeholder: "0", idName: "services_6" },
-                     { score: 0, label: "Internet", type: "number", placeholder: "0", idName: "services_7" }
+                     { score: 0, label: "Agua Potable", type: "number", placeholder: "0", idName: "service_1" },
+                     { score: 0, label: "Luz Eléctrica", type: "number", placeholder: "0", idName: "service_2" },
+                     { score: 0, label: "Drenaje", type: "number", placeholder: "0", idName: "service_3" },
+                     { score: 0, label: "Pavimento", type: "number", placeholder: "0", idName: "service_4" },
+                     { score: 0, label: "Automóvil", type: "number", placeholder: "0", idName: "service_5" },
+                     { score: 0, label: "Línea Telefónica", type: "number", placeholder: "0", idName: "service_6" },
+                     { score: 0, label: "Internet", type: "number", placeholder: "0", idName: "service_7" }
                   ]}
                />
             </DialogContentText>

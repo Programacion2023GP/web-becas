@@ -22,13 +22,13 @@ const formDataInitialStateDB = {
    household_equipment_7: "",
    household_equipment_8: "",
    household_equipment_9: "",
-   services_1: 0,
-   services_2: 0,
-   services_3: 0,
-   services_4: 0,
-   services_5: 0,
-   services_6: 0,
-   services_7: 0,
+   service_1: 0,
+   service_2: 0,
+   service_3: 0,
+   service_4: 0,
+   service_5: 0,
+   service_6: 0,
+   service_7: 0,
    scholarship_1: 0,
    scholarship_2: 0,
    scholarship_3: 0,
@@ -158,13 +158,13 @@ const formDataInitialState = {
    household_equipment_9_3_max: 0,
    household_equipment_9_3: 0,
 
-   services_1: 0,
-   services_2: 0,
-   services_3: 0,
-   services_4: 0,
-   services_5: 0,
-   services_6: 0,
-   services_7: 0,
+   service_1: 0,
+   service_2: 0,
+   service_3: 0,
+   service_4: 0,
+   service_5: 0,
+   service_6: 0,
+   service_7: 0,
 
    scholarship_1: 0,
    scholarship_2: 0,
@@ -198,209 +198,137 @@ export default function AnswerScoreContextProvider({ children }) {
       }
    };
 
+   const mappingQuestions = async (obj, arrayQuestions, questionName, typeOption) => {
+      // console.log("mappingQuestions", obj);
+      arrayQuestions.map((questions, qi) => {
+         if (typeOption === "range")
+            questions.map((r, i) => {
+               let q = qi + 1;
+               // console.log("reg", r);
+               const reg = r.trim();
+               // console.log("reg", reg);
+               const op = reg.split(":")[0];
+               // console.log("op", op);
+               const data = reg.split(":")[1];
+               // console.log("data", data);
+               const min = data.split("-")[0];
+               const max = data.split("-")[1].split("=")[0];
+               const pts = data.split("=")[1];
+               // console.log("dataReal: ", `${questionName}_${q}_${op}: ${min}-${max}=${pts}`);
+               obj[`${questionName}_${q}_${op}_min`] = Number(min);
+               obj[`${questionName}_${q}_${op}_max`] = Number(max);
+               obj[`${questionName}_${q}_${op}`] = Number(pts);
+
+               // console.log(`${questionName}_${q}_${op}`);
+               // console.log(obj);
+            });
+         else if (typeOption === "multiple")
+            questions.map((r, i) => {
+               let q = qi + 1;
+               // console.log("reg", r);
+               const reg = r.trim();
+               // console.log("reg", reg);
+               const op = reg.split(":")[0];
+               // console.log("op", op);
+               const pts = reg.split(":")[1];
+               // console.log("data", pts);
+               // console.log("dataReal: ", `${questionName}_${q}_${op}= ${pts}`);
+               obj[`${questionName}_${q}_${op}`] = Number(pts);
+            });
+         else if (typeOption === "check") {
+            // console.log(questions);
+            let q = qi + 1;
+            const pts = questions;
+            // console.log("pts", pts);
+            // console.log("dataReal: ", `${questionName}_${q}= ${pts}`);
+            obj[`${questionName}_${q}`] = Number(pts);
+         }
+      });
+   };
    const fillAnswerScore = async (answer_score) => {
-      console.log("fillAnswerScore -> answer_score", answer_score);
+      // console.log("fillAnswerScore -> answer_score", answer_score);
       if (!answer_score) return;
       answerScore.id = answer_score.id;
+      // console.log(answerScore);
+
       const familys = [];
       familys.push(answer_score.family_1.split(","));
-      console.log("familys", familys);
-      familys.map((questions, qi) => {
-         questions.map((r, i) => {
-            let q = qi + 1;
-            console.log("reg", r);
-            const reg = r.trim();
-            console.log("reg", reg);
-            const op = reg.split(":")[0];
-            console.log("op", op);
-            const data = reg.split(":")[1];
-            console.log("data", data);
-            const min = data.split("-")[0];
-            const max = data.split("-")[1].split("=")[0];
-            const pts = data.split("=")[1];
-            console.log("dataReal: ", `family_${q}_${op}_min= ${min}-${max}=${pts}`);
-            answerScore[`family_${q}_${op}_min`] = Number(min);
-            answerScore[`family_${q}_${op}_max`] = Number(max);
-            answerScore[`family_${q}_${op}`] = Number(pts);
-         });
-      });
+      // console.log("familys", familys);
+      // console.log(answerScore);
+      await mappingQuestions(answerScore, familys, "family", "range");
+      // console.log(answerScore);
 
       const economics = [];
       economics.push(answer_score.economic_1.split(","));
       economics.push(answer_score.economic_2.split(","));
-      console.log(economics);
-      economics.map((questions, qi) => {
-         questions.map((r, i) => {
-            let q = qi + 1;
-            console.log("reg", r);
-            const reg = r.trim();
-            console.log("reg", reg);
-            const op = reg.split(":")[0];
-            console.log("op", op);
-            const data = reg.split(":")[1];
-            console.log("data", data);
-            const min = data.split("-")[0];
-            const max = data.split("-")[1].split("=")[0];
-            const pts = data.split("=")[1];
-            console.log("dataReal: ", `economic_${q}_${op}_min= ${min}-${max}=${pts}`);
-            answerScore[`economic_${q}_${op}_min`] = Number(min);
-            answerScore[`economic_${q}_${op}_max`] = Number(max);
-            answerScore[`economic_${q}_${op}`] = Number(pts);
-         });
-      });
+      // console.log(economics);
+      // console.log(answerScore);
+      await mappingQuestions(answerScore, economics, "economic", "range");
+      // console.log(answerScore);
 
       const houses = [];
-      console.log(answer_score.house_1);
+      // console.log(answer_score.house_1);
       houses.push(answer_score.house_1.split(","));
       houses.push(answer_score.house_2.split(","));
       houses.push(answer_score.house_3.split(","));
-      console.log(houses);
-      houses.map((questions, qi) => {
-         questions.map((r, i) => {
-            let q = qi + 1;
-            console.log("reg", r);
-            const reg = r.trim();
-            console.log("reg", reg);
-            const op = reg.split(":")[0];
-            console.log("op", op);
-            const pts = reg.split(":")[1];
-            console.log("data", pts);
-            console.log("dataReal: ", `house_${q}_${op}_min= ${pts}`);
-            answerScore[`house_${q}_${op}`] = Number(pts);
-         });
-      });
+      // console.log(houses);
+      // console.log(answerScore);
+      await mappingQuestions(answerScore, houses, "house", "multiple");
+      // console.log(answerScore);
 
-      const mappingQuestions = (obj, arrayQuestions, questionName, typeOption) => {
-         houses.map((questions, qi) => {
-            questions.map((r, i) => {
-               let q = qi + 1;
-               console.log("reg", r);
-               const reg = r.trim();
-               console.log("reg", reg);
-               const op = reg.split(":")[0];
-               console.log("op", op);
-               const pts = reg.split(":")[1];
-               console.log("data", pts);
-               console.log("dataReal: ", `house_${q}_${op}_min= ${pts}`);
-               answerScore[`house_${q}_${op}`] = Number(pts);
-            });
-         });
-      };
+      const household_equipments = [];
+      // console.log(answer_score.household_equipment_1);
+      household_equipments.push(answer_score.household_equipment_1.split(","));
+      household_equipments.push(answer_score.household_equipment_2.split(","));
+      household_equipments.push(answer_score.household_equipment_3.split(","));
+      household_equipments.push(answer_score.household_equipment_4.split(","));
+      household_equipments.push(answer_score.household_equipment_5.split(","));
+      household_equipments.push(answer_score.household_equipment_6.split(","));
+      household_equipments.push(answer_score.household_equipment_7.split(","));
+      household_equipments.push(answer_score.household_equipment_8.split(","));
+      household_equipments.push(answer_score.household_equipment_9.split(","));
+      // console.log(household_equipments);
+      // console.log(answerScore);
+      await mappingQuestions(answerScore, household_equipments, "household_equipment", "range");
+      // console.log(answerScore);
 
-      // answerScore.house_1_1 = answer_score.house_1_1;
-      // answerScore.house_1_2 = answer_score.house_1_2;
-      // answerScore.house_1_3 = answer_score.house_1_3;
-      // answerScore.house_1_4 = answer_score.house_1_4;
-      // answerScore.house_2_1 = answer_score.house_2_1;
-      // answerScore.house_2_2 = answer_score.house_2_2;
-      // answerScore.house_3_1 = answer_score.house_3_1;
-      // answerScore.house_3_2 = answer_score.house_3_2;
-      // answerScore.house_3_3 = answer_score.house_3_3;
+      const services = [];
+      // console.log(answer_score.service_1);
+      services.push(answer_score.service_1);
+      services.push(answer_score.service_2);
+      services.push(answer_score.service_3);
+      services.push(answer_score.service_4);
+      services.push(answer_score.service_5);
+      services.push(answer_score.service_6);
+      services.push(answer_score.service_7);
+      // console.log(services);
+      // console.log(answerScore);
+      await mappingQuestions(answerScore, services, "service", "check");
+      // console.log(answerScore);
 
-      // answerScore.household_equipment_1_1_min = answer_score.household_equipment_1_1_min;
-      // answerScore.household_equipment_1_1_max = answer_score.household_equipment_1_1_max;
-      // answerScore.household_equipment_1_1 = answer_score.household_equipment_1_1;
-      // answerScore.household_equipment_1_2_min = answer_score.household_equipment_1_2_min;
-      // answerScore.household_equipment_1_2_max = answer_score.household_equipment_1_2_max;
-      // answerScore.household_equipment_1_2 = answer_score.household_equipment_1_2;
-      // answerScore.household_equipment_1_3_min = answer_score.household_equipment_1_3_min;
-      // answerScore.household_equipment_1_3_max = answer_score.household_equipment_1_3_max;
-      // answerScore.household_equipment_1_3 = answer_score.household_equipment_1_3;
-      // answerScore.household_equipment_2_1_min = answer_score.household_equipment_2_1_min;
-      // answerScore.household_equipment_2_1_max = answer_score.household_equipment_2_1_max;
-      // answerScore.household_equipment_2_1 = answer_score.household_equipment_2_1;
-      // answerScore.household_equipment_2_2_min = answer_score.household_equipment_2_2_min;
-      // answerScore.household_equipment_2_2_max = answer_score.household_equipment_2_2_max;
-      // answerScore.household_equipment_2_2 = answer_score.household_equipment_2_2;
-      // answerScore.household_equipment_2_3_min = answer_score.household_equipment_2_3_min;
-      // answerScore.household_equipment_2_3_max = answer_score.household_equipment_2_3_max;
-      // answerScore.household_equipment_2_3 = answer_score.household_equipment_2_3;
-      // answerScore.household_equipment_3_1_min = answer_score.household_equipment_3_1_min;
-      // answerScore.household_equipment_3_1_max = answer_score.household_equipment_3_1_max;
-      // answerScore.household_equipment_3_1 = answer_score.household_equipment_3_1;
-      // answerScore.household_equipment_3_2_min = answer_score.household_equipment_3_2_min;
-      // answerScore.household_equipment_3_2_max = answer_score.household_equipment_3_2_max;
-      // answerScore.household_equipment_3_2 = answer_score.household_equipment_3_2;
-      // answerScore.household_equipment_3_3_min = answer_score.household_equipment_3_3_min;
-      // answerScore.household_equipment_3_3_max = answer_score.household_equipment_3_3_max;
-      // answerScore.household_equipment_3_3 = answer_score.household_equipment_3_3;
-      // answerScore.household_equipment_4_1_min = answer_score.household_equipment_4_1_min;
-      // answerScore.household_equipment_4_1_max = answer_score.household_equipment_4_1_max;
-      // answerScore.household_equipment_4_1 = answer_score.household_equipment_4_1;
-      // answerScore.household_equipment_4_2_min = answer_score.household_equipment_4_2_min;
-      // answerScore.household_equipment_4_2_max = answer_score.household_equipment_4_2_max;
-      // answerScore.household_equipment_4_2 = answer_score.household_equipment_4_2;
-      // answerScore.household_equipment_4_3_min = answer_score.household_equipment_4_3_min;
-      // answerScore.household_equipment_4_3_max = answer_score.household_equipment_4_3_max;
-      // answerScore.household_equipment_4_3 = answer_score.household_equipment_4_3;
-      // answerScore.household_equipment_5_1_min = answer_score.household_equipment_5_1_min;
-      // answerScore.household_equipment_5_1_max = answer_score.household_equipment_5_1_max;
-      // answerScore.household_equipment_5_1 = answer_score.household_equipment_5_1;
-      // answerScore.household_equipment_5_2_min = answer_score.household_equipment_5_2_min;
-      // answerScore.household_equipment_5_2_max = answer_score.household_equipment_5_2_max;
-      // answerScore.household_equipment_5_2 = answer_score.household_equipment_5_2;
-      // answerScore.household_equipment_5_3_min = answer_score.household_equipment_5_3_min;
-      // answerScore.household_equipment_5_3_max = answer_score.household_equipment_5_3_max;
-      // answerScore.household_equipment_5_3 = answer_score.household_equipment_5_3;
-      // answerScore.household_equipment_6_1_min = answer_score.household_equipment_6_1_min;
-      // answerScore.household_equipment_6_1_max = answer_score.household_equipment_6_1_max;
-      // answerScore.household_equipment_6_1 = answer_score.household_equipment_6_1;
-      // answerScore.household_equipment_6_2_min = answer_score.household_equipment_6_2_min;
-      // answerScore.household_equipment_6_2_max = answer_score.household_equipment_6_2_max;
-      // answerScore.household_equipment_6_2 = answer_score.household_equipment_6_2;
-      // answerScore.household_equipment_6_3_min = answer_score.household_equipment_6_3_min;
-      // answerScore.household_equipment_6_3_max = answer_score.household_equipment_6_3_max;
-      // answerScore.household_equipment_6_3 = answer_score.household_equipment_6_3;
-      // answerScore.household_equipment_7_1_min = answer_score.household_equipment_7_1_min;
-      // answerScore.household_equipment_7_1_max = answer_score.household_equipment_7_1_max;
-      // answerScore.household_equipment_7_1 = answer_score.household_equipment_7_1;
-      // answerScore.household_equipment_7_2_min = answer_score.household_equipment_7_2_min;
-      // answerScore.household_equipment_7_2_max = answer_score.household_equipment_7_2_max;
-      // answerScore.household_equipment_7_2 = answer_score.household_equipment_7_2;
-      // answerScore.household_equipment_7_3_min = answer_score.household_equipment_7_3_min;
-      // answerScore.household_equipment_7_3_max = answer_score.household_equipment_7_3_max;
-      // answerScore.household_equipment_7_3 = answer_score.household_equipment_7_3;
-      // answerScore.household_equipment_8_1_min = answer_score.household_equipment_8_1_min;
-      // answerScore.household_equipment_8_1_max = answer_score.household_equipment_8_1_max;
-      // answerScore.household_equipment_8_1 = answer_score.household_equipment_8_1;
-      // answerScore.household_equipment_8_2_max = answer_score.household_equipment_8_2_max;
-      // answerScore.household_equipment_8_2_min = answer_score.household_equipment_8_2_min;
-      // answerScore.household_equipment_8_2 = answer_score.household_equipment_8_2;
-      // answerScore.household_equipment_8_3_min = answer_score.household_equipment_8_3_min;
-      // answerScore.household_equipment_8_3_max = answer_score.household_equipment_8_3_max;
-      // answerScore.household_equipment_8_3 = answer_score.household_equipment_8_3;
-      // answerScore.household_equipment_9_1_min = answer_score.household_equipment_9_1_min;
-      // answerScore.household_equipment_9_1_max = answer_score.household_equipment_9_1_max;
-      // answerScore.household_equipment_9_1 = answer_score.household_equipment_9_1;
-      // answerScore.household_equipment_9_2_min = answer_score.household_equipment_9_2_min;
-      // answerScore.household_equipment_9_2_max = answer_score.household_equipment_9_2_max;
-      // answerScore.household_equipment_9_2 = answer_score.household_equipment_9_2;
-      // answerScore.household_equipment_9_3_min = answer_score.household_equipment_9_3_min;
-      // answerScore.household_equipment_9_3_max = answer_score.household_equipment_9_3_max;
-      // answerScore.household_equipment_9_3 = answer_score.household_equipment_9_3;
+      const scholarships = [];
+      // console.log(answer_score.scholarship_1);
+      scholarships.push(answer_score.scholarship_1);
+      scholarships.push(answer_score.scholarship_2);
+      scholarships.push(answer_score.scholarship_3);
+      scholarships.push(answer_score.scholarship_4);
+      // console.log(scholarships);
+      // console.log(answerScore);
+      await mappingQuestions(answerScore, scholarships, "scholarship", "check");
+      // console.log(answerScore);
 
-      // answerScore.services_1 = answer_score.services_1;
-      // answerScore.services_2 = answer_score.services_2;
-      // answerScore.services_3 = answer_score.services_3;
-      // answerScore.services_4 = answer_score.services_4;
-      // answerScore.services_5 = answer_score.services_5;
-      // answerScore.services_6 = answer_score.services_6;
-      // answerScore.services_7 = answer_score.services_7;
-
-      // answerScore.scholarship_1 = answer_score.scholarship_1;
-      // answerScore.scholarship_2 = answer_score.scholarship_2;
-      // answerScore.scholarship_3 = answer_score.scholarship_3;
-      // answerScore.scholarship_4 = answer_score.scholarship_4;
-      console.log("answerScore", answerScore);
+      // console.log("answerScore", answerScore);
       setFormData(answerScore);
       setAnswerScore(answerScore);
+      return answerScore;
    };
-   const fillAnswerScoreValues = async (values) => {
+   const fillAnswerScoreToDB = async (values) => {
       try {
          console.log("values", values);
          let newAnswerScore = formDataInitialStateDB;
          if (!values) return;
          answerScore.id = values.id;
+         newAnswerScore.id = values.id;
 
          newAnswerScore.family_1 = `1:${values.family_1_1_min}-${values.family_1_1_max}=${values.family_1_1}, 2:${values.family_1_2_min}-${values.family_1_2_max}=${values.family_1_2}, 3:${values.family_1_3_min}-${values.family_1_3_max}=${values.family_1_3}`;
 
@@ -421,13 +349,13 @@ export default function AnswerScoreContextProvider({ children }) {
          newAnswerScore.household_equipment_8 = `1:${values.household_equipment_8_1_min}-${values.household_equipment_8_1_max}=${values.household_equipment_8_1}, 2:${values.household_equipment_8_2_min}-${values.household_equipment_8_2_max}=${values.household_equipment_8_2}, 3:${values.household_equipment_8_3_min}-${values.household_equipment_8_3_max}=${values.household_equipment_8_3}`;
          newAnswerScore.household_equipment_9 = `1:${values.household_equipment_9_1_min}-${values.household_equipment_9_1_max}=${values.household_equipment_9_1}, 2:${values.household_equipment_9_2_min}-${values.household_equipment_9_2_max}=${values.household_equipment_9_2}, 3:${values.household_equipment_9_3_min}-${values.household_equipment_9_3_max}=${values.household_equipment_9_3}`;
 
-         newAnswerScore.services_1 = values.services_1;
-         newAnswerScore.services_2 = values.services_2;
-         newAnswerScore.services_3 = values.services_3;
-         newAnswerScore.services_4 = values.services_4;
-         newAnswerScore.services_5 = values.services_5;
-         newAnswerScore.services_6 = values.services_6;
-         newAnswerScore.services_7 = values.services_7;
+         newAnswerScore.service_1 = values.service_1;
+         newAnswerScore.service_2 = values.service_2;
+         newAnswerScore.service_3 = values.service_3;
+         newAnswerScore.service_4 = values.service_4;
+         newAnswerScore.service_5 = values.service_5;
+         newAnswerScore.service_6 = values.service_6;
+         newAnswerScore.service_7 = values.service_7;
 
          newAnswerScore.scholarship_1 = values.scholarship_1;
          newAnswerScore.scholarship_2 = values.scholarship_2;
@@ -438,7 +366,7 @@ export default function AnswerScoreContextProvider({ children }) {
          // setFormData(answerScore);
          // setAnswerScore(answerScore);
       } catch (error) {
-         console.log("Error en fillAnswerScoreValues:", error);
+         console.log("Error en fillAnswerScoreToDB:", error);
       }
    };
 
@@ -518,12 +446,12 @@ export default function AnswerScoreContextProvider({ children }) {
    const createAnswerScore = async (values) => {
       let res = CorrectRes;
       try {
-         const answerScore = await fillAnswerScoreValues(values);
+         const answerScore = await fillAnswerScoreToDB(values);
          console.log("a enviar", answerScore);
          const axiosData = await Axios.post("/answersScores/create", answerScore);
          res = axiosData.data.data;
 
-         getAnswerScores();
+         getAnswerScoreActive();
       } catch (error) {
          res = ErrorRes;
          console.log(error);
@@ -536,9 +464,10 @@ export default function AnswerScoreContextProvider({ children }) {
    const updateAnswerScore = async (answerScore) => {
       let res = CorrectRes;
       try {
-         const axiosData = await Axios.post("/answersScores/update", answerScore);
+         const newAnswerScore = await fillAnswerScoreToDB(answerScore);
+         const axiosData = await Axios.post(`/answersScores/update/${newAnswerScore.id}`, newAnswerScore);
          res = axiosData.data.data;
-         getAnswerScores();
+         getAnswerScoreActive();
          // return res;
       } catch (error) {
          res = ErrorRes;
@@ -591,7 +520,7 @@ export default function AnswerScoreContextProvider({ children }) {
             setFormTitle,
             singularName,
             pluralName,
-            fillAnswerScoreValues
+            fillAnswerScoreToDB
          }}
       >
          {children}
