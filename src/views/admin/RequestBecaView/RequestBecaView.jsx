@@ -526,13 +526,13 @@ const RequestBecaView = () => {
          values.b5_score += Number(values.b5_music_player * 1) || 0;
          values.b5_score += Number(values.b5_refrigerators * 1) || 0;
 
-         values.b5_drinking_water = values.b5_drinking_water ? true : false || false;
-         values.b5_electric_light = values.b5_electric_light ? true : false || false;
-         values.b5_sewer_system = values.b5_sewer_system ? true : false || false;
-         values.b5_pavement = values.b5_pavement ? true : false || false;
-         values.b5_automobile = values.b5_automobile ? true : false || false;
-         values.b5_phone_line = values.b5_phone_line ? true : false || false;
-         values.b5_internet = values.b5_internet ? true : false || false;
+         values.b5_drinking_water = values.b5_drinking_water ? 1 : 0 || 0;
+         values.b5_electric_light = values.b5_electric_light ? 1 : 0 || 0;
+         values.b5_sewer_system = values.b5_sewer_system ? 1 : 0 || 0;
+         values.b5_pavement = values.b5_pavement ? 1 : 0 || 0;
+         values.b5_automobile = values.b5_automobile ? 1 : 0 || 0;
+         values.b5_phone_line = values.b5_phone_line ? 1 : 0 || 0;
+         values.b5_internet = values.b5_internet ? 1 : 0 || 0;
 
          values.b5_score += Number(values.b5_drinking_water ? 1 : 0) || 0;
          values.b5_score += Number(values.b5_electric_light ? 1 : 0) || 0;

@@ -7,7 +7,7 @@ import { Field } from "formik";
 import { useDropzone } from "react-dropzone";
 
 export const setObjImg = (img, setImg) => {
-   if (img == "") return setImg([]);
+   if (["", null, undefined].includes(img)) return setImg([]);
    // console.log("setObjImg --> ", img, " <--");
    const imgObj = {
       file: {

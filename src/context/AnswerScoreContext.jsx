@@ -32,7 +32,8 @@ const formDataInitialStateDB = {
    scholarship_1: 0,
    scholarship_2: 0,
    scholarship_3: 0,
-   scholarship_4: 0
+   scholarship_4: 0,
+   total_score: 0
 };
 
 const formDataInitialState = {
@@ -169,7 +170,9 @@ const formDataInitialState = {
    scholarship_1: 0,
    scholarship_2: 0,
    scholarship_3: 0,
-   scholarship_4: 0
+   scholarship_4: 0,
+
+   total_score: 0
 };
 
 export default function AnswerScoreContextProvider({ children }) {
@@ -249,6 +252,7 @@ export default function AnswerScoreContextProvider({ children }) {
       // console.log("fillAnswerScore -> answer_score", answer_score);
       if (!answer_score) return;
       answerScore.id = answer_score.id;
+      answerScore.total_score = answer_score.total_score;
       // console.log(answerScore);
 
       const familys = [];
@@ -324,11 +328,13 @@ export default function AnswerScoreContextProvider({ children }) {
    };
    const fillAnswerScoreToDB = async (values) => {
       try {
-         console.log("values", values);
+         // console.log("values", values);
          let newAnswerScore = formDataInitialStateDB;
          if (!values) return;
          answerScore.id = values.id;
+         answerScore.total_score = values.total_score;
          newAnswerScore.id = values.id;
+         newAnswerScore.total_score = values.total_score;
 
          newAnswerScore.family_1 = `1:${values.family_1_1_min}-${values.family_1_1_max}=${values.family_1_1}, 2:${values.family_1_2_min}-${values.family_1_2_max}=${values.family_1_2}, 3:${values.family_1_3_min}-${values.family_1_3_max}=${values.family_1_3}`;
 
@@ -377,7 +383,8 @@ export default function AnswerScoreContextProvider({ children }) {
          res = await axiosData.data.data;
          // setAnswerScore(res.result);
          // setFormData(res.result);
-         await fillAnswerScore(res.result);
+         const data = await fillAnswerScore(res.result);
+         // console.log("getAnswerScoreActive->data", data);
 
          return res;
       } catch (error) {
@@ -447,7 +454,7 @@ export default function AnswerScoreContextProvider({ children }) {
       let res = CorrectRes;
       try {
          const answerScore = await fillAnswerScoreToDB(values);
-         console.log("a enviar", answerScore);
+         // console.log("a enviar", answerScore);
          const axiosData = await Axios.post("/answersScores/create", answerScore);
          res = axiosData.data.data;
 
@@ -467,8 +474,8 @@ export default function AnswerScoreContextProvider({ children }) {
          const newAnswerScore = await fillAnswerScoreToDB(answerScore);
          const axiosData = await Axios.post(`/answersScores/update/${newAnswerScore.id}`, newAnswerScore);
          res = axiosData.data.data;
-         getAnswerScoreActive();
-         // return res;
+         await getAnswerScoreActive();
+         return res;
       } catch (error) {
          res = ErrorRes;
          console.log(error);

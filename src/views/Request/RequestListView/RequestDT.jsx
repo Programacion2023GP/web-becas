@@ -12,7 +12,7 @@ import DataTableComponent from "../../../components/DataTableComponent";
 import { IconAbacus, IconBan, IconChecklist, IconClipboardText, IconEye, IconFileSpreadsheet, IconPrinter } from "@tabler/icons";
 import { formatDatetime } from "../../../utils/Formats";
 import { Link } from "react-router-dom";
-import { idPage, useAuthContext } from "../../../context/AuthContext";
+import { Axios, idPage, useAuthContext } from "../../../context/AuthContext";
 import { IconCircleCheckFilled } from "@tabler/icons-react";
 import { IconCircleXFilled } from "@tabler/icons-react";
 import { Box } from "@mui/system";
@@ -215,6 +215,8 @@ const RequestBecaDT = () => {
    const handleClickSocioeconomicEvaluation = async (folio, current_status) => {
       try {
          console.log("no se como");
+         const axiosData = await Axios.get(`/becas/calculateRequest/folio/${folio}`);
+         console.log(axiosData);
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -286,35 +288,28 @@ const RequestBecaDT = () => {
                   </Button>
                </Tooltip>
             )}
-            {auth.role_id <= ROLE_ADMIN && !["ALTA"].includes(obj.status) && (
+            {!["ALTA"].includes(obj.status) && (
                <Tooltip title={`Ver Solicitud ${name}`} placement="top">
                   <Button color="dark" onClick={() => handleClickView(obj)}>
                      <IconEye />
                   </Button>
                </Tooltip>
             )}
-            {!["ALTA"].includes(obj.status) && (
-               <Tooltip title={`Ver Solicitud ${name}`} placement="top">
-                  <Button color="success" onClick={() => handleClickView(obj)}>
-                     <TaskAltIcon />
-                  </Button>
-               </Tooltip>
-            )}
-            {auth.permissions.more_permissions.includes([`16@Validar Documentos`, `16@Validar Documentos`]) && ["TERMINADA", "EN REVISIÓN"].includes(obj.status) && (
+            {auth.permissions.more_permissions.includes(`16@Validar Documentos`) && ["TERMINADA", "EN REVISIÓN"].includes(obj.status) && (
                <Tooltip title={`Validar Documentos del Folio ${name}`} placement="top">
-                  <Button color="dark" onClick={() => handleClickValidateDocuments(obj.folio, obj.status)}>
+                  <Button color="primary" onClick={() => handleClickValidateDocuments(obj.folio, obj.status)}>
                      <IconChecklist />
                   </Button>
                </Tooltip>
             )}
-            {auth.permissions.more_permissions.includes([`16@Evaluar`]) && ["EN EVALUACIÓN"].includes(obj.status) && (
+            {auth.permissions.more_permissions.includes(`16@Evaluar`) && ["EN EVALUACIÓN"].includes(obj.status) && (
                <Tooltip title={`Evaluar Estudio Socio-Económico del Folio ${name}`} placement="top">
-                  <Button color="dark" onClick={() => handleClickSocioeconomicEvaluation(obj.folio, obj.status)}>
+                  <Button color="primary" onClick={() => handleClickSocioeconomicEvaluation(obj.folio, obj.status)}>
                      <IconAbacus />
                   </Button>
                </Tooltip>
             )}
-            {auth.permissions.more_permissions.includes([`16@Cancelar`, `17@Cancelar`]) && (
+            {(auth.permissions.more_permissions.includes(`16@Cancelar`) || auth.permissions.more_permissions.includes(`17@Cancelar`)) && (
                <Tooltip title={`Cancelar Folio ${name}`} placement="top">
                   <Button color="error" onClick={() => handleClickCancel(id, obj.folio, name)}>
                      <IconBan />
@@ -351,12 +346,12 @@ const RequestBecaDT = () => {
    const toolbarContent = () => {
       return (
          <div className="flex flex-wrap gap-2">
-            {auth.permissions.more_permissions.includes([`16@Exportar Lista Pública`, `16@Exportar Lista Pública`]) && (
+            {auth.permissions.more_permissions.includes([`16@Exportar Lista Pública`, `17@Exportar Lista Pública`]) && (
                <Button variant="contained" color="success" startIcon={<IconFileSpreadsheet />} onClick={handleClickExportPublic} sx={{ mx: 1 }}>
                   Exprotar al público
                </Button>
             )}
-            {auth.permissions.more_permissions.includes([`16@Exportar Lista Contraloria`, `16@Exportar Lista Contraloria`]) && (
+            {auth.permissions.more_permissions.includes([`16@Exportar Lista Contraloría`, `17@Exportar Lista Contraloría`]) && (
                <Button variant="contained" color="success" startIcon={<IconFileSpreadsheet />} onClick={handleClickExportContraloria} sx={{ mx: 1 }}>
                   Exprotar para contraloria
                </Button>
@@ -412,7 +407,7 @@ const RequestBecaDT = () => {
             {/* <DialogTitle> */}
             <Toolbar>
                <Typography sx={{ ml: 2, flex: 1 }} variant="h3" component="div">
-                  {"title"}
+                  {}
                </Typography>
                {auth.permissions.update && (
                   <Tooltip title={`Exportar Reporte a PDF`} placement="top">

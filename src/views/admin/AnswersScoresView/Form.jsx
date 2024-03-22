@@ -200,7 +200,10 @@ const AnswerScoreForm = () => {
                                              value={values[`${or.idName}`]}
                                              placeholder={"0"}
                                              setFieldValue={setFieldValue}
-                                             onChange={handleChange}
+                                             onChange={(e) => {
+                                                handleChange(e);
+                                                handleChangePts(e, values, setFieldValue);
+                                             }}
                                              onBlur={handleBlur}
                                              error={errors[`${or.idName}`]}
                                              touched={touched[`${or.idName}`]}
@@ -232,7 +235,10 @@ const AnswerScoreForm = () => {
                                           value={values[`${op.idName}`]}
                                           placeholder={"0"}
                                           setFieldValue={setFieldValue}
-                                          onChange={handleChange}
+                                          onChange={(e) => {
+                                             handleChange(e);
+                                             handleChangePts(e, values, setFieldValue);
+                                          }}
                                           onBlur={handleBlur}
                                           error={errors[`${op.idName}`]}
                                           touched={touched[`${op.idName}`]}
@@ -686,19 +692,28 @@ const AnswerScoreForm = () => {
       }
    };
 
+   const handleChangePts = (e, values, setFieldValue) => {
+      // const value = e.target.value;
+      // values.family_1_1
+      // setFieldValue("total_score");
+   };
+
    const onSubmit = async (values, { setSubmitting, setErrors, resetForm }) => {
       try {
-         console.log("onSubmit -> values", values);
+         if (textBtnSubmit == "NUEVA") values.id = 0;
+
+         // console.log("onSubmit -> values", values);
          setLoadingAction(false);
          let axiosResponse;
          if (values.id == 0) axiosResponse = await createAnswerScore(values);
          else axiosResponse = await updateAnswerScore(values);
-         console.log(axiosResponse);
+         // console.log(axiosResponse);
          if (axiosResponse.status_code === 200) {
-            resetForm();
-            resetFormData();
-            setTextBtnSumbit("AGREGAR");
-            setFormTitle(`REGISTRAR ${singularName.toUpperCase()}`);
+            values.id = axiosResponse.result.id;
+            // resetForm();
+            // resetFormData();
+            // setTextBtnSumbit("AGREGAR");
+            // setFormTitle(`REGISTRAR ${singularName.toUpperCase()}`);
          }
          setSubmitting(false);
          setLoadingAction(false);
@@ -933,6 +948,7 @@ const AnswerScoreForm = () => {
                               fullWidth={false}
                               sx={{ width: "auto" }}
                               size="large"
+                              onClick={() => setTextBtnSumbit("GUARDAR")}
                            >
                               {"GUARDAR"}
                            </LoadingButton>
@@ -948,6 +964,7 @@ const AnswerScoreForm = () => {
                               sx={{ width: "auto" }}
                               size="large"
                               color="warning"
+                              onClick={() => setTextBtnSumbit("NUEVA")}
                            >
                               {"NUEVA"}
                            </LoadingButton>
@@ -959,6 +976,9 @@ const AnswerScoreForm = () => {
                      </Button>
                   </Tabs>
                </AppBar>
+               {/* <Typography variant="h3" align={"end"} mr={3} mt={2} mb={1}>
+                  Puntaje Acumulado: {values.total_score ?? 0}
+               </Typography> */}
                {TabsContainers.map((content, index) => (
                   <TabPanel key={`container_${index}`} value={tabValue} index={index} dir={theme.direction}>
                      {cloneElement(content, { values, handleBlur, handleChange, errors, touched, resetForm, setFieldValue, setValues })}
