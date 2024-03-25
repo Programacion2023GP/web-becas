@@ -40,7 +40,7 @@ import { InputComponentv3 } from "../../../components/Form/InputComponent2";
 
 // import InputComponent from "../Form/InputComponent";
 import { useTheme } from "@mui/material/styles";
-import PropTypes from "prop-types";
+import PropTypes, { number } from "prop-types";
 import AppBar from "@mui/material/AppBar";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
@@ -84,8 +84,7 @@ function a11yProps(index) {
    };
 }
 
-const styleTitle = { backgroundColor: "#E9ECEF", pl: 1, borderRadius: "5px 5px 0  0" };
-const styleContent = { width: "100%", display: "flex", overflowX: "auto", p: 2, mb: 2, backgroundColor: "#E9ECEF", borderRadius: "0  0 5px 5px" };
+const styleContentScores = { width: "100%", display: "flex", overflowX: "auto", pt: 2, px: 2, borderRadius: "0  0 5px 5px" };
 
 const AnswerScoreForm = () => {
    const { openDialog, setOpenDialog, toggleDrawer, setLoadingAction } = useGlobalContext();
@@ -976,6 +975,101 @@ const AnswerScoreForm = () => {
                      </Button>
                   </Tabs>
                </AppBar>
+               <Typography mt={1} textAlign={"center"} variant="h5">
+                  Puntajes mínimos para estudios socio-economicos...
+               </Typography>
+               <Box key={`div_scores}`} sx={styleContentScores} component={"div"}>
+                  <Box
+                     key={`div_score_low}`}
+                     sx={{
+                        width: `${100 / 3}%`,
+                        mx: 2,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center"
+                     }}
+                     component={"div"}
+                  >
+                     <InputComponentv3
+                        key={`low_score`}
+                        idName={`low_score`}
+                        label={`BAJO`}
+                        type={number}
+                        value={values[`low_score`]}
+                        placeholder={"0"}
+                        setFieldValue={setFieldValue}
+                        onChange={(e) => {
+                           handleChange(e);
+                           // handleChangePts(e, values, setFieldValue);
+                        }}
+                        onBlur={handleBlur}
+                        error={errors[`low_score`]}
+                        touched={touched[`low_score`]}
+                        fullWidth={false}
+                        sx={{ width: "50px", minWidth: "50px" }}
+                     />
+                  </Box>
+                  <Box
+                     key={`div_score_medium_low}`}
+                     sx={{
+                        width: `${100 / 3}%`,
+                        mx: 2,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center"
+                     }}
+                     component={"div"}
+                  >
+                     <InputComponentv3
+                        key={`medium_low_score`}
+                        idName={`medium_low_score`}
+                        label={`MEDIO-BAJO`}
+                        type={number}
+                        value={values[`medium_low_score`]}
+                        placeholder={"0"}
+                        setFieldValue={setFieldValue}
+                        onChange={(e) => {
+                           handleChange(e);
+                           // handleChangePts(e, values, setFieldValue);
+                        }}
+                        onBlur={handleBlur}
+                        error={errors[`medium_low_score`]}
+                        touched={touched[`medium_low_score`]}
+                        fullWidth={false}
+                        sx={{ width: "50px", minWidth: "50px" }}
+                     />
+                  </Box>
+                  <Box
+                     key={`div_score_medium}`}
+                     sx={{
+                        width: `${100 / 3}%`,
+                        mx: 2,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center"
+                     }}
+                     component={"div"}
+                  >
+                     <InputComponentv3
+                        key={`medium_score`}
+                        idName={`medium_score`}
+                        label={`MEDIO`}
+                        type={number}
+                        value={values[`medium_score`]}
+                        placeholder={"0"}
+                        setFieldValue={setFieldValue}
+                        onChange={(e) => {
+                           handleChange(e);
+                           // handleChangePts(e, values, setFieldValue);
+                        }}
+                        onBlur={handleBlur}
+                        error={errors[`medium_score`]}
+                        touched={touched[`medium_score`]}
+                        fullWidth={false}
+                        sx={{ width: "50px", minWidth: "50px" }}
+                     />
+                  </Box>
+               </Box>
                {/* <Typography variant="h3" align={"end"} mr={3} mt={2} mb={1}>
                   Puntaje Acumulado: {values.total_score ?? 0}
                </Typography> */}

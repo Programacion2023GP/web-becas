@@ -7,7 +7,7 @@ import { LoadingButton } from "@mui/lab";
 import { SwipeableDrawer } from "@mui/material";
 import { FormControl } from "@mui/material";
 import { FormHelperText } from "@mui/material";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useLevelContext } from "../../../context/LevelContext";
 import { Box } from "@mui/system";
 import { useEffect } from "react";
@@ -24,8 +24,20 @@ const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
 
 const LevelForm = () => {
    const { openDialog, setOpenDialog, toggleDrawer, setLoadingAction } = useGlobalContext();
-   const { singularName, levels, createLevel, updateLevel, formData, setFormData, textBtnSubmit, resetFormData, setTextBtnSumbit, formTitle, setFormTitle } =
-      useLevelContext();
+   const {
+      singularName,
+      levels,
+      createLevel,
+      updateLevel,
+      formData,
+      setFormData,
+      textBtnSubmit,
+      resetFormData,
+      setTextBtnSumbit,
+      formTitle,
+      setFormTitle,
+      formikRef
+   } = useLevelContext();
    const [checkAdd, setCheckAdd] = useState(checkAddInitialState);
    const [colorLabelcheck, setColorLabelcheck] = useState(colorLabelcheckInitialState);
 
@@ -83,7 +95,7 @@ const LevelForm = () => {
    const handleModify = (setValues, setFieldValue) => {
       try {
          if (formData.description) formData.description == null && (formData.description = "");
-         setValues(formData);
+         formikRef.current.setValues(formData);
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -125,7 +137,7 @@ const LevelForm = () => {
                   label="Seguir Agregando"
                />
             </Typography>
-            <Formik initialValues={formData} validationSchema={validationSchema} onSubmit={onSubmit}>
+            <Formik initialValues={formData} validationSchema={validationSchema} onSubmit={onSubmit} innerRef={formikRef}>
                {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
                   <Grid container spacing={2} component={"form"} onSubmit={handleSubmit}>
                      <Field id="id" name="id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} />
@@ -175,9 +187,9 @@ const LevelForm = () => {
                            CANCELAR
                         </Button>
                      </ButtonGroup>
-                     <Button type="button" color="info" fullWidth id="btnModify" sx={{ mt: 1, display: "none" }} onClick={() => handleModify(setValues)}>
+                     {/* <Button type="button" color="info" fullWidth id="btnModify" sx={{ mt: 1, display: "none" }} onClick={() => handleModify(setValues)}>
                         setValues
-                     </Button>
+                     </Button> */}
                   </Grid>
                )}
             </Formik>

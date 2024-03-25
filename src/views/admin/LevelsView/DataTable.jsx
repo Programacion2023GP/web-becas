@@ -27,8 +27,21 @@ import SwitchComponent from "../../../components/SwitchComponent";
 const LevelDT = () => {
    const { auth } = useAuthContext();
    const { setLoading, setLoadingAction, setOpenDialog } = useGlobalContext();
-   const { singularName, level, levels, getLevels, showLevel, deleteLevel, DisEnableLevel, resetFormData, resetLevel, setTextBtnSumbit, setFormTitle } =
-      useLevelContext();
+   const {
+      singularName,
+      level,
+      levels,
+      getLevels,
+      showLevel,
+      deleteLevel,
+      DisEnableLevel,
+      resetFormData,
+      resetLevel,
+      setTextBtnSumbit,
+      setFormTitle,
+      formData,
+      formikRef
+   } = useLevelContext();
    const globalFilterFields = ["level", "active", "created_at"];
 
    // #region BodysTemplate
@@ -52,10 +65,11 @@ const LevelDT = () => {
 
    const mySwal = withReactContent(Swal);
 
-   const handleClickAdd = () => {
+   const handleClickAdd = async () => {
       try {
          // resetLevel();
-         resetFormData();
+         await resetFormData();
+         formikRef.current.setValues(formikRef.current.initialValues);
          setOpenDialog(true);
          setTextBtnSumbit("AGREGAR");
          setFormTitle(`REGISTRAR ${singularName.toUpperCase()}`);
@@ -70,7 +84,9 @@ const LevelDT = () => {
          setLoadingAction(true);
          setTextBtnSumbit("GUARDAR");
          setFormTitle(`EDITAR ${singularName.toUpperCase()}`);
-         await showLevel(id);
+         const axiosResponse = await showLevel(id);
+         console.log(axiosResponse);
+         await formikRef.current.setValues(axiosResponse.result);
          setOpenDialog(true);
          setLoadingAction(false);
       } catch (error) {

@@ -864,7 +864,6 @@ const RequestBecaView = () => {
 
    const handleClickSavehReview = async (values) => {
       try {
-         console.log("estoy en el handleClickSavehReview()");
          values.action = "save";
          await setFormData({ ...formData, ...values });
          // console.log("formData en submit3", formData);
@@ -886,7 +885,7 @@ const RequestBecaView = () => {
    };
    const handleClickFinishReview = async (values) => {
       try {
-         console.log("estoy en el handleClickFinishReview()", values);
+         // console.log("estoy en el handleClickFinishReview()", values);
          if (
             Boolean(values.b7_approved_tutor_ine) == false ||
             Boolean(values.b7_approved_proof_address) == false ||
@@ -948,7 +947,7 @@ const RequestBecaView = () => {
          // console.log("isTutor :c", isTutor);
          if (pagina == 9) {
             await setIsTutor(ajaxResponse.result.requestBecas.tutor_relationship_id > 2 ? true : false);
-            console.log("holaa soy pagina9 - siTutor:", isTutor, ajaxResponse.result.requestBecas.tutor_relationship_id);
+            // console.log("holaa soy pagina9 - siTutor:", isTutor, ajaxResponse.result.requestBecas.tutor_relationship_id);
             setObjImg(ajaxResponse.result.requestBecas.b7_img_tutor_ine, setImgTutorIne);
             if (isTutor) setObjImg(ajaxResponse.result.requestBecas.b7_img_tutor_power_letter, setImgTutorPowerLetter);
             setObjImg(ajaxResponse.result.requestBecas.b7_img_proof_address, setImgProofAddress);
@@ -1821,7 +1820,7 @@ const RequestBecaView = () => {
                                                       <FormControlLabel sx={{ mr: 5 }} value="2@Cemento" control={<Radio />} label="Cemento" />
                                                       <FormControlLabel
                                                          sx={{ mr: 5 }}
-                                                         value="2@Mosaico"
+                                                         value="3@Mosaico"
                                                          control={<Radio />}
                                                          label="Mosaico, loseta, madera Láminada"
                                                       />

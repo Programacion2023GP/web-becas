@@ -33,7 +33,10 @@ const formDataInitialStateDB = {
    scholarship_2: 0,
    scholarship_3: 0,
    scholarship_4: 0,
-   total_score: 0
+   total_score: 0,
+   medium_score: 0,
+   medium_low_score: 0,
+   low_score: 0
 };
 
 const formDataInitialState = {
@@ -172,7 +175,10 @@ const formDataInitialState = {
    scholarship_3: 0,
    scholarship_4: 0,
 
-   total_score: 0
+   total_score: 0,
+   medium_score: 0,
+   medium_low_score: 0,
+   low_score: 0
 };
 
 export default function AnswerScoreContextProvider({ children }) {
@@ -201,10 +207,10 @@ export default function AnswerScoreContextProvider({ children }) {
       }
    };
 
-   const mappingQuestions = async (obj, arrayQuestions, questionName, typeOption) => {
+   const mappingQuestions = async (obj, arrayQuestions, questionName, optionType) => {
       // console.log("mappingQuestions", obj);
       arrayQuestions.map((questions, qi) => {
-         if (typeOption === "range")
+         if (optionType === "range")
             questions.map((r, i) => {
                let q = qi + 1;
                // console.log("reg", r);
@@ -225,7 +231,7 @@ export default function AnswerScoreContextProvider({ children }) {
                // console.log(`${questionName}_${q}_${op}`);
                // console.log(obj);
             });
-         else if (typeOption === "multiple")
+         else if (optionType === "multiple")
             questions.map((r, i) => {
                let q = qi + 1;
                // console.log("reg", r);
@@ -238,7 +244,7 @@ export default function AnswerScoreContextProvider({ children }) {
                // console.log("dataReal: ", `${questionName}_${q}_${op}= ${pts}`);
                obj[`${questionName}_${q}_${op}`] = Number(pts);
             });
-         else if (typeOption === "check") {
+         else if (optionType === "check") {
             // console.log(questions);
             let q = qi + 1;
             const pts = questions;
@@ -253,6 +259,9 @@ export default function AnswerScoreContextProvider({ children }) {
       if (!answer_score) return;
       answerScore.id = answer_score.id;
       answerScore.total_score = answer_score.total_score;
+      answerScore.medium_score = answer_score.medium_score;
+      answerScore.medium_low_score = answer_score.medium_low_score;
+      answerScore.low_score = answer_score.low_score;
       // console.log(answerScore);
 
       const familys = [];
@@ -335,6 +344,9 @@ export default function AnswerScoreContextProvider({ children }) {
          answerScore.total_score = values.total_score;
          newAnswerScore.id = values.id;
          newAnswerScore.total_score = values.total_score;
+         newAnswerScore.medium_score = values.medium_score;
+         newAnswerScore.medium_low_score = values.medium_low_score;
+         newAnswerScore.low_score = values.low_score;
 
          newAnswerScore.family_1 = `1:${values.family_1_1_min}-${values.family_1_1_max}=${values.family_1_1}, 2:${values.family_1_2_min}-${values.family_1_2_max}=${values.family_1_2}, 3:${values.family_1_3_min}-${values.family_1_3_max}=${values.family_1_3}`;
 

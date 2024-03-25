@@ -214,7 +214,6 @@ const RequestBecaDT = () => {
 
    const handleClickSocioeconomicEvaluation = async (folio, current_status) => {
       try {
-         console.log("no se como");
          const axiosData = await Axios.get(`/becas/calculateRequest/folio/${folio}`);
          console.log(axiosData);
       } catch (error) {
@@ -346,12 +345,12 @@ const RequestBecaDT = () => {
    const toolbarContent = () => {
       return (
          <div className="flex flex-wrap gap-2">
-            {auth.permissions.more_permissions.includes([`16@Exportar Lista Pública`, `17@Exportar Lista Pública`]) && (
+            {auth.permissions.more_permissions.includes(`16@Exportar Lista Pública`) && (
                <Button variant="contained" color="success" startIcon={<IconFileSpreadsheet />} onClick={handleClickExportPublic} sx={{ mx: 1 }}>
                   Exprotar al público
                </Button>
             )}
-            {auth.permissions.more_permissions.includes([`16@Exportar Lista Contraloría`, `17@Exportar Lista Contraloría`]) && (
+            {auth.permissions.more_permissions.includes(`16@Exportar Lista Contraloría`) && (
                <Button variant="contained" color="success" startIcon={<IconFileSpreadsheet />} onClick={handleClickExportContraloria} sx={{ mx: 1 }}>
                   Exprotar para contraloria
                </Button>

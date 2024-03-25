@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { Axios } from "./AuthContext";
 import { CorrectRes, ErrorRes } from "../utils/Response";
 // import { socket } from "./GlobalContext";
@@ -13,6 +13,7 @@ const formDataInitialState = {
 export default function LevelContextProvider({ children }) {
    const singularName = "Nivel"; //Escribirlo siempre letra Capital
    const pluralName = "Niveles"; //Escribirlo siempre letra Capital
+   const formikRef = useRef();
 
    const [formTitle, setFormTitle] = useState(`REGISTRAR ${singularName.toUpperCase()}`);
    const [textBtnSubmit, setTextBtnSumbit] = useState("AGREGAR");
@@ -24,6 +25,7 @@ export default function LevelContextProvider({ children }) {
    const resetFormData = () => {
       try {
          setFormData(formDataInitialState);
+         return formData;
       } catch (error) {
          console.log("Error en resetFormData:", error);
       }
@@ -165,7 +167,8 @@ export default function LevelContextProvider({ children }) {
             formTitle,
             setFormTitle,
             singularName,
-            pluralName
+            pluralName,
+            formikRef
          }}
       >
          {children}
