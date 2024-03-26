@@ -1115,6 +1115,8 @@ const RequestBecaView = () => {
                                                 error={errors.tutor_relationship_id}
                                                 touched={touched.tutor_relationship_id}
                                                 disabled={values.id == 0 ? false : true}
+                                                pluralName={"Parentesco"}
+                                                refreshSelect={getRelationshipsSelectIndex}
                                              />
                                           </Grid>
                                           {/* Nombre Tutor */}
@@ -1346,6 +1348,8 @@ const RequestBecaView = () => {
                                                 error={errors.disability_id}
                                                 touched={touched.disability_id}
                                                 disabled={values.id == 0 ? false : true}
+                                                pluralName={"Discapacidades"}
+                                                refreshSelect={getDisabilitiesSelectIndex}
                                              />
                                           </Grid>
 
@@ -1414,6 +1418,8 @@ const RequestBecaView = () => {
                                                 touched={touched.school_id}
                                                 disabled={values.id == 0 ? false : true}
                                                 // inputref={inputRefSchoolId}
+                                                pluralName={"Escuelas"}
+                                                refreshSelect={getSchoolsSelectIndex}
                                              />
                                           </Grid>
                                           {/* Grado */}

@@ -219,6 +219,8 @@ const SchoolForm = () => {
                            error={errors.level_id}
                            touched={touched.level_id}
                            disabled={false}
+                           pluralName={"Niveles"}
+                           refreshSelect={getLevelsSelectIndex}
                         />
                      </Grid>
                      {/* Escuela */}

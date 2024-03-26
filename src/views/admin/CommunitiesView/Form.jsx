@@ -52,7 +52,7 @@ const CommunityForm = () => {
       setFormTitle
    } = useCommunityContext();
 
-   const { perimeters } = usePerimeterContext();
+   const { perimeters, getPerimetersSelectIndex } = usePerimeterContext();
 
    const [checkAdd, setCheckAdd] = useState(checkAddInitialState);
    const [colorLabelcheck, setColorLabelcheck] = useState(colorLabelcheckInitialState);
@@ -248,6 +248,8 @@ const CommunityForm = () => {
                            error={errors.perimeter_id}
                            touched={touched.perimeter_id}
                            disabled={false}
+                           pluralName={"Perímetros"}
+                           refreshSelect={getPerimetersSelectIndex}
                         />
                      </Grid>
 

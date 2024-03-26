@@ -33,7 +33,8 @@ const FormSelect = ({ setOpenDialogTable }) => {
       roleSelect,
       setRoleSelect,
       showRoleSelect,
-      updatePermissions
+      updatePermissions,
+      getRolesSelectIndex
    } = useRoleContext();
    const { menus, checkMenus, setCheckMenus } = useMenuContext();
 
@@ -296,6 +297,8 @@ const FormSelect = ({ setOpenDialogTable }) => {
                         error={errors.id}
                         touched={touched.id}
                         disabled={false}
+                        pluralName={"Roles"}
+                        refreshSelect={getRolesSelectIndex}
                      />
                   </Grid>
                   {auth.permissions.more_permissions.includes(`6@Asignar Permisos`) && (

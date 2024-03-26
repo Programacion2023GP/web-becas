@@ -58,7 +58,7 @@ const CommunityFormAssignPerimeter = ({ openDialog, setOpenDialog }) => {
       assignPerimeterToCommunity
    } = useCommunityContext();
 
-   const { perimeters } = usePerimeterContext();
+   const { perimeters, getPerimetersSelectIndex } = usePerimeterContext();
 
    const [checkAdd, setCheckAdd] = useState(checkAddInitialState);
    const [colorLabelcheck, setColorLabelcheck] = useState(colorLabelcheckInitialState);
@@ -195,6 +195,8 @@ const CommunityFormAssignPerimeter = ({ openDialog, setOpenDialog }) => {
                            error={errors.perimeter_id}
                            touched={touched.perimeter_id}
                            disabled={false}
+                           pluralName={"Perímetros"}
+                           refreshSelect={getPerimetersSelectIndex}
                         />
                      </Grid>
                      <Grid>

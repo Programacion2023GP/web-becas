@@ -27,6 +27,7 @@ const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true :
 const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
 
 const UserForm = ({ dataRoles }) => {
+   const { getRolesSelectIndex } = useRoleContext();
    // #region Boton de Contraseña
    const [showPassword, setShowPassword] = useState(false);
    const [checkedShowSwitchPassword, setCheckedShowSwitchPassword] = useState(true);
@@ -315,6 +316,8 @@ const UserForm = ({ dataRoles }) => {
                            error={errors.role_id}
                            touched={touched.role_id}
                            disabled={false}
+                           pluralName={"Roles"}
+                           refreshSelect={getRolesSelectIndex}
                         />
                      </Grid>
 

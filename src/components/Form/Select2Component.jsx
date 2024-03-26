@@ -1,7 +1,9 @@
-import { Autocomplete, FormControl, FormHelperText, TextField } from "@mui/material";
+import { Autocomplete, FormControl, FormHelperText, IconButton, TextField, Tooltip } from "@mui/material";
 import Toast from "../../utils/Toast";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Field } from "formik";
+import { IconReload } from "@tabler/icons";
+import { Box } from "@mui/system";
 
 /**
  * 
@@ -15,11 +17,13 @@ import { Field } from "formik";
          placeholder={"Selecciona una opción..."}
          options={dataBrands}
          fullWidth={true}
-         // handleChangeValueSuccess={handleChange...}
+         // handleChangeValueSuccess={handleChangeBrands}
          handleBlur={handleBlur}
          error={errors.brand_id}
          touched={touched.brand_id}
          disabled={false}
+         pluralName={""}
+         refreshSelect={getSelectIndex}
       />
    </Grid>
  */
@@ -31,15 +35,20 @@ const Select2Component = ({
    valueLabel,
    formDataLabel,
    placeholder,
-   options = [{ id: 0, label: "Selecciona una opción..." }],
+   options,
    fullWidth,
    handleChangeValueSuccess,
    handleBlur,
    error,
    touched,
-   disabled = false
+   disabled = false,
    // inputref = null
+   pluralName,
+   refreshSelect = null,
+   refreshSelectParams = null
 }) => {
+   const [loading, setLoading] = useState(false);
+
    const isOptionEqualToValue = (option, value) => {
       // console.log("option", option);
       // console.log("value", value);
@@ -86,36 +95,59 @@ const Select2Component = ({
       }
    };
 
+   const handleClickRefresh = async () => {
+      try {
+         setLoading(true);
+         await refreshSelect(refreshSelectParams);
+         setLoading(false);
+         Toast.Success("Actualizada");
+      } catch (error) {
+         console.log(error);
+         Toast.Error(error);
+      }
+   };
+
    useEffect(() => {
       // console.log("useEffect");
    }, [valueLabel]);
 
    return (
       <FormControl fullWidth>
-         <Field id={idName} name={idName}>
-            {({ field, form }) => (
-               <Autocomplete
-                  disablePortal
-                  openOnFocus
-                  label={label}
-                  placeholder={placeholder}
-                  options={options || ["Selecciona una opción..."]}
-                  {...field}
-                  value={valueLabel || "Selecciona una opción..."}
-                  defaultValue={valueLabel || "Selecciona una opción..."}
-                  onChange={(_, newValue) => {
-                     // form.setFieldValue(field.name, newValue);
-                     handleChangeValue(newValue, form.setFieldValue);
-                  }}
-                  onBlur={handleBlur}
-                  fullWidth={fullWidth || true}
-                  isOptionEqualToValue={isOptionEqualToValue}
-                  renderInput={(params) => <TextField {...params} label={label} />}
-                  disabled={disabled}
-                  error={error && touched}
-               />
+         <Box display={"flex"}>
+            <Field id={idName} name={idName}>
+               {({ field, form }) => (
+                  <Autocomplete
+                     key={`select_${idName}`}
+                     loading={loading}
+                     disablePortal
+                     openOnFocus
+                     label={label}
+                     placeholder={placeholder}
+                     options={options || ["Selecciona una opción..."]}
+                     {...field}
+                     value={valueLabel || "Selecciona una opción..."}
+                     defaultValue={valueLabel || "Selecciona una opción..."}
+                     onChange={(_, newValue) => {
+                        // form.setFieldValue(field.name, newValue);
+                        handleChangeValue(newValue, form.setFieldValue);
+                     }}
+                     onBlur={handleBlur}
+                     fullWidth={fullWidth || true}
+                     isOptionEqualToValue={isOptionEqualToValue}
+                     renderInput={(params) => <TextField {...params} label={label} />}
+                     disabled={disabled}
+                     error={error && touched}
+                  />
+               )}
+            </Field>
+            {refreshSelect && (
+               <Tooltip title={`Actualizar ${pluralName}`} placement="top">
+                  <IconButton type="button" variant="text" color="primary" sx={{ borderRadius: "12px", mr: 1 }} onClick={handleClickRefresh}>
+                     <IconReload />
+                  </IconButton>
+               </Tooltip>
             )}
-         </Field>
+         </Box>
 
          {touched && error && (
             <FormHelperText error id={`ht-${idName}`}>
@@ -196,6 +228,31 @@ const Select2Component1 = ({
    useEffect(() => {
       // console.log("useEffect");
    }, [valueLabel]);
+
+   // <Autocomplete
+   //          disablePortal
+   //          openOnFocus
+   //          id={idName}
+   //          name={idName}
+   //          label={label}
+   //          placeholder={placeholder}
+   //          options={options}
+   //          // getOptionLabel={(option) => option.toString()}
+   //          isOptionEqualToValue={isOptionEqualToValue}
+   //          renderInput={(params) => <TextField {...params} label={label} />}
+   //          onChange={(e, newValue, reason, details) => {
+   //             handleChange(e, newValue, reason, details);
+   //             handleChangeValue(newValue, setValues);
+   //          }}
+   //          onBlur={handleBlur}
+   //          fullWidth={fullWidth || true}
+   //          // disabled={values.id == 0 ? false : true}
+   //          disabled={disabled}
+   //          // inputRef={inputref}
+   //          error={error && touched}
+   //          defaultValue={valueLabel || "Selecciona una opción..."}
+   //          value={valueLabel || "Selecciona una opción..."}
+   //       />
 
    return (
       <FormControl fullWidth>

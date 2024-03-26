@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Button, ButtonGroup, Dialog, DialogActions, DialogContent, IconButton, Toolbar, Tooltip, Typography } from "@mui/material";
-import { IconX, IconWindowMaximize, IconWindowMinimize, IconFileTypePdf } from "@tabler/icons-react";
+import { IconX, IconWindowMaximize, IconWindowMinimize, IconFileTypePdf, IconThumbUpFilled } from "@tabler/icons-react";
 
 import { useRequestBecaContext } from "../../../context/RequestBecaContext";
 import Swal from "sweetalert2";
@@ -9,7 +9,7 @@ import { QuestionAlertConfig } from "../../../utils/sAlert";
 import Toast from "../../../utils/Toast";
 import { ROLE_ADMIN, ROLE_SUPER_ADMIN, useGlobalContext } from "../../../context/GlobalContext";
 import DataTableComponent from "../../../components/DataTableComponent";
-import { IconAbacus, IconBan, IconChecklist, IconClipboardText, IconEye, IconFileSpreadsheet, IconPrinter } from "@tabler/icons";
+import { IconAbacus, IconBan, IconChecklist, IconClipboardText, IconEye, IconFileSpreadsheet, IconPrinter, IconThumbDown } from "@tabler/icons";
 import { formatDatetime } from "../../../utils/Formats";
 import { Link } from "react-router-dom";
 import { Axios, idPage, useAuthContext } from "../../../context/AuthContext";
@@ -22,6 +22,10 @@ import html2pdf from "html2pdf.js";
 import RequestReportPDF from "./RequestReportPDF";
 import TaskAltIcon from "@mui/icons-material/TaskAlt";
 import PDFTable from "./PDFTable";
+import { IconThumbUp } from "@tabler/icons-react";
+import { ModalComponent } from "../../../components/ModalComponent";
+import { Formik } from "formik";
+import ModalReject from "./ModalReject";
 
 const RequestBecaDT = () => {
    const { auth } = useAuthContext();
@@ -55,6 +59,8 @@ const RequestBecaDT = () => {
       "socioeconomic_study"
    ];
    const { getIndexByFolio } = useFamilyContext();
+   const [folio, setFolio] = useState(0);
+   const [openModalReject, setOpenModalReject] = useState(false);
 
    const [openDialogPreview, setOpenDialogPreview] = useState(false);
    const [fullScreenDialog, setFullScreenDialog] = useState(false);
@@ -222,6 +228,40 @@ const RequestBecaDT = () => {
       }
    };
 
+   const handleClickApprove = async (folio) => {
+      try {
+         const axiosResponse = await updateStatusBeca(folio, "APROBADA");
+         Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
+      } catch (error) {
+         console.log(error);
+         Toast.Error(error);
+      }
+   };
+   const handleClickReject = async (folio) => {
+      try {
+         mySwal.fire(QuestionAlertConfig(`Estas seguro de RECHAZAR la solicitud con folio #${folio}`, "RECHAZAR!", "NO CANCELAR")).then(async (result) => {
+            if (result.isConfirmed) {
+               setFolio(folio);
+               setOpenModalReject(true);
+            }
+         });
+      } catch (error) {
+         console.log(error);
+         Toast.Error(error);
+      }
+   };
+   const questionAlertConfirm = async (folio) => {
+      try {
+         setLoadingAction(true);
+         const axiosResponse = await updateStatusBeca(folio, "RECHAZDA");
+         setLoadingAction(false);
+         Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
+      } catch (error) {
+         console.log(error);
+         Toast.Error(error);
+      }
+   };
+
    const handleClickAdd = () => {
       try {
          location.hash = "/admin/solicitud-beca";
@@ -295,16 +335,23 @@ const RequestBecaDT = () => {
                </Tooltip>
             )}
             {auth.permissions.more_permissions.includes(`16@Validar Documentos`) && ["TERMINADA", "EN REVISIÓN"].includes(obj.status) && (
-               <Tooltip title={`Validar Documentos del Folio ${name}`} placement="top">
+               <Tooltip title={`Validar Documentos del Folio #${name}`} placement="top">
                   <Button color="primary" onClick={() => handleClickValidateDocuments(obj.folio, obj.status)}>
                      <IconChecklist />
                   </Button>
                </Tooltip>
             )}
             {auth.permissions.more_permissions.includes(`16@Evaluar`) && ["EN EVALUACIÓN"].includes(obj.status) && (
-               <Tooltip title={`Evaluar Estudio Socio-Económico del Folio ${name}`} placement="top">
-                  <Button color="primary" onClick={() => handleClickSocioeconomicEvaluation(obj.folio, obj.status)}>
-                     <IconAbacus />
+               <Tooltip title={`Aprobar Folio #${name}`} placement="top">
+                  <Button color="primary" onClick={() => handleClickApprove(obj.folio)}>
+                     <IconThumbUpFilled />
+                  </Button>
+               </Tooltip>
+            )}
+            {auth.permissions.more_permissions.includes(`16@Evaluar`) && ["EN EVALUACIÓN"].includes(obj.status) && (
+               <Tooltip title={`Rechazar Folio #${name}`} placement="top">
+                  <Button color="error" onClick={() => handleClickReject(obj.folio)}>
+                     <IconThumbDown />
                   </Button>
                </Tooltip>
             )}
@@ -399,9 +446,7 @@ const RequestBecaDT = () => {
             positionBtnsToolbar="center"
             toolbarContent={toolbarContent}
          />
-
          {/* <PDFTable /> */}
-
          <Dialog fullWidth maxWidth={"lg"} fullScreen={fullScreenDialog} open={openDialogPreview} onClose={() => setOpenDialogPreview(false)}>
             {/* <DialogTitle> */}
             <Toolbar>
@@ -451,6 +496,7 @@ const RequestBecaDT = () => {
                <Button onClick={() => Toast.Success("Guardado")}>Guardar</Button>
             </DialogActions> */}
          </Dialog>
+         <ModalReject open={openModalReject} setOpen={setOpenModalReject} folio={folio} />;
       </>
    );
 };
