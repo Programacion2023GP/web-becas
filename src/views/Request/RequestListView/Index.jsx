@@ -42,7 +42,7 @@ import DataTableComponent from "../../../components/DataTableComponent";
 import RequestBecaDT from "./RequestDT";
 import { useAuthContext } from "../../../context/AuthContext";
 
-const RequestListView = () => {
+const RequestListView = ({ status = null }) => {
    const { auth } = useAuthContext();
    const {
       setLoading,
@@ -88,10 +88,11 @@ const RequestListView = () => {
    // createRow();
 
    useEffect(() => {
-      getRequestBecas();
+      console.log("status", status);
+      getRequestBecas(status);
       setLoading(false);
       // console.log("useEffect - formData", requestBecas);
-   }, []);
+   }, [status]);
 
    return (
       <Box sx={{ width: "100%", height: "100%" }}>

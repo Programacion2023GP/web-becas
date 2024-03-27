@@ -16,8 +16,10 @@ const formDataInitialState = {
    icon: "",
    order: "",
    show_counter: false,
+   counter_name: "",
    others_permissions: "",
 
+   active: true,
    patern: ""
 };
 
@@ -125,6 +127,8 @@ export default function MenuContextProvider({ children }) {
                      title: iCh.menu,
                      type: iCh.type,
                      url: iCh.url,
+                     show_counter: iCh.show_counter,
+                     counter_name: iCh.counter_name,
                      icon: tablerIcons[`${iCh.icon}`]
                   };
                   item.children.push(child);

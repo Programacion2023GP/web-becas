@@ -8,6 +8,8 @@ import { useEffect, useRef, useState } from "react";
 import { ModalComponent } from "../../../components/ModalComponent";
 import { useGlobalContext } from "../../../context/GlobalContext";
 import { useRequestBecaContext } from "../../../context/RequestBecaContext";
+import { formatDatetimeToSQL } from "../../../utils/Formats";
+import Toast from "../../../utils/Toast";
 
 function ModalReject({ folio, open, setOpen }) {
    const { setLoadingAction } = useGlobalContext();
@@ -15,22 +17,24 @@ function ModalReject({ folio, open, setOpen }) {
 
    const formikRef = useRef();
    const [formData, setFormData] = useState({
-      folio: folio,
-      rejected_feedback: ""
+      // folio: folio,
+      rejected_feedback: "",
+      rejected_at: ""
    });
 
    const resetFormData = () => {
       setFormData({
-         folio: 0,
+         // folio: 0,
          rejected_feedback: ""
       });
    };
 
    const onSubmit = async (values, { setSubmitting, setErrors, resetForm }) => {
       try {
-         // return console.log("values", values);
+         values.rejected_at = formatDatetimeToSQL(new Date());
+         console.log("values", values);
          setLoadingAction(true);
-         const axiosResponse = await updateStatusBeca(folio, "RECHAZDA");
+         const axiosResponse = await updateStatusBeca(folio, "RECHAZADA", values);
 
          if (axiosResponse.status === 200) {
             resetForm();

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, ButtonGroup, Dialog, DialogActions, DialogContent, IconButton, Toolbar, Tooltip, Typography } from "@mui/material";
+import { Button, ButtonGroup, Dialog, DialogContent, IconButton, Toolbar, Tooltip, Typography } from "@mui/material";
 import { IconX, IconWindowMaximize, IconWindowMinimize, IconFileTypePdf, IconThumbUpFilled } from "@tabler/icons-react";
 
 import { useRequestBecaContext } from "../../../context/RequestBecaContext";
@@ -9,10 +9,10 @@ import { QuestionAlertConfig } from "../../../utils/sAlert";
 import Toast from "../../../utils/Toast";
 import { ROLE_ADMIN, ROLE_SUPER_ADMIN, useGlobalContext } from "../../../context/GlobalContext";
 import DataTableComponent from "../../../components/DataTableComponent";
-import { IconAbacus, IconBan, IconChecklist, IconClipboardText, IconEye, IconFileSpreadsheet, IconPrinter, IconThumbDown } from "@tabler/icons";
+import { IconBan, IconChecklist, IconEye, IconFileSpreadsheet, IconPrinter, IconThumbDown } from "@tabler/icons";
 import { formatDatetime } from "../../../utils/Formats";
 import { Link } from "react-router-dom";
-import { Axios, idPage, useAuthContext } from "../../../context/AuthContext";
+import { Axios, useAuthContext } from "../../../context/AuthContext";
 import { IconCircleCheckFilled } from "@tabler/icons-react";
 import { IconCircleXFilled } from "@tabler/icons-react";
 import { Box } from "@mui/system";
@@ -20,11 +20,6 @@ import { getCommunityById } from "../../../components/Form/InputsCommunityCompon
 import { useFamilyContext } from "../../../context/FamilyContext";
 import html2pdf from "html2pdf.js";
 import RequestReportPDF from "./RequestReportPDF";
-import TaskAltIcon from "@mui/icons-material/TaskAlt";
-import PDFTable from "./PDFTable";
-import { IconThumbUp } from "@tabler/icons-react";
-import { ModalComponent } from "../../../components/ModalComponent";
-import { Formik } from "formik";
 import ModalReject from "./ModalReject";
 
 const RequestBecaDT = () => {
@@ -496,7 +491,7 @@ const RequestBecaDT = () => {
                <Button onClick={() => Toast.Success("Guardado")}>Guardar</Button>
             </DialogActions> */}
          </Dialog>
-         <ModalReject open={openModalReject} setOpen={setOpenModalReject} folio={folio} />;
+         <ModalReject open={openModalReject} setOpen={setOpenModalReject} folio={folio} />
       </>
    );
 };

@@ -166,191 +166,212 @@ const MenuForm = () => {
                   label="Seguir Agregando"
                /> */}
             </Typography>
+
             <Formik initialValues={formData} validationSchema={validationSchemas} onSubmit={onSubmit}>
                {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
                   <Grid container spacing={2} component={"form"} onSubmit={handleSubmit}>
-                     <Field id="id" name="id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} />
-                     {/* Padre o Hijo */}
-                     <Grid xs={12} md={12} sx={{ mb: 1 }}>
-                        <FormControl fullWidth sx={{ alignItems: "center" }}>
-                           <FormLabel id="type-label">Tipo de Menú</FormLabel>
-                           <RadioGroup
-                              row
-                              aria-labelledby="type-label"
-                              id="type"
-                              name="type"
-                              value={values.type}
-                              onChange={(e) => {
-                                 handleChange(e);
-                                 handleChangeType(e.target.value);
-                              }}
-                              onBlur={handleBlur}
-                           >
-                              <FormControlLabel value="group" control={<Radio />} label="Padre" />
-                              <FormControlLabel value="item" control={<Radio />} label="Hijo" />
-                           </RadioGroup>
-                           {touched.type && errors.type && (
-                              <FormHelperText error id="ht-type">
-                                 {errors.type}
-                              </FormHelperText>
-                           )}
-                        </FormControl>
-                     </Grid>
-                     {/* Menú */}
-                     <Grid xs={12} md={12} sx={{ mb: 3 }}>
-                        <TextField
-                           id="menu"
-                           name="menu"
-                           label="Nombre del Menú *"
-                           type="text"
-                           value={values.menu}
-                           placeholder="Usuarios"
-                           onChange={handleChange}
-                           onBlur={handleBlur}
-                           // onInput={(e) => handleInputFormik(e, setFieldValue, "menu", true)}
-                           fullWidth
-                           error={errors.menu && touched.menu}
-                           helperText={errors.menu && touched.menu && errors.menu}
-                        />
-                     </Grid>
-                     {/* Leyenda */}
-                     {values.type === "group" && (
+                     <Grid container width={"100%"} maxHeight={"57.9vh"} overflow={"auto"}>
+                        <Field id="id" name="id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} />
+                        {/* Padre o Hijo */}
+                        <Grid xs={12} md={12} sx={{ mb: 1 }}>
+                           <FormControl fullWidth sx={{ alignItems: "center" }}>
+                              <FormLabel id="type-label">Tipo de Menú</FormLabel>
+                              <RadioGroup
+                                 row
+                                 aria-labelledby="type-label"
+                                 id="type"
+                                 name="type"
+                                 value={values.type}
+                                 onChange={(e) => {
+                                    handleChange(e);
+                                    handleChangeType(e.target.value);
+                                 }}
+                                 onBlur={handleBlur}
+                              >
+                                 <FormControlLabel value="group" control={<Radio />} label="Padre" />
+                                 <FormControlLabel value="item" control={<Radio />} label="Hijo" />
+                              </RadioGroup>
+                              {touched.type && errors.type && (
+                                 <FormHelperText error id="ht-type">
+                                    {errors.type}
+                                 </FormHelperText>
+                              )}
+                           </FormControl>
+                        </Grid>
+                        {/* Menú */}
                         <Grid xs={12} md={12} sx={{ mb: 3 }}>
                            <TextField
-                              id="caption"
-                              name="caption"
-                              label="Ingrese Leyenda"
+                              id="menu"
+                              name="menu"
+                              label="Nombre del Menú *"
                               type="text"
-                              value={values.caption}
-                              placeholder="Texto de ayuda"
+                              value={values.menu}
+                              placeholder="Usuarios"
                               onChange={handleChange}
                               onBlur={handleBlur}
-                              // onInput={(e) => handleInputFormik(e, setFieldValue, "caption", true)}
+                              // onInput={(e) => handleInputFormik(e, setFieldValue, "menu", true)}
                               fullWidth
-                              error={errors.caption && touched.caption}
-                              helperText={errors.caption && touched.caption && errors.caption}
+                              error={errors.menu && touched.menu}
+                              helperText={errors.menu && touched.menu && errors.menu}
                            />
                         </Grid>
-                     )}
-                     {values.type === "item" && (
-                        <>
-                           {/* Pertence a */}
-                           <Grid xs={12} md={12} sx={{ mb: 2 }}>
-                              <Select2Component
-                                 idName={"belongs_to"}
-                                 label={"Pertenezco a *"}
-                                 valueLabel={values.patern}
-                                 formDataLabel={"patern"}
-                                 placeholder={"Selecciona una opción..."}
-                                 options={headerMenus}
-                                 fullWidth={true}
-                                 // handleChangeValueSuccess={handleChange...}
-                                 handleBlur={handleBlur}
-                                 error={errors.belongs_to}
-                                 touched={touched.belongs_to}
-                                 disabled={false}
-                                 pluralName={"Menús Padre"}
-                                 refreshSelect={getHeaderMenusSelectIndex}
-                              />
-                           </Grid>
-                           {/* URL */}
+                        {/* Leyenda */}
+                        {values.type === "group" && (
                            <Grid xs={12} md={12} sx={{ mb: 3 }}>
                               <TextField
-                                 id="url"
-                                 name="url"
-                                 label="URL / Path *"
+                                 id="caption"
+                                 name="caption"
+                                 label="Ingrese Leyenda"
                                  type="text"
-                                 value={values.url}
-                                 placeholder="/admin/nombre-de-pagina"
+                                 value={values.caption}
+                                 placeholder="Texto de ayuda"
                                  onChange={handleChange}
                                  onBlur={handleBlur}
-                                 onInput={(e) => handleInputFormik(e, setFieldValue, "url", false)}
+                                 // onInput={(e) => handleInputFormik(e, setFieldValue, "caption", true)}
                                  fullWidth
-                                 error={errors.url && touched.url}
-                                 helperText={errors.url && touched.url && errors.url}
+                                 error={errors.caption && touched.caption}
+                                 helperText={errors.caption && touched.caption && errors.caption}
                               />
                            </Grid>
-                           {/* Icono */}
-                           <Grid xs={12} md={12} sx={{ mb: 3 }}>
-                              <TextField
-                                 id="icon"
-                                 name="icon"
-                                 label="Ingrese el nombre del icono *"
-                                 type="text"
-                                 value={values.icon}
-                                 placeholder="NombreDelIcono"
-                                 onChange={handleChange}
-                                 onBlur={handleBlur}
-                                 // onInput={(e) => handleInputFormik(e, setFieldValue, "icon", true)}
-                                 fullWidth
-                                 error={errors.icon && touched.icon}
-                                 helperText={errors.icon && touched.icon && errors.icon}
-                              />
-                              <small style={{ fontStyle: "italic" }}>
-                                 <a href="https://tabler.io/icons" target="_blank">
-                                    Pagina de iconos - copiar el "React Name"
-                                 </a>
-                              </small>
-                           </Grid>
-                           {/* Otros Permisos */}
-                           <Grid xs={12} md={12} sx={{ mb: 3 }}>
-                              <TextField
-                                 id="others_permissions"
-                                 name="others_permissions"
-                                 label="Ingrese los permisos especiales *"
-                                 type="text"
-                                 value={values.others_permissions}
-                                 placeholder="Otros Permisos"
-                                 onChange={handleChange}
-                                 onBlur={handleBlur}
-                                 multiline={true}
-                                 rows={5}
-                                 // onInput={(e) => handleInputFormik(e, setFieldValue, "others_permissions", true)}
-                                 fullWidth
-                                 error={errors.others_permissions && touched.others_permissions}
-                                 helperText={errors.others_permissions && touched.others_permissions && errors.others_permissions}
-                              />
-                              <small style={{ fontStyle: "italic" }}>
-                                 Los permisos serán separados por coma "<b>( , )</b>" y su estructura: "ID@Nombre Del Permiso"
-                              </small>
-                           </Grid>
-                        </>
-                     )}
-
-                     {/* Orden */}
-                     <Grid xs={12} md={12} sx={{ mb: 3 }}>
-                        <TextField
-                           id="order"
-                           name="order"
-                           label="Ingrese el orden *"
-                           type="number"
-                           value={values.order}
-                           placeholder="0"
-                           onChange={handleChange}
-                           onBlur={handleBlur}
-                           // onInput={(e) => handleInputFormik(e, setFieldValue, "order", true)}
-                           fullWidth
-                           error={errors.order && touched.order}
-                           helperText={errors.order && touched.order && errors.order}
-                        />
-                     </Grid>
-                     {/* Mostrar contador */}
-                     {values.type === "item" && (
+                        )}
+                        {values.type === "item" && (
+                           <>
+                              {/* Pertence a */}
+                              <Grid xs={12} md={12} sx={{ mb: 2 }}>
+                                 <Select2Component
+                                    idName={"belongs_to"}
+                                    label={"Pertenezco a *"}
+                                    valueLabel={values.patern}
+                                    formDataLabel={"patern"}
+                                    placeholder={"Selecciona una opción..."}
+                                    options={headerMenus}
+                                    fullWidth={true}
+                                    // handleChangeValueSuccess={handleChange...}
+                                    handleBlur={handleBlur}
+                                    error={errors.belongs_to}
+                                    touched={touched.belongs_to}
+                                    disabled={false}
+                                    pluralName={"Menús Padre"}
+                                    refreshSelect={getHeaderMenusSelectIndex}
+                                 />
+                              </Grid>
+                              {/* URL */}
+                              <Grid xs={12} md={12} sx={{ mb: 3 }}>
+                                 <TextField
+                                    id="url"
+                                    name="url"
+                                    label="URL / Path *"
+                                    type="text"
+                                    value={values.url}
+                                    placeholder="/admin/nombre-de-pagina"
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    onInput={(e) => handleInputFormik(e, setFieldValue, "url", false)}
+                                    fullWidth
+                                    error={errors.url && touched.url}
+                                    helperText={errors.url && touched.url && errors.url}
+                                 />
+                              </Grid>
+                              {/* Icono */}
+                              <Grid xs={12} md={12} sx={{ mb: 3 }}>
+                                 <TextField
+                                    id="icon"
+                                    name="icon"
+                                    label="Ingrese el nombre del icono *"
+                                    type="text"
+                                    value={values.icon}
+                                    placeholder="NombreDelIcono"
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    // onInput={(e) => handleInputFormik(e, setFieldValue, "icon", true)}
+                                    fullWidth
+                                    error={errors.icon && touched.icon}
+                                    helperText={errors.icon && touched.icon && errors.icon}
+                                 />
+                                 <small style={{ fontStyle: "italic" }}>
+                                    <a href="https://tabler.io/icons" target="_blank">
+                                       Pagina de iconos - copiar el "React Name"
+                                    </a>
+                                 </small>
+                              </Grid>
+                              {/* Otros Permisos */}
+                              <Grid xs={12} md={12} sx={{ mb: 3 }}>
+                                 <TextField
+                                    id="others_permissions"
+                                    name="others_permissions"
+                                    label="Ingrese los permisos especiales *"
+                                    type="text"
+                                    value={values.others_permissions}
+                                    placeholder="Otros Permisos"
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    multiline={true}
+                                    rows={5}
+                                    // onInput={(e) => handleInputFormik(e, setFieldValue, "others_permissions", true)}
+                                    fullWidth
+                                    error={errors.others_permissions && touched.others_permissions}
+                                    helperText={errors.others_permissions && touched.others_permissions && errors.others_permissions}
+                                 />
+                                 <small style={{ fontStyle: "italic" }}>
+                                    Los permisos serán separados por coma "<b>( , )</b>" y su estructura: "ID@Nombre Del Permiso"
+                                 </small>
+                              </Grid>
+                           </>
+                        )}
+                        {/* Orden */}
                         <Grid xs={12} md={12} sx={{ mb: 3 }}>
-                           <Tooltip title={values.show_counter ? "Mostrar" : "Ocultar"} placement="right">
-                              <Button color="dark" onClick={() => setFieldValue("show_counter", !Boolean(values.show_counter))}>
-                                 <SwitchComponent checked={Boolean(values.show_counter)} label={"¿Mostrar contador?"} />
+                           <TextField
+                              id="order"
+                              name="order"
+                              label="Ingrese el orden *"
+                              type="number"
+                              value={values.order}
+                              placeholder="0"
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              // onInput={(e) => handleInputFormik(e, setFieldValue, "order", true)}
+                              fullWidth
+                              error={errors.order && touched.order}
+                              helperText={errors.order && touched.order && errors.order}
+                           />
+                        </Grid>
+                        {/* Mostrar contador */}
+                        {values.type === "item" && (
+                           <Grid xs={12} md={12} sx={{ mb: 3 }}>
+                              <Tooltip title={values.show_counter ? "Mostrar" : "Ocultar"} placement="right">
+                                 <Button color="dark" onClick={() => setFieldValue("show_counter", !Boolean(values.show_counter))}>
+                                    <SwitchComponent checked={Boolean(values.show_counter)} label={"¿Mostrar contador?"} />
+                                 </Button>
+                              </Tooltip>
+                           </Grid>
+                        )}
+                        {/* Nombre del Contador */}
+                        {values.type === "item" && (
+                           <Grid xs={12} md={12} sx={{ mb: 3 }}>
+                              <TextField
+                                 id="counter_name"
+                                 name="counter_name"
+                                 label="Nombre del Contador *"
+                                 type="text"
+                                 value={values.counter_name}
+                                 placeholder="requestApproved"
+                                 onChange={handleChange}
+                                 onBlur={handleBlur}
+                                 // onInput={(e) => handleInputFormik(e, setFieldValue, "counter_name", true)}
+                                 fullWidth
+                                 error={errors.counter_name && touched.counter_name}
+                                 helperText={errors.counter_name && touched.counter_name && errors.counter_name}
+                              />
+                           </Grid>
+                        )}
+                        {/* Activar */}
+                        <Grid xs={12} md={12} sx={{ mb: 3 }}>
+                           <Tooltip title={values.active ? "Activo" : "Inactivo"} placement="right">
+                              <Button color="dark" onClick={() => setFieldValue("active", !Boolean(values.active))}>
+                                 <SwitchComponent checked={Boolean(values.active)} label={"¿Menú Activo?"} />
                               </Button>
                            </Tooltip>
                         </Grid>
-                     )}
-                     {/* Activar */}
-                     <Grid xs={12} md={12} sx={{ mb: 3 }}>
-                        <Tooltip title={values.active ? "Activo" : "Inactivo"} placement="right">
-                           <Button color="dark" onClick={() => setFieldValue("active", !Boolean(values.active))}>
-                              <SwitchComponent checked={Boolean(values.active)} label={"¿Menú Activo?"} />
-                           </Button>
-                        </Tooltip>
                      </Grid>
                      {((textBtnSubmit === "AGREGAR" && auth.permissions.create) || (textBtnSubmit === "GUARDAR" && auth.permissions.update)) && (
                         <LoadingButton

@@ -20,7 +20,7 @@ import RelationshipContextProvider from "../context/RelationshipContext";
 import TutorContextProvider from "../context/TutorContext";
 import { loaderIndexUsersView } from "../views/admin/UsersView/Index";
 import FamilyContextProvider from "../context/FamilyContext";
-import RequestListView from "../views/Request/RequestListView/RequestListView";
+import RequestListView from "../views/Request/RequestListView/Index";
 import CommunitiesView from "../views/admin/CommunitiesView/Index";
 import CommunityContextProvider from "../context/CommunityContext";
 import MenuContextProvider from "../context/MenuContext";
@@ -190,7 +190,66 @@ const MainRoutes = {
             },
             {
                path: "mis-solicitudes",
-               // path: "/",
+               element: (
+                  <FamilyContextProvider>
+                     <RequestBecaContextProvider>
+                        <RequestListView />
+                     </RequestBecaContextProvider>
+                  </FamilyContextProvider>
+               )
+            },
+            {
+               path: "en-revision",
+               element: (
+                  <FamilyContextProvider>
+                     <RequestBecaContextProvider>
+                        <RequestListView status={"TERMINADA"} />
+                     </RequestBecaContextProvider>
+                  </FamilyContextProvider>
+               )
+            },
+            {
+               path: "en-evaluacion",
+               element: (
+                  <FamilyContextProvider>
+                     <RequestBecaContextProvider>
+                        <RequestListView status={'EN REVISIÓN'}/>
+                     </RequestBecaContextProvider>
+                  </FamilyContextProvider>
+               )
+            },
+            {
+               path: "aprobadas",
+               element: (
+                  <FamilyContextProvider>
+                     <RequestBecaContextProvider>
+                        <RequestListView />
+                     </RequestBecaContextProvider>
+                  </FamilyContextProvider>
+               )
+            },
+            {
+               path: "pagadas",
+               element: (
+                  <FamilyContextProvider>
+                     <RequestBecaContextProvider>
+                        <RequestListView />
+                     </RequestBecaContextProvider>
+                  </FamilyContextProvider>
+               )
+            },
+            {
+               path: "rechazadas",
+               element: (
+                  <FamilyContextProvider>
+                     <RequestBecaContextProvider>
+                        <RequestListView />
+                     </RequestBecaContextProvider>
+                  </FamilyContextProvider>
+               )
+            },
+            {
+               path: "canceladas",
                element: (
                   <FamilyContextProvider>
                      <RequestBecaContextProvider>

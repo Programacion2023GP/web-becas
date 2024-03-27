@@ -23,7 +23,7 @@ const MenuDT = () => {
    const { auth } = useAuthContext();
    const { setLoading, setLoadingAction, setOpenDialog } = useGlobalContext();
    const { singularName, menu, menus, getMenus, showMenu, deleteMenu, DisEnableMenu, resetFormData, resetMenu, setTextBtnSumbit, setFormTitle } = useMenuContext();
-   const globalFilterFields = ["id", "icon", "menu", "caption", "patern", "order", "url", "others_permissions", "active", "created_at"];
+   const globalFilterFields = ["id", "icon", "menu", "caption", "patern", "order", "url", "counter_name", "others_permissions", "active", "created_at"];
 
    // #region BodysTemplate
    const IDBodyTemplate = (obj) => (
@@ -65,6 +65,7 @@ const MenuDT = () => {
                <br />
                Path: <b>{obj.url ?? "-"}</b>
                <br />
+               Nombre del Contador: <b>{obj.counter_name ?? "-"}</b>
             </Typography>
          ) : (
             <>

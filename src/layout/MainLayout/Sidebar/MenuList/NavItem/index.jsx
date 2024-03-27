@@ -12,10 +12,13 @@ import { MENU_OPEN, SET_MENU } from "../../../../../config/store/actions";
 
 // assets
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
+import { useGlobalContext } from "../../../../../context/GlobalContext";
 
 // ==============================|| SIDEBAR MENU LIST ITEMS ||============================== //
 
 const NavItem = ({ item, level }) => {
+   const { counters, setCounters } = useGlobalContext();
+
    const theme = useTheme();
    const dispatch = useDispatch();
    const { pathname } = useLocation();
@@ -94,13 +97,13 @@ const NavItem = ({ item, level }) => {
                )
             }
          />
-         {item.chip && (
+         {Boolean(item.show_counter) && (
             <Chip
-               color={item.chip.color}
-               variant={item.chip.variant}
-               size={item.chip.size}
-               label={item.chip.label}
-               avatar={item.chip.avatar && <Avatar>{item.chip.avatar}</Avatar>}
+               color={"primary" /* item.chip.color */}
+               variant={"filled" /* item.chip.variant */}
+               size={"small" /* item.chip.size */}
+               label={counters[item.counter_name] || 0}
+               // avatar={item.chip.avatar && <Avatar>{item.chip.avatar}</Avatar>}
             />
          )}
       </ListItemButton>

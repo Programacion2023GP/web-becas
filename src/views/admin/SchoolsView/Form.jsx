@@ -183,148 +183,150 @@ const SchoolForm = () => {
             <Formik initialValues={formData} validationSchema={validationSchema} onSubmit={onSubmit}>
                {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
                   <Grid container spacing={2} component={"form"} onSubmit={handleSubmit}>
-                     <Field id="id" name="id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} />
-                     {/* Codigo */}
-                     <Grid xs={12} md={4} sx={{ mb: 3 }}>
-                        {/* <InputComponent idName={"code"} /> */}
-                        <TextField
-                           id="code"
-                           name="code"
-                           label="Código de la Escuela *"
-                           type="text"
-                           value={values.code}
-                           placeholder="AS5D16A158"
-                           onChange={handleChange}
-                           onBlur={handleBlur}
-                           onInput={(e) => handleInputFormik(e, setFieldValue, "code", true)}
-                           inputProps={{ maxLength: 10 }}
-                           fullWidth
-                           disabled={values.id == 0 ? false : true}
-                           error={errors.code && touched.code}
-                           helperText={errors.code && touched.code && errors.code}
-                        />
-                     </Grid>
-                     {/* Nivel */}
-                     <Grid xs={12} md={8} sx={{ mb: 1 }}>
-                        <Select2Component
-                           idName={"level_id"}
-                           label={"Nivel *"}
-                           valueLabel={values.level}
-                           formDataLabel={"level"}
-                           placeholder={"Selecciona una opción..."}
-                           options={levels}
-                           fullWidth={true}
-                           // handleChangeValueSuccess={handleChangeLevel}
-                           handleBlur={handleBlur}
-                           error={errors.level_id}
-                           touched={touched.level_id}
-                           disabled={false}
-                           pluralName={"Niveles"}
-                           refreshSelect={getLevelsSelectIndex}
-                        />
-                     </Grid>
-                     {/* Escuela */}
-                     <Grid xs={12} md={12} sx={{ mb: 3 }}>
-                        <TextField
-                           id="school"
-                           name="school"
-                           label="Nombre de la Escuela *"
-                           type="text"
-                           value={values.school}
-                           placeholder="Lazaro Cardenas del Rio"
-                           onChange={handleChange}
-                           onBlur={handleBlur}
-                           onInput={(e) => handleInputFormik(e, setFieldValue, "school", true)}
-                           fullWidth
-                           error={errors.school && touched.school}
-                           helperText={errors.school && touched.school && errors.school}
-                        />
-                     </Grid>
-                     {/* Comunidad */}
-                     <InputsCommunityComponent
-                        formData={formData}
-                        setFormData={setFormData}
-                        values={values}
-                        setValues={setValues}
-                        setFieldValue={setFieldValue}
-                        handleChange={handleChange}
-                        handleBlur={handleBlur}
-                        errors={errors}
-                        touched={touched}
-                     />
-
-                     {/* Telefono */}
-                     <Grid xs={12} md={4} sx={{ mb: 1 }}>
-                        <TextField
-                           id="phone"
-                           name="phone"
-                           label="Número Telefónico *"
-                           type="phone"
-                           value={values.phone}
-                           placeholder="10 dígitos"
-                           onChange={handleChange}
-                           onBlur={handleBlur}
-                           fullWidth
-                           inputProps={{ maxLength: 10 }}
-                           error={errors.phone && touched.phone}
-                           helperText={errors.phone && touched.phone && errors.phone}
-                        />
-                     </Grid>
-                     {/* Director */}
-                     <Grid xs={12} md={8} sx={{ mb: 1 }}>
-                        {/* <ReactInputMask mask={"(999)-999-99-99"} value={values.director} disabled={false} maskChar=" "> */}
-                        <TextField
-                           id="director"
-                           name="director"
-                           label="Nombre del director *"
-                           type="text"
-                           value={values.director}
-                           placeholder="Lic. Nombre Completo"
-                           onChange={handleChange}
-                           onBlur={handleBlur}
-                           onInput={(e) => handleInputFormik(e, setFieldValue, "director", true)}
-                           fullWidth
-                           error={errors.director && touched.director}
-                           helperText={errors.director && touched.director && errors.director}
-                        />
-                     </Grid>
-                     {/* Local o Foraneo */}
-                     <Grid xs={12} md={6} sx={{ mb: 1 }}>
-                        <FormControl fullWidth sx={{ alignItems: "center" }}>
-                           <FormLabel id="loc_for-label">Ubicacion de escuela</FormLabel>
-                           <RadioGroup
-                              row
-                              aria-labelledby="loc_for-label"
-                              id="loc_for"
-                              name="loc_for"
-                              value={values.loc_for}
+                     <Grid container width={"100%"} maxHeight={"79vh"} overflow={"auto"}>
+                        <Field id="id" name="id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} />
+                        {/* Codigo */}
+                        <Grid xs={12} md={4} sx={{ mb: 3 }}>
+                           {/* <InputComponent idName={"code"} /> */}
+                           <TextField
+                              id="code"
+                              name="code"
+                              label="Código de la Escuela *"
+                              type="text"
+                              value={values.code}
+                              placeholder="AS5D16A158"
                               onChange={handleChange}
                               onBlur={handleBlur}
-                           >
-                              <FormControlLabel value="1" control={<Radio />} label="Local" />
-                              <FormControlLabel value="0" control={<Radio />} label="Foranea" />
-                           </RadioGroup>
-                           {touched.loc_for && errors.loc_for && (
-                              <FormHelperText error id="ht-loc_for">
-                                 {errors.loc_for}
-                              </FormHelperText>
-                           )}
-                        </FormControl>
-                     </Grid>
-                     {/* Zona */}
-                     <Grid xs={12} md={6} sx={{ mb: 3 }}>
-                        <FormControl fullWidth sx={{ alignItems: "center" }}>
-                           <FormLabel id="zone-label">Zona</FormLabel>
-                           <RadioGroup row aria-labelledby="zone-label" id="zone" name="zone" value={values.zone} onChange={handleChange} onBlur={handleBlur}>
-                              <FormControlLabel value="U" control={<Radio />} label="Urbana" />
-                              <FormControlLabel value="R" control={<Radio />} label="Rural" />
-                           </RadioGroup>
-                           {touched.zone && errors.zone && (
-                              <FormHelperText error id="ht-zone">
-                                 {errors.zone}
-                              </FormHelperText>
-                           )}
-                        </FormControl>
+                              onInput={(e) => handleInputFormik(e, setFieldValue, "code", true)}
+                              inputProps={{ maxLength: 10 }}
+                              fullWidth
+                              disabled={values.id == 0 ? false : true}
+                              error={errors.code && touched.code}
+                              helperText={errors.code && touched.code && errors.code}
+                           />
+                        </Grid>
+                        {/* Nivel */}
+                        <Grid xs={12} md={8} sx={{ mb: 1 }}>
+                           <Select2Component
+                              idName={"level_id"}
+                              label={"Nivel *"}
+                              valueLabel={values.level}
+                              formDataLabel={"level"}
+                              placeholder={"Selecciona una opción..."}
+                              options={levels}
+                              fullWidth={true}
+                              // handleChangeValueSuccess={handleChangeLevel}
+                              handleBlur={handleBlur}
+                              error={errors.level_id}
+                              touched={touched.level_id}
+                              disabled={false}
+                              pluralName={"Niveles"}
+                              refreshSelect={getLevelsSelectIndex}
+                           />
+                        </Grid>
+                        {/* Escuela */}
+                        <Grid xs={12} md={12} sx={{ mb: 3 }}>
+                           <TextField
+                              id="school"
+                              name="school"
+                              label="Nombre de la Escuela *"
+                              type="text"
+                              value={values.school}
+                              placeholder="Lazaro Cardenas del Rio"
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              onInput={(e) => handleInputFormik(e, setFieldValue, "school", true)}
+                              fullWidth
+                              error={errors.school && touched.school}
+                              helperText={errors.school && touched.school && errors.school}
+                           />
+                        </Grid>
+                        {/* Comunidad */}
+                        <InputsCommunityComponent
+                           formData={formData}
+                           setFormData={setFormData}
+                           values={values}
+                           setValues={setValues}
+                           setFieldValue={setFieldValue}
+                           handleChange={handleChange}
+                           handleBlur={handleBlur}
+                           errors={errors}
+                           touched={touched}
+                        />
+
+                        {/* Telefono */}
+                        <Grid xs={12} md={4} sx={{ mb: 1 }}>
+                           <TextField
+                              id="phone"
+                              name="phone"
+                              label="Número Telefónico *"
+                              type="phone"
+                              value={values.phone}
+                              placeholder="10 dígitos"
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              fullWidth
+                              inputProps={{ maxLength: 10 }}
+                              error={errors.phone && touched.phone}
+                              helperText={errors.phone && touched.phone && errors.phone}
+                           />
+                        </Grid>
+                        {/* Director */}
+                        <Grid xs={12} md={8} sx={{ mb: 1 }}>
+                           {/* <ReactInputMask mask={"(999)-999-99-99"} value={values.director} disabled={false} maskChar=" "> */}
+                           <TextField
+                              id="director"
+                              name="director"
+                              label="Nombre del director *"
+                              type="text"
+                              value={values.director}
+                              placeholder="Lic. Nombre Completo"
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              onInput={(e) => handleInputFormik(e, setFieldValue, "director", true)}
+                              fullWidth
+                              error={errors.director && touched.director}
+                              helperText={errors.director && touched.director && errors.director}
+                           />
+                        </Grid>
+                        {/* Local o Foraneo */}
+                        <Grid xs={12} md={6} sx={{ mb: 1 }}>
+                           <FormControl fullWidth sx={{ alignItems: "center" }}>
+                              <FormLabel id="loc_for-label">Ubicacion de escuela</FormLabel>
+                              <RadioGroup
+                                 row
+                                 aria-labelledby="loc_for-label"
+                                 id="loc_for"
+                                 name="loc_for"
+                                 value={values.loc_for}
+                                 onChange={handleChange}
+                                 onBlur={handleBlur}
+                              >
+                                 <FormControlLabel value="1" control={<Radio />} label="Local" />
+                                 <FormControlLabel value="0" control={<Radio />} label="Foranea" />
+                              </RadioGroup>
+                              {touched.loc_for && errors.loc_for && (
+                                 <FormHelperText error id="ht-loc_for">
+                                    {errors.loc_for}
+                                 </FormHelperText>
+                              )}
+                           </FormControl>
+                        </Grid>
+                        {/* Zona */}
+                        <Grid xs={12} md={6} sx={{ mb: 3 }}>
+                           <FormControl fullWidth sx={{ alignItems: "center" }}>
+                              <FormLabel id="zone-label">Zona</FormLabel>
+                              <RadioGroup row aria-labelledby="zone-label" id="zone" name="zone" value={values.zone} onChange={handleChange} onBlur={handleBlur}>
+                                 <FormControlLabel value="U" control={<Radio />} label="Urbana" />
+                                 <FormControlLabel value="R" control={<Radio />} label="Rural" />
+                              </RadioGroup>
+                              {touched.zone && errors.zone && (
+                                 <FormHelperText error id="ht-zone">
+                                    {errors.zone}
+                                 </FormHelperText>
+                              )}
+                           </FormControl>
+                        </Grid>
                      </Grid>
 
                      <LoadingButton

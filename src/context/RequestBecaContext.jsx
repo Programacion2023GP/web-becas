@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { Axios, useAuthContext } from "./AuthContext";
 import { CorrectRes, ErrorRes } from "../utils/Response";
-import { ROLE_ADMIN } from "./GlobalContext";
+import { ROLE_ADMIN, useGlobalContext } from "./GlobalContext";
 
 const RequestBecaContext = createContext();
 
@@ -127,6 +127,7 @@ const formDataInitialState = {
 
 export default function RequestBecaContextProvider({ children }) {
    const { auth } = useAuthContext();
+   const { counters, setCounters } = useGlobalContext();
    // formDataInitialState.tutor_id = auth.id;
    formDataInitialState.user_id = auth.id;
    const singularName = "Beca"; //Escribirlo siempre letra Capital
@@ -180,14 +181,18 @@ export default function RequestBecaContextProvider({ children }) {
       }
    };
 
-   const getRequestBecas = async () => {
+   const getRequestBecas = async (status = null) => {
       try {
          let res = CorrectRes;
-         const axiosData = await Axios.get(`/becas`);
+         let pathApi = `/becas`;
+         if (status) `/becas/status/${status}`;
+         const axiosData = await Axios.get(pathApi);
          // console.log("axiosData", axiosData);
          res = axiosData.data.data;
-         // console.log("res", res);
+         console.log("res", res);
          await setRequestBecas(res.result);
+         await setCounters({ ...counters, requestAll: res.result.length });
+         console.log("counters", counters);
          // console.log("requestBecas", requestBecas);
 
          return res;
@@ -220,13 +225,14 @@ export default function RequestBecaContextProvider({ children }) {
       }
    };
 
-   const updateStatusBeca = async (folio, status) => {
+   const updateStatusBeca = async (folio, status, beca = null) => {
       try {
          let res = CorrectRes;
-         const axiosData = await Axios.get(`/becas/updateStatus/folio/${folio}/status/${status}`);
+         const axiosData = await Axios.post(`/becas/updateStatus/folio/${folio}/status/${status}`, beca);
          res = axiosData.data.data;
          // setRequestBecas(axiosData.data.data.result);
          // console.log("requestBecas", requestBecas);
+         getRequestBecas();
 
          return res;
       } catch (error) {
