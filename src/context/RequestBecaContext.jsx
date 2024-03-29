@@ -126,7 +126,7 @@ const formDataInitialState = {
 // };
 
 export default function RequestBecaContextProvider({ children }) {
-   const { auth } = useAuthContext();
+   const { auth, counterOfMenus } = useAuthContext();
    const { counters, setCounters } = useGlobalContext();
    // formDataInitialState.tutor_id = auth.id;
    formDataInitialState.user_id = auth.id;
@@ -183,17 +183,50 @@ export default function RequestBecaContextProvider({ children }) {
 
    const getRequestBecas = async (status = null) => {
       try {
+         await setRequestBecas([]);
          let res = CorrectRes;
          let pathApi = `/becas`;
-         if (status) `/becas/status/${status}`;
+         // let counterName = "requestAll";
+         if (status != null) {
+            // console.log("getRequestBecas()->status", status);
+            let filterStatus;
+            if (status == "en-revision") {
+               filterStatus = "TERMINADA,EN REVISIÓN";
+               // counterName = "requestInReview";
+            } else if (status == "en-evaluacion") {
+               filterStatus = "EN EVALUACIÓN";
+               // counterName = "requestInEvaluation";
+            } else if (status == "aprobadas") {
+               filterStatus = "APROBADA";
+               // counterName = "requestApproved";
+            } else if (status == "pagadas") {
+               filterStatus = "PAGADA";
+               // counterName = "requestPayed";
+            } else if (status == "entregadas") {
+               filterStatus = "ENTREGADA";
+               // counterName = "requestDelivered";
+            } else if (status == "rechazadas") {
+               filterStatus = "RECHAZADA";
+               // counterName = "requestRejected";
+            } else if (status == "canceladas") {
+               filterStatus = "CANCELADA";
+               // counterName = "requestCanceled";
+            }
+            pathApi = `/becas/status/${filterStatus}`;
+         }
          const axiosData = await Axios.get(pathApi);
+
          // console.log("axiosData", axiosData);
-         res = axiosData.data.data;
-         console.log("res", res);
+         res = await axiosData.data.data;
+         // console.log("counterName", counterName);
+         // console.log("res.result.length ", res.result.length);
+         // await setCounters({ ...counters, counterName: res.result.length });
+         // if (status != null) {
+         //    res.result = res.result.filter((item) => item.status == status);
+         // }
          await setRequestBecas(res.result);
-         await setCounters({ ...counters, requestAll: res.result.length });
-         console.log("counters", counters);
          // console.log("requestBecas", requestBecas);
+         await counterOfMenus();
 
          return res;
       } catch (error) {
@@ -288,6 +321,7 @@ export default function RequestBecaContextProvider({ children }) {
          res.result.requestBecas = axiosData.data.data.result;
          setRequestBecas(axiosData.data.data.result);
          // console.log("requestBecas", requestBecas);
+         // await setCounters({ ...counters, requestByUser: res.result.requestBecas.length });
 
          return res;
       } catch (error) {

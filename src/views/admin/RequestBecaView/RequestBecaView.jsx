@@ -328,10 +328,10 @@ const RequestBecaView = () => {
       try {
          // // console.log("values", values);
          await setFormData({ ...formData, ...values });
-         console.log("formData-1", formData);
+         // console.log("formData-1", formData);
          await setValues(formData);
-         console.log("formData", formData);
-         console.log("values", values);
+         // console.log("formData", formData);
+         // console.log("values", values);
          setStepFailed(-1);
          handleComplete();
          // setTimeout(() => {
@@ -597,8 +597,8 @@ const RequestBecaView = () => {
          // resetForm();
          // resetFormData();
          handleComplete();
-         console.log("el formData en el onSubmit8", formData);
-         console.log("el values en el onSubmit8", values);
+         // console.log("el formData en el onSubmit8", formData);
+         // console.log("el values en el onSubmit8", values);
          setIsTutor(values.tutor_relationship_id > 2 ? true : false);
          // if (!checkAdd) setOpenDialog(false);
       } catch (error) {

@@ -22,7 +22,7 @@ import html2pdf from "html2pdf.js";
 import RequestReportPDF from "./RequestReportPDF";
 import ModalReject from "./ModalReject";
 
-const RequestBecaDT = () => {
+const RequestBecaDT = ({ status = null }) => {
    const { auth } = useAuthContext();
    const { setLoading, setLoadingAction, setOpenDialog } = useGlobalContext();
    const {
@@ -402,6 +402,7 @@ const RequestBecaDT = () => {
    };
 
    const data = [];
+
    const formatData = async () => {
       try {
          // console.log("cargar listado", requestBecas);
@@ -423,8 +424,8 @@ const RequestBecaDT = () => {
    formatData();
 
    useEffect(() => {
-      setLoading(false);
-   }, []);
+      // setLoading(false);
+   }, [requestBecas]);
 
    return (
       <>
@@ -436,7 +437,7 @@ const RequestBecaDT = () => {
             headerFilters={false}
             handleClickAdd={handleClickAdd}
             rowEdit={false}
-            refreshTable={getRequestBecas}
+            refreshTable={() => getRequestBecas(status)}
             toolBar={auth.role_id <= ROLE_ADMIN ? true : false}
             positionBtnsToolbar="center"
             toolbarContent={toolbarContent}

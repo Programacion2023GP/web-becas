@@ -3,6 +3,7 @@ import { Axios, useAuthContext } from "./AuthContext";
 import { CorrectRes, ErrorRes } from "../utils/Response";
 import Toast from "../utils/Toast";
 import * as tablerIcons from "@tabler/icons";
+import { useGlobalContext } from "./GlobalContext";
 
 const MenuContext = createContext();
 
@@ -24,7 +25,9 @@ const formDataInitialState = {
 };
 
 export default function MenuContextProvider({ children }) {
+   const { counters, setCounters } = useGlobalContext();
    const { auth, setAuth, logout } = useAuthContext();
+
    const singularName = "Menú"; //Escribirlo siempre letra Capital
    const pluralName = "Menús"; //Escribirlo siempre letra Capital
 
@@ -193,8 +196,24 @@ export default function MenuContextProvider({ children }) {
          res.alert_text = error;
       }
    };
-   // #region CRUD
 
+   const counterOfMenus = async () => {
+      try {
+         let res = CorrectRes;
+         const axiosData = await Axios.get(`/menus/counterOfMenus`);
+         res = axiosData.data.data;
+         console.log("counterOfMenus()-<res", res);
+
+         return res;
+      } catch (error) {
+         console.log(error);
+         res.message = error;
+         res.alert_text = error;
+         Toast.Error(error);
+      }
+   };
+
+   // #region CRUD
    const getMenus = async (getItems = false) => {
       try {
          // setMenu([]);
@@ -282,7 +301,7 @@ export default function MenuContextProvider({ children }) {
    const showMenu = async (id) => {
       try {
          let res = CorrectRes;
-         const axiosData = await Axios.get(`/menus/${id}`);
+         const axiosData = await Axios.get(`/menus/id/${id}`);
          res = axiosData.data.data;
          // await setMenu(res.result);
          setFormData(res.result);
@@ -410,7 +429,8 @@ export default function MenuContextProvider({ children }) {
             checkMaster,
             setCheckMaster,
             checkMenus,
-            setCheckMenus
+            setCheckMenus,
+            counterOfMenus
          }}
       >
          {children}

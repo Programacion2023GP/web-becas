@@ -1,7 +1,9 @@
 import axios from "axios";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useState } from "react";
 import sAlert from "../utils/sAlert";
 import { CorrectRes } from "../utils/Response";
+import { useGlobalContext } from "./GlobalContext";
+import { useEffect } from "react";
 
 export const AuthContext = createContext();
 
@@ -40,6 +42,7 @@ const AuthinitialStatate = {
 };
 
 export default function AuthContextProvider({ children }) {
+   const { counters, setCounters, resetCounters } = useGlobalContext();
    const [auth, setAuth] = useState(JSON.parse(localStorage.getItem("auth")) || AuthinitialStatate);
    const [permissionRead, setPermissionRead] = useState(false);
    // const [idPage, setIdPage] = useState(0);
@@ -145,6 +148,48 @@ export default function AuthContextProvider({ children }) {
       }
    };
 
+   const counterOfMenus = async () => {
+      try {
+         await resetCounters();
+         counters.requestAll = 0;
+         counters.requestInReview = 0;
+         console.log("counterofMenus");
+         let res = CorrectRes;
+         const axiosData = await Axios.get(`counters/counterOfMenus`);
+         res = axiosData.data.data;
+         const newCounters = counters;
+         await res.result.map((data) => {
+            // console.log(data);
+            if (["TERMINADA"].includes(data.counter)) newCounters.requestFinished = data.total;
+            if (["EN REVISIÓN"].includes(data.counter)) newCounters.requestInReview = data.total;
+            else if (["EN EVALUACIÓN"].includes(data.counter)) newCounters.requestInEvaluation = data.total;
+            else if (["APROBADA"].includes(data.counter)) newCounters.requestApproved = data.total;
+            else if (["PAGADA"].includes(data.counter)) newCounters.requestPayed = data.total;
+            else if (["ENTREGADA"].includes(data.counter)) newCounters.requestDelivered = data.total;
+            else if (["RECHAZADA"].includes(data.counter)) newCounters.requestRejected = data.total;
+            else if (["CANCELADA"].includes(data.counter)) newCounters.requestCanceled = data.total;
+            // else if (["ALTA", "TERMINADA", "EN REVISIÓN", "EN EVALUACIÓN", "RECHAZADA", "APROBADA", "PAGADA", "ENTREGADA", "CANCELADA"].includes(data.counter))
+         });
+         newCounters.requestInReview = Number(newCounters.requestFinished) + Number(newCounters.requestInReview);
+         newCounters.requestAll =
+            Number(newCounters.requestInReview) +
+            Number(newCounters.requestInEvaluation) +
+            Number(newCounters.requestApproved) +
+            Number(newCounters.requestPayed) +
+            Number(newCounters.requestDelivered) +
+            Number(newCounters.requestRejected) +
+            Number(newCounters.requestCanceled);
+         // console.log(newCounters);
+         setCounters(newCounters);
+
+         // return res;
+      } catch (error) {
+         console.log(error);
+         res.message = error;
+         res.alert_text = error;
+         Toast.Error(error);
+      }
+   };
    const validateAccessPage = async (updateAuth = false) => {
       // console.log("validateAccessPage->el auth", auth);
       try {
@@ -234,6 +279,7 @@ export default function AuthContextProvider({ children }) {
                window.location.hash = auth.page_index;
             }
          }
+
          // console.log("como quedo el permission?", permission);
          // console.log("auth al final", auth);
 
@@ -289,17 +335,16 @@ export default function AuthContextProvider({ children }) {
       }
    };
 
-   // useEffect(() => {
-   //    console.log("el useEffect de AuthContext");
-   //    const asyncCall = async () => await loggedInCheck();
-   //    asyncCall();
-   // }, []);
+   useEffect(() => {
+      console.log("el useEffect de AuthContext");
+      counterOfMenus();
+   }, []);
 
    // console.log("el auth en el context: ", auth);
    // if (auth === null) return;
 
    return (
-      <AuthContext.Provider value={{ register, login, auth, loggedInCheck, logout, permissionRead, validateAccessPage, changePasswordAuth }}>
+      <AuthContext.Provider value={{ register, login, auth, loggedInCheck, logout, permissionRead, validateAccessPage, changePasswordAuth, counterOfMenus }}>
          {children}
       </AuthContext.Provider>
    );

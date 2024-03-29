@@ -179,7 +179,7 @@ const MainRoutes = {
          children: [
             {
                index: true,
-               // path: "/",
+               path: ":status?",
                element: (
                   <FamilyContextProvider>
                      <RequestBecaContextProvider>
@@ -197,67 +197,67 @@ const MainRoutes = {
                      </RequestBecaContextProvider>
                   </FamilyContextProvider>
                )
-            },
-            {
-               path: "en-revision",
-               element: (
-                  <FamilyContextProvider>
-                     <RequestBecaContextProvider>
-                        <RequestListView status={"TERMINADA"} />
-                     </RequestBecaContextProvider>
-                  </FamilyContextProvider>
-               )
-            },
-            {
-               path: "en-evaluacion",
-               element: (
-                  <FamilyContextProvider>
-                     <RequestBecaContextProvider>
-                        <RequestListView status={'EN REVISIÓN'}/>
-                     </RequestBecaContextProvider>
-                  </FamilyContextProvider>
-               )
-            },
-            {
-               path: "aprobadas",
-               element: (
-                  <FamilyContextProvider>
-                     <RequestBecaContextProvider>
-                        <RequestListView />
-                     </RequestBecaContextProvider>
-                  </FamilyContextProvider>
-               )
-            },
-            {
-               path: "pagadas",
-               element: (
-                  <FamilyContextProvider>
-                     <RequestBecaContextProvider>
-                        <RequestListView />
-                     </RequestBecaContextProvider>
-                  </FamilyContextProvider>
-               )
-            },
-            {
-               path: "rechazadas",
-               element: (
-                  <FamilyContextProvider>
-                     <RequestBecaContextProvider>
-                        <RequestListView />
-                     </RequestBecaContextProvider>
-                  </FamilyContextProvider>
-               )
-            },
-            {
-               path: "canceladas",
-               element: (
-                  <FamilyContextProvider>
-                     <RequestBecaContextProvider>
-                        <RequestListView />
-                     </RequestBecaContextProvider>
-                  </FamilyContextProvider>
-               )
             }
+            // {
+            //    path: "en-revision",
+            //    element: (
+            //       <FamilyContextProvider>
+            //          <RequestBecaContextProvider>
+            //             <RequestListView status={"TERMINADA, EN REVISIÓN"} />
+            //          </RequestBecaContextProvider>
+            //       </FamilyContextProvider>
+            //    )
+            // },
+            // {
+            //    path: "en-evaluacion",
+            //    element: (
+            //       <FamilyContextProvider>
+            //          <RequestBecaContextProvider>
+            //             <RequestListView status={"EN EVALUACIÓN"} />
+            //          </RequestBecaContextProvider>
+            //       </FamilyContextProvider>
+            //    )
+            // },
+            // {
+            //    path: "aprobadas",
+            //    element: (
+            //       <FamilyContextProvider>
+            //          <RequestBecaContextProvider>
+            //             <RequestListView status={"APROBADA"} />
+            //          </RequestBecaContextProvider>
+            //       </FamilyContextProvider>
+            //    )
+            // },
+            // {
+            //    path: "pagadas",
+            //    element: (
+            //       <FamilyContextProvider>
+            //          <RequestBecaContextProvider>
+            //             <RequestListView status={"PAGADA"} />
+            //          </RequestBecaContextProvider>
+            //       </FamilyContextProvider>
+            //    )
+            // },
+            // {
+            //    path: "rechazadas",
+            //    element: (
+            //       <FamilyContextProvider>
+            //          <RequestBecaContextProvider>
+            //             <RequestListView status={"RECHAZADA"} />
+            //          </RequestBecaContextProvider>
+            //       </FamilyContextProvider>
+            //    )
+            // },
+            // {
+            //    path: "canceladas",
+            //    element: (
+            //       <FamilyContextProvider>
+            //          <RequestBecaContextProvider>
+            //             <RequestListView status={"CANCELADA"} />
+            //          </RequestBecaContextProvider>
+            //       </FamilyContextProvider>
+            //    )
+            // }
          ]
       },
 

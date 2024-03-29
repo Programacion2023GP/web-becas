@@ -41,8 +41,10 @@ import IconDelete from "../../../components/icons/IconDelete";
 import DataTableComponent from "../../../components/DataTableComponent";
 import RequestBecaDT from "./RequestDT";
 import { useAuthContext } from "../../../context/AuthContext";
+import { useParams } from "react-router";
 
-const RequestListView = ({ status = null }) => {
+const RequestListView = () => {
+   const { status } = useParams();
    const { auth } = useAuthContext();
    const {
       setLoading,
@@ -57,18 +59,8 @@ const RequestListView = ({ status = null }) => {
       setDataColoniesComplete
    } = useGlobalContext();
 
-   const {
-      singularName,
-      formData,
-      setFormData,
-      requestBecas,
-      getRequestBecas,
-      setRequestBecas,
-      getRequestBecasByuser,
-      resetFormData,
-      createRequestBeca,
-      updateRequestBeca
-   } = useRequestBecaContext();
+   const { formData, setFormData, requestBecas, getRequestBecas, setRequestBecas, getRequestBecasByuser, resetFormData, createRequestBeca, updateRequestBeca } =
+      useRequestBecaContext();
    const [data, setData] = useState([]);
    const [dataUpload, setDataUpload] = useState(false);
 
@@ -89,17 +81,37 @@ const RequestListView = ({ status = null }) => {
 
    useEffect(() => {
       console.log("status", status);
+      setLoading(true);
       getRequestBecas(status);
-      setLoading(false);
       // console.log("useEffect - formData", requestBecas);
    }, [status]);
 
    return (
       <Box sx={{ width: "100%", height: "100%" }}>
          <Typography variant="h1" color={"#364152"} mb={2} textAlign={"center"}>
-            {auth.role_id === ROLE_CIUDADANO ? "MIS SOLICITUDES".toUpperCase() : "LISTADO DE SOLICITUDES".toUpperCase()}
+            {auth.role_id === ROLE_CIUDADANO ? "MIS SOLICITUDES".toUpperCase() : "LISTADO DE SOLICITUDES".toUpperCase()} <br />
+            {status != null && (
+               <Typography>
+                  <b>STATUS: </b>
+                  {status == "en-revision"
+                     ? "TERMINADA O EN REVISIÓN"
+                     : status == "en-evaluacion"
+                     ? "EN EVALUACIÓN"
+                     : status == "aprobadas"
+                     ? "APROBADA"
+                     : status == "pagadas"
+                     ? "PAGADA"
+                     : status == "entregadas"
+                     ? "ENTREGADA"
+                     : status == "rechazadas"
+                     ? "RECHAZADA"
+                     : status == "canceladas"
+                     ? "CANCELADA"
+                     : ""}
+               </Typography>
+            )}
          </Typography>
-         <RequestBecaDT />
+         <RequestBecaDT status={status} />
       </Box>
    );
 };

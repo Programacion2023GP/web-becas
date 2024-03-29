@@ -1,7 +1,5 @@
-import { useSnackbar } from "notistack";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useState } from "react";
 import Toast from "../utils/Toast";
-import axios from "axios";
 
 //mis colores
 export const gpcLight = "#E9ECEF";
@@ -16,6 +14,19 @@ export const ROLE_ADMIN = 2;
 export const ROLE_CIUDADANO = 3;
 
 export const GlobalContext = createContext();
+
+const initialStateCounters = {
+   requestAll: 0,
+   requestByUser: 0,
+   requestFinished: 0,
+   requestInReview: 0,
+   requestInEvaluate: 0,
+   requestApproved: 0,
+   requestPayed: 0,
+   requestDelivered: 0,
+   requestRejected: 0,
+   requestCanceled: 0
+};
 
 export const GlobalContextProvider = ({ children }) => {
    // // const [loading, setLoading] = useState(true);
@@ -36,16 +47,7 @@ export const GlobalContextProvider = ({ children }) => {
    // const [loadingAction, setLoadingAction] = useState(false);
    const [cursorLoading, setCursorLoading] = useState(false);
    const [openDialog, setOpenDialog] = useState(false);
-   const [counters, setCounters] = useState({
-      requestAll: 0,
-      requestByUser: 0,
-      requestInReview: 0,
-      requestInEvaluate: 0,
-      requestApproved: 0,
-      requestPayed: 0,
-      requestRejected: 0,
-      requestCanceled: 0
-   });
+   const [counters, setCounters] = useState(initialStateCounters);
 
    const toggleDrawer =
       (open, setOpenSwiper = null) =>
@@ -103,6 +105,10 @@ export const GlobalContextProvider = ({ children }) => {
    const [dataColoniesComplete, setDataColoniesComplete] = useState([]);
    //#endregion INPUTS-COMMUNITY-COMPONENT
 
+   const resetCounters = () => {
+      setCounters(initialStateCounters);
+   };
+
    return (
       <GlobalContext.Provider
          value={{
@@ -158,7 +164,8 @@ export const GlobalContextProvider = ({ children }) => {
             dataColoniesComplete,
             setDataColoniesComplete,
             counters,
-            setCounters
+            setCounters,
+            resetCounters
          }}
       >
          {children}

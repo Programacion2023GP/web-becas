@@ -8,7 +8,6 @@ import { forwardRef, useEffect, useLayoutEffect, useState } from "react";
 import { IconButton, Toolbar, Tooltip } from "@mui/material";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
-import { PDFViewer } from "@react-pdf/renderer";
 import { IconWindowMaximize, IconWindowMinimize, IconX } from "@tabler/icons";
 import { useAuthContext } from "../context/AuthContext";
 import { gpcDark, gpcLight, useGlobalContext } from "../context/GlobalContext";
