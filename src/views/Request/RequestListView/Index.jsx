@@ -80,7 +80,6 @@ const RequestListView = () => {
    // createRow();
 
    useEffect(() => {
-      console.log("status", status);
       setLoading(true);
       getRequestBecas(status);
       // console.log("useEffect - formData", requestBecas);

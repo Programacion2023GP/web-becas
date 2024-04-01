@@ -218,12 +218,6 @@ export default function RequestBecaContextProvider({ children }) {
 
          // console.log("axiosData", axiosData);
          res = await axiosData.data.data;
-         // console.log("counterName", counterName);
-         // console.log("res.result.length ", res.result.length);
-         // await setCounters({ ...counters, counterName: res.result.length });
-         // if (status != null) {
-         //    res.result = res.result.filter((item) => item.status == status);
-         // }
          await setRequestBecas(res.result);
          // console.log("requestBecas", requestBecas);
          await counterOfMenus();
@@ -258,14 +252,14 @@ export default function RequestBecaContextProvider({ children }) {
       }
    };
 
-   const updateStatusBeca = async (folio, status, beca = null) => {
+   const updateStatusBeca = async (folio, status, beca = null, statusCurrent = null) => {
       try {
          let res = CorrectRes;
          const axiosData = await Axios.post(`/becas/updateStatus/folio/${folio}/status/${status}`, beca);
          res = axiosData.data.data;
          // setRequestBecas(axiosData.data.data.result);
          // console.log("requestBecas", requestBecas);
-         getRequestBecas();
+         getRequestBecas(statusCurrent);
 
          return res;
       } catch (error) {

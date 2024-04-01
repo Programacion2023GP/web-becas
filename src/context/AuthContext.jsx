@@ -2,7 +2,7 @@ import axios from "axios";
 import { createContext, useContext, useState } from "react";
 import sAlert from "../utils/sAlert";
 import { CorrectRes } from "../utils/Response";
-import { useGlobalContext } from "./GlobalContext";
+import { ROLE_CIUDADANO, useGlobalContext } from "./GlobalContext";
 import { useEffect } from "react";
 
 export const AuthContext = createContext();
@@ -153,34 +153,57 @@ export default function AuthContextProvider({ children }) {
          await resetCounters();
          counters.requestAll = 0;
          counters.requestInReview = 0;
-         console.log("counterofMenus");
+         // console.log("counterofMenus");
          let res = CorrectRes;
          const axiosData = await Axios.get(`counters/counterOfMenus`);
-         res = axiosData.data.data;
-         const newCounters = counters;
-         await res.result.map((data) => {
-            // console.log(data);
-            if (["TERMINADA"].includes(data.counter)) newCounters.requestFinished = data.total;
-            if (["EN REVISIÓN"].includes(data.counter)) newCounters.requestInReview = data.total;
-            else if (["EN EVALUACIÓN"].includes(data.counter)) newCounters.requestInEvaluation = data.total;
-            else if (["APROBADA"].includes(data.counter)) newCounters.requestApproved = data.total;
-            else if (["PAGADA"].includes(data.counter)) newCounters.requestPayed = data.total;
-            else if (["ENTREGADA"].includes(data.counter)) newCounters.requestDelivered = data.total;
-            else if (["RECHAZADA"].includes(data.counter)) newCounters.requestRejected = data.total;
-            else if (["CANCELADA"].includes(data.counter)) newCounters.requestCanceled = data.total;
-            // else if (["ALTA", "TERMINADA", "EN REVISIÓN", "EN EVALUACIÓN", "RECHAZADA", "APROBADA", "PAGADA", "ENTREGADA", "CANCELADA"].includes(data.counter))
-         });
-         newCounters.requestInReview = Number(newCounters.requestFinished) + Number(newCounters.requestInReview);
-         newCounters.requestAll =
-            Number(newCounters.requestInReview) +
-            Number(newCounters.requestInEvaluation) +
-            Number(newCounters.requestApproved) +
-            Number(newCounters.requestPayed) +
-            Number(newCounters.requestDelivered) +
-            Number(newCounters.requestRejected) +
-            Number(newCounters.requestCanceled);
-         // console.log(newCounters);
+         res = await axiosData.data.data;
+         const filterCounters = { ...counters };
+         const newCounters = { ...counters };
+
+         newCounters.requestAll = 0;
+         filterCounters.requestAll = await res.result.filter((data) =>
+            ["ALTA", "TERMINADA", "EN REVISIÓN", "EN EVALUACIÓN", "RECHAZADA", "APROBADA", "PAGADA", "ENTREGADA", "CANCELADA"].includes(data.counter)
+         );
+         await filterCounters.requestAll.map((data) => (newCounters.requestAll += data.total));
+
+         // newCounters.requestByUser = 150;
+         // if (auth.role_id === ROLE_CIUDADANO) {
+         //    console.log("soy ciudadano");
+         //    filterCounters.requestByUser = await res.result.filter((data) => console.log(data));
+         //    await filterCounters.requestByUser.map((data) => (newCounters.requestByUser += data.total));
+         // }
+
+         newCounters.requestInReview = 0;
+         filterCounters.requestInReview = await res.result.filter((data) => ["TERMINADA", "EN REVISIÓN"].includes(data.counter));
+         await filterCounters.requestInReview.map((data) => (newCounters.requestInReview += data.total));
+
+         newCounters.requestInEvaluation = 0;
+         filterCounters.requestInEvaluation = await res.result.filter((data) => ["EN EVALUACIÓN"].includes(data.counter));
+         await filterCounters.requestInEvaluation.map((data) => (newCounters.requestInEvaluation += data.total));
+
+         newCounters.requestApproved = 0;
+         filterCounters.requestApproved = await res.result.filter((data) => ["APROBADA"].includes(data.counter));
+         await filterCounters.requestApproved.map((data) => (newCounters.requestApproved += data.total));
+
+         newCounters.requestPayed = 0;
+         filterCounters.requestPayed = await res.result.filter((data) => ["PAGADA"].includes(data.counter));
+         await filterCounters.requestPayed.map((data) => (newCounters.requestPayed += data.total));
+
+         newCounters.requestDelivered = 0;
+         filterCounters.requestDelivered = await res.result.filter((data) => ["ENTREGADA"].includes(data.counter));
+         await filterCounters.requestDelivered.map((data) => (newCounters.requestDelivered += data.total));
+
+         newCounters.requestRejected = 0;
+         filterCounters.requestRejected = await res.result.filter((data) => ["RECHAZADA"].includes(data.counter));
+         await filterCounters.requestRejected.map((data) => (newCounters.requestRejected += data.total));
+
+         newCounters.requestCanceled = 0;
+         filterCounters.requestCanceled = await res.result.filter((data) => ["CANCELADA"].includes(data.counter));
+         await filterCounters.requestCanceled.map((data) => (newCounters.requestCanceled += data.total));
+         // console.log("newCounters", newCounters);
+
          setCounters(newCounters);
+         // console.log("counters", counters);
 
          // return res;
       } catch (error) {
@@ -336,7 +359,7 @@ export default function AuthContextProvider({ children }) {
    };
 
    useEffect(() => {
-      console.log("el useEffect de AuthContext");
+      // console.log("el useEffect de AuthContext");
       counterOfMenus();
    }, []);
 

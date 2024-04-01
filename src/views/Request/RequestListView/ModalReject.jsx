@@ -11,7 +11,7 @@ import { useRequestBecaContext } from "../../../context/RequestBecaContext";
 import { formatDatetimeToSQL } from "../../../utils/Formats";
 import Toast from "../../../utils/Toast";
 
-function ModalReject({ folio, open, setOpen }) {
+function ModalReject({ folio, open, setOpen, statusCurrent }) {
    const { setLoadingAction } = useGlobalContext();
    const { updateStatusBeca } = useRequestBecaContext();
 
@@ -34,7 +34,7 @@ function ModalReject({ folio, open, setOpen }) {
          values.rejected_at = formatDatetimeToSQL(new Date());
          console.log("values", values);
          setLoadingAction(true);
-         const axiosResponse = await updateStatusBeca(folio, "RECHAZADA", values);
+         const axiosResponse = await updateStatusBeca(folio, "RECHAZADA", values, statusCurrent);
 
          if (axiosResponse.status === 200) {
             resetForm();
