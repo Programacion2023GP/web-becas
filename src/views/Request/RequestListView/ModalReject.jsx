@@ -23,27 +23,31 @@ function ModalReject({ folio, open, setOpen, statusCurrent }) {
    });
 
    const resetFormData = () => {
+      formData.rejected_feedback = "";
+      formData.rejected_at = "";
       setFormData({
          // folio: 0,
-         rejected_feedback: ""
+         rejected_feedback: "",
+         rejected_at: ""
       });
+      console.log("limpiao");
    };
 
    const onSubmit = async (values, { setSubmitting, setErrors, resetForm }) => {
       try {
          values.rejected_at = formatDatetimeToSQL(new Date());
-         console.log("values", values);
+         // console.log("values", values);
          setLoadingAction(true);
          const axiosResponse = await updateStatusBeca(folio, "RECHAZADA", values, statusCurrent);
 
-         if (axiosResponse.status === 200) {
+         if (axiosResponse.status_code === 200) {
             resetForm();
             resetFormData();
          }
          setSubmitting(false);
          setLoadingAction(false);
          Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
-         if (!checkAdd) setOpenDialog(false);
+         setOpen(false);
       } catch (error) {
          console.error(error);
          setErrors({ submit: error.message });

@@ -215,7 +215,7 @@ const RequestBecaDT = ({ status = null }) => {
 
    const handleClickApprove = async (folio) => {
       try {
-         const axiosResponse = await updateStatusBeca(folio, "APROBADA", null, status);
+         const axiosResponse = await updateStatusBeca(folio, "APROBADA", { user_id: auth.id }, status);
          Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
       } catch (error) {
          console.log(error);
