@@ -2678,7 +2678,7 @@ const RequestBecaView = () => {
                                        {folio > 0 && ["", "ALTA"].includes(formData.status) && (
                                           <ButtonsBeforeOrNext isSubmitting={isSubmitting} setValues={setValues} />
                                        )}
-                                       {auth.role_id < ROLE_ADMIN && folio > 0 && ["TERMINADA", "EN REVISIÓN"].includes(formData.status) && (
+                                       {auth.role_id <= ROLE_ADMIN && folio > 0 && ["TERMINADA", "EN REVISIÓN"].includes(formData.status) && (
                                           <Box sx={{ display: "flex", flexDirection: "row-reverse", pt: 2 }}>
                                              <Button color="primary" variant="contained" onClick={() => handleClickFinishReview(values)} sx={{ mr: 1 }}>
                                                 TERMINAR REVISIÓN
