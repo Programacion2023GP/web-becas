@@ -3,6 +3,7 @@ import Icon404 from "../components/icons/Icon404";
 import { Link, useRouteError } from "react-router-dom";
 import { HomeTwoTone } from "@mui/icons-material";
 import ImgNotFound from "../assets/images/not-found.jpg";
+import { useEffect } from "react";
 
 const NotFound = () => {
    const error = useRouteError();
@@ -23,6 +24,9 @@ const NotFound = () => {
          srcImg = ImgNotFound;
          break;
    }
+   useEffect(()=>{
+
+   },[])
 
    return (
       <Container sx={{ textAlign: "center" }}>

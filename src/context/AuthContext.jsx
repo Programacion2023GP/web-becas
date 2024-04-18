@@ -360,6 +360,7 @@ export default function AuthContextProvider({ children }) {
 
    useEffect(() => {
       // console.log("el useEffect de AuthContext");
+      validateAccessPage();
       counterOfMenus();
    }, []);
 
