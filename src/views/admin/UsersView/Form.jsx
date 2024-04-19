@@ -22,6 +22,7 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { strengthColor, strengthIndicator } from "../../../utils/password-strength";
 import Select2Component from "../../../components/Form/Select2Component";
 import { useRoleContext } from "../../../context/RoleContext";
+import { FormikComponent } from "../../../components/Form/FormikComponent";
 
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
 const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
@@ -181,186 +182,144 @@ const UserForm = ({ dataRoles }) => {
             </Typography>
 
             {/* VALIDAR DEPENDIENDO DEL ROL ESCOGIDO */}
-            <Formik initialValues={formData} validationSchema={validationSchemas()} onSubmit={onSubmit}>
-               {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
-                  <Grid container spacing={2} component={"form"} onSubmit={handleSubmit}>
-                     <Field id="id" name="id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} />
-                     {/* Nombre de Usuario */}
-                     <Grid xs={12} md={6} sx={{ mb: 2 }}>
-                        <TextField
-                           id="username"
-                           name="username"
-                           label="Nombre de usuario *"
-                           type="text"
-                           value={values.username}
-                           placeholder="Ingrese su nombre de usuario"
-                           onChange={handleChange}
-                           onBlur={handleBlur}
-                           // onInput={(e) => handleInputFormik(e, setFieldValue, "username", true)}
-                           // InputProps={{ }}
-                           fullWidth
-                           // disabled={values.id == 0 ? false : true}
-                           error={errors.username && touched.username}
-                           helperText={errors.username && touched.username && errors.username}
-                        />
-                     </Grid>
-                     {/* Correo Electronico */}
-                     <Grid xs={12} md={6} sx={{ mb: 1 }}>
-                        <TextField
-                           id="email"
-                           name="email"
-                           label="Correo Electrónico *"
-                           type="email"
-                           value={values.email}
-                           placeholder="mi@correo.com"
-                           onChange={handleChange}
-                           onBlur={handleBlur}
-                           onInput={(e) => handleInputFormik(e, setFieldValue, "email", false)}
-                           // inputProps={{ maxLength: 2 }}
-                           fullWidth
-                           // disabled={values.id == 0 ? false : true}
-                           error={errors.email && touched.email}
-                           helperText={errors.email && touched.email && errors.email}
-                        />
-                     </Grid>
+            <FormikComponent key={"formikComponent"} initialValues={formData} validationSchema={validationSchemas()} onSubmit={onsubmit} textBtnSubmit={textBtnSubmit}>
+               {/* <Field id="id" name="id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} /> */}
+               {/* Nombre de Usuario */}
+               {/* <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                  <TextField
+                     id="username"
+                     name="username"
+                     label="Nombre de usuario *"
+                     type="text"
+                     value={values.username}
+                     placeholder="Ingrese su nombre de usuario"
+                     onChange={handleChange}
+                     onBlur={handleBlur}
+                     // onInput={(e) => handleInputFormik(e, setFieldValue, "username", true)}
+                     // InputProps={{ }}
+                     fullWidth
+                     // disabled={values.id == 0 ? false : true}
+                     error={errors.username && touched.username}
+                     helperText={errors.username && touched.username && errors.username}
+                  />
+               </Grid> */}
+               {/* Correo Electronico */}
+               {/* <Grid xs={12} md={6} sx={{ mb: 1 }}>
+                  <TextField
+                     id="email"
+                     name="email"
+                     label="Correo Electrónico *"
+                     type="email"
+                     value={values.email}
+                     placeholder="mi@correo.com"
+                     onChange={handleChange}
+                     onBlur={handleBlur}
+                     onInput={(e) => handleInputFormik(e, setFieldValue, "email", false)}
+                     // inputProps={{ maxLength: 2 }}
+                     fullWidth
+                     // disabled={values.id == 0 ? false : true}
+                     error={errors.email && touched.email}
+                     helperText={errors.email && touched.email && errors.email}
+                  />
+               </Grid> */}
 
-                     {/* Switch para mostrar el cambiar contraseña */}
-                     {checkedShowSwitchPassword && (
-                        <Grid xs={12} md={12} sx={{ mb: -2 }}>
-                           <FormControlLabel
-                              control={<Switch />}
-                              label="Cambiar Contraseña"
-                              checked={newPasswordChecked}
-                              onChange={() => setNewPasswordChecked(!newPasswordChecked)}
-                           />
-                        </Grid>
-                     )}
-                     {/* Contraseña */}
-                     <Grid xs={12} md={6} sx={{ mb: 2 }}>
-                        <FormControl fullWidth error={Boolean(touched.password && errors.password)}>
-                           <InputLabel htmlFor="password">Contraseña *</InputLabel>
-                           <OutlinedInput
-                              id="password"
-                              name="password"
-                              label="Contraseña *"
-                              type={showPassword ? "text" : "password"}
-                              value={values.password}
-                              placeholder="Ingrese su contraseña, minimo 6 dígitos"
-                              onBlur={handleBlur}
-                              onChange={(e) => {
-                                 handleChange(e);
-                                 changePassword(e.target.value);
-                              }}
-                              endAdornment={
-                                 <InputAdornment position="end">
-                                    <IconButton
-                                       aria-label="toggle password visibility"
-                                       onClick={handleClickShowPassword}
-                                       onMouseDown={handleMouseDownPassword}
-                                       edge="end"
-                                       size="large"
-                                    >
-                                       {showPassword ? <Visibility /> : <VisibilityOff />}
-                                    </IconButton>
-                                 </InputAdornment>
-                              }
-                              inputProps={{}}
-                              fullWidth
-                              disabled={newPasswordChecked ? false : true} // DESHABILITAR CON UN CHECK
-                              // disabled={values.id == 0 ? false : true}
-                              error={errors.password && touched.password}
-                           />
-                           {touched.password && errors.password && (
-                              <FormHelperText error id="ht-password">
-                                 {errors.password}
-                              </FormHelperText>
-                           )}
-                        </FormControl>
-                        {strength !== 0 && (
-                           <FormControl fullWidth>
-                              <Box sx={{ mb: 2 }}>
-                                 <Grid container spacing={2} alignItems="center">
-                                    <Grid>
-                                       <Box
-                                          style={{ backgroundColor: level?.color }}
-                                          sx={{
-                                             width: 85,
-                                             height: 8,
-                                             borderRadius: "7px"
-                                          }}
-                                       />
-                                    </Grid>
-                                    <Grid>
-                                       <Typography variant="subtitle1" fontSize="0.75rem">
-                                          {level?.label}
-                                       </Typography>
-                                    </Grid>
-                                 </Grid>
-                              </Box>
-                           </FormControl>
-                        )}
-                     </Grid>
-
-                     {/* Rol */}
-                     <Grid xs={12} md={6} sx={{ mb: 1 }}>
-                        <Select2Component
-                           idName={"role_id"}
-                           label={"Rol *"}
-                           valueLabel={values.role}
-                           formDataLabel={"role"}
-                           placeholder={"Selecciona una opción..."}
-                           options={dataRoles}
-                           fullWidth={true}
-                           // handleChangeValueSuccess={handleChangeRole}
-                           handleBlur={handleBlur}
-                           error={errors.role_id}
-                           touched={touched.role_id}
-                           disabled={false}
-                           pluralName={"Roles"}
-                           refreshSelect={getRolesSelectIndex}
-                        />
-                     </Grid>
-
-                     <LoadingButton
-                        type="submit"
-                        disabled={isSubmitting}
-                        loading={isSubmitting}
-                        // loadingPosition="start"
-                        variant="contained"
-                        fullWidth
-                        size="large"
-                     >
-                        {textBtnSubmit}
-                     </LoadingButton>
-                     <ButtonGroup variant="outlined" fullWidth>
-                        <Button
-                           type="reset"
-                           variant="outlined"
-                           color="secondary"
-                           fullWidth
-                           size="large"
-                           sx={{ mt: 1, display: "none" }}
-                           onClick={() => handleReset(resetForm, setFieldValue, values.id)}
-                        >
-                           LIMPIAR
-                        </Button>
-                        <Button type="reset" variant="outlined" color="error" fullWidth size="large" sx={{ mt: 1 }} onClick={() => handleCancel(resetForm)}>
-                           CANCELAR
-                        </Button>
-                     </ButtonGroup>
-                     <Button
-                        type="button"
-                        color="info"
-                        fullWidth
-                        id="btnModify"
-                        sx={{ mt: 1, display: "none" }}
-                        onClick={() => handleModify(setValues, setFieldValue)}
-                     >
-                        setValues
-                     </Button>
+               {/* Switch para mostrar el cambiar contraseña */}
+               {/* {checkedShowSwitchPassword && (
+                  <Grid xs={12} md={12} sx={{ mb: -2 }}>
+                     <FormControlLabel
+                        control={<Switch />}
+                        label="Cambiar Contraseña"
+                        checked={newPasswordChecked}
+                        onChange={() => setNewPasswordChecked(!newPasswordChecked)}
+                     />
                   </Grid>
-               )}
-            </Formik>
+               )} */}
+               {/* Contraseña */}
+               {/* <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                  <FormControl fullWidth error={Boolean(touched.password && errors.password)}>
+                     <InputLabel htmlFor="password">Contraseña *</InputLabel>
+                     <OutlinedInput
+                        id="password"
+                        name="password"
+                        label="Contraseña *"
+                        type={showPassword ? "text" : "password"}
+                        value={values.password}
+                        placeholder="Ingrese su contraseña, minimo 6 dígitos"
+                        onBlur={handleBlur}
+                        onChange={(e) => {
+                           handleChange(e);
+                           changePassword(e.target.value);
+                        }}
+                        endAdornment={
+                           <InputAdornment position="end">
+                              <IconButton
+                                 aria-label="toggle password visibility"
+                                 onClick={handleClickShowPassword}
+                                 onMouseDown={handleMouseDownPassword}
+                                 edge="end"
+                                 size="large"
+                              >
+                                 {showPassword ? <Visibility /> : <VisibilityOff />}
+                              </IconButton>
+                           </InputAdornment>
+                        }
+                        inputProps={{}}
+                        fullWidth
+                        disabled={newPasswordChecked ? false : true} // DESHABILITAR CON UN CHECK
+                        // disabled={values.id == 0 ? false : true}
+                        error={errors.password && touched.password}
+                     />
+                     {touched.password && errors.password && (
+                        <FormHelperText error id="ht-password">
+                           {errors.password}
+                        </FormHelperText>
+                     )}
+                  </FormControl>
+                  {strength !== 0 && (
+                     <FormControl fullWidth>
+                        <Box sx={{ mb: 2 }}>
+                           <Grid container spacing={2} alignItems="center">
+                              <Grid>
+                                 <Box
+                                    style={{ backgroundColor: level?.color }}
+                                    sx={{
+                                       width: 85,
+                                       height: 8,
+                                       borderRadius: "7px"
+                                    }}
+                                 />
+                              </Grid>
+                              <Grid>
+                                 <Typography variant="subtitle1" fontSize="0.75rem">
+                                    {level?.label}
+                                 </Typography>
+                              </Grid>
+                           </Grid>
+                        </Box>
+                     </FormControl>
+                  )}
+               </Grid> */}
+
+               {/* Rol */}
+               {/* <Grid xs={12} md={6} sx={{ mb: 1 }}>
+                  <Select2Component
+                     idName={"role_id"}
+                     label={"Rol *"}
+                     valueLabel={values.role}
+                     formDataLabel={"role"}
+                     placeholder={"Selecciona una opción..."}
+                     options={dataRoles}
+                     fullWidth={true}
+                     // handleChangeValueSuccess={handleChangeRole}
+                     handleBlur={handleBlur}
+                     error={errors.role_id}
+                     touched={touched.role_id}
+                     disabled={false}
+                     pluralName={"Roles"}
+                     refreshSelect={getRolesSelectIndex}
+                  />
+               </Grid> */}
+            </FormikComponent>
          </Box>
       </SwipeableDrawer>
    );
