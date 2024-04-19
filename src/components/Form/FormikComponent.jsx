@@ -5,12 +5,13 @@ import { Formik } from "formik";
 import { useEffect } from "react";
 
 export const FormikComponent = ({ initialValues = {}, validationSchema = {}, onSubmit, children, textBtnSubmit }) => {
-   
    return (
       <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
          {({ handleSubmit, isSubmitting }) => (
             <Grid container spacing={2} component={"form"} onSubmit={handleSubmit}>
-               {children}
+               <Grid width={"100%"} height={"79vh"} MaxHeight={"79vh"} overflow={"auto"}>
+                  {children}
+               </Grid>
                <LoadingButton
                   type="submit"
                   disabled={isSubmitting}
