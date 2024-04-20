@@ -26,6 +26,7 @@ import { FormikComponent } from "../../../components/Form/FormikComponent";
 import { InputComponentEST } from "../../../components/Form/InputComponentEST";
 import { RadioButtonComponent } from "../../../components/Form/RadioButtonComponent";
 import { InputNumericComponent } from "../../../components/Form/InputNumericComponent";
+import { InputPasswordCompnent } from "../../../components/Form/InputPasswordComponent";
 
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
 const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
@@ -186,11 +187,11 @@ const UserForm = ({ dataRoles }) => {
 
             {/* VALIDAR DEPENDIENDO DEL ROL ESCOGIDO */}
             <FormikComponent key={"formikComponent"} initialValues={formData} validationSchema={validationSchemas()} onSubmit={onsubmit} textBtnSubmit={textBtnSubmit}>
-               <InputComponentEST col={12} name="id" label={"id"} placeholder={"yajuuu"} hidden={true} />
+               <InputComponentEST col={12} idName="id" label={"id"} hidden={true} />
                {/* <Field id="id" name="id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} /> */}
 
                {/* Nombre de Usuario */}
-               <InputComponentEST col={12} name="username" label={"Nombre de usuario *"} placeholder={"Ingrese su nombre de usuario"} />
+               <InputComponentEST col={12} idName="username" label={"Nombre de usuario *"} placeholder={"Ingrese su nombre de usuario"} />
                {/* <Grid xs={12} md={6} sx={{ mb: 2 }}>
                   <TextField
                      id="username"
@@ -211,7 +212,7 @@ const UserForm = ({ dataRoles }) => {
                </Grid> */}
 
                {/* Correo Electronico */}
-               <InputComponentEST col={12} name="email" label={"Correo Electrónico *"} placeholder={"mi@correo.com"} textStyleCase={true} />
+               <InputComponentEST col={12} idName="email" label={"Correo Electrónico *"} placeholder={"mi@correo.com"} textStyleCase={false} />
                {/* <Grid xs={12} md={6} sx={{ mb: 1 }}>
                   <TextField
                      id="email"
@@ -231,18 +232,13 @@ const UserForm = ({ dataRoles }) => {
                   />
                </Grid> */}
 
-               <RadioButtonComponent
-                  name={"radio"}
+               {/* Contraseña */}
+               <InputPasswordCompnent
                   col={12}
-                  title={"holas"}
-                  options={[
-                     { value: 1, label: "ooo" },
-                     { value: 2, label: "pppp" }
-                  ]}
+                  idName={"password"}
+                  newPasswordChecked={newPasswordChecked}
+                  setNewPasswordChecked={setNewPasswordChecked}
                />
-
-               <InputNumericComponent />
-
                {/* Switch para mostrar el cambiar contraseña */}
                {/* {checkedShowSwitchPassword && (
                   <Grid xs={12} md={12} sx={{ mb: -2 }}>

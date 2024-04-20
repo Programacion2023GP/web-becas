@@ -1,35 +1,112 @@
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import {
+   CircularProgress,
+   FormControl,
+   FormControlLabel,
+   FormHelperText,
+   IconButton,
+   InputAdornment,
+   InputLabel,
+   OutlinedInput,
+   Switch,
+   Typography
+} from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2";
+import { Box } from "@mui/system";
+import { useFormikContext } from "formik";
+import { useEffect, useState } from "react";
+import { strengthColor, strengthIndicator } from "../../utils/password-strength";
 
-const InputPasswordCompnent = ({ idNamne }) => {
+export const InputPasswordCompnent = ({
+   col,
+   label,
+   idName,
+   disabled,
+   placeholder,
+   leyend,
+   color,
+   loading = false,
+   hidden,
+   variant = "outlined",
+   marginBoton,
+   textStyleCase = null,
+   newPasswordChecked,
+   setNewPasswordChecked,
+   ...props
+}) => {
+   const formik = useFormikContext(); // Obtiene el contexto de Formik
+   const errors = formik.errors;
+   const isError = formik.touched[idName] ? formik.errors[idName] : false;
+
+   // #region Boton de Contraseña
+   const [showPassword, setShowPassword] = useState(false);
+   const [checkedShowSwitchPassword, setCheckedShowSwitchPassword] = useState(true);
+
+   const [strength, setStrength] = useState(0);
+   const [level, setLevel] = useState();
+   const handleClickShowPassword = () => {
+      setShowPassword(!showPassword);
+   };
+
+   const handleMouseDownPassword = (event) => {
+      event.preventDefault();
+   };
+
+   const changePassword = (value) => {
+      const temp = strengthIndicator(value);
+      setStrength(temp);
+      setLevel(strengthColor(temp));
+   };
+   // #endregion Boton de Contraseña
+
+   useEffect(() => {}, [idName]);
+
    return (
       <>
          {/* Switch para mostrar el cambiar contraseña */}
          {checkedShowSwitchPassword && (
-            <Grid xs={12} md={12} sx={{ mb: -2 }}>
+            <Grid xs={12} md={col} sx={{ display: hidden ? "none" : "flex", flexDirection: "column", alignItems: "end", position: "relative", mb: -2 }}>
                <FormControlLabel
                   control={<Switch />}
-                  label="Cambiar Contraseña"
+                  label={label || "Cambiar Contraseña"}
                   checked={newPasswordChecked}
                   onChange={() => setNewPasswordChecked(!newPasswordChecked)}
                />
             </Grid>
          )}
          {/* Contraseña */}
-         <Grid xs={12} md={6} sx={{ mb: 2 }}>
-            <FormControl fullWidth error={Boolean(touched.password && errors.password)}>
-               <InputLabel htmlFor="password">Contraseña *</InputLabel>
+         <Grid
+            xs={12}
+            md={col}
+            sx={{ display: hidden ? "none" : "flex", flexDirection: "column", alignItems: "center", position: "relative", mb: marginBoton ? `${marginBoton} 0` : 2 }}
+         >
+            <FormControl fullWidth error={isError}>
+               <InputLabel htmlFor={idName || "password"}>{label || "Contraseña *"}</InputLabel>
                <OutlinedInput
-                  id="password"
-                  name="password"
-                  label="Contraseña *"
+                  key={idName}
+                  id={idName || "password"}
+                  name={idName || "password"}
+                  label={label || "Contraseña *"}
+                  placeholder={placeholder || "Ingrese su contraseña, minimo 6 dígitos"}
                   type={showPassword ? "text" : "password"}
-                  value={values.password}
-                  placeholder="Ingrese su contraseña, minimo 6 dígitos"
-                  onBlur={handleBlur}
+                  variant={variant}
+                  value={formik.values && formik.values[idName] ? formik.values[idName] : ""}
                   onChange={(e) => {
-                     handleChange(e);
+                     formik.handleChange(e);
                      changePassword(e.target.value);
+                  }} // Utiliza el handleChange de Formik
+                  onBlur={(e) => {
+                     formik.handleBlur(e); // Usa handleBlur de Formik para manejar el blur
+
+                     // Agrega tu lógica adicional aquí
+                     // Por ejemplo, puedes agregar variables o eventos al contexto DebugerContext
                   }}
+                  onInput={(e) => {
+                     textStyleCase != null ? handleInputFormik(e, formik.setFieldValue, idName, textStyleCase) : null;
+                  }}
+                  {...props}
+                  disabled={newPasswordChecked ? false : true}
+                  fullWidth
                   endAdornment={
                      <InputAdornment position="end">
                         <IconButton
@@ -43,15 +120,14 @@ const InputPasswordCompnent = ({ idNamne }) => {
                         </IconButton>
                      </InputAdornment>
                   }
-                  inputProps={{}}
-                  fullWidth
-                  disabled={newPasswordChecked ? false : true} // DESHABILITAR CON UN CHECK
-                  // disabled={values.id == 0 ? false : true}
-                  error={errors.password && touched.password}
+                  inputProps={{
+                     style: color ? { color: color } : {}
+                  }}
+                  error={isError}
                />
-               {touched.password && errors.password && (
+               {isError && (
                   <FormHelperText error id="ht-password">
-                     {errors.password}
+                     {isError ? formik.errors[idName] : leyend}
                   </FormHelperText>
                )}
             </FormControl>
@@ -78,6 +154,7 @@ const InputPasswordCompnent = ({ idNamne }) => {
                   </Box>
                </FormControl>
             )}
+            {loading && <CircularProgress sx={{ position: "absolute", top: "13%", left: "40%" }} />}
          </Grid>
       </>
    );

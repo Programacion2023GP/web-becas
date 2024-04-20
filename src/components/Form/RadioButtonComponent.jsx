@@ -4,12 +4,12 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { Field, useFormikContext } from "formik"; // Importar Field y useFormikContext de Formik
 
 export const RadioButtonComponent = ({
-   loading = false,
    col,
    name,
    title,
    hidden,
    options,
+   loading = false,
    handleGetValue,
    rowLayout = true // Cambiar a false para poner en columnas
 }) => {
@@ -24,7 +24,7 @@ export const RadioButtonComponent = ({
       }
    };
    return (
-      <Grid item xs={col} sx={{ display: hidden ? "none" : "flex", flexDirection: "column", alignItems: "center" }}>
+      <Grid item xs={12} md={col} sx={{ display: hidden ? "none" : "flex", flexDirection: "column", alignItems: "center" }}>
          <Typography
             variant="subtitle1"
             align="center"

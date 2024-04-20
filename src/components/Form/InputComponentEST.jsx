@@ -7,7 +7,6 @@ import InputMask from "react-input-mask";
 import { handleInputFormik } from "../../utils/Formats";
 
 export const InputComponentEST = ({
-   loading = false,
    col,
    label,
    idName = "idName",
@@ -17,59 +16,32 @@ export const InputComponentEST = ({
    leyend,
    color,
    rows,
+   loading = false,
    hidden,
    mask,
+   variant = "outlined",
    marginBoton,
    textStyleCase = null,
    ...props
 }) => {
    const formik = useFormikContext(); // Obtiene el contexto de Formik
    const errors = formik.errors;
-   const isError = formik.touched[idName] && formik.errors[idName];
-
-   const InputTextField = () => (
-      <TextField
-         key={"text_" + idName}
-         name={idName}
-         label={label}
-         placeholder={placeholder}
-         type={type !== null && type !== undefined ? type : "text"} // Utiliza type si está definido, de lo contrario, usa "text"
-         variant="outlined"
-         value={formik.values && formik.values[idName] ? formik.values[idName] : ""}
-         onChange={formik.handleChange} // Utiliza el handleChange de Formik
-         onBlur={(e) => {
-            formik.handleBlur(e); // Usa handleBlur de Formik para manejar el blur
-
-            // Agrega tu lógica adicional aquí
-            // Por ejemplo, puedes agregar variables o eventos al contexto DebugerContext
-         }}
-         {...props}
-         onInput={textStyleCase != null ? (e) => handleInputFormik(e, formik.setFieldValue, idName, textStyleCase) : null}
-         disabled={loading || disabled}
-         fullWidth
-         multiline={type === null || type === undefined} // Habilita multiline solo si type no está definido
-         rows={type === null || type === undefined ? rows : undefined} // Establece las filas solo si type no está definido
-         error={isError}
-         helperText={isError ? formik.errors[idName] : leyend}
-         InputLabelProps={{
-            style: color ? { color: color } : {}
-         }}
-      />
-   );
+   const isError = formik.touched[idName] ? formik.errors[idName] : false;
 
    useEffect(() => {}, [idName]);
 
    return (
       <>
          <Grid
-            xs={col}
+            xs={12}
+            md={col}
             sx={{ display: hidden ? "none" : "flex", flexDirection: "column", alignItems: "center", position: "relative", mb: marginBoton ? `${marginBoton} 0` : 2 }}
          >
             {mask ? (
                <Field name={idName}>
                   {({ field }) => (
                      <InputMask
-                        id={idName}
+                        id={`${idName}_mask`}
                         mask={mask}
                         value={formik.values && formik.values[idName] ? formik.values[idName] : ""}
                         onChange={(e) => field.onChange(e)} // Utiliza field.onChange para actualizar el valor en Formik
@@ -79,11 +51,14 @@ export const InputComponentEST = ({
                         {(inputProps) => (
                            <TextField
                               {...inputProps}
-                              key={"text_" + idName}
+                              key={idName}
                               name={idName}
                               label={label}
                               type={type !== null && type !== undefined ? type : "text"} // Utiliza type si está definido, de lo contrario, usa "text"
-                              variant="outlined"
+                              variant={variant}
+                              onInput={(e) => {
+                                 textStyleCase != null ? handleInputFormik(e, formik.setFieldValue, idName, textStyleCase) : null;
+                              }}
                               fullWidth
                               {...props}
                               error={isError}
@@ -97,7 +72,35 @@ export const InputComponentEST = ({
                   )}
                </Field>
             ) : (
-               <InputTextField />
+               <TextField
+                  key={idName}
+                  name={idName}
+                  label={label}
+                  placeholder={placeholder}
+                  type={type !== null && type !== undefined ? type : "text"} // Utiliza type si está definido, de lo contrario, usa "text"
+                  variant={variant}
+                  value={formik.values && formik.values[idName] ? formik.values[idName] : ""}
+                  onChange={formik.handleChange} // Utiliza el handleChange de Formik
+                  onBlur={(e) => {
+                     formik.handleBlur(e); // Usa handleBlur de Formik para manejar el blur
+
+                     // Agrega tu lógica adicional aquí
+                     // Por ejemplo, puedes agregar variables o eventos al contexto DebugerContext
+                  }}
+                  onInput={(e) => {
+                     textStyleCase != null ? handleInputFormik(e, formik.setFieldValue, idName, textStyleCase) : null;
+                  }}
+                  {...props}
+                  disabled={loading || disabled}
+                  fullWidth
+                  multiline={type === null || type === undefined} // Habilita multiline solo si type no está definido
+                  rows={type === null || type === undefined ? rows : undefined} // Establece las filas solo si type no está definido
+                  error={isError}
+                  helperText={isError ? formik.errors[idName] : leyend}
+                  InputLabelProps={{
+                     style: color ? { color: color } : {}
+                  }}
+               />
             )}
             {loading && <CircularProgress sx={{ position: "absolute", top: "40%", left: "40%" }} />}
          </Grid>
