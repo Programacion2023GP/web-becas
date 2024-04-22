@@ -1,12 +1,13 @@
-import { Autocomplete, FormControl, FormHelperText, IconButton, TextField, Tooltip } from "@mui/material";
+import Grid from "@mui/system/Unstable_Grid/Grid";
+import { Autocomplete, CircularProgress, FormControl, FormHelperText, IconButton, TextField, Tooltip } from "@mui/material";
 import Toast from "../../utils/Toast";
 import { useEffect, useState } from "react";
-import { Field } from "formik";
+import { Field, useFormikContext } from "formik";
 import { IconReload } from "@tabler/icons";
 import { Box } from "@mui/system";
 
 /**
- * 
+ *
  * {/* Marca *}
    <Grid xs={12} md={6} sx={{ mb: 2 }}>
       <Select2Component
@@ -30,24 +31,44 @@ import { Box } from "@mui/system";
 
 // =================== COMPONENTE =======================
 const Select2Component = ({
+   col,
    idName,
    label,
-   valueLabel,
-   formDataLabel,
    placeholder,
-   options,
+   options = [],
+   // options = ["Selecciona una opción..."],
+   disabled,
+   size = "medium",
+
+   helperText,
+   // loading = false,
+   // setLoading,
+   color,
+   hidden,
+   variant = "outlined",
+   marginBoton,
+   namePropLabel = "label",
    fullWidth,
-   handleChangeValueSuccess,
-   handleBlur,
-   error,
-   touched,
-   disabled = false,
-   // inputref = null
    pluralName,
    refreshSelect = null,
-   refreshSelectParams = null
+   refreshSelectParams = null,
+   handleGetValue = null,
+   handleChangeValueSuccess,
+   ...props
 }) => {
+   const formik = useFormikContext(); // Obtiene el contexto de Formik
+   const errors = formik.errors;
+   const isError = formik.touched[idName] ? formik.errors[idName] : false;
+
+   const [dataOptions, setDataOptions] = useState([]);
+   const [labelValue, setLabelValue] = useState("Selecciona una opción...");
    const [loading, setLoading] = useState(false);
+
+   const handleValue = (name, value) => {
+      if (handleGetValue) {
+         handleGetValue(name, value);
+      }
+   };
 
    const isOptionEqualToValue = (option, value) => {
       // console.log("option", option);
@@ -62,33 +83,28 @@ const Select2Component = ({
          }
       } else return option === value;
    };
-
    // const handleChangeValue = async (value, setValues) => {
    const handleChangeValue = async (value, setFieldValue) => {
       try {
-         // console.log(value);
+         // console.log("Select2Component->handleChangeValue->value", value);
          if (!value) {
-            setFieldValue(idName, 0);
-            setFieldValue(formDataLabel, "Selecciona una opción...");
-            valueLabel = "Selecciona una opción...";
+            formik.setFieldValue(idName, 0);
+            setLabelValue("Selecciona una opción...");
             return;
          }
-         if (typeof value === "object") {
-            // values[idName] = value.id;
-            setFieldValue(idName, value.id);
-            // values[formDataLabel] = value.label;
-            setFieldValue(formDataLabel, value.label);
-            valueLabel = value.label;
-         } else {
-            // values[formDataLabel] = value;
-            setFieldValue(formDataLabel, value);
-            valueLabel = value;
-         }
+         const selectedOption = dataOptions.find((option) =>
+            typeof value === "object" ? option.label.trim() === value.label.trim() : option.trim() === value.trim()
+         );
+         // handleValue(idName, typeof value === "object" ? selectedOption.id : selectedOption);
+         formik.setFieldValue(idName, typeof value === "object" ? selectedOption.id : selectedOption);
+         setLabelValue(typeof value === "object" ? selectedOption.label : selectedOption);
          // console.log("values", values);
-         // // await setFormData(values);
-         // // await setValues(values);
 
-         if (handleChangeValueSuccess) handleChangeValueSuccess(value, setFieldValue); //en esta funcion
+         if (handleChangeValueSuccess) {
+            setLoading(true);
+            await handleChangeValueSuccess(idName, selectedOption, setFieldValue);
+            setLoading(false);
+         } //en esta funcion
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -108,187 +124,79 @@ const Select2Component = ({
    };
 
    useEffect(() => {
-      // console.log("useEffect");
-   }, [valueLabel]);
+      setLoading(true);
+      const _options = [{ id: 0, label: "Selecciona una opción..." }];
+      // console.log(options);
+      options.map((option) => _options.push({ id: option.id, label: option[namePropLabel] }));
+      setDataOptions(_options);
+      Number(formik.values[idName]) == 0 && setLabelValue("Selecciona una opción...");
+      setLoading(false);
 
-   return (
-      <FormControl fullWidth>
-         <Box display={"flex"}>
-            <Field id={idName} name={idName}>
-               {({ field, form }) => (
-                  <Autocomplete
-                     key={`select_${idName}`}
-                     loading={loading}
-                     disablePortal
-                     openOnFocus
-                     label={label}
-                     placeholder={placeholder}
-                     options={options || ["Selecciona una opción..."]}
-                     {...field}
-                     value={valueLabel || "Selecciona una opción..."}
-                     defaultValue={valueLabel || "Selecciona una opción..."}
-                     onChange={(_, newValue) => {
-                        // form.setFieldValue(field.name, newValue);
-                        handleChangeValue(newValue, form.setFieldValue);
-                     }}
-                     onBlur={handleBlur}
-                     fullWidth={fullWidth || true}
-                     isOptionEqualToValue={isOptionEqualToValue}
-                     renderInput={(params) => <TextField {...params} label={label} />}
-                     disabled={disabled}
-                     error={error && touched}
-                  />
-               )}
-            </Field>
-            {refreshSelect && (
-               <Tooltip title={`Actualizar ${pluralName}`} placement="top">
-                  <IconButton type="button" variant="text" color="primary" sx={{ borderRadius: "12px", mr: 1 }} onClick={handleClickRefresh}>
-                     <IconReload />
-                  </IconButton>
-               </Tooltip>
-            )}
-         </Box>
-
-         {touched && error && (
-            <FormHelperText error id={`ht-${idName}`}>
-               {error}
-            </FormHelperText>
-         )}
-      </FormControl>
-   );
-};
-
-const Select2Component1 = ({
-   idName,
-   label,
-   valueLabel,
-   values,
-   formData,
-   setFormData,
-   formDataLabel,
-   placeholder,
-   options,
-   fullWidth,
-   handleChange,
-   handleChangeValueSuccess,
-   setValues,
-   // setFieldValue,
-   handleBlur,
-   error,
-   touched,
-   disabled = false
-   // inputref = null
-}) => {
-   const isOptionEqualToValue = (option, value) => {
-      // console.log("option", option);
-      // console.log("value", value);
-      if (option.label) {
-         if (typeof value === "string") return option.label === value;
-         else {
-            // console.log(value);
-            // value = option.label;
-            // console.log(value);
-            return option.id === value;
-         }
-      } else return option === value;
-   };
-
-   // const handleChangeValue = async (value, setValues) => {
-   const handleChangeValue = async (value, setFieldValue) => {
-      try {
-         // console.log(value);
-         if (!value) {
-            setFieldValue(idName, 0);
-            setFieldValue(formDataLabel, "Selecciona una opción...");
-            valueLabel = "Selecciona una opción...";
-            return;
-         }
-         if (typeof value === "object") {
-            // values[idName] = value.id;
-            setFieldValue(idName, value.id);
-            // values[formDataLabel] = value.label;
-            setFieldValue(formDataLabel, value.label);
-            valueLabel = value.label;
-         } else {
-            // values[formDataLabel] = value;
-            setFieldValue(formDataLabel, value);
-            valueLabel = value;
-         }
-         // console.log("values", values);
-         // // await setFormData(values);
-         // // await setValues(values);
-
-         if (handleChangeValueSuccess) handleChangeValueSuccess(value, setFieldValue); //en esta funcion
-      } catch (error) {
-         console.log(error);
-         Toast.Error(error);
+      if (Array.isArray(options) && options.length > 0) {
+         setLoading(false);
       }
-   };
-
-   useEffect(() => {
-      // console.log("useEffect");
-   }, [valueLabel]);
-
-   // <Autocomplete
-   //          disablePortal
-   //          openOnFocus
-   //          id={idName}
-   //          name={idName}
-   //          label={label}
-   //          placeholder={placeholder}
-   //          options={options}
-   //          // getOptionLabel={(option) => option.toString()}
-   //          isOptionEqualToValue={isOptionEqualToValue}
-   //          renderInput={(params) => <TextField {...params} label={label} />}
-   //          onChange={(e, newValue, reason, details) => {
-   //             handleChange(e, newValue, reason, details);
-   //             handleChangeValue(newValue, setValues);
-   //          }}
-   //          onBlur={handleBlur}
-   //          fullWidth={fullWidth || true}
-   //          // disabled={values.id == 0 ? false : true}
-   //          disabled={disabled}
-   //          // inputRef={inputref}
-   //          error={error && touched}
-   //          defaultValue={valueLabel || "Selecciona una opción..."}
-   //          value={valueLabel || "Selecciona una opción..."}
-   //       />
+      if (!Array.isArray(options)) {
+         options = [];
+         setLoading(false);
+      }
+   }, [options, formik.values[idName]]);
 
    return (
-      <FormControl fullWidth>
-         <Field id={idName} name={idName}>
-            {({ field, form }) => (
-               <Autocomplete
-                  disablePortal
-                  openOnFocus
-                  label={label}
-                  placeholder={placeholder}
-                  options={options}
-                  // value={field.value}
-                  {...field}
-                  value={valueLabel || "Selecciona una opción..."}
-                  defaultValue={valueLabel || "Selecciona una opción..."}
-                  onChange={(_, newValue) => {
-                     // form.setFieldValue(field.name, newValue);
-                     handleChangeValue(newValue, form.setFieldValue);
-                  }}
-                  // onChange={(_, newValue) => form.setFieldValue(field.name, newValue)}
-                  onBlur={handleBlur}
-                  fullWidth={fullWidth || true}
-                  isOptionEqualToValue={isOptionEqualToValue}
-                  renderInput={(params) => <TextField {...params} label={label} />}
-                  disabled={disabled}
-                  error={error && touched}
-               />
-            )}
-         </Field>
+      <Grid xs={12} md={col} sx={{ display: hidden ? "none" : "flex", flexDirection: "column", alignItems: "center", mb: marginBoton ? `${marginBoton} 0` : 2 }}>
+         <FormControl fullWidth>
+            <Box display={"flex"}>
+               <Field id={idName} name={idName}>
+                  {({ field }) => (
+                     <Autocomplete
+                        key={`select_${idName}`}
+                        disablePortal
+                        openOnFocus
+                        label={label}
+                        placeholder={placeholder}
+                        options={dataOptions}
+                        size={size}
+                        // getOptionLabel={(option) => option.label}
+                        // isOptionEqualToValue={(option, value) => option && value && option.id === value.id}
+                        {...field}
+                        value={Number(formik.values[idName]) > 0 ? dataOptions.find((option) => option.id === formik.values[idName]).label : labelValue}
+                        // defaultValue={labelValue || "Selecciona una opción..."}
+                        onChange={(_, newValue) => {
+                           handleChangeValue(newValue, formik.setFieldValue);
+                        }}
+                        onBlur={formik.handleBlur}
+                        fullWidth={fullWidth || true}
+                        isOptionEqualToValue={isOptionEqualToValue}
+                        renderInput={(params) => <TextField {...params} label={label} />}
+                        disabled={disabled || loading}
+                        error={isError}
+                     />
+                  )}
+               </Field>
+               {refreshSelect && (
+                  <Tooltip title={`Actualizar ${pluralName}`} placement="top">
+                     <IconButton
+                        type="button"
+                        variant="text"
+                        color="primary"
+                        sx={{ borderRadius: "12px", mr: 1 }}
+                        onClick={handleClickRefresh}
+                        disabled={disabled || loading}
+                     >
+                        <IconReload />
+                     </IconButton>
+                  </Tooltip>
+               )}
+            </Box>
 
-         {touched && error && (
-            <FormHelperText error id={`ht-${idName}`}>
-               {error}
-            </FormHelperText>
-         )}
-      </FormControl>
+            {isError && (
+               <FormHelperText error id={`ht-${idName}`}>
+                  {isError ? formik.errors[idName] : helperText}
+               </FormHelperText>
+            )}
+            {loading && <CircularProgress sx={{ position: "absolute", top: "10%", left: "60%" }} />}
+         </FormControl>
+      </Grid>
    );
 };
+
 export default Select2Component;

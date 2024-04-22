@@ -23,7 +23,7 @@ export const InputPasswordCompnent = ({
    idName,
    disabled,
    placeholder,
-   leyend,
+   helperText,
    color,
    loading = false,
    hidden,
@@ -62,10 +62,10 @@ export const InputPasswordCompnent = ({
    useEffect(() => {}, [idName]);
 
    return (
-      <>
+      <Grid xs={12} md={col}>
          {/* Switch para mostrar el cambiar contraseña */}
          {checkedShowSwitchPassword && (
-            <Grid xs={12} md={col} sx={{ display: hidden ? "none" : "flex", flexDirection: "column", alignItems: "end", position: "relative", mb: -2 }}>
+            <Grid sx={{ display: hidden ? "none" : "flex", flexDirection: "column", alignItems: "end", position: "relative", mb: -2 }}>
                <FormControlLabel
                   control={<Switch />}
                   label={label || "Cambiar Contraseña"}
@@ -77,15 +77,14 @@ export const InputPasswordCompnent = ({
          {/* Contraseña */}
          <Grid
             xs={12}
-            md={col}
             sx={{ display: hidden ? "none" : "flex", flexDirection: "column", alignItems: "center", position: "relative", mb: marginBoton ? `${marginBoton} 0` : 2 }}
          >
             <FormControl fullWidth error={isError}>
-               <InputLabel htmlFor={idName || "password"}>{label || "Contraseña *"}</InputLabel>
+               <InputLabel htmlFor={idName}>{label || "Contraseña *"}</InputLabel>
                <OutlinedInput
                   key={idName}
-                  id={idName || "password"}
-                  name={idName || "password"}
+                  id={idName}
+                  name={idName}
                   label={label || "Contraseña *"}
                   placeholder={placeholder || "Ingrese su contraseña, minimo 6 dígitos"}
                   type={showPassword ? "text" : "password"}
@@ -127,7 +126,7 @@ export const InputPasswordCompnent = ({
                />
                {isError && (
                   <FormHelperText error id="ht-password">
-                     {isError ? formik.errors[idName] : leyend}
+                     {isError ? formik.errors[idName] : helperText}
                   </FormHelperText>
                )}
             </FormControl>
@@ -156,6 +155,6 @@ export const InputPasswordCompnent = ({
             )}
             {loading && <CircularProgress sx={{ position: "absolute", top: "13%", left: "40%" }} />}
          </Grid>
-      </>
+      </Grid>
    );
 };

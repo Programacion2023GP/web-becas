@@ -32,6 +32,7 @@ const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true :
 const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
 
 const UserForm = ({ dataRoles }) => {
+   const { formikRef } = useUserContext();
    const { getRolesSelectIndex } = useRoleContext();
    // #region Boton de Contraseña
    const [showPassword, setShowPassword] = useState(false);
@@ -61,6 +62,14 @@ const UserForm = ({ dataRoles }) => {
    const [colorLabelcheck, setColorLabelcheck] = useState(colorLabelcheckInitialState);
    const [newPasswordChecked, setNewPasswordChecked] = useState(true);
 
+   const ResetForm = (resetForm) => {
+      if (resetForm) resetForm();
+      resetUser();
+      setStrength(0);
+      setTextBtnSumbit("AGREGAR");
+      setFormTitle(`REGISTRAR ${singularName.toUpperCase()}`);
+   };
+
    const handleChangeCheckAdd = (e) => {
       try {
          const active = e.target.checked;
@@ -86,10 +95,7 @@ const UserForm = ({ dataRoles }) => {
          else axiosResponse = await updateUser(values);
          // console.log(axiosResponse);
          if (axiosResponse.status_code == 200) {
-            resetForm();
-            setStrength(0);
-            setTextBtnSumbit("AGREGAR");
-            setFormTitle(`REGISTRAR ${singularName.toUpperCase()}`);
+            ResetForm(resetForm);
          }
          setSubmitting(false);
          setLoadingAction(false);
@@ -105,38 +111,35 @@ const UserForm = ({ dataRoles }) => {
       }
    };
 
-   const handleReset = (resetForm, setFieldValue, id) => {
-      try {
-         resetForm();
-         resetUser();
-         formData.role = "Selecciona una opción...";
-         setStrength(0);
-         setFieldValue("id", id);
-      } catch (error) {
-         console.log(error);
-         Toast.Error(error);
-      }
-   };
+   // const handleReset = (resetForm, setFieldValue, id) => {
+   //    try {
+   //       resetForm();
+   //       resetUser();
+   //       formData.role = "Selecciona una opción...";
+   //       setStrength(0);
+   //       setFieldValue("id", id);
+   //    } catch (error) {
+   //       console.log(error);
+   //       Toast.Error(error);
+   //    }
+   // };
 
-   const handleModify = async (setValues, setFieldValue) => {
-      try {
-         // setLoadingAction(true);
-         // console.log(formData);
-         if (formData.description) formData.description == null && (formData.description = "");
-         setValues(formData);
-         setLoadingAction(false);
-      } catch (error) {
-         console.log(error);
-         Toast.Error(error);
-      }
-   };
+   // const handleModify = async (setValues, setFieldValue) => {
+   //    try {
+   //       // setLoadingAction(true);
+   //       // console.log(formData);
+   //       if (formData.description) formData.description == null && (formData.description = "");
+   //       setValues(formData);
+   //       setLoadingAction(false);
+   //    } catch (error) {
+   //       console.log(error);
+   //       Toast.Error(error);
+   //    }
+   // };
 
    const handleCancel = (resetForm) => {
       try {
-         resetForm();
-         resetUser();
-         formData.role = "Selecciona una opción...";
-         setStrength(0);
+         ResetForm(resetForm);
          setOpenDialog(false);
       } catch (error) {
          console.log(error);
@@ -186,33 +189,22 @@ const UserForm = ({ dataRoles }) => {
             </Typography>
 
             {/* VALIDAR DEPENDIENDO DEL ROL ESCOGIDO */}
-            <FormikComponent key={"formikComponent"} initialValues={formData} validationSchema={validationSchemas()} onSubmit={onsubmit} textBtnSubmit={textBtnSubmit}>
+            <FormikComponent
+               key={"formikComponent"}
+               initialValues={formData}
+               validationSchema={validationSchemas()}
+               onSubmit={onSubmit}
+               textBtnSubmit={textBtnSubmit}
+               formikRef={formikRef}
+               handleCancel={handleCancel}
+            >
                <InputComponentEST col={12} idName="id" label={"id"} hidden={true} />
-               {/* <Field id="id" name="id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} /> */}
 
                {/* Nombre de Usuario */}
-               <InputComponentEST col={12} idName="username" label={"Nombre de usuario *"} placeholder={"Ingrese su nombre de usuario"} />
-               {/* <Grid xs={12} md={6} sx={{ mb: 2 }}>
-                  <TextField
-                     id="username"
-                     name="username"
-                     label="Nombre de usuario *"
-                     type="text"
-                     value={values.username}
-                     placeholder="Ingrese su nombre de usuario"
-                     onChange={handleChange}
-                     onBlur={handleBlur}
-                     // onInput={(e) => handleInputFormik(e, setFieldValue, "username", true)}
-                     // InputProps={{ }}
-                     fullWidth
-                     // disabled={values.id == 0 ? false : true}
-                     error={errors.username && touched.username}
-                     helperText={errors.username && touched.username && errors.username}
-                  />
-               </Grid> */}
+               <InputComponentEST col={6} idName="username" label={"Nombre de usuario *"} placeholder={"Ingrese su nombre de usuario"} />
 
                {/* Correo Electronico */}
-               <InputComponentEST col={12} idName="email" label={"Correo Electrónico *"} placeholder={"mi@correo.com"} textStyleCase={false} />
+               <InputComponentEST col={6} idName="email" label={"Correo Electrónico *"} placeholder={"mi@correo.com"} textStyleCase={false} />
                {/* <Grid xs={12} md={6} sx={{ mb: 1 }}>
                   <TextField
                      id="email"
@@ -233,12 +225,7 @@ const UserForm = ({ dataRoles }) => {
                </Grid> */}
 
                {/* Contraseña */}
-               <InputPasswordCompnent
-                  col={12}
-                  idName={"password"}
-                  newPasswordChecked={newPasswordChecked}
-                  setNewPasswordChecked={setNewPasswordChecked}
-               />
+               <InputPasswordCompnent col={6} idName={"password"} newPasswordChecked={newPasswordChecked} setNewPasswordChecked={setNewPasswordChecked} />
                {/* Switch para mostrar el cambiar contraseña */}
                {/* {checkedShowSwitchPassword && (
                   <Grid xs={12} md={12} sx={{ mb: -2 }}>
@@ -317,6 +304,7 @@ const UserForm = ({ dataRoles }) => {
                </Grid> */}
 
                {/* Rol */}
+               <Select2Component col={6} idName={"role_id"} placeholder={"Selecciona una opción..."} options={dataRoles} refreshSelect={getRolesSelectIndex} />
                {/* <Grid xs={12} md={6} sx={{ mb: 1 }}>
                   <Select2Component
                      idName={"role_id"}

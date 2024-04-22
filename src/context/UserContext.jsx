@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { Axios, useAuthContext } from "./AuthContext";
 import { CorrectRes, ErrorRes } from "../utils/Response";
 import Toast from "../utils/Toast";
@@ -52,6 +52,7 @@ export default function UserContextProvider({ children }) {
    const [user, setUser] = useState(formDataInitialState);
    const [users, setUsers] = useState([]);
    const [formData, setFormData] = useState(formDataInitialState);
+   const formikRef = useRef();
 
    const resetFormData = () => {
       try {
@@ -220,7 +221,8 @@ export default function UserContextProvider({ children }) {
             setTextBtnSumbit,
             formTitle,
             setFormTitle,
-            deleteMultiple
+            deleteMultiple,
+            formikRef
          }}
       >
          {children}

@@ -27,8 +27,21 @@ import SwitchComponent from "../../../components/SwitchComponent";
 const UserDT = () => {
    const { auth } = useAuthContext();
    const { setLoading, setLoadingAction, setOpenDialog } = useGlobalContext();
-   const { singularName, user, users, getUsers, showUser, deleteUser, DisEnableUser, resetFormData, resetUser, setTextBtnSumbit, setFormTitle, deleteMultiple } =
-      useUserContext();
+   const {
+      singularName,
+      user,
+      users,
+      getUsers,
+      showUser,
+      deleteUser,
+      DisEnableUser,
+      resetFormData,
+      resetUser,
+      setTextBtnSumbit,
+      setFormTitle,
+      deleteMultiple,
+      formikRef
+   } = useUserContext();
    const globalFilterFields = ["username", "email", "role", "active", "created_at"];
 
    // #region BodysTemplate
@@ -62,6 +75,7 @@ const UserDT = () => {
          resetUser();
          // user.role = "Selecciona una opción...";
          resetFormData();
+         formikRef.current.setValues(formikRef.current.initialValues);
          setOpenDialog(true);
          setTextBtnSumbit("AGREGAR");
          setFormTitle(`REGISTRAR ${singularName.toUpperCase()}`);
@@ -76,7 +90,9 @@ const UserDT = () => {
          setLoadingAction(true);
          setTextBtnSumbit("GUARDAR");
          setFormTitle(`EDITAR ${singularName.toUpperCase()}`);
-         await showUser(id);
+         const axiosResponse = await showUser(id);
+         console.log(axiosResponse);
+         formikRef.current.setValues(axiosResponse.result);
          setOpenDialog(true);
          setLoadingAction(false);
       } catch (error) {
