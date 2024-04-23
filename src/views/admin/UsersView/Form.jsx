@@ -34,25 +34,26 @@ const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
 const UserForm = ({ dataRoles }) => {
    const { formikRef } = useUserContext();
    const { getRolesSelectIndex } = useRoleContext();
+   const [checkedShowSwitchPassword, setCheckedShowSwitchPassword] = useState(false);
    // #region Boton de Contraseña
-   const [showPassword, setShowPassword] = useState(false);
-   const [checkedShowSwitchPassword, setCheckedShowSwitchPassword] = useState(true);
+   // const [showPassword, setShowPassword] = useState(false);
+   // const [checkedShowSwitchPassword, setCheckedShowSwitchPassword] = useState(true);
 
-   const [strength, setStrength] = useState(0);
-   const [level, setLevel] = useState();
-   const handleClickShowPassword = () => {
-      setShowPassword(!showPassword);
-   };
+   // const [strength, setStrength] = useState(0);
+   // const [level, setLevel] = useState();
+   // const handleClickShowPassword = () => {
+   //    setShowPassword(!showPassword);
+   // };
 
-   const handleMouseDownPassword = (event) => {
-      event.preventDefault();
-   };
+   // const handleMouseDownPassword = (event) => {
+   //    event.preventDefault();
+   // };
 
-   const changePassword = (value) => {
-      const temp = strengthIndicator(value);
-      setStrength(temp);
-      setLevel(strengthColor(temp));
-   };
+   // const changePassword = (value) => {
+   //    const temp = strengthIndicator(value);
+   //    setStrength(temp);
+   //    setLevel(strengthColor(temp));
+   // };
    // #endregion Boton de Contraseña
 
    const { setLoadingAction, openDialog, setOpenDialog, toggleDrawer } = useGlobalContext();
@@ -88,6 +89,7 @@ const UserForm = ({ dataRoles }) => {
          // console.log("formData", formData);
          // console.log("values", values);
          // values.community_id = values.colony_id;
+         values.change_password = checkedShowSwitchPassword;
 
          setLoadingAction(true);
          let axiosResponse;
@@ -225,7 +227,13 @@ const UserForm = ({ dataRoles }) => {
                </Grid> */}
 
                {/* Contraseña */}
-               <InputPasswordCompnent col={6} idName={"password"} newPasswordChecked={newPasswordChecked} setNewPasswordChecked={setNewPasswordChecked} />
+               <InputPasswordCompnent
+                  col={6}
+                  idName={"password"}
+                  newPasswordChecked={newPasswordChecked}
+                  setNewPasswordChecked={setNewPasswordChecked}
+                  checkedShowSwitchPassword={checkedShowSwitchPassword}
+               />
                {/* Switch para mostrar el cambiar contraseña */}
                {/* {checkedShowSwitchPassword && (
                   <Grid xs={12} md={12} sx={{ mb: -2 }}>
@@ -304,7 +312,14 @@ const UserForm = ({ dataRoles }) => {
                </Grid> */}
 
                {/* Rol */}
-               <Select2Component col={6} idName={"role_id"} placeholder={"Selecciona una opción..."} options={dataRoles} refreshSelect={getRolesSelectIndex} />
+               <Select2Component
+                  col={6}
+                  idName={"role_id"}
+                  label={"Rol"}
+                  placeholder={"Selecciona una opción..."}
+                  options={dataRoles}
+                  refreshSelect={getRolesSelectIndex}
+               />
                {/* <Grid xs={12} md={6} sx={{ mb: 1 }}>
                   <Select2Component
                      idName={"role_id"}

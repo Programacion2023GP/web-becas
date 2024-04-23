@@ -69,7 +69,7 @@ export default function SchoolContextProvider({ children }) {
          const axiosData = await Axios.get(`/schools/selectIndex`);
          // console.log("el selectedDeSchools", axiosData);
          res.result.schools = axiosData.data.data.result;
-         res.result.schools.unshift({ id: 0, label: "Selecciona una opción..." });
+         // res.result.schools.unshift({ id: 0, label: "Selecciona una opción..." });
          setSchools(axiosData.data.data.result);
          // console.log("schools", schools);
 

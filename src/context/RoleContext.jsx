@@ -95,7 +95,7 @@ export default function RoleContextProvider({ children }) {
          const axiosData = await Axios.get(`/roles/selectIndex/role_id/${auth.role_id}`);
          // console.log("el selectedDeRoles", axiosData);
          res.result.roles = axiosData.data.data.result;
-         res.result.roles.unshift({ id: 0, label: "Selecciona una opción..." });
+         // res.result.roles.unshift({ id: 0, label: "Selecciona una opción..." });
          setRolesSelect(axiosData.data.data.result);
          // console.log("roles", roles);
 

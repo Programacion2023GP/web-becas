@@ -32,6 +32,7 @@ export const InputPasswordCompnent = ({
    textStyleCase = null,
    newPasswordChecked,
    setNewPasswordChecked,
+   checkedShowSwitchPassword = false,
    ...props
 }) => {
    const formik = useFormikContext(); // Obtiene el contexto de Formik
@@ -40,7 +41,7 @@ export const InputPasswordCompnent = ({
 
    // #region Boton de Contraseña
    const [showPassword, setShowPassword] = useState(false);
-   const [checkedShowSwitchPassword, setCheckedShowSwitchPassword] = useState(true);
+   // const [checkedShowSwitchPassword, setCheckedShowSwitchPassword] = useState(true);
 
    const [strength, setStrength] = useState(0);
    const [level, setLevel] = useState();
@@ -62,23 +63,33 @@ export const InputPasswordCompnent = ({
    useEffect(() => {}, [idName]);
 
    return (
-      <Grid xs={12} md={col}>
+      <Grid
+         xs={12}
+         md={col}
+         sx={{
+            // backgroundColor: "yellow",
+            // border: 1,
+            display: hidden ? "none" : "flex",
+            flexDirection: "column",
+            alignItems: "start",
+            position: "relative",
+            mb: marginBoton ? `${marginBoton} 0` : 2,
+            mt: checkedShowSwitchPassword ? -5.85 : -0.75
+         }}
+      >
          {/* Switch para mostrar el cambiar contraseña */}
          {checkedShowSwitchPassword && (
-            <Grid sx={{ display: hidden ? "none" : "flex", flexDirection: "column", alignItems: "end", position: "relative", mb: -2 }}>
+            <Grid sx={{ backgroundColor: "", my: 0, py: 0, mt: 2, mb: -1.75 }}>
                <FormControlLabel
                   control={<Switch />}
-                  label={label || "Cambiar Contraseña"}
+                  label={"Cambiar Contraseña"}
                   checked={newPasswordChecked}
                   onChange={() => setNewPasswordChecked(!newPasswordChecked)}
                />
             </Grid>
          )}
          {/* Contraseña */}
-         <Grid
-            xs={12}
-            sx={{ display: hidden ? "none" : "flex", flexDirection: "column", alignItems: "center", position: "relative", mb: marginBoton ? `${marginBoton} 0` : 2 }}
-         >
+         <Grid xs={12} sx={{ backgroundColor: "" }}>
             <FormControl fullWidth error={isError}>
                <InputLabel htmlFor={idName}>{label || "Contraseña *"}</InputLabel>
                <OutlinedInput

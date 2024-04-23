@@ -10,11 +10,10 @@ import { LoadingButton } from "@mui/lab";
 import { Button, ButtonGroup } from "@mui/material";
 import Toast from "../../../utils/Toast";
 import { useGlobalContext } from "../../../context/GlobalContext";
-import { idPage, useAuthContext } from "../../../context/AuthContext";
+import { useAuthContext } from "../../../context/AuthContext";
 import { useMenuContext } from "../../../context/MenuContext";
-import { map } from "highcharts";
 
-const FormSelect = ({ setOpenDialogTable }) => {
+const FormSelect = ({ setOpenDialogTable, setLoadPermissions }) => {
    const { auth } = useAuthContext();
    const { openDialog, setOpenDialog, toggleDrawer, setLoadingAction } = useGlobalContext();
    const {
@@ -36,9 +35,10 @@ const FormSelect = ({ setOpenDialogTable }) => {
       updatePermissions,
       getRolesSelectIndex
    } = useRoleContext();
-   const { menus, checkMenus, setCheckMenus } = useMenuContext();
+   const { menus, checkMenus, setCheckMenus, checkMaster, setCheckMaster } = useMenuContext();
 
    const resetCheckMenus = () => {
+      setCheckMaster(false);
       const resetCheck = checkMenus.map((check) => {
          check.isChecked = false;
          check.permissions = { read: false, create: false, update: false, delete: false, more_permissions: [] };
@@ -47,14 +47,15 @@ const FormSelect = ({ setOpenDialogTable }) => {
       setCheckMenus(resetCheck);
    };
 
-   const handleChangeRole = async (value2, setFieldValue) => {
+   const handleChangeRole = async (inputName, value2, setFieldValue) => {
       try {
          // console.log("amanas", value2);
+         setLoadPermissions(true);
          resetCheckMenus();
          // console.log("resetCheckMenus", resetCheckMenus);
-         if (value2.id < 1) return; // checks se quedan reiniciados
+         if (value2.id < 1) return setLoadPermissions(false); // checks se quedan reiniciados
          const axiosResponse = await showRoleSelect(value2.id);
-         // console.log(axiosResponse);
+         console.log(axiosResponse);
          const permissions = {
             read: [],
             create: [],
@@ -116,6 +117,7 @@ const FormSelect = ({ setOpenDialogTable }) => {
             // else check.permissions.more_permissions = permissions.more_permissions;
          });
          setCheckMenus(newCheckMenus);
+         setLoadPermissions(false);
          // console.log("FormSelect - checkMenus", checkMenus);
       } catch (error) {
          console.log(error);
@@ -211,6 +213,7 @@ const FormSelect = ({ setOpenDialogTable }) => {
          else values.delete = values.delete.join();
          // if (values.more_permissions.length > 0 && values.more_permissions.length == count_more_permissions) values.more_permissions = "todas";
          // else
+         // console.log(values.more_permissions);
          values.more_permissions = values.more_permissions.join();
          // console.log("valuesFinal", values);
          // return;
@@ -278,7 +281,15 @@ const FormSelect = ({ setOpenDialogTable }) => {
                      </Grid>
                   )}
 
-                  <Grid xs={12} sm={4} sx={{ mb: 1 }}>
+                  <Select2Component
+                     col={4}
+                     idName={"id"}
+                     label={"Rol *"}
+                     options={rolesSelect}
+                     refreshSelect={getRolesSelectIndex}
+                     handleChangeValueSuccess={handleChangeRole}
+                  />
+                  {/* <Grid xs={12} sm={4} sx={{ mb: 1 }}>
                      <Select2Component
                         idName={"id"}
                         label={"Rol *"}
@@ -300,7 +311,7 @@ const FormSelect = ({ setOpenDialogTable }) => {
                         pluralName={"Roles"}
                         refreshSelect={getRolesSelectIndex}
                      />
-                  </Grid>
+                  </Grid> */}
                   {auth.permissions.more_permissions.includes(`6@Asignar Permisos`) && (
                      <Grid xs={12} sm={2} sx={{ mb: 1 }}>
                         <LoadingButton

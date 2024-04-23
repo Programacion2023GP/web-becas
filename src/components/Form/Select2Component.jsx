@@ -29,6 +29,12 @@ import { Box } from "@mui/system";
    </Grid>
  */
 
+/**
+ *
+ * {/* Marca *}
+   <Select2Component col={6} idName={"marca"} label={"Marca *"} options={dataBrands} refreshSelect={} />
+ */
+
 // =================== COMPONENTE =======================
 const Select2Component = ({
    col,
@@ -36,7 +42,6 @@ const Select2Component = ({
    label,
    placeholder,
    options = [],
-   // options = ["Selecciona una opción..."],
    disabled,
    size = "medium",
 
@@ -127,7 +132,11 @@ const Select2Component = ({
       setLoading(true);
       const _options = [{ id: 0, label: "Selecciona una opción..." }];
       // console.log(options);
-      options.map((option) => _options.push({ id: option.id, label: option[namePropLabel] }));
+      options.map((option, index) => {
+         _options.push({ id: option.id, label: option[namePropLabel] });
+         if (option.id === formik.values.idName) setLabelValue(option[namePropLabel]);
+         if (index == options.length - 1 && labelValue == "Selecciona una opción...") setLabelValue(option[namePropLabel]);
+      });
       setDataOptions(_options);
       Number(formik.values[idName]) == 0 && setLabelValue("Selecciona una opción...");
       setLoading(false);
@@ -142,60 +151,65 @@ const Select2Component = ({
    }, [options, formik.values[idName]]);
 
    return (
-      <Grid xs={12} md={col} sx={{ display: hidden ? "none" : "flex", flexDirection: "column", alignItems: "center", mb: marginBoton ? `${marginBoton} 0` : 2 }}>
-         <FormControl fullWidth>
-            <Box display={"flex"}>
-               <Field id={idName} name={idName}>
-                  {({ field }) => (
-                     <Autocomplete
-                        key={`select_${idName}`}
-                        disablePortal
-                        openOnFocus
-                        label={label}
-                        placeholder={placeholder}
-                        options={dataOptions}
-                        size={size}
-                        // getOptionLabel={(option) => option.label}
-                        // isOptionEqualToValue={(option, value) => option && value && option.id === value.id}
-                        {...field}
-                        value={Number(formik.values[idName]) > 0 ? dataOptions.find((option) => option.id === formik.values[idName]).label : labelValue}
-                        // defaultValue={labelValue || "Selecciona una opción..."}
-                        onChange={(_, newValue) => {
-                           handleChangeValue(newValue, formik.setFieldValue);
-                        }}
-                        onBlur={formik.handleBlur}
-                        fullWidth={fullWidth || true}
-                        isOptionEqualToValue={isOptionEqualToValue}
-                        renderInput={(params) => <TextField {...params} label={label} />}
-                        disabled={disabled || loading}
-                        error={isError}
-                     />
-                  )}
-               </Field>
-               {refreshSelect && (
-                  <Tooltip title={`Actualizar ${pluralName}`} placement="top">
-                     <IconButton
-                        type="button"
-                        variant="text"
-                        color="primary"
-                        sx={{ borderRadius: "12px", mr: 1 }}
-                        onClick={handleClickRefresh}
-                        disabled={disabled || loading}
-                     >
-                        <IconReload />
-                     </IconButton>
-                  </Tooltip>
-               )}
-            </Box>
+      <>
+         {dataOptions.length > 0 && (
+            <Grid xs={12} md={col} sx={{ display: hidden ? "none" : "flex", flexDirection: "column", alignItems: "center", mb: marginBoton ? `${marginBoton} 0` : 2 }}>
+               <FormControl fullWidth>
+                  <Box display={"flex"}>
+                     <Field id={idName} name={idName}>
+                        {({ field }) => (
+                           <Autocomplete
+                              key={`select_${idName}`}
+                              disablePortal
+                              openOnFocus
+                              label={label}
+                              placeholder={placeholder}
+                              options={dataOptions}
+                              size={size}
+                              // getOptionLabel={(option) => option.label}
+                              // isOptionEqualToValue={(option, value) => option && value && option.id === value.id}
+                              {...field}
+                              value={Number(formik.values[idName]) > 0 ? dataOptions.find((option) => option.id === formik.values[idName])?.label : labelValue}
+                              defaultValue={Number(formik.values[idName]) > 0 ? dataOptions.find((option) => option.id === formik.values[idName])?.label : labelValue}
+                              // defaultValue={labelValue || "Selecciona una opción..."}
+                              onChange={(_, newValue) => {
+                                 handleChangeValue(newValue, formik.setFieldValue);
+                              }}
+                              onBlur={formik.handleBlur}
+                              fullWidth={fullWidth || true}
+                              isOptionEqualToValue={isOptionEqualToValue}
+                              renderInput={(params) => <TextField {...params} label={label} error={isError} />}
+                              disabled={disabled || loading}
+                              error={isError}
+                           />
+                        )}
+                     </Field>
+                     {refreshSelect && (
+                        <Tooltip title={`Actualizar ${pluralName}`} placement="top">
+                           <IconButton
+                              type="button"
+                              variant="text"
+                              color="primary"
+                              sx={{ borderRadius: "12px", mr: 1 }}
+                              onClick={handleClickRefresh}
+                              disabled={disabled || loading}
+                           >
+                              <IconReload />
+                           </IconButton>
+                        </Tooltip>
+                     )}
+                  </Box>
 
-            {isError && (
-               <FormHelperText error id={`ht-${idName}`}>
-                  {isError ? formik.errors[idName] : helperText}
-               </FormHelperText>
-            )}
-            {loading && <CircularProgress sx={{ position: "absolute", top: "10%", left: "60%" }} />}
-         </FormControl>
-      </Grid>
+                  {isError && (
+                     <FormHelperText error id={`ht-${idName}`}>
+                        {isError ? formik.errors[idName] : helperText}
+                     </FormHelperText>
+                  )}
+                  {loading && <CircularProgress sx={{ position: "absolute", top: "10%", left: "60%" }} />}
+               </FormControl>
+            </Grid>
+         )}
+      </>
    );
 };
 

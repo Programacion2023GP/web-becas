@@ -73,7 +73,7 @@ export default function RelationshipContextProvider({ children }) {
          const axiosData = await Axios.get(`/relationships/selectIndex`);
          // console.log("el selectedDeRelationships", axiosData);
          res.result.relationships = axiosData.data.data.result;
-         res.result.relationships.unshift({ id: 0, label: "Selecciona una opción..." });
+         // res.result.relationships.unshift({ id: 0, label: "Selecciona una opción..." });
          setRelationships(axiosData.data.data.result);
          // console.log("relationships", relationships);
 

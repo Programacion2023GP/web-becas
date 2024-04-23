@@ -98,7 +98,7 @@ export default function FamilyContextProvider({ children }) {
          const axiosData = await Axios.get(`/families/selectIndex`);
          // console.log("el selectedDeFamilies", axiosData);
          res.result.families = axiosData.data.data.result;
-         res.result.families.unshift({ id: 0, label: "Selecciona una opción..." });
+         // res.result.families.unshift({ id: 0, label: "Selecciona una opción..." });
          setFamilies(axiosData.data.data.result);
          // console.log("families", families);
 

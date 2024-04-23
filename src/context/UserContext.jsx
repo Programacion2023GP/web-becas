@@ -11,7 +11,8 @@ const formDataInitialState = {
    email: "",
    password: "",
    role_id: 0,
-   role: "Selecciona una opción..."
+   role: "Selecciona una opción...",
+   change_password: false
 };
 const userInitialState = {
    id: 0,

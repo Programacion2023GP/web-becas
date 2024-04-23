@@ -44,6 +44,7 @@ const RolesView = () => {
    const { getMenus } = useMenuContext();
 
    const [openDialogTable, setOpenDialogTable] = useState(false);
+   const [loadPermissions, setLoadPermissions] = useState(false);
 
    useEffect(() => {
       try {
@@ -71,10 +72,10 @@ const RolesView = () => {
          {/* </MainCard> */}
          <Grid container spacing={2}>
             <Grid xs={12} md={12} sx={{ mb: 3 }}>
-               <FormSelect setOpenDialogTable={setOpenDialogTable} />
+               <FormSelect setOpenDialogTable={setOpenDialogTable} setLoadPermissions={setLoadPermissions} />
             </Grid>
             <Grid xs={12} md={12} sx={{ mb: 3 }}>
-               <MenusCards />
+               <MenusCards key={"MenusCards"} loadPermissions={loadPermissions} />
             </Grid>
          </Grid>
 

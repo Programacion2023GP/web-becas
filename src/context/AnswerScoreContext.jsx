@@ -431,7 +431,7 @@ export default function AnswerScoreContextProvider({ children }) {
          const axiosData = await Axios.get(`/answersScores/selectIndex`);
          // console.log("el selectedDeAnswerScores", axiosData);
          res.result.answerScores = axiosData.data.data.result;
-         res.result.answerScores.unshift({ id: 0, label: "Selecciona una opción..." });
+         // res.result.answerScores.unshift({ id: 0, label: "Selecciona una opción..." });
          setAnswerScores(axiosData.data.data.result);
          // console.log("answerScores", answerScores);
 

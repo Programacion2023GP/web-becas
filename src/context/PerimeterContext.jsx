@@ -60,7 +60,7 @@ export default function PerimeterContextProvider({ children }) {
          const axiosData = await axiosMyCommunity.get(`${import.meta.env.VITE_API_CP}/perimetros/selectIndex`);
          // console.log("el getPerimetersSelectIndex", axiosData);
          res.result.perimeters = axiosData.data.data.result;
-         res.result.perimeters.unshift({ id: 0, label: "Selecciona una opción..." });
+         // res.result.perimeters.unshift({ id: 0, label: "Selecciona una opción..." });
          setPerimeters(axiosData.data.data.result);
          // console.log("perimeters", perimeters);
       } catch (error) {

@@ -55,6 +55,7 @@ import IconDelete from "../../../components/icons/IconDelete";
 import FamilyDT, { monthlyIncome } from "./FamilyDT";
 import { useFamilyContext } from "../../../context/FamilyContext";
 import { validateImageRequired } from "../../../utils/Validations";
+import { InputComponentEST } from "../../../components/Form/InputComponentEST";
 
 const RequestBecaView = () => {
    const { auth } = useAuthContext();
@@ -236,7 +237,7 @@ const RequestBecaView = () => {
       return msg;
    };
 
-   const handleChangeRelationships = (relationship, setFieldValue) => setIsTutor(relationship.id > 2 ? true : false);
+   const handleChangeRelationships = (inputName, relationship, setFieldValue) => setIsTutor(relationship.id > 2 ? true : false);
 
    const handleChangeTutorCURP = async (e, values, setValues, setFieldValue) => {
       try {
@@ -668,7 +669,7 @@ const RequestBecaView = () => {
             validationSchema = Yup.object().shape({
                // id: 0,
                // folio: Yup.number("solo números").required("Folio requerido"),
-               tutor_relationship_id: Yup.string().trim().required("Parentesco del tutor requerido"),
+               tutor_relationship_id: Yup.number().min(1, "Esta opción no es valida").required("Parentesco del tutor requerido"),
                tutor_curp: Yup.string()
                   .trim()
                   .matches(/^[A-Z]{4}[0-9]{6}[HM][A-Z]{2}[A-Z0-9]{4}[0-9]{1}$/, "Formato de CURP invalido")
@@ -862,7 +863,7 @@ const RequestBecaView = () => {
       );
    };
 
-   const handleClickSavehReview = async (values) => {
+   const handleClickSaveReview = async (values) => {
       try {
          values.action = "save";
          await setFormData({ ...formData, ...values });
@@ -1101,7 +1102,18 @@ const RequestBecaView = () => {
                                              />
                                           </Grid>
                                           {/* Parentesco */}
-                                          <Grid xs={12} md={6} sx={{ mb: 3 }}>
+                                          <Select2Component
+                                             col={6}
+                                             idName={"tutor_relationship_id"}
+                                             label={"Parentesco *"}
+                                             options={relationships}
+                                             handleChangeValueSuccess={handleChangeRelationships}
+                                             disabled={values.id == 0 ? false : true}
+                                             pluralName={"Parentesco *"}
+                                             refreshSelect={getRelationshipsSelectIndex}
+                                             activeStep={pagina}
+                                          />
+                                          {/* <Grid xs={12} md={6} sx={{ mb: 3 }}>
                                              <Select2Component
                                                 idName={"tutor_relationship_id"}
                                                 label={"Parentesco *"}
@@ -1118,9 +1130,16 @@ const RequestBecaView = () => {
                                                 pluralName={"Parentesco"}
                                                 refreshSelect={getRelationshipsSelectIndex}
                                              />
-                                          </Grid>
+                                          </Grid> */}
                                           {/* Nombre Tutor */}
-                                          <Grid xs={12} md={6} sx={{ mb: 3 }}>
+                                          <InputComponentEST
+                                             col={6}
+                                             idName={"tutor_name"}
+                                             label={"Nombre del Tutor *"}
+                                             placeholder={"Escribe tú nombre completo"}
+                                             textStyleCase={true}
+                                          />
+                                          {/* <Grid xs={12} md={6} sx={{ mb: 3 }}>
                                              <TextField
                                                 id="tutor_name"
                                                 name="tutor_name"
@@ -1137,7 +1156,7 @@ const RequestBecaView = () => {
                                                 error={errors.tutor_name && touched.tutor_name}
                                                 helperText={errors.tutor_name && touched.tutor_name && showErrorInput(1, errors.tutor_name)}
                                              />
-                                          </Grid>
+                                          </Grid> */}
                                           {/* Apellido Paterno Tutor */}
                                           <Grid xs={12} md={6} sx={{ mb: 3 }}>
                                              <TextField
@@ -2683,7 +2702,7 @@ const RequestBecaView = () => {
                                              <Button color="primary" variant="contained" onClick={() => handleClickFinishReview(values)} sx={{ mr: 1 }}>
                                                 TERMINAR REVISIÓN
                                              </Button>
-                                             <Button color="secondary" variant="contained" onClick={() => handleClickSavehReview(values)} sx={{ mr: 1 }}>
+                                             <Button color="secondary" variant="contained" onClick={() => handleClickSaveReview(values)} sx={{ mr: 1 }}>
                                                 GUARDAR
                                              </Button>
                                           </Box>

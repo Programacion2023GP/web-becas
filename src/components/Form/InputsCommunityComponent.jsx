@@ -279,7 +279,7 @@ const InputsCommunityComponent = ({
    //    }
    // };
 
-   const handleChangeColony = async (colony, setFieldValue) => {
+   const handleChangeColony = async (inputName, colony, setFieldValue) => {
       try {
          const community_selected = dataColoniesComplete.find((c) => c.label === colony);
          // values.community_id = community_selected.id;

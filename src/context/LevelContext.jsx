@@ -62,7 +62,7 @@ export default function LevelContextProvider({ children }) {
          const axiosData = await Axios.get(`/levels/selectIndex`);
          // console.log("el selectedDeLevels", axiosData);
          res.result.levels = axiosData.data.data.result;
-         res.result.levels.unshift({ id: 0, label: "Selecciona una opción..." });
+         // res.result.levels.unshift({ id: 0, label: "Selecciona una opción..." });
          setLevels(axiosData.data.data.result);
          // console.log("levels", levels);
 

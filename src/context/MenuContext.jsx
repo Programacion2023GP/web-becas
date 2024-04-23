@@ -184,7 +184,7 @@ export default function MenuContextProvider({ children }) {
          const axiosData = await Axios.get(`/menus/headers/selectIndex`);
          // console.log("el selectedDeLevels", axiosData);
          res.result.headerMenus = axiosData.data.data.result;
-         res.result.headerMenus.unshift({ id: 0, label: "Selecciona una opción..." });
+         // res.result.headerMenus.unshift({ id: 0, label: "Selecciona una opción..." });
          setHeaderMenus(axiosData.data.data.result);
          // console.log("headerMenus", headerMenus);
 

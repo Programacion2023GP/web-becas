@@ -52,7 +52,7 @@ export default function DisabilityContextProvider({ children }) {
          const axiosData = await Axios.get(`/disabilities/selectIndex`);
          // console.log("el selectedDeDisabilities", axiosData);
          res.result.disabilities = axiosData.data.data.result;
-         res.result.disabilities.unshift({ id: 0, label: "Selecciona una opción..." });
+         // res.result.disabilities.unshift({ id: 0, label: "Selecciona una opción..." });
          setDisabilities(axiosData.data.data.result);
          // console.log("disabilities", disabilities);
 
