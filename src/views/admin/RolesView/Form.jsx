@@ -19,6 +19,7 @@ import InputsCommunityComponent, { getCommunity } from "../../../components/Form
 import { handleInputFormik } from "../../../utils/Formats";
 import SwitchComponent from "../../../components/SwitchComponent";
 import { Label } from "@mui/icons-material";
+import { useMenuContext } from "../../../context/MenuContext";
 // import InputComponent from "../Form/InputComponent";
 
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
@@ -28,6 +29,7 @@ const RoleForm = () => {
    const { openDialog, setOpenDialog, toggleDrawer, setLoadingAction } = useGlobalContext();
    const { singularName, roles, createRole, updateRole, formData, setFormData, textBtnSubmit, resetFormData, setTextBtnSumbit, formTitle, setFormTitle } =
       useRoleContext();
+   const { menusSelect, showMyMenus } = useMenuContext();
    const [checkAdd, setCheckAdd] = useState(checkAddInitialState);
    const [colorLabelcheck, setColorLabelcheck] = useState(colorLabelcheckInitialState);
 
@@ -108,6 +110,7 @@ const RoleForm = () => {
 
    useEffect(() => {
       try {
+         console.log("menusSelect", menusSelect);
          const btnModify = document.getElementById("btnModify");
          if (btnModify != null && formData.id > 0) btnModify.click();
       } catch (error) {
@@ -170,6 +173,7 @@ const RoleForm = () => {
                         </Grid>
 
                         {/* Página Principal */}
+                        <Select2Component col={12} idName={"page_index"} label={"Página Principal *"} options={menusSelect} />
                         <Grid xs={12} md={12} sx={{ mb: 3 }}>
                            <TextField
                               id="page_index"

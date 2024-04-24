@@ -75,7 +75,8 @@ const UserDT = () => {
          resetUser();
          // user.role = "Selecciona una opción...";
          resetFormData();
-         formikRef.current.setValues(formikRef.current.initialValues);
+         formikRef.current.resetForm();
+         // formikRef.current.setValues(formikRef.current.initialValues);
          setOpenDialog(true);
          setTextBtnSumbit("AGREGAR");
          setFormTitle(`REGISTRAR ${singularName.toUpperCase()}`);
@@ -91,7 +92,7 @@ const UserDT = () => {
          setTextBtnSumbit("GUARDAR");
          setFormTitle(`EDITAR ${singularName.toUpperCase()}`);
          const axiosResponse = await showUser(id);
-         console.log(axiosResponse);
+         // console.log(axiosResponse);
          formikRef.current.setValues(axiosResponse.result);
          setOpenDialog(true);
          setLoadingAction(false);
@@ -150,7 +151,6 @@ const UserDT = () => {
          Toast.Error(error);
       }
    };
-   
 
    const ButtonsAction = ({ id, name, active }) => {
       return (

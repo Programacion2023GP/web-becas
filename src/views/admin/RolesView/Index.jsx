@@ -41,7 +41,7 @@ const RolesView = () => {
    // const { result } = useLoaderData();
    const { setLoading, toggleDrawer } = useGlobalContext();
    const { pluralName, role, roles, getRoles, roleSelect, getRolesSelectIndex } = useRoleContext();
-   const { getMenus } = useMenuContext();
+   const { getMenus, getMenusSelectIndexToRoles } = useMenuContext();
 
    const [openDialogTable, setOpenDialogTable] = useState(false);
    const [loadPermissions, setLoadPermissions] = useState(false);
@@ -51,6 +51,7 @@ const RolesView = () => {
          setLoading(true);
          getRoles();
          getRolesSelectIndex();
+         getMenusSelectIndexToRoles();
          getMenus(true);
       } catch (error) {
          console.log(error);

@@ -35,6 +35,7 @@ export default function MenuContextProvider({ children }) {
    const [textBtnSubmit, setTextBtnSumbit] = useState("AGREGAR");
 
    const [menus, setMenus] = useState([]);
+   const [menusSelect, setMenusSelect] = useState([]);
    const [menu, setMenu] = useState(null);
    const [formData, setFormData] = useState(formDataInitialState);
    const [menuItems, setMenuItems] = useState({ items: [] });
@@ -88,7 +89,7 @@ export default function MenuContextProvider({ children }) {
          res = axiosData.data.data;
          // await setMenu(res.result);
          setMenu(res.result);
-         // console.log(res);
+         console.log(res.result);
 
          return res;
       } catch (error) {
@@ -106,7 +107,7 @@ export default function MenuContextProvider({ children }) {
          if (auth !== null) {
             const pages_read = auth.read;
             const axiosResponse = await Axios.get(`/menus/MenusByRole/${pages_read}`);
-            // console.log("axiosResponse", axiosResponse);
+            console.log("axiosResponse", axiosResponse);
             const menus = axiosResponse.data.data.result;
             // console.log("menus", menus);
 
@@ -298,6 +299,26 @@ export default function MenuContextProvider({ children }) {
       }
    };
 
+   const getMenusSelectIndexToRoles = async () => {
+      try {
+         const res = CorrectRes;
+         const axiosData = await Axios.get(`/menus/selectIndexToRoles`);
+         // console.log("el selectedDeLevels", axiosData);
+         res.result.menus = axiosData.data.data.result;
+         console.log(res.result.menus);
+         // res.result.menus.unshift({ id: 0, label: "Selecciona una opción..." });
+         setMenusSelect(axiosData.data.data.result);
+         // console.log("menus", menus);
+
+         return res;
+      } catch (error) {
+         const res = ErrorRes;
+         console.log(error);
+         res.message = error;
+         res.alert_text = error;
+      }
+   };
+
    const showMenu = async (id) => {
       try {
          let res = CorrectRes;
@@ -430,7 +451,10 @@ export default function MenuContextProvider({ children }) {
             setCheckMaster,
             checkMenus,
             setCheckMenus,
-            counterOfMenus
+            counterOfMenus,
+            getMenusSelectIndexToRoles,
+            menusSelect,
+            setMenusSelect
          }}
       >
          {children}

@@ -62,6 +62,11 @@ export const InputPasswordCompnent = ({
 
    useEffect(() => {}, [idName]);
 
+   useEffect(() => {
+      console.log("Select2Component() -> newPasswordChecked", newPasswordChecked);
+      setStrength(0);
+   }, [newPasswordChecked]);
+
    return (
       <Grid
          xs={12}
@@ -71,15 +76,17 @@ export const InputPasswordCompnent = ({
             // border: 1,
             display: hidden ? "none" : "flex",
             flexDirection: "column",
-            alignItems: "start",
+            alignItems: "end",
             position: "relative",
+            pt: 0,
+            p: 0,
             mb: marginBoton ? `${marginBoton} 0` : 2,
-            mt: checkedShowSwitchPassword ? -5.85 : -0.75
+            mt: checkedShowSwitchPassword ? -3 : -0
          }}
       >
          {/* Switch para mostrar el cambiar contraseña */}
          {checkedShowSwitchPassword && (
-            <Grid sx={{ backgroundColor: "", my: 0, py: 0, mt: 2, mb: -1.75 }}>
+            <Grid sx={{ backgroundColor: "", my: 0, py: 0, mt: 0, pt: 0, mb: -1.75 }}>
                <FormControlLabel
                   control={<Switch />}
                   label={"Cambiar Contraseña"}
@@ -89,7 +96,7 @@ export const InputPasswordCompnent = ({
             </Grid>
          )}
          {/* Contraseña */}
-         <Grid xs={12} sx={{ backgroundColor: "" }}>
+         <Grid xs={12} sx={{ backgroundColor: "", p: 1 }}>
             <FormControl fullWidth error={isError}>
                <InputLabel htmlFor={idName}>{label || "Contraseña *"}</InputLabel>
                <OutlinedInput

@@ -66,7 +66,7 @@ const UserForm = ({ dataRoles }) => {
    const ResetForm = (resetForm) => {
       if (resetForm) resetForm();
       resetUser();
-      setStrength(0);
+      // setStrength(0);
       setTextBtnSumbit("AGREGAR");
       setFormTitle(`REGISTRAR ${singularName.toUpperCase()}`);
    };
@@ -89,7 +89,7 @@ const UserForm = ({ dataRoles }) => {
          // console.log("formData", formData);
          // console.log("values", values);
          // values.community_id = values.colony_id;
-         values.change_password = checkedShowSwitchPassword;
+         values.change_password = newPasswordChecked;
 
          setLoadingAction(true);
          let axiosResponse;
@@ -318,6 +318,7 @@ const UserForm = ({ dataRoles }) => {
                   label={"Rol"}
                   placeholder={"Selecciona una opción..."}
                   options={dataRoles}
+                  pluralName={"Roles"}
                   refreshSelect={getRolesSelectIndex}
                />
                {/* <Grid xs={12} md={6} sx={{ mb: 1 }}>

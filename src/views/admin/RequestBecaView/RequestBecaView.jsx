@@ -100,6 +100,7 @@ const RequestBecaView = () => {
    const inputRefFullNameTutor = useRef(null);
    const inputRefCurp = useRef(null);
    const inputRefSchoolId = useRef(null);
+   const formik1 = useRef(null);
 
    // const [monthlyIncomeChange, setMonthlyIncomeChange] = useState(0);
 
@@ -1026,7 +1027,7 @@ const RequestBecaView = () => {
                <Stepper nonLinear activeStep={activeStep} sx={{ overflowX: "auto" }}>
                   {steps.map((label, index) => {
                      const labelProps = {};
-                     if (stepFailed === index) {
+                     if (setStepFailed === index) {
                         labelProps.optional = (
                            <Typography variant="caption" color="error">
                               Hay un campo invalido en esta sección.
@@ -1068,7 +1069,7 @@ const RequestBecaView = () => {
                         {/* <Typography sx={{ mt: 2, mb: 1, py: 1 }}>ESTOY EN EL CONTENIDO STEP?? {activeStep + 1}</Typography> */}
                         <Box sx={{ mt: 2, height: "100%" }}>
                            {activeStep + 1 == 1 && (
-                              <Formik initialValues={formData} validationSchema={validationSchemas(activeStep + 1)} onSubmit={onSubmit1}>
+                              <Formik initialValues={formData} validationSchema={validationSchemas(activeStep + 1)} onSubmit={onSubmit1} innerRef={formik1}>
                                  {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
                                     <Box
                                        sx={{ height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between" }}
@@ -1098,7 +1099,7 @@ const RequestBecaView = () => {
                                                 disabled={values.id == 0 ? false : true}
                                                 // inputRef={inputRefTutorCurp}
                                                 error={errors.tutor_curp && touched.tutor_curp}
-                                                helperText={errors.tutor_curp && touched.tutor_curp && showErrorInput(2, errors.tutor_curp)}
+                                                helperText={errors.tutor_curp && touched.tutor_curp && showErrorInput(activeStep + 1, errors.tutor_curp)}
                                              />
                                           </Grid>
                                           {/* Parentesco */}
