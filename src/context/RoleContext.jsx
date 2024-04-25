@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { Axios, useAuthContext } from "./AuthContext";
 import { CorrectRes, ErrorRes } from "../utils/Response";
 
@@ -6,14 +6,15 @@ const RoleContext = createContext();
 
 const formDataInitialState = {
    id: 0,
-   role: "Selecciona una opción...",
+   role: "",
    description: "",
    read: "",
    create: "",
    update: "",
    delete: "",
    more_permissions: "",
-   active: true
+   active: true,
+   page_index: 0
 };
 
 export default function RoleContextProvider({ children }) {
@@ -30,6 +31,7 @@ export default function RoleContextProvider({ children }) {
    const [rolesSelect, setRolesSelect] = useState([]);
    const [formData, setFormData] = useState(formDataInitialState);
    const [openDialog, setOpenDialog] = useState(false);
+   const formikRef = useRef(null);
 
    const resetFormData = () => {
       try {
@@ -77,7 +79,7 @@ export default function RoleContextProvider({ children }) {
          res.result.roles = axiosData.data.data.result;
          setRoles(axiosData.data.data.result);
          // console.log("roles", roles);
-         showRoleSelect(auth.role_id);
+         // showRoleSelect(auth.role_id);
          getRolesSelectIndex();
          return res;
       } catch (error) {
@@ -112,8 +114,17 @@ export default function RoleContextProvider({ children }) {
       try {
          let res = CorrectRes;
          const axiosData = await Axios.get(`/roles/${id}`);
+         // console.log(axiosData.data.data.result.page_index);
+         // let page_index_id = 0;
+         // const axiosDataMenu = await Axios.post(`/menus/getIdByUrl`, { url: axiosData.data.data.result.page_index });
+         // console.log("axiosDataMenu", axiosDataMenu.data.data.result);
+         // page_index_id = axiosDataMenu.data.data.result == null ? 0 : axiosDataMenu.data.data.result.id;
+         // console.log(page_index_id);
+         // axiosData.data.data.result.page_index = page_index_id;
+
          setOpenDialog(true);
          res = axiosData.data.data;
+         // console.log("showRole->res", res);
          setRole(res.result);
          setFormData(res.result);
 
@@ -131,8 +142,18 @@ export default function RoleContextProvider({ children }) {
          // console.log("showRoleSelect");
          let res = CorrectRes;
          const axiosData = await Axios.get(`/roles/${id}`);
+         // console.log(axiosData.data.data.result.page_index);
+         let page_index_id = 0;
+         const axiosDataMenu = await Axios.post(`/menus/getIdByUrl`, { url: axiosData.data.data.result.page_index });
+         // console.log("axiosDataMenu", axiosDataMenu.data.data.result);
+         page_index_id = axiosDataMenu.data.data.result == null ? 0 : axiosDataMenu.data.data.result.id;
+         // console.log(page_index_id);
+         axiosData.data.data.result.page_index = page_index_id;
+         // console.log(axiosData.data.data.result);
+
          setOpenDialog(true);
          res = axiosData.data.data;
+         // console.log("showRoleSelect->res", res);
          setRoleSelect(res.result);
 
          return res;
@@ -245,7 +266,8 @@ export default function RoleContextProvider({ children }) {
             setRoleSelect,
             resetRoleSelect,
             showRoleSelect,
-            updatePermissions
+            updatePermissions,
+            formikRef
          }}
       >
          {children}

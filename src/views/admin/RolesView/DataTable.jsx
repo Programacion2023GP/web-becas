@@ -14,12 +14,13 @@ import { IconCircleCheckFilled } from "@tabler/icons-react";
 import { IconCircleXFilled } from "@tabler/icons-react";
 import { formatDatetime } from "../../../utils/Formats";
 import { useAuthContext } from "../../../context/AuthContext";
-import SwitchComponent from "../../../components/SwitchComponent";
+import SwitchIOSComponent from "../../../components/SwitchIOSComponent";
 
 const RoleDT = () => {
    const { auth } = useAuthContext();
    const { setLoading, setLoadingAction, setOpenDialog } = useGlobalContext();
-   const { singularName, role, roles, getRoles, showRole, deleteRole, DisEnableRole, resetFormData, resetRole, setTextBtnSumbit, setFormTitle } = useRoleContext();
+   const { singularName, role, roles, getRoles, showRole, deleteRole, DisEnableRole, resetFormData, resetRole, setTextBtnSumbit, setFormTitle, formikRef } =
+      useRoleContext();
    const globalFilterFields = ["role", "description", "page_index", "active", "created_at"];
 
    // #region BodysTemplate
@@ -53,6 +54,8 @@ const RoleDT = () => {
       try {
          // resetRole();
          resetFormData();
+         formikRef.current.resetForm();
+
          setOpenDialog(true);
          setTextBtnSumbit("AGREGAR");
          setFormTitle(`REGISTRAR ${singularName.toUpperCase()}`);
@@ -67,7 +70,9 @@ const RoleDT = () => {
          setLoadingAction(true);
          setTextBtnSumbit("GUARDAR");
          setFormTitle(`EDITAR ${singularName.toUpperCase()}`);
-         await showRole(id);
+         const axiosResponse = await showRole(id);
+         formikRef.current.setValues(axiosResponse.result);
+
          // setOpenDialog(true);
          setLoadingAction(false);
       } catch (error) {
@@ -121,7 +126,7 @@ const RoleDT = () => {
             {auth.role_id == ROLE_SUPER_ADMIN && (
                <Tooltip title={active ? "Desactivar" : "Reactivar"} placement="right">
                   <Button color="dark" onClick={() => handleClickDisEnable(id, name, active)} sx={{}}>
-                     <SwitchComponent checked={Boolean(active)} />
+                     <SwitchIOSComponent checked={Boolean(active)} />
                   </Button>
                </Tooltip>
             )}

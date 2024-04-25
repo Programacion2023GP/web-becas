@@ -22,11 +22,12 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { strengthColor, strengthIndicator } from "../../../utils/password-strength";
 import Select2Component from "../../../components/Form/Select2Component";
 import { useRoleContext } from "../../../context/RoleContext";
-import { FormikComponent } from "../../../components/Form/FormikComponent";
-import { InputComponentEST } from "../../../components/Form/InputComponentEST";
+// import { FormikComponent } from "../../../components/Form/FormikComponent";
+// import { InputComponentEST } from "../../../components/Form/InputComponentEST";
 import { RadioButtonComponent } from "../../../components/Form/RadioButtonComponent";
 import { InputNumericComponent } from "../../../components/Form/InputNumericComponent";
-import { InputPasswordCompnent } from "../../../components/Form/InputPasswordComponent";
+import { FormikComponent, InputComponent, PasswordCompnent } from "../../../components/Form/FormikComponents";
+// import { InputPasswordCompnent } from "../../../components/Form/InputPasswordComponent";
 
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
 const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
@@ -163,8 +164,8 @@ const UserForm = ({ dataRoles }) => {
    useEffect(() => {
       try {
          // getRolesSelectIndex();
-         const btnModify = document.getElementById("btnModify");
-         if (btnModify != null) btnModify.click();
+         // const btnModify = document.getElementById("btnModify");
+         // if (btnModify != null) btnModify.click();
          if (textBtnSubmit == "GUARDAR") {
             setNewPasswordChecked(false);
             setCheckedShowSwitchPassword(true);
@@ -200,13 +201,13 @@ const UserForm = ({ dataRoles }) => {
                formikRef={formikRef}
                handleCancel={handleCancel}
             >
-               <InputComponentEST col={12} idName="id" label={"id"} hidden={true} />
+               <InputComponent col={12} idName="id" label={"id"} hidden={true} />
 
                {/* Nombre de Usuario */}
-               <InputComponentEST col={6} idName="username" label={"Nombre de usuario *"} placeholder={"Ingrese su nombre de usuario"} />
+               <InputComponent col={6} idName="username" label={"Nombre de usuario *"} placeholder={"Ingrese su nombre de usuario"} />
 
                {/* Correo Electronico */}
-               <InputComponentEST col={6} idName="email" label={"Correo Electrónico *"} placeholder={"mi@correo.com"} textStyleCase={false} />
+               <InputComponent col={6} idName="email" label={"Correo Electrónico *"} placeholder={"mi@correo.com"} textStyleCase={false} />
                {/* <Grid xs={12} md={6} sx={{ mb: 1 }}>
                   <TextField
                      id="email"
@@ -227,7 +228,7 @@ const UserForm = ({ dataRoles }) => {
                </Grid> */}
 
                {/* Contraseña */}
-               <InputPasswordCompnent
+               <PasswordCompnent
                   col={6}
                   idName={"password"}
                   newPasswordChecked={newPasswordChecked}

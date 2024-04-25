@@ -26,9 +26,12 @@ export const InputComponentEST = ({
 }) => {
    const formik = useFormikContext(); // Obtiene el contexto de Formik
    const errors = formik.errors;
-   const isError = formik.touched[idName] ? formik.errors[idName] : false;
+   const error = formik.touched[idName] && formik.errors[idName] ? formik.errors[idName] : null;
+   const isError = error == null ? false : true;
 
-   useEffect(() => {}, [idName]);
+   useEffect(() => {
+      console.log("isError", isError);
+   }, [idName]);
 
    return (
       <Grid xs={12} md={col} sx={{ display: hidden ? "none" : "flex", flexDirection: "column", alignItems: "center", mb: marginBoton ? `${marginBoton} 0` : 2 }}>
@@ -56,8 +59,8 @@ export const InputComponentEST = ({
                            }}
                            fullWidth
                            {...props}
-                           error={isError}
-                           helperText={isError ? formik.errors[idName] : helperText}
+                           error={error}
+                           helperText={isError ? error : helperText}
                            InputLabelProps={{
                               style: color ? { color: color } : {}
                            }}
@@ -91,7 +94,7 @@ export const InputComponentEST = ({
                multiline={type === null || type === undefined} // Habilita multiline solo si type no está definido
                rows={type === null || type === undefined ? rows : undefined} // Establece las filas solo si type no está definido
                error={isError}
-               helperText={isError ? formik.errors[idName] : helperText}
+               helperText={isError ? error : helperText}
                InputLabelProps={{
                   style: color ? { color: color } : {}
                }}

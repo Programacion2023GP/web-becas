@@ -17,7 +17,7 @@ import { useGlobalContext } from "../../../context/GlobalContext";
 import Select2Component from "../../../components/Form/Select2Component";
 import InputsCommunityComponent, { getCommunity } from "../../../components/Form/InputsCommunityComponent";
 import { handleInputFormik } from "../../../utils/Formats";
-import SwitchComponent from "../../../components/SwitchComponent";
+import SwitchIOSComponent from "../../../components/SwitchIOSComponent";
 import { Label } from "@mui/icons-material";
 import { useAuthContext } from "../../../context/AuthContext";
 // import InputComponent from "../Form/InputComponent";
@@ -340,7 +340,7 @@ const MenuForm = () => {
                            <Grid xs={12} md={12} sx={{ mb: 3 }}>
                               <Tooltip title={values.show_counter ? "Mostrar" : "Ocultar"} placement="right">
                                  <Button color="dark" onClick={() => setFieldValue("show_counter", !Boolean(values.show_counter))}>
-                                    <SwitchComponent checked={Boolean(values.show_counter)} label={"¿Mostrar contador?"} />
+                                    <SwitchIOSComponent checked={Boolean(values.show_counter)} label={"¿Mostrar contador?"} />
                                  </Button>
                               </Tooltip>
                            </Grid>
@@ -368,7 +368,7 @@ const MenuForm = () => {
                         <Grid xs={12} md={12} sx={{ mb: 3 }}>
                            <Tooltip title={values.active ? "Activo" : "Inactivo"} placement="right">
                               <Button color="dark" onClick={() => setFieldValue("active", !Boolean(values.active))}>
-                                 <SwitchComponent checked={Boolean(values.active)} label={"¿Menú Activo?"} />
+                                 <SwitchIOSComponent checked={Boolean(values.active)} label={"¿Menú Activo?"} />
                               </Button>
                            </Tooltip>
                         </Grid>

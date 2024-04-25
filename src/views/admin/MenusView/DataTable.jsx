@@ -15,7 +15,7 @@ import { IconCircleXFilled } from "@tabler/icons-react";
 import { formatDatetime } from "../../../utils/Formats";
 import { useAuthContext } from "../../../context/AuthContext";
 import { Box } from "@mui/system";
-import SwitchComponent from "../../../components/SwitchComponent";
+import SwitchIOSComponent from "../../../components/SwitchIOSComponent";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import * as tablerIcons from "@tabler/icons";
 
@@ -183,7 +183,7 @@ const MenuDT = () => {
             {auth.role_id == ROLE_SUPER_ADMIN && (
                <Tooltip title={active ? "Desactivar" : "Reactivar"} placement="right">
                   <Button color="dark" onClick={() => handleClickDisEnable(id, name, active)} sx={{}}>
-                     <SwitchComponent checked={Boolean(active)} />
+                     <SwitchIOSComponent checked={Boolean(active)} />
                   </Button>
                </Tooltip>
             )}

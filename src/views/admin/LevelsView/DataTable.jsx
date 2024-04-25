@@ -22,7 +22,7 @@ import { IconCircleCheckFilled } from "@tabler/icons-react";
 import { IconCircleXFilled } from "@tabler/icons-react";
 import { formatDatetime } from "../../../utils/Formats";
 import { useAuthContext } from "../../../context/AuthContext";
-import SwitchComponent from "../../../components/SwitchComponent";
+import SwitchIOSComponent from "../../../components/SwitchIOSComponent";
 
 const LevelDT = () => {
    const { auth } = useAuthContext();
@@ -144,7 +144,7 @@ const LevelDT = () => {
             {/* {auth.role_id == ROLE_SUPER_ADMIN && (
                <Tooltip title={active ? "Desactivar" : "Reactivar"} placement="right">
                   <Button color="dark" onClick={() => handleClickDisEnable(id, name, active)} sx={{}}>
-                     <SwitchComponent checked={active} />
+                     <SwitchIOSComponent checked={active} />
                   </Button>
                </Tooltip>
             )} */}

@@ -63,7 +63,8 @@ const Select2Component = ({
 }) => {
    const formik = useFormikContext(); // Obtiene el contexto de Formik
    const errors = formik.errors;
-   const isError = formik.touched[idName] ? formik.errors[idName] : false;
+   const error = formik.touched[idName] && formik.errors[idName] ? formik.errors[idName] : null;
+   const isError = error == null ? false : true;
 
    const [dataOptions, setDataOptions] = useState([]);
    const [labelValue, setLabelValue] = useState("Selecciona una opción...");
@@ -129,6 +130,8 @@ const Select2Component = ({
    };
 
    useEffect(() => {
+      // console.log("error", error);
+      // console.log("isError", isError);
       setLoading(true);
       const _options = [{ id: 0, label: "Selecciona una opción..." }];
       // console.log(options);
@@ -202,7 +205,7 @@ const Select2Component = ({
 
                   {isError && (
                      <FormHelperText error id={`ht-${idName}`}>
-                        {isError ? formik.errors[idName] : helperText}
+                        {isError ? error : helperText}
                      </FormHelperText>
                   )}
                   {loading && <CircularProgress sx={{ position: "absolute", top: "10%", left: "60%" }} />}

@@ -22,7 +22,7 @@ import { IconCircleCheckFilled } from "@tabler/icons-react";
 import { IconCircleXFilled } from "@tabler/icons-react";
 import { formatCurrency, formatDatetime } from "../../../utils/Formats";
 import { useAuthContext } from "../../../context/AuthContext";
-import SwitchComponent from "../../../components/SwitchComponent";
+import SwitchIOSComponent from "../../../components/SwitchIOSComponent";
 import { useParams } from "react-router-dom";
 import { InputNumber } from "primereact/inputnumber";
 import { InputText } from "primereact/inputtext";

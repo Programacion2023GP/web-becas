@@ -37,7 +37,8 @@ export const InputPasswordCompnent = ({
 }) => {
    const formik = useFormikContext(); // Obtiene el contexto de Formik
    const errors = formik.errors;
-   const isError = formik.touched[idName] ? formik.errors[idName] : false;
+   const error = formik.touched[idName] && formik.errors[idName] ? formik.errors[idName] : null;
+   const isError = error == null ? false : true;
 
    // #region Boton de Contraseña
    const [showPassword, setShowPassword] = useState(false);
@@ -63,9 +64,8 @@ export const InputPasswordCompnent = ({
    useEffect(() => {}, [idName]);
 
    useEffect(() => {
-      console.log("Select2Component() -> newPasswordChecked", newPasswordChecked);
-      setStrength(0);
-   }, [newPasswordChecked]);
+      if (formik.values[idName] == "" || !newPasswordChecked) setStrength(0);
+   }, [newPasswordChecked, formik.values[idName]]);
 
    return (
       <Grid
@@ -144,7 +144,7 @@ export const InputPasswordCompnent = ({
                />
                {isError && (
                   <FormHelperText error id="ht-password">
-                     {isError ? formik.errors[idName] : helperText}
+                     {isError ? error : helperText}
                   </FormHelperText>
                )}
             </FormControl>

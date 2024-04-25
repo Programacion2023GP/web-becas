@@ -163,7 +163,7 @@ const MenusCards = ({ loadPermissions }) => {
    const handleCheckboxChange = (target) => {
       const id = target.value.split("@")[0];
       let value = target.value.split("@")[1];
-      if (!["read", "create", "update", "delete"].includes(value)) value = target.value;
+      if (!["menu", "page", "read", "create", "update", "delete"].includes(value)) value = target.value;
       const isChecked = target.checked;
       // console.log("handleCheckboxChange()->id", id);
       // console.log("handleCheckboxChange()->value", value);
@@ -172,17 +172,19 @@ const MenusCards = ({ loadPermissions }) => {
       // console.log("_checkMenus", _checkMenus);
       _checkMenus = _checkMenus.map((check) => {
          if (Number(check.id) === Number(id)) {
-            if (["menu", "page"].includes(value.split("@")[1])) check.isChecked = isChecked;
+            // console.log(value);
+            if (["menu", "page"].includes(value)) check.isChecked = isChecked;
             // console.log("value", value);
             // if (!["menu"].includes(value)) {
             // if (!check.permissions.includes(value)) check.permissions.push(value);
             if (value === "menu") check.permissions.read = isChecked;
+            if (value === "page") check.permissions.read = isChecked;
             if (value === "read") check.permissions.read = isChecked;
             if (value === "create") check.permissions.create = isChecked;
             if (value === "update") check.permissions.update = isChecked;
             if (value === "delete") check.permissions.delete = isChecked;
             // }
-            if (!["menu", "page"].includes(value.split("@")[1])) {
+            if (!["menu", "page"].includes(value)) {
                if (!["read", "create", "update", "delete"].includes(value)) {
                   if (isChecked) {
                      if (!check.permissions.more_permissions.includes(value)) check.permissions.more_permissions.push(value);

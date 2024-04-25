@@ -22,13 +22,24 @@ import { IconCircleCheckFilled } from "@tabler/icons-react";
 import { IconCircleXFilled } from "@tabler/icons-react";
 import { formatDatetime } from "../../../utils/Formats";
 import { useAuthContext } from "../../../context/AuthContext";
-import SwitchComponent from "../../../components/SwitchComponent";
+import SwitchIOSComponent from "../../../components/SwitchIOSComponent";
 
 const AnswerScoreDT = () => {
    const { auth } = useAuthContext();
    const { setLoading, setLoadingAction, setOpenDialog } = useGlobalContext();
-   const { singularName, answerScore, answerScores, getAnswerScores, showAnswerScore, deleteAnswerScore, DisEnableAnswerScore, resetFormData, resetAnswerScore, setTextBtnSumbit, setFormTitle } =
-      useAnswerScoreContext();
+   const {
+      singularName,
+      answerScore,
+      answerScores,
+      getAnswerScores,
+      showAnswerScore,
+      deleteAnswerScore,
+      DisEnableAnswerScore,
+      resetFormData,
+      resetAnswerScore,
+      setTextBtnSumbit,
+      setFormTitle
+   } = useAnswerScoreContext();
    const globalFilterFields = ["answerScore", "active", "created_at"];
 
    // #region BodysTemplate
@@ -124,7 +135,7 @@ const AnswerScoreDT = () => {
             {/* {auth.role_id == ROLE_SUPER_ADMIN && (
                <Tooltip title={active ? "Desactivar" : "Reactivar"} placement="right">
                   <Button color="dark" onClick={() => handleClickDisEnable(id, name, active)} sx={{}}>
-                     <SwitchComponent checked={active} />
+                     <SwitchIOSComponent checked={active} />
                   </Button>
                </Tooltip>
             )} */}

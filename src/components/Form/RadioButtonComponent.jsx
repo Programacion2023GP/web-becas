@@ -17,7 +17,10 @@ export const RadioButtonComponent = ({
 
    useEffect(() => {}, [title, name, values[name]]);
 
-   const isError = touched[name] && errors[name];
+   // const isError = touched[name] && errors[name];
+   const error = touched[name] && errors[name] ? errors[name] : null;
+   const isError = error == null ? false : true;
+
    const handleValue = (name, value) => {
       if (handleGetValue) {
          handleGetValue(name, value);

@@ -107,7 +107,7 @@ export default function MenuContextProvider({ children }) {
          if (auth !== null) {
             const pages_read = auth.read;
             const axiosResponse = await Axios.get(`/menus/MenusByRole/${pages_read}`);
-            console.log("axiosResponse", axiosResponse);
+            // console.log("axiosResponse", axiosResponse);
             const menus = axiosResponse.data.data.result;
             // console.log("menus", menus);
 
@@ -305,7 +305,7 @@ export default function MenuContextProvider({ children }) {
          const axiosData = await Axios.get(`/menus/selectIndexToRoles`);
          // console.log("el selectedDeLevels", axiosData);
          res.result.menus = axiosData.data.data.result;
-         console.log(res.result.menus);
+         // console.log(res.result.menus);
          // res.result.menus.unshift({ id: 0, label: "Selecciona una opción..." });
          setMenusSelect(axiosData.data.data.result);
          // console.log("menus", menus);
@@ -323,6 +323,7 @@ export default function MenuContextProvider({ children }) {
       try {
          let res = CorrectRes;
          const axiosData = await Axios.get(`/menus/id/${id}`);
+         console.log("axiosData", axiosData);
          res = axiosData.data.data;
          // await setMenu(res.result);
          setFormData(res.result);

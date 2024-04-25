@@ -17,7 +17,7 @@ export const InputNumericComponent = ({
    label,
    idName = "idName",
    disabled,
-   placeholder,
+   helperText,
    color,
    hidden,
    handleGetValue,
@@ -32,7 +32,8 @@ export const InputNumericComponent = ({
    const errors = formik.errors; // Obtiene los errores de Formik
 
    // Determinar si hay un error para este campo
-   const isError = formik.touched[idName] && formik.errors[idName];
+   const error = formik.touched[idName] && formik.errors[idName] ? formik.errors[idName] : null;
+   const isError = error == null ? false : true;
    const pattern = allowDecimal ? "^\\d*\\.?\\d*$" : "\\d*";
 
    useEffect(() => {}, [idName, formik.values[idName]]); // Observa los cambios en el nombre y el valor del campo
@@ -128,7 +129,7 @@ export const InputNumericComponent = ({
             </Paper>
             {/* Mueve el Typography aquí para que esté al mismo nivel que el Paper */}
             <Typography sx={{ color: isError ? "red" : "gray" }} variant="subtitle2" color="initial">
-               {isError || placeholder}
+               {error || helperText}
             </Typography>
             {loading && <CircularProgress sx={{ position: "absolute", top: "40%", left: "40%" }} />}
          </Grid>

@@ -811,7 +811,7 @@ const RequestBecaView = () => {
             {/* {auth.role_id == ROLE_SUPER_ADMIN && (
                <Tooltip title={active ? "Desactivar" : "Reactivar"} placement="right">
                   <Button color="dark" onClick={() => handleClickDisEnable(id, name, active)} sx={{}}>
-                     <SwitchComponent checked={active} />
+                     <SwitchIOSComponent checked={active} />
                   </Button>
                </Tooltip>
             )} */}
