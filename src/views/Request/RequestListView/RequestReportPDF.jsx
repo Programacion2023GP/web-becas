@@ -505,12 +505,12 @@ export default function RequestReportPDF({ obj }) {
                   </td>
                </tr>
                <tr style={{ height: "50px" }}></tr> {/* SEPARADOR */}
-               <tr>
+               {/* <tr>
                   <td colSpan={5}>
                      <p style={{ textAlign: "center", fontWeight: "bolder" }}>___________________________________________________________</p>
                      <p style={{ textAlign: "center", fontWeight: "bolder" }}>NOMBRE Y FIRMA DEL PADRE, MADRE O TUTOR.</p>
                   </td>
-               </tr>
+               </tr> */}
             </tbody>
          </table>
       </Paper>
@@ -579,7 +579,7 @@ const first = (second) => {
          </TableCell>
       </TableRow>
       <TableRow sx={{ height: 20 }}></TableRow> {/* SEPARADOR */}
-      <TableRow>
+      {/* <TableRow>
          <TableCell colSpan={5}>
             <Typography textAlign={"center"} style={{ fontWeight: "bolder" }}>
                ___________________________________________________________{" "}
@@ -588,6 +588,6 @@ const first = (second) => {
                NOMBRE Y FIRMA DEL PADRE, MADRE O TUTOR.
             </Typography>
          </TableCell>
-      </TableRow>
+      </TableRow> */}
    </TableBody>;
 };

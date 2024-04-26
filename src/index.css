@@ -278,6 +278,27 @@ th.text-center .p-column-header-content {
    justify-content: center;
 }
 
+.bg-request-index {
+   /* position: absolute;
+   top: 0;
+   left: 0;
+   width: 100%;
+   height: 100%;
+   background-image: url("./assets/images/icon.png");
+   background-position: bottom;
+   background-size: cover;
+   background-repeat: no-repeat;
+   background-attachment: fixed; */
+   /* z-index: 1; */
+      position: absolute;
+      left: 0;
+      top: 0;      
+      width: 100%;
+      height: 100%;
+      opacity: 0.4;
+      object-fit: contain;
+}
+
 .page-break {
    page-break-before: always;
 }

@@ -56,6 +56,7 @@ import FamilyDT, { monthlyIncome } from "./FamilyDT";
 import { useFamilyContext } from "../../../context/FamilyContext";
 import { validateImageRequired } from "../../../utils/Validations";
 import { InputComponentEST } from "../../../components/Form/InputComponentEST";
+import LogoGPD from "../../../assets/images/icon.png";
 
 const RequestBecaView = () => {
    const { auth } = useAuthContext();
@@ -1006,17 +1007,28 @@ const RequestBecaView = () => {
             Solicitud de Beca
          </Typography>
          {pagina == 0 ? (
-            <Box sx={{ height: "85%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }} p={2}>
-               <Typography variant="h2" mb={2}>
+            <Box
+               sx={{
+                  height: "85%",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  position: "relative"
+               }}
+               p={2}
+            >
+               <img src={LogoGPD} className="bg-request-index" />
+               <Typography variant="h2" mb={2} sx={{ position: "relative" }}>
                   DIRECCION DE EDUCACIÓN
                </Typography>
-               <Typography variant="h3" align="justify" mb={2} sx={{ fontWeight: "normal", lineHeight: 2, maxWidth: "70%" }}>
+               <Typography variant="h3" align="justify" mb={2} sx={{ fontWeight: "normal", lineHeight: 2, maxWidth: "70%", position: "relative" }}>
                   El presente cuestionario tiene por objetivo conocer el perfil de los aspirantes a obtener una beca del <b>R. Ayuntamiento de Gómez Palacio</b>. La
                   información proporcionada de aqui debe ser completamente verdadera, por ello, lee con atención cada pregunta y contesta adecuadamente.
                </Typography>
                {auth.permissions.create && (
                   <Link to={"pagina/1"}>
-                     <Button onClick={handleReset} variant="contained" fullWidth>
+                     <Button onClick={handleReset} variant="contained" size="large" fullWidth>
                         COMENZAR SOLICITUD
                      </Button>
                   </Link>

@@ -321,38 +321,34 @@ const RequestBecaDT = ({ status = null }) => {
                   </Button>
                </Tooltip>
             )}
-            {(auth.permissions.more_permissions.includes(`16@Validar Documentos`) || auth.permissions.more_permissions.includes(`18@Validar Documentos`)) &&
-               ["TERMINADA", "EN REVISIÓN"].includes(obj.status) && (
-                  <Tooltip title={`Validar Documentos del Folio #${name}`} placement="top">
-                     <Button color="primary" onClick={() => handleClickValidateDocuments(obj.folio, obj.status)}>
-                        <IconChecklist />
-                     </Button>
-                  </Tooltip>
-               )}
-            {(auth.permissions.more_permissions.includes(`16@Evaluar`) || auth.permissions.more_permissions.includes(`19@Evaluar`)) &&
-               ["EN EVALUACIÓN"].includes(obj.status) && (
-                  <Tooltip title={`Aprobar Folio #${name}`} placement="top">
-                     <Button color="primary" onClick={() => handleClickApprove(obj.folio)}>
-                        <IconThumbUpFilled />
-                     </Button>
-                  </Tooltip>
-               )}
-            {(auth.permissions.more_permissions.includes(`16@Evaluar`) || auth.permissions.more_permissions.includes(`19@Evaluar`)) &&
-               ["EN EVALUACIÓN"].includes(obj.status) && (
-                  <Tooltip title={`Rechazar Folio #${name}`} placement="top">
-                     <Button color="error" onClick={() => handleClickReject(obj.folio)}>
-                        <IconThumbDown />
-                     </Button>
-                  </Tooltip>
-               )}
-            {(auth.permissions.more_permissions.includes(`16@Pagar`) || auth.permissions.more_permissions.includes(`20@Pagar`)) &&
-               ["APROBADA"].includes(obj.status) && (
-                  <Tooltip title={`Pagar y Entregar del Folio #${name}`} placement="top">
-                     <Button color="primary" onClick={() => handleClickPayed(obj.folio, obj.status)}>
-                        <IconCoin />
-                     </Button>
-                  </Tooltip>
-               )}
+            {auth.permissions.more_permissions.includes(`16@Validar Documentos`) && ["TERMINADA", "EN REVISIÓN"].includes(obj.status) && (
+               <Tooltip title={`Validar Documentos del Folio #${name}`} placement="top">
+                  <Button color="primary" onClick={() => handleClickValidateDocuments(obj.folio, obj.status)}>
+                     <IconChecklist />
+                  </Button>
+               </Tooltip>
+            )}
+            {auth.permissions.more_permissions.includes(`16@Evaluar`) && ["EN EVALUACIÓN"].includes(obj.status) && (
+               <Tooltip title={`Aprobar Folio #${name}`} placement="top">
+                  <Button color="primary" onClick={() => handleClickApprove(obj.folio)}>
+                     <IconThumbUpFilled />
+                  </Button>
+               </Tooltip>
+            )}
+            {auth.permissions.more_permissions.includes(`16@Evaluar`) && ["EN EVALUACIÓN"].includes(obj.status) && (
+               <Tooltip title={`Rechazar Folio #${name}`} placement="top">
+                  <Button color="error" onClick={() => handleClickReject(obj.folio)}>
+                     <IconThumbDown />
+                  </Button>
+               </Tooltip>
+            )}
+            {auth.permissions.more_permissions.includes(`16@Pagar`) && ["APROBADA"].includes(obj.status) && (
+               <Tooltip title={`Pagar y Entregar del Folio #${name}`} placement="top">
+                  <Button color="primary" onClick={() => handleClickPayed(obj.folio, obj.status)}>
+                     <IconCoin />
+                  </Button>
+               </Tooltip>
+            )}
             {auth.permissions.more_permissions.includes(`16@Cancelar`) && !["RECHAZADA", "CANCELADA"].includes(obj.status) && (
                <Tooltip title={`Cancelar Folio ${name}`} placement="top">
                   <Button color="error" onClick={() => handleClickCancel(id, obj.folio, name)}>
@@ -390,13 +386,12 @@ const RequestBecaDT = ({ status = null }) => {
    const toolbarContent = () => {
       return (
          <div className="flex flex-wrap gap-2">
-            {(auth.permissions.more_permissions.includes(`16@Exportar Lista Pública`) || auth.permissions.more_permissions.includes(`20@Exportar Lista Pública`)) && (
+            {auth.permissions.more_permissions.includes(`16@Exportar Lista Pública`) && (
                <Button variant="contained" color="success" startIcon={<IconFileSpreadsheet />} onClick={handleClickExportPublic} sx={{ mx: 1 }}>
                   Exprotar al público
                </Button>
             )}
-            {(auth.permissions.more_permissions.includes(`16@Exportar Lista Contraloría`) ||
-               auth.permissions.more_permissions.includes(`20@Exportar Lista Contraloría`)) && (
+            {auth.permissions.more_permissions.includes(`16@Exportar Lista Contraloría`) && (
                <Button variant="contained" color="success" startIcon={<IconFileSpreadsheet />} onClick={handleClickExportContraloria} sx={{ mx: 1 }}>
                   Exprotar para contraloria
                </Button>
