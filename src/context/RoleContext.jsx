@@ -144,9 +144,10 @@ export default function RoleContextProvider({ children }) {
          const axiosData = await Axios.get(`/roles/${id}`);
          // console.log(axiosData.data.data.result.page_index);
          let page_index_id = 0;
-         const axiosDataMenu = await Axios.post(`/menus/getIdByUrl`, { url: axiosData.data.data.result.page_index });
-         // console.log("axiosDataMenu", axiosDataMenu.data.data.result);
-         page_index_id = axiosDataMenu.data.data.result == null ? 0 : axiosDataMenu.data.data.result.id;
+         const axiosDataMenu =
+            axiosData.data.data.result.page_index == null ? null : await Axios.post(`/menus/getIdByUrl`, { url: axiosData.data.data.result.page_index });
+         // console.log("axiosDataMenu", axiosDataMenu);
+         page_index_id = axiosDataMenu == null ? 0 : axiosDataMenu.data.data.result.id;
          // console.log(page_index_id);
          axiosData.data.data.result.page_index = page_index_id;
          // console.log(axiosData.data.data.result);

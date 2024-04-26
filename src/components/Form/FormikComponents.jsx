@@ -38,16 +38,20 @@ import SwitchIOSComponent from "../SwitchIOSComponent";
 //#endregion IMPORTS
 
 export const FormikComponent = forwardRef(
-   ({ initialValues = {}, validationSchema = {}, onSubmit, children, textBtnSubmit, formikRef = null, handleCancel, btnSubmitToRoles = false }, ref) => {
+   ({ initialValues = {}, validationSchema = {}, onSubmit, children, textBtnSubmit, formikRef = null, handleCancel, showActionButtons = true }, ref) => {
       useEffect(() => {
          // console.log("useEffect del FormikComponent");
       }, []);
 
       return (
-         <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit} innerRef={formikRef ?? ref}>
+         <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit} innerRef={formikRef == null ? ref : formikRef}>
             {({ handleSubmit, isSubmitting, resetForm }) => (
                <Grid container spacing={2} component={"form"} onSubmit={handleSubmit}>
-                  {!btnSubmitToRoles ? (
+                  {!showActionButtons ? (
+                     <Grid xs={12} container spacing={2}>
+                        {children}
+                     </Grid>
+                  ) : (
                      <>
                         <Grid width={"100%"} xs={12} spacing={2} height={"79vh"} MaxHeight={"79vh"} overflow={"auto"}>
                            <Grid xs={12} container spacing={2}>
@@ -69,26 +73,9 @@ export const FormikComponent = forwardRef(
                         <Button type="reset" variant="outlined" color="error" fullWidth size="large" sx={{ mt: 1 }} onClick={() => handleCancel(resetForm)}>
                            CANCELAR
                         </Button>
+                        {/* </ButtonGroup> */}
                      </>
-                  ) : (
-                     <Grid xs={12} container spacing={2}>
-                        {children}
-                        {/* <Grid xs={12} sm={2} sx={{ mb: 1 }}>
-                        <LoadingButton
-                           type="submit"
-                           disabled={isSubmitting}
-                           loading={isSubmitting}
-                           // loadingPosition="start"
-                           variant="contained"
-                           fullWidth
-                           size="large"
-                        >
-                           GUARDAR
-                        </LoadingButton>
-                     </Grid> */}
-                     </Grid>
                   )}
-                  {/* </ButtonGroup> */}
                </Grid>
             )}
          </Formik>
@@ -556,7 +543,7 @@ export const Select2Component = ({
                               isOptionEqualToValue={isOptionEqualToValue}
                               renderInput={(params) => <TextField {...params} label={label} error={isError} />}
                               disabled={disabled || loading}
-                              error={isError}
+                              error={isError ? isError : undefined}
                            />
                         )}
                      </Field>

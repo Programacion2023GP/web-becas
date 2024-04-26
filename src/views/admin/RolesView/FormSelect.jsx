@@ -58,7 +58,7 @@ const FormSelect = ({ setOpenDialogTable, setLoadPermissions }) => {
          // console.log("resetCheckMenus", resetCheckMenus);
          if (value2.id < 1) return setLoadPermissions(false); // checks se quedan reiniciados
          const axiosResponse = await showRoleSelect(value2.id);
-         console.log(axiosResponse);
+         // console.log(axiosResponse);
          const permissions = {
             read: [],
             create: [],
@@ -149,15 +149,16 @@ const FormSelect = ({ setOpenDialogTable, setLoadPermissions }) => {
    //    }
    // };
 
-   const handleClickEdit = async (id) => {
+   const handleClickEdit = async () => {
       try {
-         if (id < 1) return Toast.Info("No has seleccionado ningún rol.");
+         // console.log("el roleSelect:", roleSelect);
+         if (roleSelect.id < 1) return Toast.Info("No has seleccionado ningún rol.");
          setLoadingAction(true);
          setTextBtnSumbit("GUARDAR");
          setFormTitle(`EDITAR ${singularName.toUpperCase()}`);
-         const axiosResponse = await showRole(id);
+         // const axiosResponse = await showRole(roleSelect.id);
          // console.log(axiosResponse.result);
-         formikRef.current.setValues(axiosResponse.result);
+         formikRef.current.setValues(roleSelect);
 
          setOpenDialog(true);
          setLoadingAction(false);
@@ -253,11 +254,9 @@ const FormSelect = ({ setOpenDialogTable, setLoadPermissions }) => {
 
    useEffect(() => {
       try {
-         console.log("useEffect->checkMenus", checkMenus);
-         // console.log(formik.values);
-         console.log(formikRef.current.isSubmitting);
-         const btnModify = document.getElementById("btnModify");
-         if (btnModify != null && roleSelect.id > 0) btnModify.click();
+         // console.log(formikRef);
+         // const btnModify = document.getElementById("btnModify");
+         // if (btnModify != null && roleSelect.id > 0) btnModify.click();
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -265,85 +264,60 @@ const FormSelect = ({ setOpenDialogTable, setLoadPermissions }) => {
    }, [roleSelect]);
 
    return (
-      <>
-         {/* <Formik initialValues={roleSelect} validationSchema={validationSchema} onSubmit={onSubmit}>
-            {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
-               <Grid container spacing={2} component={"form"} onSubmit={handleSubmit}> */}
-         <FormikComponent
-            key={"formikComponent"}
-            initialValues={roleSelect}
-            validationSchema={validationSchema}
-            onSubmit={onSubmit}
-            textBtnSubmit={textBtnSubmit}
-            btnSubmitToRoles={true}
-            // formikRef={formikRef}
-            ref={formikRef}
-         >
+      <FormikComponent
+         key={"formikComponent"}
+         initialValues={roleSelect}
+         validationSchema={validationSchema}
+         onSubmit={onSubmit}
+         textBtnSubmit={textBtnSubmit}
+         showActionButtons={false}
+         // formikRef={formikRef}
+         // ref={formikRef}
+      >
+         <Grid xs={12} sm={2} sx={{ mb: 1 }}>
+            <Button type="reset" variant="outlined" color="secondary" size="large" sx={{ mt: 1 }} fullWidth onClick={handleClickShowTable}>
+               VER TODOS
+            </Button>
+         </Grid>
+         {auth.permissions.update && (
             <Grid xs={12} sm={2} sx={{ mb: 1 }}>
-               <Button type="reset" variant="outlined" color="secondary" size="large" sx={{ mt: 1 }} fullWidth onClick={() => handleClickShowTable()}>
-                  VER TODOS
+               <Button type="button" variant="outlined" color="info" fullWidth size="large" sx={{ mt: 1 }} onClick={handleClickEdit}>
+                  EDITAR
                </Button>
             </Grid>
-            {auth.permissions.update && (
-               <Grid xs={12} sm={2} sx={{ mb: 1 }}>
-                  <Button
-                     type="button"
-                     variant="outlined"
-                     color="info"
-                     fullWidth
-                     size="large"
-                     sx={{ mt: 1 }}
-                     onClick={() => handleClickEdit(formikRef.current.values.id)}
-                  >
-                     EDITAR
-                  </Button>
-               </Grid>
-            )}
-            {auth.permissions.create && (
-               <Grid xs={12} sm={2} sx={{ mb: 1 }}>
-                  <Button
-                     type="button"
-                     variant="outlined"
-                     color="success"
-                     fullWidth
-                     size="large"
-                     sx={{ mt: 1 }}
-                     onClick={() => handleClickAdd(formikRef.current.values.id)}
-                  >
-                     AGREGAR
-                  </Button>
-               </Grid>
-            )}
+         )}
+         {auth.permissions.create && (
+            <Grid xs={12} sm={2} sx={{ mb: 1 }}>
+               <Button type="button" variant="outlined" color="success" fullWidth size="large" sx={{ mt: 1 }} onClick={handleClickAdd}>
+                  AGREGAR
+               </Button>
+            </Grid>
+         )}
 
-            <Select2Component
-               col={4}
-               idName={"id"}
-               label={"Rol *"}
-               options={rolesSelect}
-               refreshSelect={getRolesSelectIndex}
-               handleChangeValueSuccess={handleChangeRole}
-            />
-            {auth.permissions.more_permissions.includes(`6@Asignar Permisos`) && (
-               <Grid xs={12} sm={2} sx={{ mb: 1 }}>
-                  <LoadingButton
-                     type="submit"
-                     disabled={formikRef.isSubmitting}
-                     loading={formikRef.isSubmitting}
-                     // loadingPosition="start"
-                     variant="contained"
-                     fullWidth
-                     size="large"
-                  >
-                     GUARDAR
-                  </LoadingButton>
-               </Grid>
-            )}
-         </FormikComponent>
-
-         {/* </Grid>
-            )}
-         </Formik> */}
-      </>
+         <Select2Component
+            col={4}
+            idName={"id"}
+            label={"Rol *"}
+            options={rolesSelect}
+            refreshSelect={getRolesSelectIndex}
+            handleChangeValueSuccess={handleChangeRole}
+         />
+         {auth.permissions.more_permissions.includes(`6@Asignar Permisos`) && (
+            <Grid xs={12} sm={2} sx={{ mb: 1 }}>
+               <LoadingButton
+                  type="submit"
+                  disabled={formikRef.isSubmitting}
+                  loading={formikRef.isSubmitting}
+                  // loadingPosition="start"
+                  variant="contained"
+                  fullWidth
+                  size="large"
+               >
+                  GUARDAR
+               </LoadingButton>
+            </Grid>
+         )}
+      </FormikComponent>
    );
 };
 export default FormSelect;
