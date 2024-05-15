@@ -59,7 +59,6 @@ import { InputComponentEST } from "../../../components/Form/InputComponentEST";
 import LogoGPD from "../../../assets/images/icon.png";
 import { FormikComponent, InputComponent } from "../../../components/Form/FormikComponents";
 import InputsFormik1 from "./InputsFormik1";
-import InputsFormik2 from "./InputsFormik2";
 
 const RequestBecaView = () => {
    const { auth } = useAuthContext();
@@ -88,6 +87,7 @@ const RequestBecaView = () => {
    const { disabilities, getDisabilitiesSelectIndex } = useDisabilityContext();
    const { relationships, getRelationshipsSelectIndex } = useRelationshipContext();
    const { schools, getSchoolsSelectIndex } = useSchoolContext();
+   const { getStudentByCURP } = useStudentContext();
    const { getTutorByCURP } = useTutorContext();
    const { formData, setFormData, resetFormData, getRequestBecasByFolio, createRequestBeca, updateRequestBeca, saveBeca, requestBeca, saveOrFinishReview } =
       useRequestBecaContext();
@@ -104,14 +104,6 @@ const RequestBecaView = () => {
    const inputRefCurp = useRef(null);
    const inputRefSchoolId = useRef(null);
    const formik1 = useRef(null);
-   const formik2 = useRef(null);
-   const formik3 = useRef(null);
-   const formik4 = useRef(null);
-   const formik5 = useRef(null);
-   const formik6 = useRef(null);
-   const formik7 = useRef(null);
-   const formik8 = useRef(null);
-   const formik9 = useRef(null);
 
    // const [monthlyIncomeChange, setMonthlyIncomeChange] = useState(0);
 
@@ -248,12 +240,97 @@ const RequestBecaView = () => {
       return msg;
    };
 
+   // const handleChangeRelationships = (inputName, relationship, setFieldValue) => setIsTutor(relationship.id > 2 ? true : false);
+
+   // const handleChangeTutorCURP = async (e, values, setFieldValue) => {
+   //    try {
+   //       let curp = e.target.value.toUpperCase();
+   //       // if (curp.length < 1) return Toast.Info("El campo CURP esta vacío");
+   //       if (curp.length < 18) return;
+   //       let axiosReponse = await getTutorByCURP(curp);
+   //       // console.log(axiosReponse);
+
+   //       if (axiosReponse.result == null)
+   //          return sAlert.Info("El CURP ingresado no está registrado, veritifíca que este correcto para guardarse al finalizar esta solicitud.");
+
+   //       // console.log("CURP - axiosReponse.result", axiosReponse.result);
+   //       await setFieldValue("tutor_data_id", axiosReponse.result.id);
+   //       await setFieldValue("tutor_relationship_id", axiosReponse.result.tutor_relationship_id);
+   //       await setFieldValue("tutor_relationship", axiosReponse.result.relationship);
+   //       // await setFieldValue("tutor_curp", axiosReponse.result.tutor_curp);
+   //       await setFieldValue("tutor_name", axiosReponse.result.tutor_name);
+   //       await setFieldValue("tutor_paternal_last_name", axiosReponse.result.tutor_paternal_last_name);
+   //       await setFieldValue("tutor_maternal_last_name", axiosReponse.result.tutor_maternal_last_name);
+   //       await setFieldValue("tutor_phone", axiosReponse.result.tutor_phone);
+
+   //       await setFormData({ ...formData, ...values });
+   //       // console.log(formData);
+   //    } catch (error) {
+   //       console.log(error);
+   //       Toast.Error(error);
+   //    }
+   // };
+
+   const handleChangeCURP = async (e, values, setFieldValue) => {
+      try {
+         let curp = e.target.value.toUpperCase();
+         // if (curp.length < 1) return Toast.Info("El campo CURP esta vacío");
+         if (curp.length < 18) return;
+
+         let axiosReponse = await getStudentByCURP(curp);
+         // console.log(axiosReponse);
+
+         if (axiosReponse.result == null)
+            return sAlert.Info("El CURP ingresado no está registrado, veritifíca que este correcto para guardarse al finalizar esta solicitud.");
+
+         await setFieldValue("student_data_id", axiosReponse.result.id);
+         await setFieldValue("curp", axiosReponse.result.curp);
+         await setFieldValue("name", axiosReponse.result.name);
+         await setFieldValue("paternal_last_name", axiosReponse.result.paternal_last_name);
+         await setFieldValue("maternal_last_name", axiosReponse.result.maternal_last_name);
+         await setFieldValue("birthdate", axiosReponse.result.birthdate);
+         await setFieldValue("gender", axiosReponse.result.gender);
+         await setFieldValue("disability", axiosReponse.result.disability);
+         await setFieldValue("disability_id", axiosReponse.result.disability_id);
+         await setFieldValue("street", axiosReponse.result.street);
+         await setFieldValue("num_ext", axiosReponse.result.num_ext);
+         await setFieldValue("num_int", axiosReponse.result.num_int);
+
+         await setFormData({ ...formData, ...values });
+
+         // hacer consulta a la api de Comunidad para sacar la localidad
+         formData.community_id = axiosReponse.result.community_id;
+         await setFieldValue("community_id", formData.community_id);
+         await setFormData({ ...formData, ...values });
+
+         if (formData.community_id > 0) {
+            getCommunity(
+               formData.zip,
+               setFieldValue,
+               formData.community_id,
+               formData,
+               setFormData,
+               setDisabledState,
+               setDisabledCity,
+               setDisabledColony,
+               setShowLoading,
+               setDataStates,
+               setDataCities,
+               setDataColonies,
+               setDataColoniesComplete
+            );
+         }
+      } catch (error) {
+         console.log(error);
+         Toast.Error(error);
+      }
+   };
+
    const onSubmit1 = async (values, { setSubmitting, setErrors, resetForm, setValues }) => {
       try {
-         console.log("values", values);
+         // // console.log("values", values);
          await setFormData({ ...formData, ...values });
-         console.log("formData-1", formData);
-         console.log("formik1.current.values");
+         // console.log("formData-1", formData);
          await setValues(formData);
          // console.log("formData", formData);
          // console.log("values", values);
@@ -275,14 +352,14 @@ const RequestBecaView = () => {
       try {
          values.num_int = values.num_int === "" ? "S/N" : values.num_int;
 
-         console.log("🚀 ~ onSubmit2 ~ values:", values);
+         // console.log("values", values);
          await setFormData({ ...formData, ...values });
          // console.log("formData-2", formData);
          // await setValues(values);
          // console.log("formData", formData);
          // console.log("values", values);
-         // setStepFailed(-1);
-         // handleComplete();
+         setStepFailed(-1);
+         handleComplete();
          // setTimeout(() => {
          //    inputRefSchoolId.current.focus();
          // }, 500);
@@ -898,8 +975,6 @@ const RequestBecaView = () => {
    };
 
    useEffect(() => {
-      // console.log("🚀 ~ useEffect ~ formData:", formData);
-      // console.log("🚀 ~ useEffect ~ formik1.current.values:", formik1.current?.values);
       if (formData.id < 1) {
          // console.log("folio de params?", folio);
          // console.log("pagina de params?", pagina);
@@ -920,7 +995,7 @@ const RequestBecaView = () => {
          // inputRefFullNameTutor.current.focus();
          // console.log("useEffect - formData", formData);
       }
-   }, [formData, folio]);
+   }, [folio]);
    // }, [formData, pagina, activeStep]);
 
    return (
@@ -1000,10 +1075,11 @@ const RequestBecaView = () => {
                      </Fragment>
                   ) : (
                      <Fragment>
+                        {/* <Typography sx={{ mt: 2, mb: 1, py: 1 }}>ESTOY EN EL CONTENIDO STEP?? {activeStep + 1}</Typography> */}
                         <Box sx={{ mt: 2, height: "100%" }}>
                            {activeStep + 1 == 1 && (
                               <FormikComponent
-                                 key={"formikComponent1"}
+                                 key={"formikComponent"}
                                  initialValues={formData}
                                  validationSchema={validationSchemas(activeStep + 1)}
                                  onSubmit={onSubmit1}
@@ -1011,8 +1087,6 @@ const RequestBecaView = () => {
                                  formikRef={formik1}
                                  // ref={formik1}
                                  // handleCancel={handleCancel}
-                                 activeStep={activeStep}
-                                 setStepFailed={setStepFailed}
                               >
                                  <InputsFormik1
                                     folio={folio}
@@ -1022,28 +1096,358 @@ const RequestBecaView = () => {
                                     ButtonsBeforeOrNext={ButtonsBeforeOrNext}
                                  />
                               </FormikComponent>
+                              // // <Formik initialValues={formData} validationSchema={validationSchemas(activeStep + 1)} onSubmit={onSubmit1} innerRef={formik1}>
+                              // //    {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
+                              // //       <Box
+                              // //          sx={{ height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between" }}
+                              // //          component={"form"}
+                              // //          onSubmit={handleSubmit}
+                              // //          onBlur={onBlurCapture}
+                              // //       >
+                              // //          <Grid container spacing={2}>
+                              //             {/* CURP tutor */}
+                              //             {/* <InputComponent
+                              //                col={6}
+                              //                idName={"tutor_curp"}
+                              //                label={"CURP *"}
+                              //                placeholder={"Escribe tu CURP"}
+                              //                textStyleCase={true}
+                              //                onChange={(e) => {
+                              //                   handleChange(e);
+                              //                   handleChangeTutorCURP(e, values, setValues, setFieldValue);
+                              //                }}
+                              //                disabled={values.id == 0 ? false : true}
+                              //             /> */}
+                              //             {/* <Grid xs={12} md={6} sx={{ mb: 3 }}>
+                              //                <TextField
+                              //                   id="tutor_curp"
+                              //                   name="tutor_curp"
+                              //                   label="CURP *"
+                              //                   FormHelperTextProps={{ itemScope: <IconInfoCircle /> }}
+                              //                   type="text"
+                              //                   value={values.tutor_curp}
+                              //                   placeholder="Escribe tu CURP"
+                              //                   onChange={(e) => {
+                              //                      handleChange(e);
+                              //                      handleChangeTutorCURP(e, values, setValues, setFieldValue);
+                              //                   }}
+                              //                   onBlur={handleBlur}
+                              //                   inputProps={{ maxLength: 18 }}
+                              //                   fullWidth
+                              //                   onInput={(e) => handleInputFormik(e, setFieldValue, "tutor_curp", true)}
+                              //                   disabled={values.id == 0 ? false : true}
+                              //                   // inputRef={inputRefTutorCurp}
+                              //                   error={errors.tutor_curp && touched.tutor_curp}
+                              //                   helperText={errors.tutor_curp && touched.tutor_curp && showErrorInput(activeStep + 1, errors.tutor_curp)}
+                              //                />
+                              //             </Grid> */}
+                              //             {/* Parentesco */}
+                              //             {/* <Select2Component
+                              //                col={6}
+                              //                idName={"tutor_relationship_id"}
+                              //                label={"Parentesco *"}
+                              //                options={relationships}
+                              //                handleChangeValueSuccess={handleChangeRelationships}
+                              //                disabled={values.id == 0 ? false : true}
+                              //                pluralName={"Parentesco *"}
+                              //                refreshSelect={getRelationshipsSelectIndex}
+                              //                activeStep={pagina}
+                              //             /> */}
+                              //             {/* <Grid xs={12} md={6} sx={{ mb: 3 }}>
+                              //                <Select2Component
+                              //                   idName={"tutor_relationship_id"}
+                              //                   label={"Parentesco *"}
+                              //                   valueLabel={values.tutor_relationship}
+                              //                   formDataLabel={"tutor_relationship"}
+                              //                   placeholder={"Selecciona una opción..."}
+                              //                   options={relationships}
+                              //                   fullWidth={true}
+                              //                   handleChangeValueSuccess={handleChangeRelationships}
+                              //                   handleBlur={handleBlur}
+                              //                   error={errors.tutor_relationship_id}
+                              //                   touched={touched.tutor_relationship_id}
+                              //                   disabled={values.id == 0 ? false : true}
+                              //                   pluralName={"Parentesco"}
+                              //                   refreshSelect={getRelationshipsSelectIndex}
+                              //                />
+                              //             </Grid> */}
+                              //             // {/* Nombre Tutor */}
+                              //             // <InputComponent col={6} idName={"tutor_name"} label={"Nombre del Tutor *"} placeholder={"Escribir nombre completo"} />
+                              //             {/* <InputComponentEST
+                              //                col={6}
+                              //                idName={"tutor_name"}
+                              //                label={"Nombre del Tutor *"}
+                              //                placeholder={"Escribe tú nombre completo"}
+                              //                textStyleCase={true}
+                              //             /> */}
+                              //             {/* <Grid xs={12} md={6} sx={{ mb: 3 }}>
+                              //                <TextField
+                              //                   id="tutor_name"
+                              //                   name="tutor_name"
+                              //                   label="Nombre del Tutor *"
+                              //                   type="text"
+                              //                   value={values.tutor_name}
+                              //                   placeholder="Escribe tú nombre completo"
+                              //                   onChange={handleChange}
+                              //                   onBlur={handleBlur}
+                              //                   fullWidth
+                              //                   onInput={(e) => handleInputFormik(e, setFieldValue, "tutor_name", true)}
+                              //                   disabled={values.id == 0 ? false : true}
+                              //                   inputRef={inputRefFullNameTutor}
+                              //                   error={errors.tutor_name && touched.tutor_name}
+                              //                   helperText={errors.tutor_name && touched.tutor_name && showErrorInput(1, errors.tutor_name)}
+                              //                />
+                              //             </Grid> */}
+                              //             // {/* Apellido Paterno Tutor */}
+                              //             // <Grid xs={12} md={6} sx={{ mb: 3 }}>
+                              //             //    <TextField
+                              //             //       id="tutor_paternal_last_name"
+                              //             //       name="tutor_paternal_last_name"
+                              //             //       label="Apellido Paterno del Tutor *"
+                              //             //       type="text"
+                              //             //       value={values.tutor_paternal_last_name}
+                              //             //       placeholder="Escribe tú primer apellido"
+                              //             //       onChange={handleChange}
+                              //             //       onBlur={handleBlur}
+                              //             //       fullWidth
+                              //             //       onInput={(e) => handleInputFormik(e, setFieldValue, "tutor_paternal_last_name", true)}
+                              //             //       disabled={values.id == 0 ? false : true}
+                              //             //       inputRef={inputRefFullNameTutor}
+                              //             //       error={errors.tutor_paternal_last_name && touched.tutor_paternal_last_name}
+                              //             //       helperText={
+                              //             //          errors.tutor_paternal_last_name &&
+                              //             //          touched.tutor_paternal_last_name &&
+                              //             //          showErrorInput(1, errors.tutor_paternal_last_name)
+                              //             //       }
+                              //             //    />
+                              //             // </Grid>
+                              //             // {/* Apellido Materno Tutor */}
+                              //             // <Grid xs={12} md={6} sx={{ mb: 3 }}>
+                              //             //    <TextField
+                              //             //       id="tutor_maternal_last_name"
+                              //             //       name="tutor_maternal_last_name"
+                              //             //       label="Apellido Materno del Tutor *"
+                              //             //       type="text"
+                              //             //       value={values.tutor_maternal_last_name}
+                              //             //       placeholder="Escribe tú segundo apellido"
+                              //             //       onChange={handleChange}
+                              //             //       onBlur={handleBlur}
+                              //             //       fullWidth
+                              //             //       onInput={(e) => handleInputFormik(e, setFieldValue, "tutor_maternal_last_name", true)}
+                              //             //       disabled={values.id == 0 ? false : true}
+                              //             //       inputRef={inputRefFullNameTutor}
+                              //             //       error={errors.tutor_maternal_last_name && touched.tutor_maternal_last_name}
+                              //             //       helperText={
+                              //             //          errors.tutor_maternal_last_name &&
+                              //             //          touched.tutor_maternal_last_name &&
+                              //             //          showErrorInput(1, errors.tutor_maternal_last_name)
+                              //             //       }
+                              //             //    />
+                              //             // </Grid>
+                              //             // {/* Tel Tutor */}
+                              //             // <Grid xs={12} md={6} sx={{ mb: 3 }}>
+                              //             //    <TextField
+                              //             //       id="tutor_phone"
+                              //             //       name="tutor_phone"
+                              //             //       label="Teléfono Tutor *"
+                              //             //       type="text"
+                              //             //       value={values.tutor_phone}
+                              //             //       placeholder="10 dígitos"
+                              //             //       inputProps={{ maxLength: 10 }}
+                              //             //       onChange={handleChange}
+                              //             //       onBlur={handleBlur}
+                              //             //       fullWidth
+                              //             //       disabled={values.id == 0 ? false : true}
+                              //             //       error={errors.tutor_phone && touched.tutor_phone}
+                              //             //       helperText={errors.tutor_phone && touched.tutor_phone && showErrorInput(1, errors.tutor_phone)}
+                              //             //    />
+                              //             // </Grid>
+                              //          </Grid>
+                              //          {!(folio > 0) && <ButtonsBeforeOrNext isSubmitting={isSubmitting} setValues={setValues} />}
+                              //       </Box>
+                              //    )}
+                              // </Formik>
                            )}
                            {activeStep + 1 == 2 && (
-                              <FormikComponent
-                                 key={"formikComponent2"}
-                                 initialValues={formData}
-                                 validationSchema={validationSchemas(activeStep + 1)}
-                                 onSubmit={onSubmit2}
-                                 // textBtnSubmit={textBtnSubmit}
-                                 formikRef={formik1}
-                                 // ref={formik2}
-                                 // handleCancel={handleCancel}
-                                 activeStep={activeStep}
-                                 setStepFailed={setStepFailed}
-                              >
-                                 <InputsFormik2
-                                    folio={folio}
-                                    pagina={pagina}
-                                    activeStep={activeStep}
-                                    setStepFailed={setStepFailed}
-                                    ButtonsBeforeOrNext={ButtonsBeforeOrNext}
-                                 />
-                              </FormikComponent>
+                              <Formik initialValues={formData} validationSchema={validationSchemas(activeStep + 1)} onSubmit={onSubmit2}>
+                                 {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
+                                    <Box
+                                       sx={{ height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between" }}
+                                       component={"form"}
+                                       onSubmit={handleSubmit}
+                                       onBlur={onBlurCapture}
+                                    >
+                                       <Grid container spacing={2}>
+                                          {/* CURP */}
+                                          <Grid xs={12} md={4} sx={{ mb: 3 }}>
+                                             <TextField
+                                                id="curp"
+                                                name="curp"
+                                                label="CURP *"
+                                                FormHelperTextProps={{ itemScope: <IconInfoCircle /> }}
+                                                type="text"
+                                                value={values.curp}
+                                                placeholder="Escribe tu CURP"
+                                                onChange={(e) => {
+                                                   handleChange(e);
+                                                   handleChangeCURP(e, values, setValues, setFieldValue);
+                                                }}
+                                                onBlur={handleBlur}
+                                                inputProps={{ maxLength: 18 }}
+                                                fullWidth
+                                                onInput={(e) => handleInputFormik(e, setFieldValue, "curp", true)}
+                                                disabled={values.id == 0 ? false : true}
+                                                inputRef={inputRefCurp}
+                                                error={errors.curp && touched.curp}
+                                                helperText={errors.curp && touched.curp && showErrorInput(2, errors.curp)}
+                                             />
+                                          </Grid>
+                                          {/* Nombre del Alumno */}
+                                          <Grid xs={12} md={8} sx={{ mb: 3 }}>
+                                             <TextField
+                                                id="name"
+                                                name="name"
+                                                label="Nombre del Alumno *"
+                                                type="text"
+                                                value={values.name}
+                                                placeholder="Escribe tu nombre"
+                                                onChange={handleChange}
+                                                onBlur={handleBlur}
+                                                fullWidth
+                                                onInput={(e) => handleInputFormik(e, setFieldValue, "name", true)}
+                                                disabled={values.id == 0 ? false : true}
+                                                error={errors.name && touched.name}
+                                                helperText={errors.name && touched.name && showErrorInput(2, errors.name)}
+                                             />
+                                          </Grid>
+                                          {/* Apellido Paterno del Alumno */}
+                                          <Grid xs={12} md={6} sx={{ mb: 3 }}>
+                                             <TextField
+                                                id="paternal_last_name"
+                                                name="paternal_last_name"
+                                                label="Apellido Paterno *"
+                                                type="text"
+                                                value={values.paternal_last_name}
+                                                placeholder="Escribe tu apellido paterno"
+                                                onChange={handleChange}
+                                                onBlur={handleBlur}
+                                                fullWidth
+                                                onInput={(e) => handleInputFormik(e, setFieldValue, "paternal_last_name", true)}
+                                                disabled={values.id == 0 ? false : true}
+                                                error={errors.paternal_last_name && touched.paternal_last_name}
+                                                helperText={errors.paternal_last_name && touched.paternal_last_name && showErrorInput(2, errors.paternal_last_name)}
+                                             />
+                                          </Grid>
+                                          {/* Apellido Materno del Alumno */}
+                                          <Grid xs={12} md={6} sx={{ mb: 3 }}>
+                                             <TextField
+                                                id="maternal_last_name"
+                                                name="maternal_last_name"
+                                                label="Apellido Materno *"
+                                                type="text"
+                                                value={values.maternal_last_name}
+                                                placeholder="Escribe tu apellido materno"
+                                                onChange={handleChange}
+                                                onBlur={handleBlur}
+                                                fullWidth
+                                                onInput={(e) => handleInputFormik(e, setFieldValue, "maternal_last_name", true)}
+                                                disabled={values.id == 0 ? false : true}
+                                                error={errors.maternal_last_name && touched.maternal_last_name}
+                                                helperText={errors.maternal_last_name && touched.maternal_last_name && showErrorInput(2, errors.maternal_last_name)}
+                                             />
+                                          </Grid>
+                                          {/* Fecha de Nacimiento */}
+                                          <Grid xs={12} md={4} sx={{ mb: 3 }}>
+                                             <DatePickerComponent
+                                                idName={"birthdate"}
+                                                label={"Fecha de Nacimiento"}
+                                                value={values.birthdate}
+                                                setFieldValue={setFieldValue}
+                                                showErrorInput={showErrorInput}
+                                                error={errors.birthdate}
+                                                touched={touched.birthdate}
+                                                formData={formData}
+                                                disabled={values.id == 0 ? false : true}
+                                             />
+                                          </Grid>
+                                          {/* Genero */}
+                                          <Grid xs={12} md={4} sx={{ mb: 1 }}>
+                                             <FormControl fullWidth sx={{ alignItems: "center" }} disabled={values.id == 0 ? false : true}>
+                                                <FormLabel id="gender-label">Género</FormLabel>
+                                                <RadioGroup
+                                                   row
+                                                   aria-labelledby="gender-label"
+                                                   id="gender"
+                                                   name="gender"
+                                                   value={values.gender}
+                                                   onChange={handleChange}
+                                                   onBlur={handleBlur}
+                                                >
+                                                   <FormControlLabel value="MASCULINO" control={<Radio />} label="Masculino" />
+                                                   <FormControlLabel value="FEMENINO" control={<Radio />} label="Femenino" />
+                                                </RadioGroup>
+                                                {touched.gender && errors.gender && showErrorInput(2, errors.gender, true)}
+                                             </FormControl>
+                                          </Grid>
+                                          {/* Discapacidad */}
+                                          <Grid xs={12} md={4} sx={{ mb: 1 }}>
+                                             <Select2Component
+                                                idName={"disability_id"}
+                                                label={"Discapacidad *"}
+                                                valueLabel={values.disability}
+                                                values={values}
+                                                formData={formData}
+                                                setFormData={setFormData}
+                                                formDataLabel={"disability"}
+                                                placeholder={"¿Tienes alguna discapacaidad?"}
+                                                options={disabilities}
+                                                fullWidth={true}
+                                                handleChange={handleChange}
+                                                setValues={setValues}
+                                                handleBlur={handleBlur}
+                                                error={errors.disability_id}
+                                                touched={touched.disability_id}
+                                                disabled={values.id == 0 ? false : true}
+                                                pluralName={"Discapacidades"}
+                                                refreshSelect={getDisabilitiesSelectIndex}
+                                             />
+                                          </Grid>
+
+                                          <Grid xs={12}>
+                                             <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
+                                          </Grid>
+
+                                          {/* INPUTS DE COMUNIDAD */}
+                                          <InputsCommunityComponent
+                                             formData={formData}
+                                             setFormData={setFormData}
+                                             values={values}
+                                             setFieldValue={setFieldValue}
+                                             setValues={setValues}
+                                             handleChange={handleChange}
+                                             handleBlur={handleBlur}
+                                             errors={errors}
+                                             touched={touched}
+                                             columnsByTextField={3}
+                                             disabled={values.id == 0 ? false : true}
+                                          />
+
+                                          {/* <LoadingButton
+                                             type="submit"
+                                             disabled={isSubmitting}
+                                             loading={isSubmitting}
+                                             // loadingPosition="start"
+                                             variant="contained"
+                                             fullWidth
+                                             size="large"
+                                             >
+                                                Registrar o Guardar
+                                             </LoadingButton> */}
+                                       </Grid>
+                                       {!(folio > 0) && <ButtonsBeforeOrNext isSubmitting={isSubmitting} setValues={setValues} />}
+                                    </Box>
+                                 )}
+                              </Formik>
                            )}
                            {activeStep + 1 == 3 && (
                               <Formik initialValues={formData} validationSchema={validationSchemas(activeStep + 1)} onSubmit={onSubmit3}>

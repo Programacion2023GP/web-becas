@@ -16,7 +16,11 @@ import {
    Typography,
    Box,
    Autocomplete,
-   Tooltip
+   Tooltip,
+   RadioGroup,
+   Radio,
+   Checkbox,
+   Divider
 } from "@mui/material";
 import { Formik, Field, useFormikContext } from "formik";
 import InputMask from "react-input-mask";
@@ -27,6 +31,15 @@ import { strengthColor, strengthIndicator } from "../../utils/password-strength"
 import Toast from "../../utils/Toast";
 import { IconReload } from "@tabler/icons";
 import SwitchIOSComponent from "../SwitchIOSComponent";
+import { DatePicker } from "@mui/x-date-pickers";
+import dayjs from "dayjs";
+import "dayjs/locale/es";
+
+export const DividerComponent = () => (
+   <Grid xs={12}>
+      <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
+   </Grid>
+);
 
 //#region FORMIK COMPONENT
 //#region IMPORTS
@@ -37,16 +50,44 @@ import SwitchIOSComponent from "../SwitchIOSComponent";
 // import { useEffect } from "react";
 //#endregion IMPORTS
 
+// =================== COMPONENTE =======================
 export const FormikComponent = forwardRef(
-   ({ initialValues = {}, validationSchema = {}, onSubmit, children, textBtnSubmit, formikRef = null, handleCancel, showActionButtons = true }, ref) => {
+   (
+      {
+         initialValues = {},
+         validationSchema = {},
+         onSubmit,
+         children,
+         textBtnSubmit,
+         formikRef = null,
+         handleCancel,
+         showActionButtons = true,
+         activeStep = null,
+         setStepFailed = null
+      },
+      ref
+   ) => {
       useEffect(() => {
          // console.log("useEffect del FormikComponent");
       }, []);
 
+      const onBlur = () => {
+         if (activeStep && setStepFailed) {
+            if (Object.keys(formikRef.current.errors).length > 0) setStepFailed(activeStep);
+            else setStepFailed(-1);
+         }
+      };
+      const onChange = () => {
+         if (activeStep && setStepFailed) {
+            if (Object.keys(formikRef.current.errors).length > 0) setStepFailed(activeStep);
+            else setStepFailed(-1);
+         }
+      };
+
       return (
          <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit} innerRef={formikRef == null ? ref : formikRef}>
             {({ handleSubmit, isSubmitting, resetForm }) => (
-               <Grid container spacing={2} component={"form"} onSubmit={handleSubmit}>
+               <Grid container spacing={2} component={"form"} onSubmit={handleSubmit} onBlur={onBlur} onChangeCapture={onChange}>
                   {!showActionButtons ? (
                      <Grid xs={12} container spacing={2}>
                         {children}
@@ -95,6 +136,7 @@ export const FormikComponent = forwardRef(
 // import { handleInputFormik } from "../../utils/Formats";
 //#endregion IMPORTS
 
+// =================== COMPONENTE =======================
 export const InputComponent = ({
    col,
    idName = "idName",
@@ -180,8 +222,8 @@ export const InputComponent = ({
                {...props}
                disabled={loading || disabled}
                fullWidth
-               multiline={type === null || type === undefined} // Habilita multiline solo si type no está definido
-               rows={type === null || type === undefined ? rows : undefined} // Establece las filas solo si type no está definido
+               multiline={rows > 0 ? true : false}
+               rows={rows && rows} // Establece las filas solo si type no está definido
                error={isError}
                helperText={isError ? error : helperText}
                InputLabelProps={{
@@ -217,6 +259,7 @@ export const InputComponent = ({
 // import { strengthColor, strengthIndicator } from "../../utils/password-strength";
 //#endregion IMPORTS
 
+// =================== COMPONENTE =======================
 export const PasswordCompnent = ({
    col,
    label,
@@ -588,6 +631,7 @@ export const Select2Component = ({
 // import { handleInputFormik } from "../../utils/Formats";
 //#endregion IMPORTS
 
+// =================== COMPONENTE =======================
 export const SwitchComponent = ({
    col,
    idName,
@@ -623,3 +667,210 @@ export const SwitchComponent = ({
    );
 };
 //#endregion SWITCH COMPONENT
+
+//#region RADIO COMPONENT
+//#region IMPORTS
+// import React, { useEffect, useState } from "react";
+// import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
+// import { RadioGroup, FormControlLabel, Radio, Typography } from "@mui/material";
+// import CircularProgress from "@mui/material/CircularProgress";
+// import { Field, useFormikContext } from "formik"; // Importar Field y useFormikContext de Formik
+// import { Ngif } from "../conditionals/Ngif";
+//#endregion IMPORTS
+
+// =================== COMPONENTE =======================
+export const RadioButtonComponent = ({
+   // loading = false,
+   col,
+   idName,
+   title,
+   hidden,
+   options,
+   handleGetValue,
+   rowLayout = true // Cambiar a false para poner en columnas
+}) => {
+   const { values, errors, touched, handleChange, handleBlur } = useFormikContext(); // Obtener valores, errores y funciones de Formik
+   const [loading, setLoading] = useState(false);
+   useEffect(() => {
+      if (Array.isArray(options) && options.length > 0) {
+         setLoading(false);
+      }
+      if (Array.isArray(options) && options.length == 0) {
+         setLoading(true);
+      }
+      if (!Array.isArray(options)) {
+         setLoading(true);
+         options = [];
+      }
+   }, [title, idName, values[idName], options]);
+
+   const isError = touched[idName] && errors[idName];
+   const handleValue = (idName, value) => {
+      if (handleGetValue) {
+         handleGetValue(idName, value);
+      }
+   };
+   return (
+      <Grid lg={col} xl={col} xs={12} md={12} sx={{ display: hidden ? "none" : "flex", flexDirection: "column", alignItems: "center" }}>
+         <Typography variant="subtitle1" align="center" color="textPrimary" sx={{ marginBottom: "1rem" }}>
+            {title}
+         </Typography>
+         <RadioGroup
+            name={idName}
+            value={values[idName]} // Usar el valor del formulario
+            onChange={handleChange} // Usar la función de cambio de Formik
+            onBlur={handleBlur} // Usar la función de desenfoque de Formik
+            sx={{ flexDirection: rowLayout ? "row" : "column" }} // Ajustar la dirección del grupo de radio
+         >
+            {options.length > 0 && (
+               <>
+                  {options.map((option, index) => (
+                     <FormControlLabel
+                        key={index}
+                        value={option.value}
+                        onClick={() => {
+                           //  console.log("hola", handleGetValue);
+                           handleValue(idName, option.value);
+                        }}
+                        control={<Radio />}
+                        label={option.label}
+                        disabled={loading}
+                        sx={{
+                           marginBottom: rowLayout ? 0 : "8px", // Espacio entre los radio buttons si están en columnas
+                           "& .MuiRadio-root": {
+                              color: "#1976d2"
+                           },
+                           "& .MuiFormControlLabel-label": {
+                              color: "#1976d2",
+                              fontSize: "14px"
+                           },
+                           "& .Mui-checked": {
+                              color: "#1976d2"
+                           }
+                        }}
+                     />
+                  ))}
+               </>
+            )}
+         </RadioGroup>
+         {isError && (
+            <Typography variant="body2" color="error">
+               {errors[idName]}
+            </Typography>
+         )}
+         {loading && <CircularProgress sx={{ position: "absolute", bottom: "20%", left: "50%" }} />}
+      </Grid>
+   );
+};
+//#endregion RADIO COMPONENT
+
+//#region CHECK COMPONENT
+//#region IMPORTS
+// import { useEffect, useState } from "react";
+// import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
+// import { FormControlLabel, Checkbox, CircularProgress, Typography } from "@mui/material";
+// import { useFormikContext } from "formik";
+//#endregion IMPORTS
+
+// =================== COMPONENTE =======================
+export const CheckboxComponent = ({ loading = false, col, label, idName, checked = false, value, disabled, rowLayout = true, color = "primary" }) => {
+   const [checkedComponent, setCheckedComponent] = useState(checked); // Estado inicializado como falso
+   const formik = useFormikContext();
+   const isError = formik.touched[idName] && formik.errors[idName];
+
+   useEffect(() => {
+      if (checked) {
+         formik.setFieldValue(idName, value);
+      }
+      // console.log("aqui", formik.values[idName]);
+   }, [checked, formik.values[idName]]);
+
+   return (
+      <>
+         {rowLayout && <Grid item xs={12} />}
+         <Grid xs={col} sx={{ display: "flex", alignItems: "center", position: "relative" }}>
+            <FormControlLabel
+               control={
+                  <Checkbox
+                     name={idName}
+                     checked={checkedComponent}
+                     onChange={(e) => {
+                        const checked = e.target.checked;
+                        setCheckedComponent(checked); // Actualiza el estado del componente
+                        formik.setFieldValue(idName, checked ? value : undefined);
+                     }}
+                     disabled={loading || disabled}
+                     color={color}
+                  />
+               }
+               label={label}
+               sx={{
+                  marginRight: rowLayout ? "16px" : 0,
+                  marginBottom: rowLayout ? 0 : "8px",
+                  "& .MuiSvgIcon-root": {
+                     fontSize: "1.5rem"
+                  },
+                  "& .MuiTypography-body1": {
+                     fontSize: "14px"
+                  }
+               }}
+            />
+            {loading && <CircularProgress sx={{ position: "absolute", top: "40%", left: "40%" }} />}
+            <Typography sx={{ color: isError ? "red" : "gray" }} variant="subtitle2" color="initial">
+               {isError}
+            </Typography>
+         </Grid>
+      </>
+   );
+};
+//#endregion CHECK COMPONENT
+
+//#region DATEPICKER COMPONENT
+//#region IMPORTS
+// import { FormControl, FormHelperText } from "@mui/material";
+// import { DatePicker } from "@mui/x-date-pickers";
+// import dayjs from "dayjs";
+// import { Field, useFormikContext } from "formik";
+// import { useEffect } from "react";
+// import "dayjs/locale/es";
+//#endregion IMPORTS
+
+// =================== COMPONENTE =======================
+const DatePickerComponent = ({ loading = false, col, idName, label, format = "DD/MM/YYYY", disabled, hidden, marginBoton, ...props }) => {
+   const formik = useFormikContext();
+   const { errors, touched } = formik;
+   const error = formik.touched[idName] && formik.errors[idName] ? formik.errors[idName] : null;
+   const isError = error == null ? false : true;
+   dayjs.locale("es");
+
+   useEffect(() => {}, [errors[idName], touched[idName]]);
+
+   return (
+      <Grid xs={12} md={col} sx={{ display: hidden ? "none" : "flex", flexDirection: "column", alignItems: "center", mb: marginBoton ? `${marginBoton} 0` : 2 }}>
+         <FormControl fullWidth sx={{ margin: "1rem 0" }}>
+            <Field name={idName} id={idName}>
+               {({ field, form }) => (
+                  <>
+                     <DatePicker
+                        label={label}
+                        value={dayjs(field.value) || null}
+                        // format={format}
+                        onChange={(date) => form.setFieldValue(field.name, dayjs(date).format("YYYY-MM-DD"))}
+                        error={errors[idName] && touched[idName]}
+                        disabled={loading || disabled}
+                     />
+                     {touched[idName] && errors[idName] && (
+                        <FormHelperText error id={`ht-${idName}`}>
+                           {errors[idName]}
+                        </FormHelperText>
+                     )}
+                  </>
+               )}
+            </Field>
+         </FormControl>
+      </Grid>
+   );
+};
+
+export default DatePickerComponent;
+//#endregion DATEPICKER COMPONENT

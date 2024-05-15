@@ -623,7 +623,7 @@ const AnswerScoreForm = () => {
                />
                <Divider variant="inset" component="li" sx={{ marginLeft: "0px;" }} />
                <ItemContainer
-                  question="Ponderar Servicios:"
+                  question="Ponderar Servicios: (Si no lo seleccionan, se otorga el valor establecido; si lo seleccionan su valor es de 0)"
                   optionsByRange={false}
                   options={[
                      { idName: "service_1", label: "Agua Potable", type: "number", placeholder: "0", score: 0 },
