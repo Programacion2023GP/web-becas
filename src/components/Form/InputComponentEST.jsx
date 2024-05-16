@@ -20,7 +20,7 @@ export const InputComponentEST = ({
    hidden,
    mask,
    variant = "outlined",
-   marginBoton,
+   marginBottom,
    textStyleCase = null,
    ...props
 }) => {
@@ -34,7 +34,7 @@ export const InputComponentEST = ({
    }, [idName]);
 
    return (
-      <Grid xs={12} md={col} sx={{ display: hidden ? "none" : "flex", flexDirection: "column", alignItems: "center", mb: marginBoton ? `${marginBoton} 0` : 2 }}>
+      <Grid xs={12} md={col} sx={{ display: hidden ? "none" : "flex", flexDirection: "column", alignItems: "center", mb: marginBottom ? `${marginBottom} 0` : 2 }}>
          {mask ? (
             <Field name={idName}>
                {({ field }) => (

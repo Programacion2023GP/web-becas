@@ -21,7 +21,7 @@ export const InputNumericComponent = ({
    color,
    hidden,
    handleGetValue,
-   marginBoton,
+   marginBottom,
    allowDecimal = false,
    initial
 }) => {
@@ -63,7 +63,7 @@ export const InputNumericComponent = ({
    };
    return (
       <Grid
-         style={{ margin: marginBoton ? `${marginBoton} 0` : "1rem .5rem" }}
+         style={{ margin: marginBottom ? `${marginBottom} 0` : "1rem .5rem" }}
          item
          lg={col}
          xl={col}
@@ -71,7 +71,7 @@ export const InputNumericComponent = ({
          md={12}
          sx={{ display: hidden ? "none" : "flex", flexDirection: "column", alignItems: "center", position: "relative" }}
       >
-         <Grid style={{ margin: marginBoton ? `${marginBoton} 0` : "0rem 0", width: "100%" }} item>
+         <Grid style={{ margin: marginBottom ? `${marginBottom} 0` : "0rem 0", width: "100%" }} item>
             <Paper sx={{ p: "4px 4px", display: "flex", alignItems: "center", width: "100%" }}>
                <IconButton disabled={disabled} onClick={handleMore} color="primary" sx={{ p: "10px" }} aria-label="menu">
                   <AddIcon />

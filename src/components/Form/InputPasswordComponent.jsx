@@ -28,7 +28,7 @@ export const InputPasswordCompnent = ({
    loading = false,
    hidden,
    variant = "outlined",
-   marginBoton,
+   marginBottom,
    textStyleCase = null,
    newPasswordChecked,
    setNewPasswordChecked,
@@ -80,7 +80,7 @@ export const InputPasswordCompnent = ({
             position: "relative",
             pt: 0,
             p: 0,
-            mb: marginBoton ? `${marginBoton} 0` : 2,
+            mb: marginBottom ? `${marginBottom} 0` : 2,
             mt: checkedShowSwitchPassword ? -3 : -0
          }}
       >

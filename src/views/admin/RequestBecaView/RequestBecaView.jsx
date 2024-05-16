@@ -60,6 +60,7 @@ import LogoGPD from "../../../assets/images/icon.png";
 import { FormikComponent, InputComponent } from "../../../components/Form/FormikComponents";
 import InputsFormik1 from "./InputsFormik1";
 import InputsFormik2 from "./InputsFormik2";
+import InputsFormik3 from "./InputsFormik3";
 
 const RequestBecaView = () => {
    const { auth } = useAuthContext();
@@ -103,15 +104,7 @@ const RequestBecaView = () => {
    const inputRefFullNameTutor = useRef(null);
    const inputRefCurp = useRef(null);
    const inputRefSchoolId = useRef(null);
-   const formik1 = useRef(null);
-   const formik2 = useRef(null);
-   const formik3 = useRef(null);
-   const formik4 = useRef(null);
-   const formik5 = useRef(null);
-   const formik6 = useRef(null);
-   const formik7 = useRef(null);
-   const formik8 = useRef(null);
-   const formik9 = useRef(null);
+   const formik = useRef(null);
 
    // const [monthlyIncomeChange, setMonthlyIncomeChange] = useState(0);
 
@@ -253,7 +246,7 @@ const RequestBecaView = () => {
          console.log("values", values);
          await setFormData({ ...formData, ...values });
          console.log("formData-1", formData);
-         console.log("formik1.current.values");
+         console.log("formik.current.values");
          await setValues(formData);
          // console.log("formData", formData);
          // console.log("values", values);
@@ -899,7 +892,7 @@ const RequestBecaView = () => {
 
    useEffect(() => {
       // console.log("🚀 ~ useEffect ~ formData:", formData);
-      // console.log("🚀 ~ useEffect ~ formik1.current.values:", formik1.current?.values);
+      // console.log("🚀 ~ useEffect ~ formik.current.values:", formik.current?.values);
       if (formData.id < 1) {
          // console.log("folio de params?", folio);
          // console.log("pagina de params?", pagina);
@@ -1007,12 +1000,10 @@ const RequestBecaView = () => {
                                  initialValues={formData}
                                  validationSchema={validationSchemas(activeStep + 1)}
                                  onSubmit={onSubmit1}
-                                 // textBtnSubmit={textBtnSubmit}
-                                 formikRef={formik1}
-                                 // ref={formik1}
-                                 // handleCancel={handleCancel}
+                                 formikRef={formik}
                                  activeStep={activeStep}
                                  setStepFailed={setStepFailed}
+                                 showActionButtons={false}
                               >
                                  <InputsFormik1
                                     folio={folio}
@@ -1029,12 +1020,10 @@ const RequestBecaView = () => {
                                  initialValues={formData}
                                  validationSchema={validationSchemas(activeStep + 1)}
                                  onSubmit={onSubmit2}
-                                 // textBtnSubmit={textBtnSubmit}
-                                 formikRef={formik1}
-                                 // ref={formik2}
-                                 // handleCancel={handleCancel}
+                                 formikRef={formik}
                                  activeStep={activeStep}
                                  setStepFailed={setStepFailed}
+                                 showActionButtons={false}
                               >
                                  <InputsFormik2
                                     folio={folio}
@@ -1046,99 +1035,24 @@ const RequestBecaView = () => {
                               </FormikComponent>
                            )}
                            {activeStep + 1 == 3 && (
-                              <Formik initialValues={formData} validationSchema={validationSchemas(activeStep + 1)} onSubmit={onSubmit3}>
-                                 {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
-                                    <Box
-                                       sx={{ height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between" }}
-                                       component={"form"}
-                                       onSubmit={handleSubmit}
-                                    >
-                                       <Grid container spacing={2}>
-                                          {/* Escuela */}
-                                          <Grid xs={12} md={12} sx={{ mb: 3 }}>
-                                             <Select2Component
-                                                idName={"school_id"}
-                                                label={"Escuela *"}
-                                                valueLabel={values.school_full}
-                                                values={values}
-                                                formData={formData}
-                                                setFormData={setFormData}
-                                                formDataLabel={"school_full"}
-                                                placeholder={"Selecciona una opción..."}
-                                                options={schools}
-                                                fullWidth={true}
-                                                handleChange={handleChange}
-                                                setValues={setValues}
-                                                handleBlur={handleBlur}
-                                                error={errors.school_id}
-                                                touched={touched.school_id}
-                                                disabled={values.id == 0 ? false : true}
-                                                // inputref={inputRefSchoolId}
-                                                pluralName={"Escuelas"}
-                                                refreshSelect={getSchoolsSelectIndex}
-                                             />
-                                          </Grid>
-                                          {/* Grado */}
-                                          <Grid xs={12} md={6} sx={{ mb: 3 }}>
-                                             <TextField
-                                                id="grade"
-                                                name="grade"
-                                                label="Grado de Estudio (año)*"
-                                                type="number"
-                                                value={values.grade}
-                                                placeholder="3"
-                                                onChange={handleChange}
-                                                onBlur={handleBlur}
-                                                fullWidth
-                                                inputProps={{ maxLength: 1, min: 1, max: 6 }}
-                                                disabled={values.id == 0 ? false : true}
-                                                error={errors.grade && touched.grade}
-                                                helperText={errors.grade && touched.grade && showErrorInput(3, errors.grade)}
-                                             />
-                                          </Grid>
-                                          {/* Promedio */}
-                                          <Grid xs={12} md={6} sx={{ mb: 3 }}>
-                                             <TextField
-                                                id="average"
-                                                name="average"
-                                                label="Promedio *"
-                                                type="number"
-                                                value={values.average}
-                                                placeholder="10.00"
-                                                onChange={handleChange}
-                                                onBlur={handleBlur}
-                                                fullWidth
-                                                inputProps={{ step: 0.01, min: 0, max: 100 }}
-                                                disabled={values.id == 0 ? false : true}
-                                                error={errors.average && touched.average}
-                                                helperText={errors.average && touched.average && showErrorInput(3, errors.average)}
-                                             />
-                                          </Grid>
-                                          {/* Comentarios */}
-                                          <Grid xs={12} md={12} sx={{ mb: 3 }}>
-                                             <TextField
-                                                id="comments"
-                                                name="comments"
-                                                label="Comentarios (opcional)"
-                                                type="text"
-                                                value={values.comments}
-                                                placeholder="¿Deseas dejar algún comentario o mensaje?"
-                                                onChange={handleChange}
-                                                onBlur={handleBlur}
-                                                fullWidth
-                                                multiline
-                                                rows={5}
-                                                inputProps={{}}
-                                                disabled={values.id == 0 ? false : true}
-                                                error={errors.comments && touched.comments}
-                                                helperText={errors.comments && touched.comments && showErrorInput(3, errors.comments)}
-                                             />
-                                          </Grid>
-                                       </Grid>
-                                       {!(folio > 0) && <ButtonsBeforeOrNext isSubmitting={isSubmitting} setValues={setValues} />}
-                                    </Box>
-                                 )}
-                              </Formik>
+                              <FormikComponent
+                                 key={"formikComponent3"}
+                                 initialValues={formData}
+                                 validationSchema={validationSchemas(activeStep + 1)}
+                                 onSubmit={onSubmit3}
+                                 formikRef={formik}
+                                 activeStep={activeStep}
+                                 setStepFailed={setStepFailed}
+                                 showActionButtons={false}
+                              >
+                                 <InputsFormik3
+                                    folio={folio}
+                                    pagina={pagina}
+                                    activeStep={activeStep}
+                                    setStepFailed={setStepFailed}
+                                    ButtonsBeforeOrNext={ButtonsBeforeOrNext}
+                                 />
+                              </FormikComponent>
                            )}
                            {activeStep + 1 == 4 && (
                               <Formik initialValues={formData} validationSchema={validationSchemas(activeStep + 1)} onSubmit={onSubmit4}>

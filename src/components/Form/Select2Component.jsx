@@ -51,7 +51,7 @@ const Select2Component = ({
    color,
    hidden,
    variant = "outlined",
-   marginBoton,
+   marginBottom,
    namePropLabel = "label",
    fullWidth,
    pluralName,
@@ -156,7 +156,11 @@ const Select2Component = ({
    return (
       <>
          {dataOptions.length > 0 && (
-            <Grid xs={12} md={col} sx={{ display: hidden ? "none" : "flex", flexDirection: "column", alignItems: "center", mb: marginBoton ? `${marginBoton} 0` : 2 }}>
+            <Grid
+               xs={12}
+               md={col}
+               sx={{ display: hidden ? "none" : "flex", flexDirection: "column", alignItems: "center", mb: marginBottom ? `${marginBottom} 0` : 2 }}
+            >
                <FormControl fullWidth>
                   <Box display={"flex"}>
                      <Field id={idName} name={idName}>
