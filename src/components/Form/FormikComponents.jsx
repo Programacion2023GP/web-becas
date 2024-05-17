@@ -37,6 +37,26 @@ import "dayjs/locale/es";
 import axios from "axios";
 import { useGlobalContext } from "../../context/GlobalContext";
 // import Select2Component from "./Select2Component";
+// import { InputAdornment, OutlinedInput } from "@mui/material";
+import { shouldForwardProp, styled } from "@mui/system";
+const OutlineInputStyle = styled(OutlinedInput, { shouldForwardProp })(({ theme }) => ({
+   // width: 434,
+   // marginLeft: 16,
+   // paddingLeft: 16,
+   // paddingRight: 16,
+   "& input": {
+      background: "#fff !important",
+      paddingLeft: "10px !important"
+   },
+   [theme.breakpoints.down("lg")]: {
+      width: 250
+   },
+   [theme.breakpoints.down("md")]: {
+      width: "100%",
+      marginLeft: 4,
+      background: "#fff"
+   }
+}));
 
 export const DividerComponent = () => (
    <Grid xs={12}>
@@ -157,12 +177,28 @@ export const InputComponent = ({
    variant = "outlined",
    marginBottom,
    textStyleCase = null,
+   styleInput = 1,
    ...props
 }) => {
    const formik = useFormikContext(); // Obtiene el contexto de Formik
    const errors = formik.errors;
    const error = formik.touched[idName] && formik.errors[idName] ? formik.errors[idName] : null;
    const isError = error == null ? false : true;
+
+   let flexDirection = "column";
+   let alignItems = "center";
+   let sxInput = {};
+
+   if (styleInput == 2) {
+      flexDirection = "column";
+      alignItems = "center";
+      sxInput = { backgroundColor: "#1F2227" };
+   } else if (styleInput == 3) {
+      flexDirection = "row";
+      alignItems = "flex-end";
+      variant = "standard";
+      sxInput = { textAlign: "center" };
+   }
 
    useEffect(() => {
       // console.log("isError", isError);
@@ -173,7 +209,7 @@ export const InputComponent = ({
          xs={12}
          xsOffset={xsOffset}
          md={col}
-         sx={{ display: hidden ? "none" : "flex", flexDirection: "column", alignItems: "center", mb: marginBottom ? `${marginBottom} 0` : 2 }}
+         sx={{ display: hidden ? "none" : "flex", flexDirection: flexDirection, alignItems: alignItems, mb: marginBottom ? `${marginBottom} 0` : 2 }}
       >
          {mask ? (
             <Field name={idName}>
@@ -210,35 +246,92 @@ export const InputComponent = ({
                )}
             </Field>
          ) : (
-            <TextField
-               key={idName}
-               name={idName}
-               label={label}
-               placeholder={placeholder}
-               type={type !== null && type !== undefined ? type : "text"} // Utiliza type si está definido, de lo contrario, usa "text"
-               variant={variant}
-               value={formik.values && formik.values[idName] ? formik.values[idName] : ""}
-               onChange={formik.handleChange} // Utiliza el handleChange de Formik
-               onBlur={(e) => {
-                  formik.handleBlur(e); // Usa handleBlur de Formik para manejar el blur
+            <>
+               {styleInput == 2 ? (
+                  <OutlineInputStyle
+                     key={idName}
+                     name={idName}
+                     label={styleInput == 1 && label}
+                     placeholder={placeholder}
+                     type={type !== null && type !== undefined ? type : "text"} // Utiliza type si está definido, de lo contrario, usa "text"
+                     variant={variant}
+                     value={formik.values && formik.values[idName] ? formik.values[idName] : ""}
+                     onChange={formik.handleChange} // Utiliza el handleChange de Formik
+                     onBlur={(e) => {
+                        formik.handleBlur(e); // Usa handleBlur de Formik para manejar el blur
 
-                  // Agrega tu lógica adicional aquí
-                  // Por ejemplo, puedes agregar variables o eventos al contexto DebugerContext
-               }}
-               onInput={(e) => {
-                  textStyleCase != null ? handleInputFormik(e, formik.setFieldValue, idName, textStyleCase) : null;
-               }}
-               {...props}
-               disabled={loading || disabled}
-               fullWidth
-               multiline={rows > 0 ? true : false}
-               rows={rows && rows} // Establece las filas solo si type no está definido
-               error={isError}
-               helperText={isError ? error : helperText}
-               InputLabelProps={{
-                  style: color ? { color: color } : {}
-               }}
-            />
+                        // Agrega tu lógica adicional aquí
+                        // Por ejemplo, puedes agregar variables o eventos al contexto DebugerContext
+                     }}
+                     onInput={(e) => {
+                        textStyleCase != null ? handleInputFormik(e, formik.setFieldValue, idName, textStyleCase) : null;
+                     }}
+                     {...props}
+                     disabled={loading || disabled}
+                     fullWidth
+                     multiline={rows > 0 ? true : false}
+                     rows={rows && rows} // Establece las filas solo si type no está definido
+                     error={isError}
+                     helperText={isError ? error : helperText}
+                     InputLabelProps={{
+                        style: color ? { color: color } : {}
+                     }}
+                     sx={sxInput}
+                     startAdornment={
+                        // <Tooltip title={""} placement={"top"}>
+                        <InputAdornment position="start" sx={{ ml: 0.5 }}>
+                           <Typography sx={{ color: "whitesmoke", fontWeight: "bolder", fontSize: 14 }}>{label}</Typography>
+                           {/* <IconSearch stroke={2.5} size="1.5rem" color={theme.palette.grey[500]} /> */}
+                        </InputAdornment>
+                        // </Tooltip>
+                     }
+                  />
+               ) : (
+                  <TextField
+                     key={idName}
+                     name={idName}
+                     label={styleInput == 1 && label}
+                     placeholder={placeholder}
+                     type={type !== null && type !== undefined ? type : "text"} // Utiliza type si está definido, de lo contrario, usa "text"
+                     variant={variant}
+                     value={formik.values && formik.values[idName] ? formik.values[idName] : ""}
+                     onChange={formik.handleChange} // Utiliza el handleChange de Formik
+                     onBlur={(e) => {
+                        formik.handleBlur(e); // Usa handleBlur de Formik para manejar el blur
+
+                        // Agrega tu lógica adicional aquí
+                        // Por ejemplo, puedes agregar variables o eventos al contexto DebugerContext
+                     }}
+                     onInput={(e) => {
+                        textStyleCase != null ? handleInputFormik(e, formik.setFieldValue, idName, textStyleCase) : null;
+                     }}
+                     {...props}
+                     disabled={loading || disabled}
+                     fullWidth
+                     multiline={rows > 0 ? true : false}
+                     rows={rows && rows} // Establece las filas solo si type no está definido
+                     error={isError}
+                     helperText={isError ? error : helperText}
+                     InputLabelProps={{
+                        style: color ? { color: color } : {}
+                     }}
+                     sx={sxInput}
+                     startAdornment={
+                        // <Tooltip title={""} placement={"top"}>
+                        <InputAdornment position="start" sx={{ ml: 0.5 }}>
+                           <Typography sx={{ color: "whitesmoke", fontWeight: "bolder", fontSize: 14 }}>{label}</Typography>
+                           {/* <IconSearch stroke={2.5} size="1.5rem" color={theme.palette.grey[500]} /> */}
+                        </InputAdornment>
+                        // </Tooltip>
+                     }
+                  />
+               )}
+               {styleInput == 3 && (
+                  <Typography variant="body1" component="label" htmlFor={idName} ml={1}>
+                     {label}
+                  </Typography>
+               )}
+            </>
          )}
          {loading && <CircularProgress sx={{ position: "relative", top: "-50%", left: "40%" }} />}
       </Grid>

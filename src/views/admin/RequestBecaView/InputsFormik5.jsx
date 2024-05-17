@@ -48,6 +48,7 @@ const InputsFormik5 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
                   handleChangeTotal(e, formik.values, formik.setFieldValue);
                }}
                inputProps={{ step: 0.01, min: 0, max: 100000 }}
+               styleInput={2}
             />
 
             {/* Transporte */}
@@ -62,6 +63,7 @@ const InputsFormik5 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
                   handleChangeTotal(e, formik.values, formik.setFieldValue);
                }}
                inputProps={{ step: 0.01, min: 0, max: 100000 }}
+               styleInput={2}
             />
             {/* Vivienda */}
             <InputComponent
@@ -75,6 +77,7 @@ const InputsFormik5 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
                   handleChangeTotal(e, formik.values, formik.setFieldValue);
                }}
                inputProps={{ step: 0.01, min: 0, max: 100000 }}
+               styleInput={2}
             />
          </Grid>
 
@@ -91,6 +94,7 @@ const InputsFormik5 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
                   handleChangeTotal(e, formik.values, formik.setFieldValue);
                }}
                inputProps={{ step: 0.01, min: 0, max: 100000 }}
+               styleInput={2}
             />
 
             {/* Automovil */}
@@ -105,6 +109,7 @@ const InputsFormik5 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
                   handleChangeTotal(e, formik.values, formik.setFieldValue);
                }}
                inputProps={{ step: 0.01, min: 0, max: 100000 }}
+               styleInput={2}
             />
 
             {/* Gastos Extras */}
@@ -122,6 +127,7 @@ const InputsFormik5 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
             inputProps={{ step: 0.01, min: 0, max: 100000 }}
             disabled={true}
             variant="filled"
+            // styleInput={2}
          />
 
          {folio > 0 && <ButtonsBeforeOrNext isSubmitting={formik.isSubmitting} setValues={formik.setValues} />}
