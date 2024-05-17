@@ -141,6 +141,7 @@ export const FormikComponent = forwardRef(
 
 // =================== COMPONENTE =======================
 export const InputComponent = ({
+   xsOffset = null,
    col,
    idName = "idName",
    label,
@@ -168,7 +169,12 @@ export const InputComponent = ({
    }, [idName, formik.values[idName]]);
 
    return (
-      <Grid xs={12} md={col} sx={{ display: hidden ? "none" : "flex", flexDirection: "column", alignItems: "center", mb: marginBottom ? `${marginBottom} 0` : 2 }}>
+      <Grid
+         xs={12}
+         xsOffset={xsOffset}
+         md={col}
+         sx={{ display: hidden ? "none" : "flex", flexDirection: "column", alignItems: "center", mb: marginBottom ? `${marginBottom} 0` : 2 }}
+      >
          {mask ? (
             <Field name={idName}>
                {({ field }) => (
@@ -234,7 +240,7 @@ export const InputComponent = ({
                }}
             />
          )}
-         {loading && <CircularProgress sx={{ position: "absolute", top: "40%", left: "40%" }} />}
+         {loading && <CircularProgress sx={{ position: "relative", top: "-50%", left: "40%" }} />}
       </Grid>
    );
 };
@@ -547,6 +553,7 @@ export const Select2Component = ({
          if (index == options.length - 1 && labelValue == "Selecciona una opción...") setLabelValue(option[namePropLabel]);
       });
       setDataOptions(_options);
+      // }
       Number(formik.values[idName]) == 0 && setLabelValue("Selecciona una opción...");
       setLoading(false);
 
@@ -691,9 +698,11 @@ export const RadioButtonComponent = ({
    col,
    idName,
    title,
-   hidden,
    options,
+   hidden,
    handleGetValue,
+   alignItems = "center",
+   marginBottom = 2,
    rowLayout = true // Cambiar a false para poner en columnas
 }) => {
    const { values, errors, touched, handleChange, handleBlur } = useFormikContext(); // Obtener valores, errores y funciones de Formik
@@ -718,8 +727,8 @@ export const RadioButtonComponent = ({
       }
    };
    return (
-      <Grid lg={col} xl={col} xs={12} md={12} sx={{ display: hidden ? "none" : "flex", flexDirection: "column", alignItems: "center" }}>
-         <Typography variant="subtitle1" align="center" color="textPrimary" sx={{ marginBottom: "1rem" }}>
+      <Grid lg={col} xl={col} xs={12} md={12} sx={{ display: hidden ? "none" : "flex", flexDirection: "column", alignItems: alignItems }} mb={marginBottom ?? 2}>
+         <Typography variant="subtitle1" align="center" color="textPrimary" sx={{ mb: 1 }}>
             {title}
          </Typography>
          <RadioGroup
@@ -743,6 +752,7 @@ export const RadioButtonComponent = ({
                         label={option.label}
                         disabled={loading}
                         sx={{
+                           mr: rowLayout && 5,
                            marginBottom: rowLayout ? 0 : "8px", // Espacio entre los radio buttons si están en columnas
                            "& .MuiRadio-root": {
                               color: "#1976d2"
@@ -903,7 +913,7 @@ export const DatePickerComponent = ({ loading = false, col, idName, label, forma
       setDataStates,
       setDataCities,
       setDataColonies,
-      setDataColoniesComplete
+      // setDataColoniesComplete
    } = useGlobalContext();
 
 
@@ -934,7 +944,7 @@ export const DatePickerComponent = ({ loading = false, col, idName, label, forma
       setDataStates,
       setDataCities,
       setDataColonies,
-      setDataColoniesComplete
+      // setDataColoniesComplete
    );
 */
 
@@ -957,28 +967,26 @@ export const getCommunity = async (
    setShowLoading,
    setDataStates,
    setDataCities,
-   setDataColonies,
-   setDataColoniesComplete
+   setDataColonies
+   // setDataColoniesComplete
 ) => {
-   console.log("🚀 ~ zip:", zip);
    try {
-      console.log("vamos bien hasta aqui");
       // let _community_id = null;
       setShowLoading(true);
       setDisabledState(true);
       setDisabledCity(true);
       setDisabledColony(true);
       let states = []; //["Selecciona una opción..."];
-      let cities = ["Selecciona una opción..."];
-      let colonies = ["Selecciona una opción..."];
-      let coloniesComplete = ["Selecciona una opción..."];
+      let cities = []; //["Selecciona una opción..."];
+      let colonies = []; // ["Selecciona una opción..."];
+      // let coloniesComplete = ["Selecciona una opción..."];
       setDataStates(states);
       setDataCities(cities);
       setDataColonies(colonies);
-      setDataColoniesComplete(coloniesComplete);
-      setFieldValue("state", "Selecciona una opción...");
-      setFieldValue("city", "Selecciona una opción...");
-      setFieldValue("colony", "Selecciona una opción...");
+      // setDataColoniesComplete(coloniesComplete);
+      setFieldValue("state", 0);
+      setFieldValue("city", 0);
+      setFieldValue("colony", 0); //"Selecciona una opción...");
       formData.street !== "" && setFieldValue("street", formData.street);
       formData.num_ext !== "" && setFieldValue("num_ext", formData.num_ext);
       formData.num_int !== "" && setFieldValue("num_int", formData.num_int);
@@ -987,7 +995,6 @@ export const getCommunity = async (
          const { data } = await axiosMyCommunity.get(`${import.meta.env.VITE_API_CP}/cp/colonia/${community_id}`);
 
          if (data.data.status_code != 200) return Toast.Error(data.data.alert_text);
-         console.log("🚀 ~ data.data.result:", data.data.result);
          formData.zip = data.data.result.CodigoPostal;
          formData.state = data.data.result.Estado;
          formData.city = data.data.result.Municipio;
@@ -996,37 +1003,42 @@ export const getCommunity = async (
          await setFormData(formData);
          zip = formData.zip;
       }
-      // if (zip.length > 1) {
-      //    const axiosCommunities = axios;
-      //    const axiosRes = await axiosCommunities.get(`${import.meta.env.VITE_API_CP}/cp/${zip}`);
-      //    if (axiosRes.data.data.status_code != 200) return Toast.Error(axiosRes.data.data.alert_text);
-      //    await axiosRes.data.data.result.map((d) => {
-      //       states.push(d.Estado);
-      //       cities.push(d.Municipio);
-      //       colonies.push(d.Colonia);
-      //       coloniesComplete.push({ id: d.id, label: d.Colonia });
-      //    });
-      // }
+      if (zip.length > 1) {
+         const axiosCommunities = axios;
+         const axiosRes = await axiosCommunities.get(`${import.meta.env.VITE_API_CP}/cp/${zip}`);
+         if (axiosRes.data.data.status_code != 200) return Toast.Error(axiosRes.data.data.alert_text);
+         await axiosRes.data.data.result.map((d) => {
+            states.push({ id: d.Estado, label: d.Estado });
+            cities.push({ id: d.Municipio, label: d.Municipio });
+            colonies.push({ id: d.id, label: d.Colonia });
+            // coloniesComplete.push({ id: d.id, label: d.Colonia });
+         });
+      }
+
+      // LIMPIAR DUPLICADOS
       // states = [...new Set(states)];
       // cities = [...new Set(cities)];
       // colonies = [...new Set(colonies)];
       // coloniesComplete = [...new Set(coloniesComplete)];
+      states = await Array.from(new Map(states.map((item) => [item.id, item])).values());
+      cities = await Array.from(new Map(cities.map((item) => [item.id, item])).values());
+      colonies = await Array.from(new Map(colonies.map((item) => [item.id, item])).values());
 
       // if (zip !== "" && states.length === 1) {
       //    setShowLoading(false);
       //    return Toast.Info("No hay comunidades registradas con este C.P.");
       // }
-      // if (states.length > 2) setDisabledState(false);
-      // if (cities.length > 2) setDisabledCity(false);
-      // if (colonies.length > 1) setDisabledColony(false);
-      // setDataStates(states);
-      // setDataCities(cities);
-      // setDataColonies(colonies);
+      if (states.length > 2) setDisabledState(false);
+      if (cities.length > 2) setDisabledCity(false);
+      if (colonies.length > 1) setDisabledColony(false);
+      setDataStates(states);
+      setDataCities(cities);
+      setDataColonies(colonies);
       // setDataColoniesComplete(coloniesComplete);
       setFieldValue("zip", community_id ? formData.zip : zip);
       setFieldValue("state", community_id ? formData.state : states.length == 1 ? states[0] : states[1]);
-      // setFieldValue("city", community_id ? formData.city : cities.length == 1 ? cities[0] : cities[1]);
-      // setFieldValue("colony", community_id ? formData.colony : colonies.length == 2 ? colonies[1] : colonies[0]);
+      setFieldValue("city", community_id ? formData.city : cities.length == 1 ? cities[0] : cities[1]);
+      setFieldValue("colony", community_id ? formData.colony : colonies.length == 2 ? colonies[1] : colonies[0]);
       // if (!community_id) setFieldValue("community_id", coloniesComplete.length == 2 && coloniesComplete[1].id);
       // // setFieldValue("colony", community_id ? community_id : colonies[0]["id"]);
       setShowLoading(false);
@@ -1070,17 +1082,15 @@ export const InputsCommunityComponent = ({
       dataCities,
       setDataCities,
       dataColonies,
-      setDataColonies,
-      dataColoniesComplete,
-      setDataColoniesComplete
+      setDataColonies
+      // dataColoniesComplete,
+      // setDataColoniesComplete
    } = useGlobalContext();
    const formik = useFormikContext();
 
    const handleKeyUpZip = async (e, setFieldValue, community_id = null) => {
       try {
-         console.log("🚀 ~ handleKeyUpZip ~ setFieldValue:", setFieldValue);
          const zip = e.target.value;
-         console.log("🚀 ~ handleKeyUpZip ~ zip:", zip);
          if (e.target.value == "0") {
             await getCommunity(
                zip,
@@ -1094,21 +1104,19 @@ export const InputsCommunityComponent = ({
                setShowLoading,
                setDataStates,
                setDataCities,
-               setDataColonies,
-               setDataColoniesComplete
+               setDataColonies
+               // setDataColoniesComplete
             );
          } else {
-            console.log("aqui anda el compa, porque no es cero ja");
             setDisabledColony(true);
-            setFieldValue("state", "Selecciona una opción...");
-            setFieldValue("city", "Selecciona una opción...");
-            setFieldValue("colony", "Selecciona una opción...");
+            setFieldValue("state", 0); //"Selecciona una opción...");
+            setFieldValue("city", 0); //"Selecciona una opción...");
+            setFieldValue("colony", 0); //"Selecciona una opción...");
          }
          if (e.key === "Enter" || e.keyCode === 13) return;
          if (e.target.value.length == 0) return Toast.Info("C.P. vacio.");
 
          if (e.target.value.length == 5) {
-            console.log("🚀 ~ handleKeyUpZip ~ zip==5:", zip);
             await getCommunity(
                zip,
                setFieldValue,
@@ -1121,15 +1129,14 @@ export const InputsCommunityComponent = ({
                setShowLoading,
                setDataStates,
                setDataCities,
-               setDataColonies,
-               setDataColoniesComplete
+               setDataColonies
+               // setDataColoniesComplete
             );
-            console.log("ya acabo el getCommunity ~ formData", formData);
          } else {
             setDisabledColony(true);
-            setFieldValue("state", "Selecciona una opción...");
-            setFieldValue("city", "Selecciona una opción...");
-            setFieldValue("colony", "Selecciona una opción...");
+            setFieldValue("state", 0); //"Selecciona una opción...");
+            setFieldValue("city", 0); //"Selecciona una opción...");
+            setFieldValue("colony", 0); //"Selecciona una opción...");
          }
       } catch (error) {
          console.log(error);
@@ -1140,9 +1147,11 @@ export const InputsCommunityComponent = ({
    };
    const handleChangeColony = async (inputName, colony, setFieldValue) => {
       try {
-         const community_selected = dataColoniesComplete.find((c) => c.label === colony);
+         // // const community_selected = dataColoniesComplete.find((c) => c.label === colony);
+         // const community_selected = dataColonies.find((c) => c.id === colony.id);
          // values.community_id = community_selected.id;
-         setFieldValue("community_id", community_selected.id);
+         // setFieldValue("community_id", community_selected.id);
+         setFieldValue("community_id", colony.id);
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -1169,81 +1178,12 @@ export const InputsCommunityComponent = ({
                disabled={showLoading}
                loading={showLoading}
             />
+
             {/* Estado */}
-            <Select2Component col={columnsByTextField} idName={"state"} label={"Estado *"} options={dataStates} /* disabled={disabledState} */ />
-            {/* <Grid xs={12} md={columnsByTextField} sx={{ mb: 2 }}> */}
-            {/* <Select2Component
-                  idName={"state"}
-                  label={"Estado *"}
-                  valueLabel={values.state}
-                  formDataLabel={"state"}
-                  placeholder={"Selecciona una opción..."}
-                  options={dataStates}
-                  fullWidth={true}
-                  // handleChangeValueSuccess={handleChangeState}
-                  handleBlur={handleBlur}
-                  error={errors.state}
-                  touched={touched.state}
-                  disabled={disabledState}
-               /> */}
-            {/* <Select2Component
-                  idName={"state"}
-                  label={"Estado"}
-                  valueLabel={values.state}
-                  values={values}
-                  formData={formData}
-                  setFormData={setFormData}
-                  formDataLabel={"state"}
-                  placeholder={"Selecciona una opción..."}
-                  options={dataStates}
-                  fullWidth={true}
-                  handleChange={handleChange}
-                  // handleChangeValueSuccess={handleChangeState}
-                  setValues={setValues}
-                  handleBlur={handleBlur}
-                  error={errors.state}
-                  touched={touched.state}
-                  disabled={disabledState}
-               /> */}
-            {/* </Grid> */}
+            <Select2Component col={columnsByTextField} idName={"state"} label={"Estado *"} options={dataStates} disabled={disabledState} />
 
             {/* Ciduad */}
             <Select2Component col={columnsByTextField} idName={"city"} label={"Ciudad *"} options={dataCities} disabled={disabledCity} />
-            {/* <Grid xs={12} md={columnsByTextField} sx={{ mb: 2 }}> */}
-            {/* <Select2Component
-                  idName={"city"}
-                  label={"Ciudad *"}
-                  valueLabel={values.city}
-                  formDataLabel={"city"}
-                  placeholder={"Selecciona una opción..."}
-                  options={dataCities}
-                  fullWidth={true}
-                  // handleChangeValueSuccess={handleChangeCity}
-                  handleBlur={handleBlur}
-                  error={errors.city}
-                  touched={touched.city}
-                  disabled={disabledCity}
-               /> */}
-            {/* <Select2Component
-                  idName={"city"}
-                  label={"Ciudad"}
-                  valueLabel={values.city}
-                  values={values}
-                  formData={formData}
-                  setFormData={setFormData}
-                  formDataLabel={"city"}
-                  placeholder={"Selecciona una opción..."}
-                  options={dataCities}
-                  fullWidth={true}
-                  handleChange={handleChange}
-                  // handleChangeValueSuccess={handleChangeState}
-                  setValues={setValues}
-                  handleBlur={handleBlur}
-                  error={errors.city}
-                  touched={touched.city}
-                  disabled={disabledCity}
-               /> */}
-            {/* </Grid> */}
 
             {/* Colonia */}
             {!registerCommunity && (
@@ -1255,31 +1195,16 @@ export const InputsCommunityComponent = ({
                   handleChangeValueSuccess={handleChangeColony}
                   disabled={disabledColony}
                />
-
-               // <Grid xs={12} md={columnsByTextField} sx={{ mb: 2 }}>
-               //    <Select2Component
-               //       idName={"colony"}
-               //       label={"Colonia *"}
-               //       valueLabel={values.colony}
-               //       formDataLabel={"colony"}
-               //       placeholder={"Selecciona una opción..."}
-               //       options={dataColonies}
-               //       fullWidth={true}
-               //       handleChangeValueSuccess={handleChangeColony}
-               //       handleBlur={handleBlur}
-               //       error={errors.colony}
-               //       touched={touched.colony}
-               //       disabled={disabledColony}
-               //    />
-               // </Grid>
             )}
          </Grid>
          {/* Calle */}
-         {!registerCommunity && <InputComponent col={8} idName={"street"} label={"Calle *"} placeholder={"Calle de las Garzas"} textStyleCase={true} />}
+         {!registerCommunity && (
+            <InputComponent col={4} idName={"street"} label={"Calle *"} placeholder={"Calle de las Garzas"} textStyleCase={true} disabled={disabledColony} />
+         )}
          {/* No. Ext. */}
-         {!registerCommunity && <InputComponent col={8} idName={"num_ext"} label={"No. Ext. *"} placeholder={"S/N"} textStyleCase={true} />}
+         {!registerCommunity && <InputComponent col={4} idName={"num_ext"} label={"No. Ext. *"} placeholder={"S/N"} textStyleCase={true} disabled={disabledColony} />}
          {/* No. Int. */}
-         {!registerCommunity && <InputComponent col={8} idName={"num_int"} label={"No. Int. *"} placeholder={"S/N"} textStyleCase={true} />}
+         {!registerCommunity && <InputComponent col={4} idName={"num_int"} label={"No. Int. *"} placeholder={"S/N"} textStyleCase={true} disabled={disabledColony} />}
       </>
    );
 };

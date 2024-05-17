@@ -61,6 +61,9 @@ import { FormikComponent, InputComponent } from "../../../components/Form/Formik
 import InputsFormik1 from "./InputsFormik1";
 import InputsFormik2 from "./InputsFormik2";
 import InputsFormik3 from "./InputsFormik3";
+import InputsFormik4 from "./InputsFormik4";
+import InputsFormik5 from "./InputsFormik5";
+import InputsFormik6 from "./InputsFormik6";
 
 const RequestBecaView = () => {
    const { auth } = useAuthContext();
@@ -105,8 +108,6 @@ const RequestBecaView = () => {
    const inputRefCurp = useRef(null);
    const inputRefSchoolId = useRef(null);
    const formik = useRef(null);
-
-   // const [monthlyIncomeChange, setMonthlyIncomeChange] = useState(0);
 
    // #region STEPER
    const steps = [
@@ -268,17 +269,17 @@ const RequestBecaView = () => {
       try {
          values.num_int = values.num_int === "" ? "S/N" : values.num_int;
 
-         console.log("🚀 ~ onSubmit2 ~ values:", values);
+         // console.log("🚀 ~ onSubmit2 ~ values:", values);
          await setFormData({ ...formData, ...values });
          // console.log("formData-2", formData);
-         // await setValues(values);
+         await setValues(values);
          // console.log("formData", formData);
          // console.log("values", values);
-         // setStepFailed(-1);
-         // handleComplete();
-         // setTimeout(() => {
-         //    inputRefSchoolId.current.focus();
-         // }, 500);
+         setStepFailed(-1);
+         handleComplete();
+         setTimeout(() => {
+            inputRefSchoolId.current.focus();
+         }, 500);
       } catch (error) {
          console.error(error);
          setErrors({ submit: error.message });
@@ -877,19 +878,6 @@ const RequestBecaView = () => {
       }
    };
 
-   const handleChangeTotal = (e, values, setFieldValue) => {
-      // console.log("value", e.target.name);
-      const name = e.target.name;
-      const value = Number(e.target.value) || 0;
-      const b3_food = name == "b3_food" ? value : values.b3_food,
-         b3_transport = name == "b3_transport" ? value : values.b3_transport,
-         b3_living_place = name == "b3_living_place" ? value : values.b3_living_place,
-         b3_services = name == "b3_services" ? value : values.b3_services,
-         b3_automobile = name == "b3_automobile" ? value : values.b3_automobile;
-      const total_expenses = b3_food + b3_transport + b3_living_place + b3_services + b3_automobile;
-      setFieldValue("total_expenses", total_expenses);
-   };
-
    useEffect(() => {
       // console.log("🚀 ~ useEffect ~ formData:", formData);
       // console.log("🚀 ~ useEffect ~ formik.current.values:", formik.current?.values);
@@ -1055,366 +1043,64 @@ const RequestBecaView = () => {
                               </FormikComponent>
                            )}
                            {activeStep + 1 == 4 && (
-                              <Formik initialValues={formData} validationSchema={validationSchemas(activeStep + 1)} onSubmit={onSubmit4}>
-                                 {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
-                                    <Box
-                                       sx={{ height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between" }}
-                                       component={"form"}
-                                       onSubmit={handleSubmit}
-                                    >
-                                       <Grid container spacing={2}>
-                                          {/* LISTADO */}
-                                          <Grid xs={12} md={12} sx={{ mb: 3 }}>
-                                             <Typography variant="h2" mb={2}>
-                                                ¿Quienes viven actualmente con el alumno?
-                                             </Typography>
-                                             <FamilyDT becaId={folio} setFieldValue={setFieldValue} values={values} />
-                                          </Grid>
-
-                                          {/* Ingresos Extra */}
-                                          <Grid xs={12} md={6} sx={{ mb: 3 }}>
-                                             <TextField
-                                                id="extra_income"
-                                                name="extra_income"
-                                                label="Ingresos Extra *"
-                                                type="number"
-                                                value={values.extra_income}
-                                                placeholder="1,500.00"
-                                                onChange={handleChange}
-                                                onBlur={handleBlur}
-                                                fullWidth
-                                                inputProps={{ step: 0.01, min: 0, max: 100000 }}
-                                                // disabled={values.id == 0 ? false : true}
-                                                error={errors.extra_income && touched.extra_income}
-                                                helperText={errors.extra_income && touched.extra_income && showErrorInput(4, errors.extra_income)}
-                                             />
-                                          </Grid>
-                                          {/* Ingreso Mensuales Totales */}
-                                          <Grid xs={12} md={6} sx={{ mb: 3 }}>
-                                             <TextField
-                                                id="monthly_income"
-                                                name="monthly_income"
-                                                label="Ingresos Mensuales TOTALES *"
-                                                type="number"
-                                                value={values.monthly_income}
-                                                placeholder="9,999.00"
-                                                onChange={handleChange}
-                                                onBlur={handleBlur}
-                                                fullWidth
-                                                inputProps={{ step: 0.01, min: 0, max: 100000 }}
-                                                disabled={true}
-                                                error={errors.monthly_income && touched.monthly_income}
-                                                helperText={errors.monthly_income && touched.monthly_income && showErrorInput(4, errors.monthly_income)}
-                                             />
-                                          </Grid>
-                                       </Grid>
-
-                                       {folio > 0 && <ButtonsBeforeOrNext isSubmitting={isSubmitting} setValues={setValues} />}
-                                    </Box>
-                                 )}
-                              </Formik>
+                              <FormikComponent
+                                 key={"formikComponent4"}
+                                 initialValues={formData}
+                                 validationSchema={validationSchemas(activeStep + 1)}
+                                 onSubmit={onSubmit4}
+                                 formikRef={formik}
+                                 activeStep={activeStep}
+                                 setStepFailed={setStepFailed}
+                                 showActionButtons={false}
+                              >
+                                 <InputsFormik4
+                                    folio={folio}
+                                    pagina={pagina}
+                                    activeStep={activeStep}
+                                    setStepFailed={setStepFailed}
+                                    ButtonsBeforeOrNext={ButtonsBeforeOrNext}
+                                 />
+                              </FormikComponent>
                            )}
                            {activeStep + 1 == 5 && (
-                              <Formik initialValues={formData} /* validationSchema={validationSchemas(activeStep + 1)} */ onSubmit={onSubmit5}>
-                                 {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
-                                    <Box
-                                       sx={{ height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between" }}
-                                       component={"form"}
-                                       onSubmit={handleSubmit}
-                                    >
-                                       <Grid container spacing={2}>
-                                          <Grid xs={12} md={12} sx={{ mb: 3 }}>
-                                             <Typography variant="h4" component={"p"} mb={1}>
-                                                Persona(s) que sostiene el hogar (Padre, Madre, Abuelo)
-                                             </Typography>
-                                             <Typography variant="h4" component="p">
-                                                Detalle de gastos <span style={{ fontWeight: "bolder", textDecorationLine: "underline" }}>MENSUALES Familiares:</span>
-                                             </Typography>
-                                          </Grid>
-
-                                          <Grid xs={12} md={6} sx={{ mb: 3 }}>
-                                             {/* Alimentación */}
-                                             <Grid xs={12} md={12} sx={{ mb: 3 }}>
-                                                <InputComponentv2
-                                                   idName="b3_food"
-                                                   label="Alimentación (despensa) * $"
-                                                   type="number"
-                                                   value={values.b3_food}
-                                                   placeholder="Ingrese el gasto mensual de alimentos"
-                                                   setFieldValue={setFieldValue}
-                                                   onChange={(e) => {
-                                                      handleChange(e);
-                                                      handleChangeTotal(e, values, setFieldValue);
-                                                   }}
-                                                   onBlur={handleBlur}
-                                                   inputProps={{ step: 0.01, min: 0, max: 100000 }}
-                                                   // disabled={values.id == 0 ? false : true}
-                                                   error={errors.b3_food}
-                                                   touched={touched.b3_food}
-                                                   step={5}
-                                                   setStepFailed={setStepFailed}
-                                                   size="normal"
-                                                   // error={errors.b3_food && touched.b3_food}
-                                                   // helperText={errors.b3_food && touched.b3_food && showErrorInput(4, errors.b3_food)}
-                                                />
-                                             </Grid>
-                                             {/* Transporte */}
-                                             <Grid xs={12} md={12} sx={{ mb: 3 }}>
-                                                <InputComponentv2
-                                                   idName="b3_transport"
-                                                   label="Transporte * $"
-                                                   type="number"
-                                                   value={values.b3_transport}
-                                                   placeholder="Ingrese el gasto mensual de transporte"
-                                                   setFieldValue={setFieldValue}
-                                                   onChange={(e) => {
-                                                      handleChange(e);
-                                                      handleChangeTotal(e, values, setFieldValue);
-                                                   }}
-                                                   onBlur={handleBlur}
-                                                   inputProps={{ step: 0.01, min: 0, max: 100000 }}
-                                                   // disabled={values.id == 0 ? false : true}
-                                                   error={errors.b3_transport}
-                                                   touched={touched.b3_transport}
-                                                   setStepFailed={setStepFailed}
-                                                   step={5}
-                                                   size="normal"
-                                                   // error={errors.b3_transport && touched.b3_transport}
-                                                   // helperText={errors.b3_transport && touched.b3_transport && showErrorInput(4, errors.b3_transport)}
-                                                />
-                                             </Grid>
-                                             {/* Vivienda */}
-                                             <Grid xs={12} md={12} sx={{ mb: 3 }}>
-                                                <InputComponentv2
-                                                   idName="b3_living_place"
-                                                   label="Vivienda (renta, infonavit) * $"
-                                                   type="number"
-                                                   value={values.b3_living_place}
-                                                   placeholder="Ingrese el gasto mensual en pago de vivienda"
-                                                   setFieldValue={setFieldValue}
-                                                   onChange={(e) => {
-                                                      handleChange(e);
-                                                      handleChangeTotal(e, values, setFieldValue);
-                                                   }}
-                                                   onBlur={handleBlur}
-                                                   inputProps={{ step: 0.01, min: 0, max: 100000 }}
-                                                   // disabled={values.id == 0 ? false : true}
-                                                   error={errors.b3_living_place}
-                                                   touched={touched.b3_living_place}
-                                                   setStepFailed={setStepFailed}
-                                                   step={5}
-                                                   size="normal"
-                                                   // error={errors.b3_living_place && touched.b3_living_place}
-                                                   // helperText={errors.b3_living_place && touched.b3_living_place && showErrorInput(4, errors.b3_living_place)}
-                                                />
-                                             </Grid>
-                                          </Grid>
-                                          <Grid xs={12} md={6} sx={{ mb: 3 }}>
-                                             {/* Servicios */}
-                                             <Grid xs={12} md={12} sx={{ mb: 3 }}>
-                                                <InputComponentv2
-                                                   idName="b3_services"
-                                                   label="Servicios (agua y luz) * $"
-                                                   type="number"
-                                                   value={values.b3_services}
-                                                   placeholder="Ingrese el gasto mensual de alimentos"
-                                                   setFieldValue={setFieldValue}
-                                                   onChange={(e) => {
-                                                      handleChange(e);
-                                                      handleChangeTotal(e, values, setFieldValue);
-                                                   }}
-                                                   onBlur={handleBlur}
-                                                   inputProps={{ step: 0.01, min: 0, max: 100000 }}
-                                                   // disabled={values.id == 0 ? false : true}
-                                                   error={errors.b3_services}
-                                                   touched={touched.b3_services}
-                                                   setStepFailed={setStepFailed}
-                                                   step={5}
-                                                   size="normal"
-                                                   // error={errors.b3_services && touched.b3_services}
-                                                   // helperText={errors.b3_services && touched.b3_services && showErrorInput(4, errors.b3_services)}
-                                                />
-                                             </Grid>
-                                             {/* Automovil */}
-                                             <Grid xs={12} md={12} sx={{ mb: 3 }}>
-                                                <InputComponentv2
-                                                   idName="b3_automobile"
-                                                   label="Automóvil * $"
-                                                   type="number"
-                                                   value={values.b3_automobile}
-                                                   placeholder="Ingrese el gasto mensual de su automóvi"
-                                                   setFieldValue={setFieldValue}
-                                                   onChange={(e) => {
-                                                      handleChange(e);
-                                                      handleChangeTotal(e, values, setFieldValue);
-                                                   }}
-                                                   onBlur={handleBlur}
-                                                   inputProps={{ step: 0.01, min: 0, max: 100000 }}
-                                                   // disabled={values.id == 0 ? false : true}
-                                                   error={errors.b3_automobile}
-                                                   touched={touched.b3_automobile}
-                                                   setStepFailed={setStepFailed}
-                                                   step={5}
-                                                   size="normal"
-                                                   // error={errors.b3_automobile && touched.b3_automobile}
-                                                   // helperText={errors.b3_automobile && touched.b3_automobile && showErrorInput(4, errors.b3_automobile)}
-                                                />
-                                             </Grid>
-                                             {/* Gastos Extras */}
-                                             <Grid xs={12} md={12} sx={{ mb: 3 }}></Grid>
-                                          </Grid>
-
-                                          {/* Egresos Mensuales Totales */}
-                                          <Grid xs={12} xsOffset={6} md={6} sx={{ mb: 3 }}>
-                                             <InputComponentv2
-                                                idName={"total_expenses"}
-                                                label={"TOTAL DE EGRESOS $"}
-                                                type="number"
-                                                value={values.total_expenses}
-                                                placeholder={"0.00"}
-                                                setFieldValue={setFieldValue}
-                                                onChange={handleChange}
-                                                onBlur={handleBlur}
-                                                error={errors.total_expenses}
-                                                touched={touched.total_expenses}
-                                                disabled={true}
-                                                setStepFailed={setStepFailed}
-                                                step={5}
-                                                size="normal"
-                                                inputProps={{ step: 0.01, min: 0, max: 100000 }}
-                                             />
-                                          </Grid>
-                                       </Grid>
-
-                                       {folio > 0 && <ButtonsBeforeOrNext isSubmitting={isSubmitting} setValues={setValues} />}
-                                    </Box>
-                                 )}
-                              </Formik>
+                              <FormikComponent
+                                 key={"formikComponent5"}
+                                 initialValues={formData}
+                                 validationSchema={validationSchemas(activeStep + 1)}
+                                 onSubmit={onSubmit5}
+                                 formikRef={formik}
+                                 activeStep={activeStep}
+                                 setStepFailed={setStepFailed}
+                                 showActionButtons={false}
+                              >
+                                 <InputsFormik5
+                                    folio={folio}
+                                    pagina={pagina}
+                                    activeStep={activeStep}
+                                    setStepFailed={setStepFailed}
+                                    ButtonsBeforeOrNext={ButtonsBeforeOrNext}
+                                 />
+                              </FormikComponent>
                            )}
                            {activeStep + 1 == 6 && (
-                              <Formik initialValues={formData} validationSchema={validationSchemas(activeStep + 1)} onSubmit={onSubmit6}>
-                                 {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
-                                    <Box
-                                       sx={{ height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between" }}
-                                       component={"form"}
-                                       onSubmit={handleSubmit}
-                                    >
-                                       <Grid container spacing={2}>
-                                          <Grid xs={12} md={12} sx={{ mb: 3 }}>
-                                             <ol>
-                                                {/* La casa es */}
-                                                <FormControl fullWidth sx={{ mb: 5 }}>
-                                                   <FormLabel id="b4_house_is-label">
-                                                      <Typography variant="h4" component={"p"} mb={1}>
-                                                         <li>La casa donde vives es:</li>
-                                                      </Typography>
-                                                   </FormLabel>
-                                                   {/* <ToggleButtonGroup color="primary" value={houseIs} exclusive onClick={handleHouseIs}>
-                                                <ToggleButton value="1@Propia">Propia</ToggleButton>
-                                                <ToggleButton value="2@Prestada">Prestada</ToggleButton>
-                                                <ToggleButton value="3@Alquilada">Alquilada</ToggleButton>
-                                                <ToggleButton value="4@Otra">Otra</ToggleButton>
-                                             </ToggleButtonGroup> */}
-                                                   <RadioGroup
-                                                      row
-                                                      aria-labelledby="b4_house_is-label"
-                                                      id="b4_house_is"
-                                                      name="b4_house_is"
-                                                      value={values.b4_house_is}
-                                                      onChange={handleChange}
-                                                      onBlur={handleBlur}
-                                                   >
-                                                      <FormControlLabel sx={{ mr: 5 }} value="1@Propia" control={<Radio />} label="Propia" />
-                                                      <FormControlLabel sx={{ mr: 5 }} value="2@Prestada" control={<Radio />} label="Prestada" />
-                                                      <FormControlLabel sx={{ mr: 5 }} value="3@Alquilada" control={<Radio />} label="Alquilada" />
-                                                      <FormControlLabel sx={{ mr: 5 }} value="4@Otra" control={<Radio />} label="Otra" />
-                                                   </RadioGroup>
-                                                   {touched.b4_house_is && errors.b4_house_is && (
-                                                      <FormHelperText error id="ht-b4_house_is">
-                                                         {errors.b4_house_is}
-                                                      </FormHelperText>
-                                                   )}
-                                                </FormControl>
-
-                                                {/* Material del techo */}
-                                                <FormControl fullWidth sx={{ mb: 5 }}>
-                                                   <FormLabel id="b4_roof_material-label">
-                                                      <Typography variant="h4" component={"p"} mb={1}>
-                                                         <li>Material del techo de la vivienda (si está hecho de más de un material, marca el que predomine):</li>
-                                                      </Typography>
-                                                   </FormLabel>
-                                                   {/* <ToggleButtonGroup color="primary" value={houseIs} exclusive onClick={handleHouseIs}>
-                                                <ToggleButton value="1@Lámina">Lámina (de cartón, de asbesto, madera)</ToggleButton>
-                                                <ToggleButton value="2@Concreto">Firme de concreto</ToggleButton>
-                                             </ToggleButtonGroup> */}
-                                                   <RadioGroup
-                                                      row
-                                                      aria-labelledby="b4_roof_material-label"
-                                                      id="b4_roof_material"
-                                                      name="b4_roof_material"
-                                                      value={values.b4_roof_material}
-                                                      onChange={handleChange}
-                                                      onBlur={handleBlur}
-                                                   >
-                                                      <FormControlLabel
-                                                         sx={{ mr: 5 }}
-                                                         value="1@Lámina"
-                                                         control={<Radio />}
-                                                         label="Lámina (de cartón, de asbesto, madera)"
-                                                      />
-                                                      <FormControlLabel sx={{ mr: 5 }} value="2@Concreto" control={<Radio />} label="Firme de concreto" />
-                                                   </RadioGroup>
-                                                   {touched.b4_roof_material && errors.b4_roof_material && (
-                                                      <FormHelperText error id="ht-b4_roof_material">
-                                                         {errors.b4_roof_material}
-                                                      </FormHelperText>
-                                                   )}
-                                                </FormControl>
-
-                                                {/* Material del techo */}
-                                                <FormControl fullWidth sx={{ mb: 5 }}>
-                                                   <FormLabel id="b4_floor_material-label">
-                                                      <Typography variant="h4" component={"p"} mb={1}>
-                                                         <li>Material del piso de la vivienda (si está hecho de más de un material, marca el que predomine):</li>
-                                                      </Typography>
-                                                   </FormLabel>
-                                                   {/* <ToggleButtonGroup color="primary" value={houseIs} exclusive onClick={handleHouseIs}>
-                                                <ToggleButton value="1@Tierra">Tierra</ToggleButton>
-                                                <ToggleButton value="2@Cemento">Cemento</ToggleButton>
-                                                <ToggleButton value="3@Mosaico">Mosaico, loseta, madera Láminada</ToggleButton>
-                                             </ToggleButtonGroup> */}
-                                                   <RadioGroup
-                                                      row
-                                                      aria-labelledby="b4_floor_material-label"
-                                                      id="b4_floor_material"
-                                                      name="b4_floor_material"
-                                                      value={values.b4_floor_material}
-                                                      onChange={handleChange}
-                                                      onBlur={handleBlur}
-                                                   >
-                                                      <FormControlLabel sx={{ mr: 5 }} value="1@Tierra" control={<Radio />} label="Tierra" />
-                                                      <FormControlLabel sx={{ mr: 5 }} value="2@Cemento" control={<Radio />} label="Cemento" />
-                                                      <FormControlLabel
-                                                         sx={{ mr: 5 }}
-                                                         value="3@Mosaico"
-                                                         control={<Radio />}
-                                                         label="Mosaico, loseta, madera Láminada"
-                                                      />
-                                                   </RadioGroup>
-                                                   {touched.b4_floor_material && errors.b4_floor_material && (
-                                                      <FormHelperText error id="ht-b4_floor_material">
-                                                         {errors.b4_floor_material}
-                                                      </FormHelperText>
-                                                   )}
-                                                </FormControl>
-                                             </ol>
-                                          </Grid>
-                                       </Grid>
-
-                                       {folio > 0 && <ButtonsBeforeOrNext isSubmitting={isSubmitting} setValues={setValues} />}
-                                    </Box>
-                                 )}
-                              </Formik>
+                              <FormikComponent
+                                 key={"formikComponent6"}
+                                 initialValues={formData}
+                                 validationSchema={validationSchemas(activeStep + 1)}
+                                 onSubmit={onSubmit6}
+                                 formikRef={formik}
+                                 activeStep={activeStep}
+                                 setStepFailed={setStepFailed}
+                                 showActionButtons={false}
+                              >
+                                 <InputsFormik6
+                                    folio={folio}
+                                    pagina={pagina}
+                                    activeStep={activeStep}
+                                    setStepFailed={setStepFailed}
+                                    ButtonsBeforeOrNext={ButtonsBeforeOrNext}
+                                 />
+                              </FormikComponent>
                            )}
                            {activeStep + 1 == 7 && (
                               <Formik initialValues={formData} validationSchema={validationSchemas(activeStep + 1)} onSubmit={onSubmit7}>

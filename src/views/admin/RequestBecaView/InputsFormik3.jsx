@@ -1,14 +1,10 @@
 import { useFormikContext } from "formik";
 import { InputComponent, Select2Component } from "../../../components/Form/FormikComponents";
-import { useRequestBecaContext } from "../../../context/RequestBecaContext";
 import { useGlobalContext } from "../../../context/GlobalContext";
 import { useSchoolContext } from "../../../context/SchoolContext";
-import { useEffect } from "react";
 
 const InputsFormik3 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBeforeOrNext }) => {
-   const { setDisabledState, setDisabledCity, setDisabledColony, setShowLoading, setDataStates, setDataCities, setDataColonies, setDataColoniesComplete } =
-      useGlobalContext();
-   const { formData, setFormData } = useRequestBecaContext();
+   useGlobalContext();
    const { schools, getSchoolsSelectIndex } = useSchoolContext();
 
    const formik = useFormikContext();

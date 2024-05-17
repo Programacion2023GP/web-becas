@@ -60,7 +60,6 @@ const InputsFormik2 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
          formData.community_id = axiosReponse.result.community_id;
          await setFieldValue("community_id", formData.community_id);
          await setFormData({ ...formData, ...values });
-         setLoadingCURP(false);
 
          if (formData.community_id > 0) {
             getCommunity(
@@ -79,6 +78,7 @@ const InputsFormik2 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
                setDataColoniesComplete
             );
          }
+         setLoadingCURP(false);
       } catch (error) {
          setLoadingCURP(true);
          console.log(error);
@@ -165,28 +165,8 @@ const InputsFormik2 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
          <DividerComponent />
 
          {/* INPUTS DE COMUNIDAD */}
-         <InputsCommunityComponent
-            formData={formData}
-            setFormData={setFormData}
-            columnsByTextField={3}
+         <InputsCommunityComponent formData={formData} setFormData={setFormData} columnsByTextField={3} />
 
-            // // values={formik.values}
-            // // setFieldValue={formik.setFieldValue}
-            // // setValues={formik.setValues}
-            // // handleChange={formik.handleChange}
-            // // handleBlur={formik.handleBlur}
-            // // errors={formik.errors}
-            // // touched={formik.touched}
-            // disabled={formik.values.id == 0 ? false : true}
-         />
-         <Button
-            onClick={() => {
-               console.log("formik.values", formik.values);
-               console.log("formData", formData);
-            }}
-         >
-            Boton X
-         </Button>
          {!(folio > 0) && <ButtonsBeforeOrNext isSubmitting={formik.isSubmitting} setValues={formik.setValues} />}
       </>
    );
