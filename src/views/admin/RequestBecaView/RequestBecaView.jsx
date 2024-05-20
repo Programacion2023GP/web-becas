@@ -64,6 +64,8 @@ import InputsFormik3 from "./InputsFormik3";
 import InputsFormik4 from "./InputsFormik4";
 import InputsFormik5 from "./InputsFormik5";
 import InputsFormik6 from "./InputsFormik6";
+import InputsFormik7 from "./InputsFormik7";
+import InputsFormik8 from "./InputsFormik8";
 
 const RequestBecaView = () => {
    const { auth } = useAuthContext();
@@ -488,12 +490,12 @@ const RequestBecaView = () => {
    const onSubmit8 = async (values, { setSubmitting, setErrors, resetForm, setValues }) => {
       try {
          // console.log("formData en submit3", formData);
-         if (values.under_protest) values.b6_finished = true;
+         if (values.under_protest) values.b6_finished = 1;
 
-         values.b6_beca_transport = values.b6_beca_transport ? true : false || false;
-         values.b6_beca_benito_juarez = values.b6_beca_benito_juarez ? true : false || false;
-         values.b6_beca_jovenes = values.b6_beca_jovenes ? true : false || false;
-         values.b6_other = values.b6_other ? true : false || false;
+         values.b6_beca_transport = values.b6_beca_transport ? 1 : 0 || 0;
+         values.b6_beca_benito_juarez = values.b6_beca_benito_juarez ? 1 : 0 || 0;
+         values.b6_beca_jovenes = values.b6_beca_jovenes ? 1 : 0 || 0;
+         values.b6_other = values.b6_other ? 1 : 0 || 0;
          await setFormData({ ...formData, ...values });
          // console.log("formData", values);
          // return console.log("values", values);
@@ -671,7 +673,7 @@ const RequestBecaView = () => {
             break;
          case 8:
             validationSchema = Yup.object().shape({
-               under_protest: Yup.bool().required("Bajo Protesta requerido")
+               under_protest: Yup.bool().oneOf([true], "Debe aceptar Bajo Protesta para continuar").required("Bajo Protesta requerido")
             });
             break;
          case 9: // PAGINA DE DOCUMENTOS
@@ -1103,437 +1105,44 @@ const RequestBecaView = () => {
                               </FormikComponent>
                            )}
                            {activeStep + 1 == 7 && (
-                              <Formik initialValues={formData} validationSchema={validationSchemas(activeStep + 1)} onSubmit={onSubmit7}>
-                                 {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
-                                    <Box
-                                       sx={{ height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between" }}
-                                       component={"form"}
-                                       onSubmit={handleSubmit}
-                                    >
-                                       <Grid container spacing={2}>
-                                          <Grid xs={12} md={12} sx={{ mb: 3 }}>
-                                             <ol>
-                                                {/* Equipamiento de la casa */}
-                                                <FormControl fullWidth sx={{ mb: 3 }}>
-                                                   <FormLabel id="household_equipment-label">
-                                                      <Typography variant="h4" component={"p"} mb={1}>
-                                                         <li>
-                                                            Señala el número de los siguientes aparatos con que cuentas en casa (en caso de no tener, marca cero) 0 1 2
-                                                            3 4+ :
-                                                         </li>
-                                                      </Typography>
-                                                   </FormLabel>
-                                                   {touched.household_equipment && errors.household_equipment && (
-                                                      <FormHelperText error id="ht-household_equipment">
-                                                         {errors.household_equipment}
-                                                      </FormHelperText>
-                                                   )}
-                                                   <Grid container spacing={2}>
-                                                      <Grid xs={12} md={6} sx={{ mb: 1 }}>
-                                                         {/* Camas */}
-                                                         <Grid xs={12} md={6} sx={{ mb: 1 }}>
-                                                            <InputComponentv3
-                                                               idName="b5_beds"
-                                                               label="Camas"
-                                                               type="number"
-                                                               value={values.b5_beds}
-                                                               placeholder="0"
-                                                               setFieldValue={setFieldValue}
-                                                               onChange={handleChange}
-                                                               onBlur={handleBlur}
-                                                               inputProps={{ min: 0, max: 100000 }}
-                                                               // disabled={values.id == 0 ? false : true}
-                                                               error={errors.b5_beds}
-                                                               touched={touched.b5_beds}
-                                                               setStepFailed={setStepFailed}
-                                                               step={7}
-                                                               size="normal"
-                                                               // error={errors.b5_beds && touched.b5_beds}
-                                                               // helperText={errors.b5_beds && touched.b5_beds && showErrorInput(4, errors.b5_beds)}
-                                                            />
-                                                         </Grid>
-                                                         {/* Lavadoras */}
-                                                         <Grid xs={12} md={6} sx={{ mb: 1 }}>
-                                                            <InputComponentv3
-                                                               idName="b5_washing_machines"
-                                                               label="Lavadoras"
-                                                               type="number"
-                                                               value={values.b5_washing_machines}
-                                                               placeholder="0"
-                                                               setFieldValue={setFieldValue}
-                                                               onChange={handleChange}
-                                                               onBlur={handleBlur}
-                                                               inputProps={{ min: 0, max: 100000 }}
-                                                               // disabled={values.id == 0 ? false : true}
-                                                               error={errors.b5_washing_machines}
-                                                               touched={touched.b5_washing_machines}
-                                                               setStepFailed={setStepFailed}
-                                                               step={7}
-                                                               size="normal"
-                                                            />
-                                                         </Grid>
-                                                         {/* Calentador de agua (boiler) */}
-                                                         <Grid xs={12} md={6} sx={{ mb: 1 }}>
-                                                            <InputComponentv3
-                                                               idName="b5_boilers"
-                                                               label="Calentador de agua (boiler)"
-                                                               type="number"
-                                                               value={values.b5_boilers}
-                                                               placeholder="0"
-                                                               setFieldValue={setFieldValue}
-                                                               onChange={handleChange}
-                                                               onBlur={handleBlur}
-                                                               inputProps={{ min: 0, max: 100000 }}
-                                                               // disabled={values.id == 0 ? false : true}
-                                                               error={errors.b5_boilers}
-                                                               touched={touched.b5_boilers}
-                                                               setStepFailed={setStepFailed}
-                                                               step={7}
-                                                               size="normal"
-                                                            />
-                                                         </Grid>
-                                                         {/* Televisores */}
-                                                         <Grid xs={12} md={6} sx={{ mb: 1 }}>
-                                                            <InputComponentv3
-                                                               idName="b5_tvs"
-                                                               label="Televisores"
-                                                               type="number"
-                                                               value={values.b5_tvs}
-                                                               placeholder="0"
-                                                               setFieldValue={setFieldValue}
-                                                               onChange={handleChange}
-                                                               onBlur={handleBlur}
-                                                               inputProps={{ min: 0, max: 100000 }}
-                                                               // disabled={values.id == 0 ? false : true}
-                                                               error={errors.b5_tvs}
-                                                               touched={touched.b5_tvs}
-                                                               setStepFailed={setStepFailed}
-                                                               step={7}
-                                                               size="normal"
-                                                            />
-                                                         </Grid>
-                                                         {/* Computadoras */}
-                                                         <Grid xs={12} md={6} sx={{ mb: 1 }}>
-                                                            <InputComponentv3
-                                                               idName="b5_pcs"
-                                                               label="Computadoras"
-                                                               type="number"
-                                                               value={values.b5_pcs}
-                                                               placeholder="0"
-                                                               setFieldValue={setFieldValue}
-                                                               onChange={handleChange}
-                                                               onBlur={handleBlur}
-                                                               inputProps={{ min: 0, max: 100000 }}
-                                                               // disabled={values.id == 0 ? false : true}
-                                                               error={errors.b5_pcs}
-                                                               touched={touched.b5_pcs}
-                                                               setStepFailed={setStepFailed}
-                                                               step={7}
-                                                               size="normal"
-                                                            />
-                                                         </Grid>
-                                                      </Grid>
-                                                      <Grid xs={12} md={6} sx={{ mb: 1 }}>
-                                                         {/* Teléfonos (local o celular) */}
-                                                         <Grid xs={12} md={6} sx={{ mb: 1 }}>
-                                                            <InputComponentv3
-                                                               idName="b5_phones"
-                                                               label="Teléfonos (local o celular)"
-                                                               type="number"
-                                                               value={values.b5_phones}
-                                                               placeholder="0"
-                                                               setFieldValue={setFieldValue}
-                                                               onChange={handleChange}
-                                                               onBlur={handleBlur}
-                                                               inputProps={{ min: 0, max: 100000 }}
-                                                               // disabled={values.id == 0 ? false : true}
-                                                               error={errors.b5_phones}
-                                                               touched={touched.b5_phones}
-                                                               setStepFailed={setStepFailed}
-                                                               step={7}
-                                                               size="normal"
-                                                            />
-                                                         </Grid>
-                                                         {/* Reproductores de Música */}
-                                                         <Grid xs={12} md={6} sx={{ mb: 1 }}>
-                                                            <InputComponentv3
-                                                               idName="b5_music_player"
-                                                               label="Reproductores de Música"
-                                                               type="number"
-                                                               value={values.b5_music_player}
-                                                               placeholder="0"
-                                                               setFieldValue={setFieldValue}
-                                                               onChange={handleChange}
-                                                               onBlur={handleBlur}
-                                                               inputProps={{ min: 0, max: 100000 }}
-                                                               // disabled={values.id == 0 ? false : true}
-                                                               error={errors.b5_music_player}
-                                                               touched={touched.b5_music_player}
-                                                               setStepFailed={setStepFailed}
-                                                               step={7}
-                                                               size="normal"
-                                                            />
-                                                         </Grid>
-                                                         {/* Estufas */}
-                                                         <Grid xs={12} md={6} sx={{ mb: 1 }}>
-                                                            <InputComponentv3
-                                                               idName="b5_stoves"
-                                                               label="Estufas"
-                                                               type="number"
-                                                               value={values.b5_stoves}
-                                                               placeholder="0"
-                                                               setFieldValue={setFieldValue}
-                                                               onChange={handleChange}
-                                                               onBlur={handleBlur}
-                                                               inputProps={{ min: 0, max: 100000 }}
-                                                               // disabled={values.id == 0 ? false : true}
-                                                               error={errors.b5_stoves}
-                                                               touched={touched.b5_stoves}
-                                                               setStepFailed={setStepFailed}
-                                                               step={7}
-                                                               size="normal"
-                                                            />
-                                                         </Grid>
-                                                         {/* Refrigeradores */}
-                                                         <Grid xs={12} md={6} sx={{ mb: 1 }}>
-                                                            <InputComponentv3
-                                                               idName="b5_refrigerators"
-                                                               label="Refrigeradores"
-                                                               type="number"
-                                                               value={values.b5_refrigerators}
-                                                               placeholder="0"
-                                                               setFieldValue={setFieldValue}
-                                                               onChange={handleChange}
-                                                               onBlur={handleBlur}
-                                                               inputProps={{ min: 0, max: 100000 }}
-                                                               // disabled={values.id == 0 ? false : true}
-                                                               error={errors.b5_refrigerators}
-                                                               touched={touched.b5_refrigerators}
-                                                               setStepFailed={setStepFailed}
-                                                               step={7}
-                                                               size="normal"
-                                                            />
-                                                         </Grid>
-                                                      </Grid>
-                                                   </Grid>
-                                                </FormControl>
-
-                                                {/* Equipamiento de la casa */}
-                                                <FormControl fullWidth sx={{ mb: 3 }}>
-                                                   <FormLabel id="household_equipment-label">
-                                                      <Typography variant="h4" component={"p"} mb={1}>
-                                                         <li>¿Cuáles son los servicios con que cuentas en tu casa?</li>
-                                                      </Typography>
-                                                   </FormLabel>
-                                                   {touched.household_equipment && errors.household_equipment && (
-                                                      <FormHelperText error id="ht-household_equipment">
-                                                         {errors.household_equipment}
-                                                      </FormHelperText>
-                                                   )}
-                                                   <Grid container spacing={2}>
-                                                      <Grid xs={12} md={6} sx={{ mb: 1 }}>
-                                                         <FormGroup>
-                                                            {/* Agua Potable */}
-                                                            <FormControlLabel
-                                                               control={<Checkbox checked={values.b5_drinking_water || false} />}
-                                                               label="Agua Potable"
-                                                               id="b5_drinking_water"
-                                                               name="b5_drinking_water"
-                                                               value={true}
-                                                               onChange={handleChange}
-                                                               onBlur={handleBlur}
-                                                               // disabled={values.id == 0 ? false : true}
-                                                               // error={errors.b5_drinking_water}
-                                                               // touched={touched.b5_drinking_water}
-                                                            />
-                                                            {/* {
-                                                               touched.b5_drinking_water && errors.b5_drinking_water && showErrorInput(7, errors.b5_drinking_water)
-                                                               // <FormHelperText error id="ht-b5_drinking_water">
-                                                               //    {errors.b5_drinking_water}
-                                                               // </FormHelperText>
-                                                            } */}
-                                                            {/* Luz Eléctrica */}
-                                                            <FormControlLabel
-                                                               control={<Checkbox checked={values.b5_electric_light || false} />}
-                                                               label="Luz Eléctrica"
-                                                               id="b5_electric_light"
-                                                               name="b5_electric_light"
-                                                               value={true}
-                                                               onChange={handleChange}
-                                                               onBlur={handleBlur}
-                                                               // disabled={values.id == 0 ? false : true}
-                                                            />
-                                                            {/* Drenaje */}
-                                                            <FormControlLabel
-                                                               control={<Checkbox checked={values.b5_sewer_system || false} />}
-                                                               label="Drenaje"
-                                                               id="b5_sewer_system"
-                                                               name="b5_sewer_system"
-                                                               value={true}
-                                                               onChange={handleChange}
-                                                               onBlur={handleBlur}
-                                                               // disabled={values.id == 0 ? false : true}
-                                                            />
-                                                            {/* Pavimento */}
-                                                            <FormControlLabel
-                                                               control={<Checkbox checked={values.b5_pavement || false} />}
-                                                               label="Pavimento"
-                                                               id="b5_pavement"
-                                                               name="b5_pavement"
-                                                               value={true}
-                                                               onChange={handleChange}
-                                                               onBlur={handleBlur}
-                                                               // disabled={values.id == 0 ? false : true}
-                                                            />
-                                                         </FormGroup>
-                                                      </Grid>
-                                                      <Grid xs={12} md={6} sx={{ mb: 1 }}>
-                                                         <FormGroup>
-                                                            {/* Automóvil */}
-                                                            <FormControlLabel
-                                                               control={<Checkbox checked={values.b5_automobile || false} />}
-                                                               label="Automóvil"
-                                                               id="b5_automobile"
-                                                               name="b5_automobile"
-                                                               value={true}
-                                                               onChange={handleChange}
-                                                               onBlur={handleBlur}
-                                                               // disabled={values.id == 0 ? false : true}
-                                                            />
-                                                            {/* Línea Telefónica */}
-                                                            <FormControlLabel
-                                                               control={<Checkbox checked={values.b5_phone_line || false} />}
-                                                               label="Línea Telefónica"
-                                                               id="b5_phone_line"
-                                                               name="b5_phone_line"
-                                                               value={true}
-                                                               onChange={handleChange}
-                                                               onBlur={handleBlur}
-                                                               // disabled={values.id == 0 ? false : true}
-                                                            />
-                                                            {/* Internet */}
-                                                            <FormControlLabel
-                                                               control={<Checkbox checked={values.b5_internet || false} />}
-                                                               label="Internet"
-                                                               id="b5_internet"
-                                                               name="b5_internet"
-                                                               value={true}
-                                                               onChange={handleChange}
-                                                               onBlur={handleBlur}
-                                                               // disabled={values.id == 0 ? false : true}
-                                                            />
-                                                         </FormGroup>
-                                                      </Grid>
-                                                   </Grid>
-                                                </FormControl>
-                                             </ol>
-                                          </Grid>
-                                       </Grid>
-
-                                       {folio > 0 && <ButtonsBeforeOrNext isSubmitting={isSubmitting} setValues={setValues} />}
-                                    </Box>
-                                 )}
-                              </Formik>
+                              <FormikComponent
+                                 key={"formikComponent7"}
+                                 initialValues={formData}
+                                 validationSchema={validationSchemas(activeStep + 1)}
+                                 onSubmit={onSubmit7}
+                                 formikRef={formik}
+                                 activeStep={activeStep}
+                                 setStepFailed={setStepFailed}
+                                 showActionButtons={false}
+                              >
+                                 <InputsFormik7
+                                    folio={folio}
+                                    pagina={pagina}
+                                    activeStep={activeStep}
+                                    setStepFailed={setStepFailed}
+                                    ButtonsBeforeOrNext={ButtonsBeforeOrNext}
+                                 />
+                              </FormikComponent>
                            )}
                            {activeStep + 1 == 8 && (
-                              <Formik initialValues={formData} validationSchema={validationSchemas(activeStep + 1)} onSubmit={onSubmit8}>
-                                 {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
-                                    <Box
-                                       sx={{ height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between" }}
-                                       component={"form"}
-                                       onSubmit={handleSubmit}
-                                    >
-                                       <Grid container spacing={2}>
-                                          <Grid xs={12} md={12} sx={{ mb: 3 }}>
-                                             <ol>
-                                                {/* Programa de Becas */}
-                                                <FormControl fullWidth sx={{ mb: 3 }}>
-                                                   <FormLabel id="scholarship_program-label">
-                                                      <Typography variant="h4" component={"p"} mb={1}>
-                                                         <li>¿Tu familia es beneficiaria de algunas de las siguientes becas?</li>
-                                                      </Typography>
-                                                   </FormLabel>
-                                                   {touched.scholarship_program && errors.scholarship_program && (
-                                                      <FormHelperText error id="ht-scholarship_program">
-                                                         {errors.scholarship_program}
-                                                      </FormHelperText>
-                                                   )}
-                                                   <Grid xs={12} md={12} sx={{ mb: 1 }}>
-                                                      <FormGroup sx={{ display: "flex", flexDirection: "row" }}>
-                                                         {/* Beca de Transporte */}
-                                                         <FormControlLabel
-                                                            control={<Checkbox checked={values.b6_beca_transport || false} />}
-                                                            label="Beca de Transporte"
-                                                            id="b6_beca_transport"
-                                                            name="b6_beca_transport"
-                                                            value={true}
-                                                            onChange={handleChange}
-                                                            onBlur={handleBlur}
-                                                            // disabled={values.id == 0 ? false : true}
-                                                            sx={{ mr: 10 }}
-                                                         />
-                                                         {/* Beca para el Bienestar Benito Juárez */}
-                                                         <FormControlLabel
-                                                            control={<Checkbox checked={values.b6_beca_benito_juarez || false} />}
-                                                            label="Beca para el Bienestar Benito Juárez"
-                                                            id="b6_beca_benito_juarez"
-                                                            name="b6_beca_benito_juarez"
-                                                            value={true}
-                                                            onChange={handleChange}
-                                                            onBlur={handleBlur}
-                                                            // disabled={values.id == 0 ? false : true}
-                                                            sx={{ mr: 10 }}
-                                                         />
-                                                         {/* Beca Jóvenes Construyendo el Futuro */}
-                                                         <FormControlLabel
-                                                            control={<Checkbox checked={values.b6_beca_jovenes || false} />}
-                                                            label="Beca Jóvenes Construyendo el Futuro"
-                                                            id="b6_beca_jovenes"
-                                                            name="b6_beca_jovenes"
-                                                            value={true}
-                                                            onChange={handleChange}
-                                                            onBlur={handleBlur}
-                                                            // disabled={values.id == 0 ? false : true}
-                                                            sx={{ mr: 10 }}
-                                                         />
-                                                         {/* Otra */}
-                                                         <FormControlLabel
-                                                            control={<Checkbox checked={values.b6_other || false} />}
-                                                            label="Otra"
-                                                            id="b6_other"
-                                                            name="b6_other"
-                                                            value={true}
-                                                            onChange={handleChange}
-                                                            onBlur={handleBlur}
-                                                            // disabled={values.id == 0 ? false : true}
-                                                            sx={{ mr: 10 }}
-                                                         />
-                                                      </FormGroup>
-                                                   </Grid>
-                                                </FormControl>
-                                             </ol>
-
-                                             {/* Bajo Protesta */}
-                                             <FormControlLabel
-                                                control={<Checkbox checked={values.under_protest || false} />}
-                                                label="Bajo Protesta de decir la verdad, manifiesto que la información proporcionada en esta solicitud es verídica."
-                                                id="under_protest"
-                                                name="under_protest"
-                                                value={true}
-                                                onChange={handleChange}
-                                                onBlur={handleBlur}
-                                                // disabled={values.id == 0 ? false : true}
-                                                error={errors.under_protest}
-                                                touched={touched.under_protest}
-                                             />
-                                             {touched.under_protest && errors.under_protest && showErrorInput(8, errors.under_protest, true)}
-                                          </Grid>
-                                       </Grid>
-
-                                       {folio > 0 && <ButtonsBeforeOrNext isSubmitting={isSubmitting} setValues={setValues} />}
-                                    </Box>
-                                 )}
-                              </Formik>
+                              <FormikComponent
+                                 key={"formikComponent8"}
+                                 initialValues={formData}
+                                 validationSchema={validationSchemas(activeStep + 1)}
+                                 onSubmit={onSubmit8}
+                                 formikRef={formik}
+                                 activeStep={activeStep}
+                                 setStepFailed={setStepFailed}
+                                 showActionButtons={false}
+                              >
+                                 <InputsFormik8
+                                    folio={folio}
+                                    pagina={pagina}
+                                    activeStep={activeStep}
+                                    setStepFailed={setStepFailed}
+                                    ButtonsBeforeOrNext={ButtonsBeforeOrNext}
+                                 />
+                              </FormikComponent>
                            )}
                            {activeStep + 1 == 9 && (
                               <Formik initialValues={formData} validationSchema={validationSchemas(activeStep + 1)} onSubmit={onSubmit9}>

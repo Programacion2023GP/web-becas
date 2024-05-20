@@ -178,6 +178,7 @@ export const InputComponent = ({
    marginBottom,
    textStyleCase = null,
    styleInput = 1,
+   size = "medium",
    ...props
 }) => {
    const formik = useFormikContext(); // Obtiene el contexto de Formik
@@ -197,7 +198,9 @@ export const InputComponent = ({
       flexDirection = "row";
       alignItems = "flex-end";
       variant = "standard";
-      sxInput = { textAlign: "center" };
+      sxInput = { textAlign: "center", maxWidth: "50px", my: 0, py: 0 };
+      marginBottom = -2.5;
+      size = "small";
    }
 
    useEffect(() => {
@@ -209,7 +212,7 @@ export const InputComponent = ({
          xs={12}
          xsOffset={xsOffset}
          md={col}
-         sx={{ display: hidden ? "none" : "flex", flexDirection: flexDirection, alignItems: alignItems, mb: marginBottom ? `${marginBottom} 0` : 2 }}
+         sx={{ display: hidden ? "none" : "flex", flexDirection: flexDirection, alignItems: alignItems, mb: marginBottom ? marginBottom : 2 }}
       >
          {mask ? (
             <Field name={idName}>
@@ -276,6 +279,7 @@ export const InputComponent = ({
                      InputLabelProps={{
                         style: color ? { color: color } : {}
                      }}
+                     size={size}
                      sx={sxInput}
                      startAdornment={
                         // <Tooltip title={""} placement={"top"}>
@@ -315,6 +319,7 @@ export const InputComponent = ({
                      InputLabelProps={{
                         style: color ? { color: color } : {}
                      }}
+                     size={size}
                      sx={sxInput}
                      startAdornment={
                         // <Tooltip title={""} placement={"top"}>
@@ -883,22 +888,37 @@ export const RadioButtonComponent = ({
 //#endregion IMPORTS
 
 // =================== COMPONENTE =======================
-export const CheckboxComponent = ({ loading = false, col, label, idName, checked = false, value, disabled, rowLayout = true, color = "primary" }) => {
+export const CheckboxComponent = ({
+   loading = false,
+   col,
+   label,
+   idName,
+   checked = null,
+   value,
+   disabled,
+   rowLayout = true,
+   color = "primary",
+   marginBottom,
+   ...props
+}) => {
    const [checkedComponent, setCheckedComponent] = useState(checked); // Estado inicializado como falso
    const formik = useFormikContext();
    const isError = formik.touched[idName] && formik.errors[idName];
 
    useEffect(() => {
-      if (checked) {
-         formik.setFieldValue(idName, value);
+      if (checked == null) {
+         setCheckedComponent(formik.values[idName]);
       }
+      // } else {
+      //    formik.setFieldValue(idName, value);
+      // }
       // console.log("aqui", formik.values[idName]);
    }, [checked, formik.values[idName]]);
 
    return (
       <>
          {rowLayout && <Grid item xs={12} />}
-         <Grid xs={col} sx={{ display: "flex", alignItems: "center", position: "relative" }}>
+         <Grid xs={col} sx={{ display: "flex", alignItems: "center", position: "relative", mb: marginBottom ? marginBottom : 2 }}>
             <FormControlLabel
                control={
                   <Checkbox
@@ -907,7 +927,7 @@ export const CheckboxComponent = ({ loading = false, col, label, idName, checked
                      onChange={(e) => {
                         const checked = e.target.checked;
                         setCheckedComponent(checked); // Actualiza el estado del componente
-                        formik.setFieldValue(idName, checked ? value : undefined);
+                        formik.setFieldValue(idName, checked ? value : false);
                      }}
                      disabled={loading || disabled}
                      color={color}
@@ -924,6 +944,7 @@ export const CheckboxComponent = ({ loading = false, col, label, idName, checked
                      fontSize: "14px"
                   }
                }}
+               {...props}
             />
             {loading && <CircularProgress sx={{ position: "absolute", top: "40%", left: "40%" }} />}
             <Typography sx={{ color: isError ? "red" : "gray" }} variant="subtitle2" color="initial">
