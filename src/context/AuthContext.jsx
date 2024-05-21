@@ -223,6 +223,7 @@ export default function AuthContextProvider({ children }) {
             return;
          }
          if (updateAuth) await updatePermissionsAuth(auth.id);
+         // window.addEventListener('hashchange',()=>{console.log('cambie de ruyta Luisao')}) IMPLEMENTARRRRRRR
 
          // console.log("auth.despues", auth);
          // #region VALIDAR SI TENGO PERMISO PARA ACCEDER A ESTA PAGINA
