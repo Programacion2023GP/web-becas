@@ -1,4 +1,5 @@
 import { useFormikContext } from "formik";
+import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
 import {
    DatePickerComponent,
    DividerComponent,
@@ -90,82 +91,92 @@ const InputsFormik2 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
 
    return (
       <>
-         {/* CURP */}
-         <InputComponent
-            col={4}
-            idName={"curp"}
-            label={"CURP *"}
-            placeholder={"Escribe tu CURP"}
-            onChange={(e) => {
-               handleChangeCURP(e, formik.values, formik.setFieldValue);
-            }}
-            inputProps={{ maxLength: 18 }}
-            textStyleCase={true}
-            disabled={formik.values.id == 0 ? false : true}
-            loading={loadingCURP}
-            // inputRef={inputRefCurp}
-         />
+         <Grid width={"100%"} xs={12} spacing={2} height={"67vh"} MaxHeight={"67vh"} overflow={"auto"}>
+            <Grid xs={12} container spacing={2}>
+               {/* CURP */}
+               <InputComponent
+                  col={4}
+                  idName={"curp"}
+                  label={"CURP *"}
+                  placeholder={"Escribe tu CURP"}
+                  onChange={(e) => {
+                     handleChangeCURP(e, formik.values, formik.setFieldValue);
+                  }}
+                  inputProps={{ maxLength: 18 }}
+                  textStyleCase={true}
+                  disabled={formik.values.id == 0 ? false : true}
+                  loading={loadingCURP}
+                  // inputRef={inputRefCurp}
+               />
 
-         {/* Nombre del Alumno */}
-         <InputComponent
-            col={8}
-            idName={"name"}
-            label={"Nombre del Alumno *"}
-            placeholder={"Escribe el nombre del alumno"}
-            textStyleCase={true}
-            disabled={formik.values.id == 0 ? false : true}
-         />
+               {/* Nombre del Alumno */}
+               <InputComponent
+                  col={8}
+                  idName={"name"}
+                  label={"Nombre del Alumno *"}
+                  placeholder={"Escribe el nombre del alumno"}
+                  textStyleCase={true}
+                  disabled={formik.values.id == 0 ? false : true}
+               />
 
-         {/* Apellido Paterno del Alumno */}
-         <InputComponent
-            col={6}
-            idName={"paternal_last_name"}
-            label={"Apellido Paterno *"}
-            placeholder={"Escribe el apellido paterno del alumno"}
-            textStyleCase={true}
-            disabled={formik.values.id == 0 ? false : true}
-         />
+               {/* Apellido Paterno del Alumno */}
+               <InputComponent
+                  col={6}
+                  idName={"paternal_last_name"}
+                  label={"Apellido Paterno *"}
+                  placeholder={"Escribe el apellido paterno del alumno"}
+                  textStyleCase={true}
+                  disabled={formik.values.id == 0 ? false : true}
+               />
 
-         {/* Apellido Materno del Alumno */}
-         <InputComponent
-            col={6}
-            idName={"maternal_last_name"}
-            label={"Apellido Materno *"}
-            placeholder={"Escribe el apellido materno del alumno"}
-            textStyleCase={true}
-            disabled={formik.values.id == 0 ? false : true}
-         />
+               {/* Apellido Materno del Alumno */}
+               <InputComponent
+                  col={6}
+                  idName={"maternal_last_name"}
+                  label={"Apellido Materno *"}
+                  placeholder={"Escribe el apellido materno del alumno"}
+                  textStyleCase={true}
+                  disabled={formik.values.id == 0 ? false : true}
+               />
 
-         {/* Fecha de Nacimiento */}
-         <DatePickerComponent col={4} idName={"birthdate"} label={"Fecha de Nacimiento *"} format={"DD/MM/YYYY"} disabled={formik.values.id == 0 ? false : true} />
+               {/* Fecha de Nacimiento */}
+               <DatePickerComponent
+                  col={4}
+                  idName={"birthdate"}
+                  label={"Fecha de Nacimiento *"}
+                  format={"DD/MM/YYYY"}
+                  disabled={formik.values.id == 0 ? false : true}
+               />
 
-         {/* Genero */}
-         <RadioButtonComponent
-            col={4}
-            title={"Género"}
-            idName={"gender"}
-            options={[
-               { value: "MASCULINO", label: "Masculino" },
-               { value: "FEMENINO", label: "Femenino" }
-            ]}
-            disabled={formik.values.id == 0 ? false : true}
-         />
+               {/* Genero */}
+               <RadioButtonComponent
+                  col={4}
+                  title={"Género"}
+                  idName={"gender"}
+                  options={[
+                     { value: "MASCULINO", label: "Masculino" },
+                     { value: "FEMENINO", label: "Femenino" }
+                  ]}
+                  disabled={formik.values.id == 0 ? false : true}
+               />
 
-         {/* Discapacidad */}
-         <Select2Component
-            col={4}
-            idName={"disability_id"}
-            label={"¿Tienes alguna discapacaidad?"}
-            options={disabilities}
-            disabled={formik.values.id == 0 ? false : true}
-            pluralName={"Discapacidades"}
-            refreshSelect={getDisabilitiesSelectIndex}
-         />
+               {/* Discapacidad */}
+               <Select2Component
+                  col={4}
+                  idName={"disability_id"}
+                  label={"¿Tienes alguna discapacaidad?"}
+                  options={disabilities}
+                  disabled={formik.values.id == 0 ? false : true}
+                  pluralName={"Discapacidades"}
+                  refreshSelect={getDisabilitiesSelectIndex}
+               />
 
-         <DividerComponent />
+               <DividerComponent />
 
-         {/* INPUTS DE COMUNIDAD */}
-         <InputsCommunityComponent formData={formData} setFormData={setFormData} columnsByTextField={3} />
+               {/* INPUTS DE COMUNIDAD */}
+               <InputsCommunityComponent formData={formData} setFormData={setFormData} columnsByTextField={3} />
+            </Grid>
+         </Grid>
 
          {!(folio > 0) && <ButtonsBeforeOrNext isSubmitting={formik.isSubmitting} setValues={formik.setValues} />}
       </>

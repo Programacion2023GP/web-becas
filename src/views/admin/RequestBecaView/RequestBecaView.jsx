@@ -1,63 +1,26 @@
 import { Fragment, useEffect, useRef, useState } from "react";
 import { ROLE_ADMIN, useGlobalContext } from "../../../context/GlobalContext";
-import { Box, fontWeight } from "@mui/system";
-import {
-   Button,
-   ButtonGroup,
-   Checkbox,
-   Divider,
-   FormControl,
-   FormControlLabel,
-   FormGroup,
-   FormHelperText,
-   FormLabel,
-   Icon,
-   IconButton,
-   Input,
-   Radio,
-   RadioGroup,
-   Step,
-   StepLabel,
-   Stepper,
-   TextField,
-   ToggleButton,
-   ToggleButtonGroup,
-   Tooltip,
-   Typography
-} from "@mui/material";
-import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
-import { Formik } from "formik";
+import { Box } from "@mui/system";
+import { Button, Step, StepLabel, Stepper, Typography } from "@mui/material";
 import * as Yup from "yup";
 
 import { useRequestBecaContext } from "../../../context/RequestBecaContext";
-import { IconCircleCheck, IconCircleX, IconEdit, IconInfoCircle } from "@tabler/icons";
-import { useStudentContext } from "../../../context/StudentContext";
 import Toast from "../../../utils/Toast";
-import { Link, Navigate, useLoaderData, useParams } from "react-router-dom";
-import { CorrectRes, ErrorRes } from "../../../utils/Response";
-import { Axios, useAuthContext } from "../../../context/AuthContext";
+import { Link, useParams } from "react-router-dom";
+import { useAuthContext } from "../../../context/AuthContext";
 import sAlert from "../../../utils/sAlert";
 import IconSended from "../../../components/icons/IconSended";
-import Select2Component from "../../../components/Form/Select2Component";
-import InputsCommunityComponent, { getCommunity } from "../../../components/Form/InputsCommunityComponent";
-import { formatCurrency, formatDatetimeToSQL, handleInputFormik } from "../../../utils/Formats";
+import { formatDatetimeToSQL } from "../../../utils/Formats";
 
-import DatePickerComponent from "../../../components/Form/DatePickerComponent";
 import { useDisabilityContext } from "../../../context/DisabilityContext";
 import { useSchoolContext } from "../../../context/SchoolContext";
 import { useRelationshipContext } from "../../../context/RelationshipContext";
-import InputFileComponent, { setObjImg } from "../../../components/Form/InputFileComponent";
+import { setObjImg } from "../../../components/Form/InputFileComponent";
 import { useTutorContext } from "../../../context/TutorContext";
-import SimpleTableComponent from "../../../components/SimpleTableComponent";
-import { AddCircleOutlineOutlined } from "@mui/icons-material";
-import InputComponentv2, { InputComponentv3 } from "../../../components/Form/InputComponent2";
-import IconDelete from "../../../components/icons/IconDelete";
-import FamilyDT, { monthlyIncome } from "./FamilyDT";
 import { useFamilyContext } from "../../../context/FamilyContext";
 import { validateImageRequired } from "../../../utils/Validations";
-import { InputComponentEST } from "../../../components/Form/InputComponentEST";
 import LogoGPD from "../../../assets/images/icon.png";
-import { FormikComponent, InputComponent } from "../../../components/Form/FormikComponents";
+import { FormikComponent } from "../../../components/Form/FormikComponents";
 import InputsFormik1 from "./InputsFormik1";
 import InputsFormik2 from "./InputsFormik2";
 import InputsFormik3 from "./InputsFormik3";
@@ -77,26 +40,15 @@ const RequestBecaView = () => {
 
    // const [folio, setFolio] = useState(null);
 
-   const {
-      setLoading,
-      setLoadingAction,
-      setDisabledState,
-      setDisabledCity,
-      setDisabledColony,
-      setShowLoading,
-      setDataStates,
-      setDataCities,
-      setDataColonies,
-      setDataColoniesComplete
-   } = useGlobalContext();
+   const { setLoading, setLoadingAction } = useGlobalContext();
 
-   const { families, monthlyIncome } = useFamilyContext();
+   const { families } = useFamilyContext();
 
-   const { disabilities, getDisabilitiesSelectIndex } = useDisabilityContext();
-   const { relationships, getRelationshipsSelectIndex } = useRelationshipContext();
-   const { schools, getSchoolsSelectIndex } = useSchoolContext();
+   const { getDisabilitiesSelectIndex } = useDisabilityContext();
+   const { getRelationshipsSelectIndex } = useRelationshipContext();
+   const { getSchoolsSelectIndex } = useSchoolContext();
    const { getTutorByCURP } = useTutorContext();
-   const { formData, setFormData, resetFormData, getRequestBecasByFolio, createRequestBeca, updateRequestBeca, saveBeca, requestBeca, saveOrFinishReview } =
+   const { formData, setFormData, resetFormData, getRequestBecasByFolio, createRequestBeca, updateRequestBeca, saveBeca, saveOrFinishReview } =
       useRequestBecaContext();
 
    const [isTutor, setIsTutor] = useState(false); // es true cuando el tutor no es el padre ni la madre
@@ -107,10 +59,70 @@ const RequestBecaView = () => {
    const [imgBirthCertificate, setImgBirthCertificate] = useState([]);
    const [imgAcademicTranscript, setImgAcademicTranscript] = useState([]);
 
-   const inputRefFullNameTutor = useRef(null);
-   const inputRefCurp = useRef(null);
    const inputRefSchoolId = useRef(null);
    const formik = useRef(null);
+   const dataFileInputsFormik9 = [
+      {
+         idName: "b7_img_tutor_ine",
+         label: "Foto INE del Tutor *",
+         filePreviews: imgTutorIne,
+         setFilePreviews: setImgTutorIne,
+         fieldApproved: "b7_approved_tutor_ine",
+         fieldComments: "b7_comments_tutor_ine",
+         name: "INE del tutor",
+         isTutor: false
+      },
+      {
+         idName: "b7_img_tutor_power_letter",
+         label: "Foto Carta Poder del tutor *",
+         filePreviews: imgTutorPowerLetter,
+         setFilePreviews: setImgTutorPowerLetter,
+         fieldApproved: "b7_approved_tutor_power_letter",
+         fieldComments: "b7_comments_tutor_power_letter",
+         name: "Carta Poder",
+         isTutor: isTutor ? true : null
+      },
+      {
+         idName: "b7_img_proof_address",
+         label: "Foto Comprobante de Domicilio *",
+         filePreviews: imgProofAddress,
+         setFilePreviews: setImgProofAddress,
+         fieldApproved: "b7_approved_proof_address",
+         fieldComments: "b7_comments_proof_address",
+         name: "Comprobante de Domicilio",
+         isTutor: false
+      },
+      {
+         idName: "b7_img_curp",
+         label: "Foto de la CURP *",
+         filePreviews: imgCurp,
+         setFilePreviews: setImgCurp,
+         fieldApproved: "b7_approved_curp",
+         fieldComments: "b7_comments_curp",
+         name: "CURP",
+         isTutor: false
+      },
+      {
+         idName: "b7_img_birth_certificate",
+         label: "Foto del Acta de Nacimiento *",
+         filePreviews: imgBirthCertificate,
+         setFilePreviews: setImgBirthCertificate,
+         fieldApproved: "b7_approved_birth_certificate",
+         fieldComments: "b7_comments_birth_certificate",
+         name: "Acta de Nacimiento",
+         isTutor: false
+      },
+      {
+         idName: "b7_img_academic_transcript",
+         label: "Foto del Certificado Estudiantil con Calificaciones *",
+         filePreviews: imgAcademicTranscript,
+         setFilePreviews: setImgAcademicTranscript,
+         fieldApproved: "b7_approved_academic_transcript",
+         fieldComments: "b7_comments_academic_transcript",
+         name: "Acta de Nacimiento",
+         isTutor: false
+      }
+   ];
 
    // #region STEPER
    const steps = [
@@ -231,7 +243,7 @@ const RequestBecaView = () => {
    );
    //#endregion
 
-   const onSubmit1 = async (values, { setSubmitting, setErrors, resetForm, setValues }) => {
+   const onSubmit1 = async (values, { setSubmitting, setErrors, setValues }) => {
       try {
          console.log("values", values);
          await setFormData({ ...formData, ...values });
@@ -254,7 +266,7 @@ const RequestBecaView = () => {
       }
    };
 
-   const onSubmit2 = async (values, { setSubmitting, setErrors, resetForm, setValues }) => {
+   const onSubmit2 = async (values, { setSubmitting, setErrors, setValues }) => {
       try {
          values.num_int = values.num_int === "" ? "S/N" : values.num_int;
 
@@ -278,7 +290,7 @@ const RequestBecaView = () => {
       }
    };
 
-   const onSubmit3 = async (values, { setSubmitting, setErrors, resetForm, setValues, setFieldValue }) => {
+   const onSubmit3 = async (values, { setSubmitting, setErrors, setFieldValue }) => {
       try {
          if (!folio) {
             // console.log("formData en submit3", formData);
@@ -326,7 +338,7 @@ const RequestBecaView = () => {
       }
    };
 
-   const onSubmit4 = async (values, { setSubmitting, setErrors, resetForm, setValues }) => {
+   const onSubmit4 = async (values, { setSubmitting, setErrors }) => {
       try {
          // console.log("formData en submit3", formData);
          values.finished = true;
@@ -356,7 +368,7 @@ const RequestBecaView = () => {
       }
    };
 
-   const onSubmit5 = async (values, { setSubmitting, setErrors, resetForm, setValues }) => {
+   const onSubmit5 = async (values, { setSubmitting, setErrors }) => {
       try {
          // console.log("formData en submit3", formData);
          values.b3_finished = true;
@@ -386,7 +398,7 @@ const RequestBecaView = () => {
       }
    };
 
-   const onSubmit6 = async (values, { setSubmitting, setErrors, resetForm, setValues }) => {
+   const onSubmit6 = async (values, { setSubmitting, setErrors }) => {
       try {
          // console.log("formData en submit3", formData);
          values.b4_finished = true;
@@ -420,7 +432,7 @@ const RequestBecaView = () => {
       }
    };
 
-   const onSubmit7 = async (values, { setSubmitting, setErrors, resetForm, setValues }) => {
+   const onSubmit7 = async (values, { setSubmitting, setErrors }) => {
       try {
          // console.log("formData en submit3", formData);
          values.b5_finished = true;
@@ -474,7 +486,7 @@ const RequestBecaView = () => {
       }
    };
 
-   const onSubmit8 = async (values, { setSubmitting, setErrors, resetForm, setValues }) => {
+   const onSubmit8 = async (values, { setSubmitting, setErrors }) => {
       try {
          // console.log("formData en submit3", formData);
          if (values.under_protest) values.b6_finished = 1;
@@ -516,8 +528,10 @@ const RequestBecaView = () => {
       }
    };
 
-   const onSubmit9 = async (values, { setSubmitting, setErrors, resetForm, setValues }) => {
+   const onSubmit9 = async (values, { setSubmitting, setErrors }) => {
       try {
+         console.log("🚀 ~ onSubmit9 ~ values:", values);
+
          values.b7_img_tutor_ine = imgTutorIne.length == 0 ? "" : imgTutorIne[0].file;
          if (isTutor) values.b7_img_tutor_power_letter = imgTutorPowerLetter.length == 0 ? "" : imgTutorPowerLetter[0].file;
          values.b7_img_proof_address = imgProofAddress.length == 0 ? "" : imgProofAddress[0].file;
@@ -561,10 +575,6 @@ const RequestBecaView = () => {
       } finally {
          setSubmitting(false);
       }
-   };
-
-   const onBlurCapture = () => {
-      setStepFailed(-1);
    };
 
    const validationSchemas = (page) => {
@@ -699,92 +709,7 @@ const RequestBecaView = () => {
       return validationSchema;
    };
 
-   const ButtonsAction = ({ id, name, active }) => {
-      return (
-         <ButtonGroup variant="outlined">
-            <Tooltip title={`Editar ${name}`} placement="top">
-               <IconButton color="info" onClick={() => handleClickEdit(id)}>
-                  <IconEdit />
-               </IconButton>
-            </Tooltip>
-            <Tooltip title={`Eliminar ${name}`} placement="top">
-               <IconButton color="error" onClick={() => handleClickDelete(id, name)}>
-                  <IconDelete />
-               </IconButton>
-            </Tooltip>
-            {/* {auth.role_id == ROLE_SUPER_ADMIN && (
-               <Tooltip title={active ? "Desactivar" : "Reactivar"} placement="right">
-                  <Button color="dark" onClick={() => handleClickDisEnable(id, name, active)} sx={{}}>
-                     <SwitchIOSComponent checked={active} />
-                  </Button>
-               </Tooltip>
-            )} */}
-         </ButtonGroup>
-      );
-   };
-
-   
-
-   const handleClickSaveReview = async (values) => {
-      try {
-         values.action = "save";
-         await setFormData({ ...formData, ...values });
-         // console.log("formData en submit3", formData);
-
-         setLoadingAction(true);
-         const axiosResponse = await saveOrFinishReview(folio, pagina, values);
-         setLoadingAction(false);
-
-         if (axiosResponse.status_code != 200) {
-            Toast.Success(axiosResponse.alert_text);
-            return Toast.Warning(axiosResponse.alert_title);
-         }
-         Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
-         window.location.hash = "/admin/solicitudes/";
-      } catch (error) {
-         console.error(error);
-      } finally {
-      }
-   };
-   const handleClickFinishReview = async (values) => {
-      try {
-         // console.log("estoy en el handleClickFinishReview()", values);
-         if (
-            Boolean(values.b7_approved_tutor_ine) == false ||
-            Boolean(values.b7_approved_proof_address) == false ||
-            Boolean(values.b7_approved_curp) == false ||
-            Boolean(values.b7_approved_birth_certificate) == false ||
-            Boolean(values.b7_approved_academic_transcript) == false
-         )
-            return Toast.Info("Solo al tener todos los docuemntos aprobados puedes finalizar la revisión");
-         if (isTutor && Boolean(values.b7_approved_tutor_power_letter) == false)
-            return Toast.Info("Solo al tener todos los docuemntos aprobados puedes finalizar la revisión");
-
-         values.action = "finish";
-         await setFormData({ ...formData, ...values });
-         // console.log("formData en submit3", formData);
-
-         setLoadingAction(true);
-         const axiosResponse = await saveOrFinishReview(folio, pagina, values);
-         setLoadingAction(false);
-
-         if (axiosResponse.status_code != 200) {
-            Toast.Success(axiosResponse.alert_text);
-            return Toast.Warning(axiosResponse.alert_title);
-         }
-         Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
-         window.location.hash = "/admin/solicitudes/";
-      } catch (error) {
-         console.error(error);
-      } finally {
-      }
-   };
-
    const [houseIs, setHouseIs] = useState("Porpia");
-   const handleHouseIs = (event, newValue) => {
-      // console.log("el newValue", event.target.value);
-      setHouseIs(event.target.value);
-   };
 
    const handleModify = async (setValues) => {
       try {
@@ -945,6 +870,7 @@ const RequestBecaView = () => {
                                     activeStep={activeStep}
                                     setStepFailed={setStepFailed}
                                     ButtonsBeforeOrNext={ButtonsBeforeOrNext}
+                                    setIsTutor={setIsTutor}
                                  />
                               </FormikComponent>
                            )}
@@ -1106,6 +1032,7 @@ const RequestBecaView = () => {
                                     setStepFailed={setStepFailed}
                                     ButtonsBeforeOrNext={ButtonsBeforeOrNext}
                                     isTutor={isTutor}
+                                    dataFileInputs={dataFileInputsFormik9}
                                  />
                               </FormikComponent>
                            )}

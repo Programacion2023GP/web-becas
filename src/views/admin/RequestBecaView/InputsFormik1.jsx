@@ -1,4 +1,5 @@
 import { useFormikContext } from "formik";
+import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
 import { InputComponent, Select2Component } from "../../../components/Form/FormikComponents";
 import { useRelationshipContext } from "../../../context/RelationshipContext";
 import { useTutorContext } from "../../../context/TutorContext";
@@ -7,7 +8,7 @@ import { useRequestBecaContext } from "../../../context/RequestBecaContext";
 import sAlert from "../../../utils/sAlert";
 import { useEffect } from "react";
 
-const InputsFormik1 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBeforeOrNext }) => {
+const InputsFormik1 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBeforeOrNext, setIsTutor }) => {
    const { formData, setFormData } = useRequestBecaContext();
    const { relationships, getRelationshipsSelectIndex } = useRelationshipContext();
    const { getTutorByCURP } = useTutorContext();
@@ -48,65 +49,69 @@ const InputsFormik1 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
    const formik = useFormikContext();
    return (
       <>
-         {/* CURP tutor */}
-         <InputComponent
-            col={6}
-            idName={"tutor_curp"}
-            label={"CURP *"}
-            placeholder={"Escribe tu CURP"}
-            textStyleCase={true}
-            onChange={(e) => {
-               handleChangeTutorCURP(e, formik.values, formik.setFieldValue);
-            }}
-            disabled={formik.values.id == 0 ? false : true}
-         />
-         {/* Parentesco */}
-         <Select2Component
-            col={6}
-            idName={"tutor_relationship_id"}
-            label={"Parentesco *"}
-            options={relationships}
-            handleChangeValueSuccess={handleChangeRelationships}
-            disabled={formik.values.id == 0 ? false : true}
-            pluralName={"Parentescos"}
-            refreshSelect={getRelationshipsSelectIndex}
-         />
-         {/* Nombre Tutor */}
-         <InputComponent
-            col={6}
-            idName={"tutor_name"}
-            label={"Nombre del Tutor *"}
-            placeholder={"Escribir nombre completo"}
-            disabled={formik.values.id == 0 ? false : true}
-         />
+         <Grid width={"100%"} xs={12} spacing={2} height={"67vh"} MaxHeight={"67vh"} overflow={"auto"}>
+            <Grid xs={12} container spacing={2}>
+               {/* CURP tutor */}
+               <InputComponent
+                  col={6}
+                  idName={"tutor_curp"}
+                  label={"CURP *"}
+                  placeholder={"Escribe tu CURP"}
+                  textStyleCase={true}
+                  onChange={(e) => {
+                     handleChangeTutorCURP(e, formik.values, formik.setFieldValue);
+                  }}
+                  disabled={formik.values.id == 0 ? false : true}
+               />
+               {/* Parentesco */}
+               <Select2Component
+                  col={6}
+                  idName={"tutor_relationship_id"}
+                  label={"Parentesco *"}
+                  options={relationships}
+                  handleChangeValueSuccess={handleChangeRelationships}
+                  disabled={formik.values.id == 0 ? false : true}
+                  pluralName={"Parentescos"}
+                  refreshSelect={getRelationshipsSelectIndex}
+               />
+               {/* Nombre Tutor */}
+               <InputComponent
+                  col={6}
+                  idName={"tutor_name"}
+                  label={"Nombre del Tutor *"}
+                  placeholder={"Escribir nombre completo"}
+                  disabled={formik.values.id == 0 ? false : true}
+               />
 
-         {/* Apellido Paterno Tutor */}
-         <InputComponent
-            col={6}
-            idName={"tutor_paternal_last_name"}
-            label={"Apellido Paterno del Tutor *"}
-            placeholder={"Escribe tu primer apellido"}
-            textStyleCase={true}
-            disabled={formik.values.id == 0 ? false : true}
-         />
-         {/* Apellido Materno Tutor */}
-         <InputComponent
-            col={6}
-            idName={"tutor_maternal_last_name"}
-            label={"Apellido Materno del Tutor *"}
-            placeholder={"Escbribe tu segundo apellido"}
-            textStyleCase={true}
-            disabled={formik.values.id == 0 ? false : true}
-         />
-         {/* Tel Tutor */}
-         <InputComponent
-            col={6}
-            idName={"tutor_phone"}
-            label={"Teléfono Tutor *"}
-            placeholder={"10 dígitos"}
-            inputProps={{ maxLength: 10 }}
-            disabled={formik.values.id == 0 ? false : true}
-         />
+               {/* Apellido Paterno Tutor */}
+               <InputComponent
+                  col={6}
+                  idName={"tutor_paternal_last_name"}
+                  label={"Apellido Paterno del Tutor *"}
+                  placeholder={"Escribe tu primer apellido"}
+                  textStyleCase={true}
+                  disabled={formik.values.id == 0 ? false : true}
+               />
+               {/* Apellido Materno Tutor */}
+               <InputComponent
+                  col={6}
+                  idName={"tutor_maternal_last_name"}
+                  label={"Apellido Materno del Tutor *"}
+                  placeholder={"Escbribe tu segundo apellido"}
+                  textStyleCase={true}
+                  disabled={formik.values.id == 0 ? false : true}
+               />
+               {/* Tel Tutor */}
+               <InputComponent
+                  col={6}
+                  idName={"tutor_phone"}
+                  label={"Teléfono Tutor *"}
+                  placeholder={"10 dígitos"}
+                  inputProps={{ maxLength: 10 }}
+                  disabled={formik.values.id == 0 ? false : true}
+               />
+            </Grid>
+         </Grid>
 
          {!(folio > 0) && <ButtonsBeforeOrNext isSubmitting={formik.isSubmitting} setValues={formik.setValues} />}
       </>

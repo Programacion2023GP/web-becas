@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { useFormikContext } from "formik";
 import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
 import { FileInputComponent, InputComponent, DividerComponent } from "../../../components/Form/FormikComponents";
@@ -5,31 +6,15 @@ import { useRequestBecaContext } from "../../../context/RequestBecaContext";
 import { ROLE_ADMIN, useGlobalContext } from "../../../context/GlobalContext";
 import { Box, Button, ButtonGroup, FormControl, FormGroup, FormLabel, Icon, Tooltip, Typography } from "@mui/material";
 import { useAuthContext } from "../../../context/AuthContext";
-import { useState } from "react";
 import { IconCircleCheck, IconCircleX } from "@tabler/icons";
-import { display } from "@mui/system";
 
-const InputsFormik9 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBeforeOrNext, isTutor }) => {
+const InputsFormik9 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBeforeOrNext, isTutor, dataFileInputs = [] }) => {
    useGlobalContext();
    const { auth } = useAuthContext();
    const { formData, setFormData } = useRequestBecaContext();
    const formik = useFormikContext();
 
    const [imgTutorIne, setImgTutorIne] = useState([]);
-
-   const handleClickBtnCheckApproved = (setFieldValue, fieldApproved, fieldComments) => {
-      try {
-         setFieldValue(fieldApproved, true);
-         setFieldValue(fieldComments, "Archivo cargado correctamente.");
-      } catch (error) {}
-   };
-   const handleClickBtnCheckDecline = (setFieldValue, fieldApproved, fieldComments) => {
-      try {
-         setFieldValue(fieldApproved, false);
-         setFieldValue(fieldComments, "");
-         console.log("formik.values", formik.values);
-      } catch (error) {}
-   };
 
    const ButtonsApprovedDocument = ({ setFieldValue, fieldApproved, fieldComments, name = "documento", approved = true }) => {
       const iconSize = 65;
@@ -75,118 +60,140 @@ const InputsFormik9 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
          </>
       );
    };
+   const handleClickBtnCheckApproved = (setFieldValue, fieldApproved, fieldComments) => {
+      try {
+         setFieldValue(fieldApproved, true);
+         setFieldValue(fieldComments, "Archivo cargado correctamente.");
+      } catch (error) {}
+   };
+   const handleClickBtnCheckDecline = (setFieldValue, fieldApproved, fieldComments) => {
+      try {
+         setFieldValue(fieldApproved, false);
+         setFieldValue(fieldComments, "");
+      } catch (error) {}
+   };
 
-   // useEffect(() => {});
-   const dataFileInputs = [
-      {
-         idName: "b7_img_tutor_ine",
-         label: "Foto INE del Tutor",
-         filePreviews: imgTutorIne,
-         setFilePreviews: setImgTutorIne,
-         fieldApproved: "b7_approved_tutor_ine",
-         fieldComments: "b7_comments_tutor_ine",
-         name: "INE del tutor",
-         isTutor: false
-      },
-      {
-         idName: "b7_img_tutor_ine",
-         label: "Foto INE del Tutor",
-         filePreviews: imgTutorIne,
-         setFilePreviews: setImgTutorIne,
-         fieldApproved: "b7_approved_tutor_ine",
-         fieldComments: "b7_comments_tutor_ine",
-         name: "INE del tutor",
-         isTutor: false
-      },
-      {
-         idName: "b7_img_tutor_ine",
-         label: "Foto INE del Tutor",
-         filePreviews: imgTutorIne,
-         setFilePreviews: setImgTutorIne,
-         fieldApproved: "b7_approved_tutor_ine",
-         fieldComments: "b7_comments_tutor_ine",
-         name: "INE del tutor",
-         isTutor: false
-      },
-      {
-         idName: "b7_img_tutor_ine",
-         label: "Foto INE del Tutor",
-         filePreviews: imgTutorIne,
-         setFilePreviews: setImgTutorIne,
-         fieldApproved: "b7_approved_tutor_ine",
-         fieldComments: "b7_comments_tutor_ine",
-         name: "INE del tutor",
-         isTutor: false
-      },
-      {
-         idName: "b7_img_tutor_ine",
-         label: "Foto INE del Tutor",
-         filePreviews: imgTutorIne,
-         setFilePreviews: setImgTutorIne,
-         fieldApproved: "b7_approved_tutor_ine",
-         fieldComments: "b7_comments_tutor_ine",
-         name: "INE del tutor",
-         isTutor: false
-      },
-      {
-         idName: "b7_img_tutor_ine",
-         label: "Foto INE del Tutor",
-         filePreviews: imgTutorIne,
-         setFilePreviews: setImgTutorIne,
-         fieldApproved: "b7_approved_tutor_ine",
-         fieldComments: "b7_comments_tutor_ine",
-         name: "INE del tutor",
-         isTutor: false
+   const handleClickSaveReview = async (values) => {
+      try {
+         values.action = "save";
+         await setFormData({ ...formData, ...values });
+         // console.log("formData en submit3", formData);
+
+         setLoadingAction(true);
+         const axiosResponse = await saveOrFinishReview(folio, pagina, values);
+         setLoadingAction(false);
+
+         if (axiosResponse.status_code != 200) {
+            Toast.Success(axiosResponse.alert_text);
+            return Toast.Warning(axiosResponse.alert_title);
+         }
+         Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
+         window.location.hash = "/admin/solicitudes/";
+      } catch (error) {
+         console.error(error);
+      } finally {
       }
-   ];
+   };
+   const handleClickFinishReview = async (values) => {
+      try {
+         // console.log("estoy en el handleClickFinishReview()", values);
+         if (
+            Boolean(values.b7_approved_tutor_ine) == false ||
+            Boolean(values.b7_approved_proof_address) == false ||
+            Boolean(values.b7_approved_curp) == false ||
+            Boolean(values.b7_approved_birth_certificate) == false ||
+            Boolean(values.b7_approved_academic_transcript) == false
+         )
+            return Toast.Info("Solo al tener todos los docuemntos aprobados puedes finalizar la revisión");
+         if (isTutor && Boolean(values.b7_approved_tutor_power_letter) == false)
+            return Toast.Info("Solo al tener todos los docuemntos aprobados puedes finalizar la revisión");
+
+         values.action = "finish";
+         await setFormData({ ...formData, ...values });
+         // console.log("formData en submit3", formData);
+
+         setLoadingAction(true);
+         const axiosResponse = await saveOrFinishReview(folio, pagina, values);
+         setLoadingAction(false);
+
+         if (axiosResponse.status_code != 200) {
+            Toast.Success(axiosResponse.alert_text);
+            return Toast.Warning(axiosResponse.alert_title);
+         }
+         Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
+         window.location.hash = "/admin/solicitudes/";
+      } catch (error) {
+         console.error(error);
+      } finally {
+      }
+   };
+
+   // useEffect(() => {}, []);
 
    return (
       <>
-         <Grid container spacing={2} xs={12} sx={{ height: "69vh", overflowY: "auto" }}>
-            {/* IMAGEN DE INE TUTOR */}
-            {dataFileInputs.map((dataInput, index) => (
-               <>
-                  {dataInput.isTutor && (
-                     <Typography variant="h4" sx={{ display: "block", width: "100%", mb: 1 }}>
-                        Al no ser familiar directo favor de cargar el documento de Carta Poder
-                     </Typography>
-                  )}
-                  {!dataInput.isTutor && (
-                     <>
-                        <Grid container xs={12}>
-                           <FileInputComponent
-                              key={dataInput.idName}
-                              col={6}
-                              idName={dataInput.idName}
-                              label={dataInput.label}
-                              filePreviews={dataInput.filePreviews}
-                              setFilePreviews={dataInput.setFilePreviews}
-                              multiple={false}
-                              accept={"image/*"}
-                           />
-                           {auth.role_id <= ROLE_ADMIN && ["TERMINADA", "EN REVISIÓN"].includes(formData.status) && (
-                              <ButtonsApprovedDocument
-                                 key={`btns_${dataInput.idName}`}
-                                 setFieldValue={formik.setFieldValue}
-                                 fieldApproved={dataInput.fieldApproved}
-                                 fieldComments={dataInput.fieldComments}
-                                 approved={formik.values[dataInput.idName]}
-                                 name={dataInput.name}
+         <Grid width={"100%"} xs={12} spacing={2} height={"66.5vh"} MaxHeight={"66.5vh"} overflow={"auto"}>
+            <Grid xs={12} container spacing={2}>
+               {/* IMAGEN DE INE TUTOR */}
+               {dataFileInputs.map((dataInput, index) => (
+                  <>
+                     {dataInput.isTutor === true && (
+                        <Typography variant="h4" sx={{ display: "block", width: "100%", mb: 1 }}>
+                           {`Al no ser familiar directo favor de cargar el documento de ${dataInput.name}`}
+                        </Typography>
+                     )}
+                     {dataInput.isTutor !== null && (
+                        <>
+                           <Grid container xs={12}>
+                              <FileInputComponent
+                                 key={dataInput.idName}
+                                 col={6}
+                                 idName={dataInput.idName}
+                                 label={dataInput.label}
+                                 filePreviews={dataInput.filePreviews}
+                                 setFilePreviews={dataInput.setFilePreviews}
+                                 multiple={false}
+                                 accept={"image/*"}
                               />
-                           )}
-                        </Grid>
-                        {index < dataFileInputs.length && <DividerComponent />}
-                     </>
-                  )}
-               </>
-            ))}
+                              {auth.permissions.more_permissions.includes("16@Validar Documentos") && ["ALTA", "EN REVISIÓN"].includes(formData.status) && (
+                                 <ButtonsApprovedDocument
+                                    key={`btns_${dataInput.idName}`}
+                                    setFieldValue={formik.setFieldValue}
+                                    fieldApproved={dataInput.fieldApproved}
+                                    fieldComments={dataInput.fieldComments}
+                                    approved={formik.values[dataInput.fieldApproved]}
+                                    name={dataInput.name}
+                                 />
+                              )}
+                           </Grid>
+                           {index < dataFileInputs.length && <DividerComponent />}
+                        </>
+                     )}
+                  </>
+               ))}
+            </Grid>
          </Grid>
 
          {/* ENVIAR (onSubmit) ----------> values.b7_img_tutor_ine = imgTutorIne.length == 0 ? '' : imgTutorIne[0].file; */}
          {/* MODIFICAR (handleModify) ---> setObjImg(formData.b7_img_tutor_ine, setImgTutorIne); */}
          {/* RESET ----------------------> setImgTutorIne([]); */}
 
-         {folio > 0 && <ButtonsBeforeOrNext isSubmitting={formik.isSubmitting} setValues={formik.setValues} />}
+         {/* <Button type="button" color="info" id="btnModify" sx={{ mt: 1, display: "none" }} onClick={() => handleModify(formik.setValues)}>
+            setValues
+         </Button> */}
+
+         {folio > 0 && ["", "ALTA"].includes(formData.status) && <ButtonsBeforeOrNext isSubmitting={formik.isSubmitting} setValues={formik.setValues} />}
+
+         {auth.role_id <= ROLE_ADMIN && folio > 0 && ["TERMINADA", "EN REVISIÓN"].includes(formData.status) && (
+            <Box sx={{ display: "flex", flexDirection: "row-reverse", pt: 2 }}>
+               <Button color="primary" variant="contained" onClick={() => handleClickFinishReview(values)} sx={{ mr: 1 }}>
+                  TERMINAR REVISIÓN
+               </Button>
+               <Button color="secondary" variant="contained" onClick={() => handleClickSaveReview(values)} sx={{ mr: 1 }}>
+                  GUARDAR
+               </Button>
+            </Box>
+         )}
       </>
    );
 };
