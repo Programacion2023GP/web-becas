@@ -39,6 +39,8 @@ const RequestBecaDT = ({ status = null }) => {
    } = useRequestBecaContext();
    const globalFilterFields = [
       "folio",
+      "username",
+      "email",
       "code",
       "level",
       "school",
@@ -120,6 +122,12 @@ const RequestBecaDT = ({ status = null }) => {
          <b>{obj.folio}</b>
       </Typography>
    );
+   const UserBodyTemplate = (obj) => (
+      <Typography textAlign={"center"}>
+         <b>{obj.username}</b> <br />
+         {obj.email}
+      </Typography>
+   );
    const SchoolBodyTemplate = (obj) => (
       <Typography textAlign={"center"}>
          <b style={{ borderBottom: "1px solid" }}>{obj.code}</b> <br />
@@ -175,8 +183,8 @@ const RequestBecaDT = ({ status = null }) => {
    ];
    auth.role_id === ROLE_SUPER_ADMIN &&
       columns.push(
-         { field: "active", header: "Activo", sortable: true, functionEdit: null, body: ActiveBodyTemplate, filterField: null }
-         // { field: "created_at", header: "Fecha de Solicitud", sortable: true, functionEdit: null, body: RequestDateBodyTemplate, filterField: null }
+         { field: "active", header: "Activo", sortable: true, functionEdit: null, body: ActiveBodyTemplate, filterField: null },
+         { field: "username", header: "Usuario", sortable: true, functionEdit: null, body: UserBodyTemplate }
       );
 
    const mySwal = withReactContent(Swal);
@@ -303,6 +311,8 @@ const RequestBecaDT = ({ status = null }) => {
 
    const ButtonsAction = ({ id, name, current_page, obj }) => {
       if (["CANCELADA"].includes(obj.status)) return;
+      console.log(["TERMINADA", "EN REVISIÓN", "EN EVALUACIÓN"].includes(obj.status));
+
       return (
          <ButtonGroup variant="outlined">
             {obj.end_date == null && (
@@ -318,6 +328,13 @@ const RequestBecaDT = ({ status = null }) => {
                <Tooltip title={`Ver Solicitud ${name}`} placement="top">
                   <Button color="dark" onClick={() => handleClickView(obj)}>
                      <IconEye />
+                  </Button>
+               </Tooltip>
+            )}
+            {auth.permissions.more_permissions.includes(`16@Corregir Documentos`) && ["TERMINADA", "EN REVISIÓN", "EN EVALUACIÓN"].includes(obj.status) && (
+               <Tooltip title={`Corregir Documentos del Folio #${name}`} placement="top">
+                  <Button color="dark" onClick={() => handleClickValidateDocuments(obj.folio, obj.status)}>
+                     <IconChecklist />
                   </Button>
                </Tooltip>
             )}
@@ -423,6 +440,7 @@ const RequestBecaDT = ({ status = null }) => {
    formatData();
 
    useEffect(() => {
+      console.log(auth.permissions);
       // setLoading(false);
    }, [requestBecas]);
 

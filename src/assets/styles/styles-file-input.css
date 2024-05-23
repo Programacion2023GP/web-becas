@@ -20,6 +20,19 @@
    border: 5px solid #1455cb;
    background-color: #e9ecefb9;
 }
+.dropzone-error {
+   border: 5px dashed #cb1414;
+   border-radius: 14px;
+   padding: 0.5rem;
+   text-align: center;
+   cursor: pointer;
+   width: 100%;
+   transition: all 0.3s ease-in-out;
+}
+.dropzone-error:hover {
+   border: 5px solid #cb1414;
+   background-color: #e9ecefb9;
+}
 
 .dropzone p {
    font-size: 1rem;

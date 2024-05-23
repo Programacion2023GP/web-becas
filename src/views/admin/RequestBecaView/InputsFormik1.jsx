@@ -1,6 +1,6 @@
 import { useFormikContext } from "formik";
 import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
-import { InputComponent, Select2Component } from "../../../components/Form/FormikComponents";
+import { InputComponent, RadioButtonComponent, Select2Component } from "../../../components/Form/FormikComponents";
 import { useRelationshipContext } from "../../../context/RelationshipContext";
 import { useTutorContext } from "../../../context/TutorContext";
 import Toast from "../../../utils/Toast";
@@ -8,7 +8,7 @@ import { useRequestBecaContext } from "../../../context/RequestBecaContext";
 import sAlert from "../../../utils/sAlert";
 import { useEffect } from "react";
 
-const InputsFormik1 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBeforeOrNext, setIsTutor }) => {
+const InputsFormik1 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBeforeOrNext, isTutor, setIsTutor }) => {
    const { formData, setFormData } = useRequestBecaContext();
    const { relationships, getRelationshipsSelectIndex } = useRelationshipContext();
    const { getTutorByCURP } = useTutorContext();
@@ -64,16 +64,30 @@ const InputsFormik1 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
                   disabled={formik.values.id == 0 ? false : true}
                />
                {/* Parentesco */}
-               <Select2Component
-                  col={6}
-                  idName={"tutor_relationship_id"}
-                  label={"Parentesco *"}
-                  options={relationships}
-                  handleChangeValueSuccess={handleChangeRelationships}
-                  disabled={formik.values.id == 0 ? false : true}
-                  pluralName={"Parentescos"}
-                  refreshSelect={getRelationshipsSelectIndex}
-               />
+               <Grid container xs={6}>
+                  <Select2Component
+                     col={isTutor ? 5 : 12}
+                     idName={"tutor_relationship_id"}
+                     label={"Parentesco *"}
+                     options={relationships}
+                     handleChangeValueSuccess={handleChangeRelationships}
+                     disabled={formik.values.id == 0 ? false : true}
+                     pluralName={"Parentescos"}
+                     refreshSelect={getRelationshipsSelectIndex}
+                  />
+                  <RadioButtonComponent
+                     xsOffset={1}
+                     col={"auto"}
+                     alignItems="start"
+                     idName={"isTutor"}
+                     title={"Responsabilidad sobre el alumno."}
+                     hidden={!isTutor}
+                     options={[
+                        { value: "Tutor", label: "Tutor" },
+                        { value: "Representate legal", label: "Representate legal" }
+                     ]}
+                  />
+               </Grid>
                {/* Nombre Tutor */}
                <InputComponent
                   col={6}

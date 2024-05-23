@@ -795,6 +795,7 @@ export const SwitchComponent = ({
 // =================== COMPONENTE =======================
 export const RadioButtonComponent = ({
    // loading = false,
+   xsOffset,
    col,
    idName,
    title,
@@ -827,8 +828,16 @@ export const RadioButtonComponent = ({
       }
    };
    return (
-      <Grid lg={col} xl={col} xs={12} md={12} sx={{ display: hidden ? "none" : "flex", flexDirection: "column", alignItems: alignItems }} mb={marginBottom ?? 2}>
-         <Typography variant="subtitle1" align="center" color="textPrimary" sx={{ mb: 1 }}>
+      <Grid
+         xsOffset={xsOffset}
+         lg={col}
+         xl={col}
+         xs={12}
+         md={12}
+         sx={{ display: hidden ? "none" : "flex", flexDirection: "column", alignItems: alignItems }}
+         mb={marginBottom ?? 2}
+      >
+         <Typography variant="subtitle1" align="center" color="textPrimary" sx={{ mb: 0 }}>
             {title}
          </Typography>
          <RadioGroup
@@ -1495,6 +1504,7 @@ export const FileInputComponent = ({
    disabled,
    hidden,
    marginBottom,
+   color,
    // styleInput = 1,
    filePreviews,
    setFilePreviews,
@@ -1571,6 +1581,7 @@ export const FileInputComponent = ({
       }, 1000);
    };
    const handleRemoveImage = async (fileToRemove) => {
+      if (disabled) return;
       // Filtra la lista de vistas previas para eliminar el archivo seleccionado.
       // console.log(filePreviews);
       // setFilePreviews((prevPreviews) => prevPreviews.filter((preview) => preview.file !== fileToRemove));
@@ -1602,7 +1613,7 @@ export const FileInputComponent = ({
             sx={{ display: hidden ? "none" : "flex", flexDirection: "column", alignItems: "center", mb: marginBottom ? marginBottom : 2 }}
          >
             <FormControl fullWidth sx={{}}>
-               <Typography variant="p" mb={1} sx={{ fontWeight: "bolder" }} htmlFor={idName}>
+               <Typography variant="p" mb={1} sx={{ fontWeight: "bolder" }} htmlFor={idName} color={color}>
                   {label}
                </Typography>
 
@@ -1610,8 +1621,8 @@ export const FileInputComponent = ({
                   {({ field, form }) => (
                      <>
                         <div className={"dropzone-container"}>
-                           <div {...getRootProps({ className: "dropzone" })}>
-                              <input {...getInputProps()} multiple={multiple} accept={accept} />
+                           <div {...getRootProps({ className: color === "red" ? "dropzone-error" : "dropzone" })}>
+                              <input {...getInputProps()} multiple={multiple} accept={accept} disabled={disabled} />
                               <p style={{ display: filePreviews.length > 0 ? "none" : "block", fontStyle: "italic" }}>
                                  Arrastra y suelta archivos aquí, o haz clic para seleccionar archivos
                               </p>
@@ -1648,8 +1659,9 @@ export const FileInputComponent = ({
                                                    e.preventDefault();
                                                    handleRemoveImage(preview.file);
                                                 }}
+                                                aria-disabled={disabled}
                                              >
-                                                Eliminar
+                                                {!disabled && "Eliminar"}
                                              </div>
                                           </>
                                        ) : (
@@ -1675,7 +1687,7 @@ export const FileInputComponent = ({
                                                 onMouseEnter={handleMouseEnter}
                                                 onMouseLeave={handleMouseLeave}
                                              >
-                                                Eliminar
+                                                {!disabled && "Eliminar"}
                                              </div>
                                           </>
                                        )}

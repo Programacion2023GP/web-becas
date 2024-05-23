@@ -198,6 +198,14 @@ const RequestBecaView = () => {
       // }, 1000);
    };
 
+   const RedirectMyRequests = () => {
+      setIsTutor(false);
+      setActiveStep(0);
+      setCompleted({});
+      resetFormData();
+      location.hash = `/admin/solicitudes/mis-solicitudes`;
+   };
+
    const ButtonsBeforeOrNext = ({ isSubmitting, setValues }) => (
       <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between", pt: 2, width: "100%" }}>
          <Button color="inherit" variant="contained" disabled={activeStep === 0} onClick={handleBack} sx={{ mr: 1 }}>
@@ -530,7 +538,7 @@ const RequestBecaView = () => {
 
    const onSubmit9 = async (values, { setSubmitting, setErrors }) => {
       try {
-         console.log("🚀 ~ onSubmit9 ~ values:", values);
+         // console.log("🚀 ~ onSubmit9 ~ values:", values);
 
          values.b7_img_tutor_ine = imgTutorIne.length == 0 ? "" : imgTutorIne[0].file;
          if (isTutor) values.b7_img_tutor_power_letter = imgTutorPowerLetter.length == 0 ? "" : imgTutorPowerLetter[0].file;
@@ -709,8 +717,6 @@ const RequestBecaView = () => {
       return validationSchema;
    };
 
-   const [houseIs, setHouseIs] = useState("Porpia");
-
    const handleModify = async (setValues) => {
       try {
          // console.log("hola handleModify()", pagina);
@@ -845,9 +851,12 @@ const RequestBecaView = () => {
                                  recuerda, puedes ver el estatus de tus solicitudes yendo a "Mis Solicitudes" en tú menú lateral
                               </Typography>
                            </Typography>
-                           <Button onClick={handleReset} variant="contained" fullWidth>
-                              Nueva Solicitud
+                           <Button onClick={RedirectMyRequests()} variant="contained" fullWidth>
+                              Ir a Mis Solicitudes
                            </Button>
+                           {/* <Button onClick={handleReset} variant="contained" fullWidth>
+                              Nueva Solicitud
+                           </Button> */}
                         </Box>
                      </Fragment>
                   ) : (
@@ -870,6 +879,7 @@ const RequestBecaView = () => {
                                     activeStep={activeStep}
                                     setStepFailed={setStepFailed}
                                     ButtonsBeforeOrNext={ButtonsBeforeOrNext}
+                                    isTutor={isTutor}
                                     setIsTutor={setIsTutor}
                                  />
                               </FormikComponent>
