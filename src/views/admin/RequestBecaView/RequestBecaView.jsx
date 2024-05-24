@@ -198,6 +198,7 @@ const RequestBecaView = () => {
       // }, 1000);
    };
 
+   //#endregion
    const RedirectMyRequests = () => {
       setIsTutor(false);
       setActiveStep(0);
@@ -205,12 +206,13 @@ const RequestBecaView = () => {
       resetFormData();
       location.hash = `/admin/solicitudes/mis-solicitudes`;
    };
-
-   const ButtonsBeforeOrNext = ({ isSubmitting, setValues }) => (
+   const ButtonsBeforeOrNext = ({ isSubmitting, setValues, values = null }) => (
       <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between", pt: 2, width: "100%" }}>
-         <Button color="inherit" variant="contained" disabled={activeStep === 0} onClick={handleBack} sx={{ mr: 1 }}>
-            ATRAS
-         </Button>
+         {(values == null || values.b6_finished == 0) && (
+            <Button color="inherit" variant="contained" disabled={activeStep === 0} onClick={handleBack} sx={{ mr: 1 }}>
+               ATRAS
+            </Button>
+         )}
          <Box sx={{ flex: "1 1 auto" }} />
          {/* <Button onClick={handleNext} sx={{ mr: 1 }}>
                                        Adelante
@@ -249,7 +251,6 @@ const RequestBecaView = () => {
          </Button>
       </Box>
    );
-   //#endregion
 
    const onSubmit1 = async (values, { setSubmitting, setErrors, setValues }) => {
       try {
@@ -601,6 +602,7 @@ const RequestBecaView = () => {
                tutor_paternal_last_name: Yup.string().trim().required("Apellido Paterno requerido"),
                tutor_maternal_last_name: Yup.string().trim().required("Apellido Materno requerido"),
                tutor_phone: Yup.string().trim().min(10, "El número telefónico debe ser a 10 digitos").required("Número telefonico del tutor requerido")
+               // second_ref: formik.current.values.second_ref != "NULL" && Yup.string().trim().required("Represnetante")
             });
             break;
          case 2: // PAGINA DATOS DEL ALUMNO
@@ -687,27 +689,43 @@ const RequestBecaView = () => {
                // folio: Yup.number("solo números").required("Folio requerido"),
                // b7_img_tutor_ine: Yup.string().trim().required("INE requerida"),
                b7_approved_tutor_ine:
-                  auth.role_id <= ROLE_ADMIN && ["TERMINADA", "EN REVISIÓN"].includes(formData.status) && Yup.bool().required("Aprueba o Desaprueba el documento."),
+                  auth.permissions.more_permissions.includes("16@Validar Documentos") &&
+                  ["TERMINADA", "EN REVISIÓN"].includes(formData.status) &&
+                  Yup.bool().required("Aprueba o Desaprueba el documento."),
                // b7_comments_tutor_ine: "",
                // b7_img_tutor_power_letter: isTutor && Yup.string().trim().required("Carta Poder requerida"),
                b7_approved_tutor_power_letter:
-                  auth.role_id <= ROLE_ADMIN && ["TERMINADA", "EN REVISIÓN"].includes(formData.status) && Yup.bool().required("Aprueba o Desaprueba el documento."),
+                  auth.permissions.more_permissions.includes("16@Validar Documentos") &&
+                  ["TERMINADA", "EN REVISIÓN"].includes(formData.status) &&
+                  Yup.bool().required("Aprueba o Desaprueba el documento."),
+               b7_approved_second_ref:
+                  auth.permissions.more_permissions.includes("16@Validar Documentos") &&
+                  ["TERMINADA", "EN REVISIÓN"].includes(formData.status) &&
+                  Yup.bool().required("Aprueba o Desaprueba el documento."),
                // b7_comments_tutor_power_letter: "",
                // b7_img_proof_address: Yup.string().trim().required("Comprobante de Domicilio requerida"),
                b7_approved_proof_address:
-                  auth.role_id <= ROLE_ADMIN && ["TERMINADA", "EN REVISIÓN"].includes(formData.status) && Yup.bool().required("Aprueba o Desaprueba el documento."),
+                  auth.permissions.more_permissions.includes("16@Validar Documentos") &&
+                  ["TERMINADA", "EN REVISIÓN"].includes(formData.status) &&
+                  Yup.bool().required("Aprueba o Desaprueba el documento."),
                // b7_comments_proof_address: "",
                // b7_img_curp: Yup.string().trim().required("CURP requerida"),
                b7_approved_curp:
-                  auth.role_id <= ROLE_ADMIN && ["TERMINADA", "EN REVISIÓN"].includes(formData.status) && Yup.bool().required("Aprueba o Desaprueba el documento."),
+                  auth.permissions.more_permissions.includes("16@Validar Documentos") &&
+                  ["TERMINADA", "EN REVISIÓN"].includes(formData.status) &&
+                  Yup.bool().required("Aprueba o Desaprueba el documento."),
                // b7_comments_curp: "",
                // b7_img_birth_certificate: Yup.string().trim().required("Acta de Nacimiento requerida"),
                b7_approved_birth_certificate:
-                  auth.role_id <= ROLE_ADMIN && ["TERMINADA", "EN REVISIÓN"].includes(formData.status) && Yup.bool().required("Aprueba o Desaprueba el documento."),
+                  auth.permissions.more_permissions.includes("16@Validar Documentos") &&
+                  ["TERMINADA", "EN REVISIÓN"].includes(formData.status) &&
+                  Yup.bool().required("Aprueba o Desaprueba el documento."),
                // b7_comments_birth_certificate: "",
                // b7_img_academic_transcript: Yup.string().trim().required("Constancia Estudiantil con Calificaciones requerida"),
                b7_approved_academic_transcript:
-                  auth.role_id <= ROLE_ADMIN && ["TERMINADA", "EN REVISIÓN"].includes(formData.status) && Yup.bool().required("Aprueba o Desaprueba el documento.")
+                  auth.permissions.more_permissions.includes("16@Validar Documentos") &&
+                  ["TERMINADA", "EN REVISIÓN"].includes(formData.status) &&
+                  Yup.bool().required("Aprueba o Desaprueba el documento.")
                // b7_comments_academic_transcript: ""
             });
             break;

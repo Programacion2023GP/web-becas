@@ -652,13 +652,13 @@ const AnswerScoreForm = () => {
          <List sx={{ width: "100%", bgcolor: "background.paper" }}>
             <DialogContentText id="alert-dialog-slide-description" component={"div"}>
                <ItemContainer
-                  question="¿Algún familiar cuenta con alguna otra beca?"
+                  question="¿Algún familiar cuenta con alguna otra beca? (si acepta almenos 1 opción se restara el puntaje indicado)"
                   optionsByRange={false}
                   options={[
                      { idName: "scholarship_1", label: "Beca de Transporte", type: "number", placeholder: "0" },
-                     { idName: "scholarship_2", label: "Beca para el Bienestar Benito Juárez ", type: "number", placeholder: "0" },
-                     { idName: "scholarship_3", label: "Beca Jóvenes Construyendo el Futuro", type: "number", placeholder: "0" },
-                     { idName: "scholarship_4", label: "Otra", type: "number", placeholder: "0" }
+                     { idName: "scholarship_1", label: "Beca para el Bienestar Benito Juárez ", type: "number", placeholder: "0" },
+                     { idName: "scholarship_1", label: "Beca Jóvenes Construyendo el Futuro", type: "number", placeholder: "0" },
+                     { idName: "scholarship_1", label: "Otra", type: "number", placeholder: "0" }
                   ]}
                   values={values}
                   handleBlur={handleBlur}
@@ -703,6 +703,9 @@ const AnswerScoreForm = () => {
 
          // console.log("onSubmit -> values", values);
          setLoadingAction(false);
+         values.scholarship_2 = values.scholarship_1;
+         values.scholarship_3 = values.scholarship_1;
+         values.scholarship_4 = values.scholarship_1;
          let axiosResponse;
          if (values.id == 0) axiosResponse = await createAnswerScore(values);
          else axiosResponse = await updateAnswerScore(values);

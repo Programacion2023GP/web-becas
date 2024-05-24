@@ -9,66 +9,9 @@ import { useAuthContext } from "../../../context/AuthContext";
 import { IconCircleCheck, IconCircleX } from "@tabler/icons";
 import Toast from "../../../utils/Toast";
 
-const InputsFormik9 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBeforeOrNext, isTutor, dataFileInputs = [] }) => {
-   const { auth } = useAuthContext();
-   const { setLoading, setLoadingAction } = useGlobalContext();
-   const { formData, setFormData, saveOrFinishReview } = useRequestBecaContext();
-   const formik = useFormikContext();
+const ButtonsApprovedDocument = ({ auth, formik, setFieldValue, fieldApproved, fieldComments, name = "documento", approved = true }) => {
+   const iconSize = 65;
 
-   const [imgTutorIne, setImgTutorIne] = useState([]);
-
-   const ButtonsApprovedDocument = ({ setFieldValue, fieldApproved, fieldComments, name = "documento", approved = true }) => {
-      const iconSize = 65;
-      return (
-         <>
-            {/* Botones */}
-            <Grid xs={4} md={2} sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-               {auth.permissions.more_permissions.includes("16@Validar Documentos") && (
-                  <>
-                     <Icon sx={{ fontSize: iconSize }}>
-                        {approved ? <IconCircleCheck size={iconSize} color="green" /> : <IconCircleX size={iconSize} color="red" />}
-                     </Icon>
-                     <ButtonGroup sx={{ mb: 1 }}>
-                        <Tooltip title={`Aprobar ${name}`} placement="top">
-                           <Button
-                              variant={approved ? "contained" : "outlined"}
-                              color="success"
-                              onClick={() => handleClickBtnCheckApproved(setFieldValue, fieldApproved, fieldComments)}
-                           >
-                              <IconCircleCheck />
-                           </Button>
-                        </Tooltip>
-                        <Tooltip title={`Rechazar ${name}`} placement="top">
-                           <Button
-                              variant={!approved ? "contained" : "outlined"}
-                              color="error"
-                              onClick={() => handleClickBtnCheckDecline(setFieldValue, fieldApproved, fieldComments)}
-                           >
-                              <IconCircleX />
-                           </Button>
-                        </Tooltip>
-                     </ButtonGroup>
-                     <Typography sx={{ fontWeight: "bolder" }} textAlign={"center"}>
-                        Documento {approved ? "Aprovado" : "Rechazado"}
-                     </Typography>
-                  </>
-               )}
-            </Grid>
-            {/* Comentarios */}
-            <Grid xs={8} md={4} sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-               <InputComponent
-                  // col={4}
-                  idName={fieldComments}
-                  label={"Causa del rechazo del documento"}
-                  placeholder={"Escribe el detalle del porque rechazaste este documento..."}
-                  rows={5}
-                  color={!formik.values[fieldApproved] && "red"}
-                  disabled={!auth.permissions.more_permissions.includes("16@Validar Documentos")}
-               />
-            </Grid>
-         </>
-      );
-   };
    const handleClickBtnCheckApproved = (setFieldValue, fieldApproved, fieldComments) => {
       try {
          setFieldValue(fieldApproved, true);
@@ -81,6 +24,63 @@ const InputsFormik9 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
          setFieldValue(fieldComments, "");
       } catch (error) {}
    };
+
+   return (
+      <>
+         {/* Botones */}
+         <Grid xs={4} md={2} sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+            {auth.permissions.more_permissions.includes("16@Validar Documentos") && (
+               <>
+                  <Icon sx={{ fontSize: iconSize }}>{approved ? <IconCircleCheck size={iconSize} color="green" /> : <IconCircleX size={iconSize} color="red" />}</Icon>
+                  <ButtonGroup sx={{ mb: 1 }}>
+                     <Tooltip title={`Aprobar ${name}`} placement="top">
+                        <Button
+                           variant={approved ? "contained" : "outlined"}
+                           color="success"
+                           onClick={() => handleClickBtnCheckApproved(setFieldValue, fieldApproved, fieldComments)}
+                        >
+                           <IconCircleCheck />
+                        </Button>
+                     </Tooltip>
+                     <Tooltip title={`Rechazar ${name}`} placement="top">
+                        <Button
+                           variant={!approved ? "contained" : "outlined"}
+                           color="error"
+                           onClick={() => handleClickBtnCheckDecline(setFieldValue, fieldApproved, fieldComments)}
+                        >
+                           <IconCircleX />
+                        </Button>
+                     </Tooltip>
+                  </ButtonGroup>
+                  <Typography sx={{ fontWeight: "bolder" }} textAlign={"center"}>
+                     Documento {approved ? "Aprovado" : "Rechazado"}
+                  </Typography>
+               </>
+            )}
+         </Grid>
+         {/* Comentarios */}
+         <Grid xs={8} md={4} sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+            <InputComponent
+               // col={4}
+               idName={fieldComments}
+               label={"Causa del rechazo del documento"}
+               placeholder={"Escribe el detalle del porque rechazaste este documento..."}
+               rows={5}
+               color={!formik.values[fieldApproved] && "red"}
+               disabled={!auth.permissions.more_permissions.includes("16@Validar Documentos")}
+            />
+         </Grid>
+      </>
+   );
+};
+
+const InputsFormik9 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBeforeOrNext, isTutor, dataFileInputs = [] }) => {
+   const { auth } = useAuthContext();
+   const { setLoading, setLoadingAction } = useGlobalContext();
+   const { formData, setFormData, saveOrFinishReview } = useRequestBecaContext();
+   const formik = useFormikContext();
+
+   const [imgTutorIne, setImgTutorIne] = useState([]);
 
    const handleClickSaveReview = async (values) => {
       try {
@@ -137,7 +137,9 @@ const InputsFormik9 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
       }
    };
 
-   // useEffect(() => {}, []);
+   useEffect(() => {
+      console.log(formik.values.b6_finished);
+   }, []);
 
    return (
       <>
@@ -157,7 +159,7 @@ const InputsFormik9 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
                               <FileInputComponent
                                  key={dataInput.idName}
                                  col={6}
-                                 color={!formik.values[dataInput.fieldApproved] && "red"}
+                                 color={["EN REVISIÓN", "EN EVALUACIÓN"].includes(formik.values.state) && !formik.values[dataInput.fieldApproved] && "red"}
                                  idName={dataInput.idName}
                                  label={dataInput.label}
                                  filePreviews={dataInput.filePreviews}
@@ -183,6 +185,8 @@ const InputsFormik9 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
                                  ["EN REVISIÓN", "EN EVALUACIÓN"].includes(formData.status) && (
                                     <ButtonsApprovedDocument
                                        key={`btns_${dataInput.idName}`}
+                                       auth={auth}
+                                       formik={formik}
                                        setFieldValue={formik.setFieldValue}
                                        fieldApproved={dataInput.fieldApproved}
                                        fieldComments={dataInput.fieldComments}

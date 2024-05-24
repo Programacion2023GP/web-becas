@@ -125,7 +125,8 @@ const RequestBecaDT = ({ status = null }) => {
    const UserBodyTemplate = (obj) => (
       <Typography textAlign={"center"}>
          <b>{obj.username}</b> <br />
-         {obj.email}
+         {obj.email} <br />
+         {obj.correction_permission ? "a corregir" : "no corriges"}
       </Typography>
    );
    const SchoolBodyTemplate = (obj) => (
@@ -311,7 +312,8 @@ const RequestBecaDT = ({ status = null }) => {
 
    const ButtonsAction = ({ id, name, current_page, obj }) => {
       if (["CANCELADA"].includes(obj.status)) return;
-      console.log(["TERMINADA", "EN REVISIÓN", "EN EVALUACIÓN"].includes(obj.status));
+
+      console.log(obj.correction_permission);
 
       return (
          <ButtonGroup variant="outlined">
@@ -331,13 +333,15 @@ const RequestBecaDT = ({ status = null }) => {
                   </Button>
                </Tooltip>
             )}
-            {auth.permissions.more_permissions.includes(`16@Corregir Documentos`) && ["TERMINADA", "EN REVISIÓN", "EN EVALUACIÓN"].includes(obj.status) && (
-               <Tooltip title={`Corregir Documentos del Folio #${name}`} placement="top">
-                  <Button color="dark" onClick={() => handleClickValidateDocuments(obj.folio, obj.status)}>
-                     <IconChecklist />
-                  </Button>
-               </Tooltip>
-            )}
+            {auth.permissions.more_permissions.includes(`16@Corregir Documentos`) &&
+               ["TERMINADA", "EN REVISIÓN", "EN EVALUACIÓN"].includes(obj.status) &&
+               obj.correction_permission && (
+                  <Tooltip title={`Corregir Documentos del Folio #${name}`} placement="top">
+                     <Button color="dark" onClick={() => handleClickValidateDocuments(obj.folio, obj.status)}>
+                        <IconChecklist />
+                     </Button>
+                  </Tooltip>
+               )}
             {auth.permissions.more_permissions.includes(`16@Validar Documentos`) && ["TERMINADA", "EN REVISIÓN"].includes(obj.status) && (
                <Tooltip title={`Validar Documentos del Folio #${name}`} placement="top">
                   <Button color="primary" onClick={() => handleClickValidateDocuments(obj.folio, obj.status)}>
@@ -440,7 +444,7 @@ const RequestBecaDT = ({ status = null }) => {
    formatData();
 
    useEffect(() => {
-      console.log(auth.permissions);
+      // console.log(requestBecas);
       // setLoading(false);
    }, [requestBecas]);
 

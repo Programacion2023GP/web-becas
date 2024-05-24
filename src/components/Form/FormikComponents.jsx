@@ -719,12 +719,9 @@ export const Select2Component = ({
                         </Tooltip>
                      )}
                   </Box>
-
-                  {isError && (
-                     <FormHelperText error id={`ht-${idName}`}>
-                        {isError ? error : helperText}
-                     </FormHelperText>
-                  )}
+                  <FormHelperText error={isError} id={`ht-${idName}`}>
+                     {isError ? error : helperText}
+                  </FormHelperText>
                   {loading && <CircularProgress sx={{ position: "absolute", top: "10%", left: "60%" }} />}
                </FormControl>
             </Grid>
@@ -800,6 +797,7 @@ export const RadioButtonComponent = ({
    idName,
    title,
    options,
+   helperText,
    hidden,
    handleGetValue,
    alignItems = "center",
@@ -864,14 +862,14 @@ export const RadioButtonComponent = ({
                            mr: rowLayout && 5,
                            marginBottom: rowLayout ? 0 : "8px", // Espacio entre los radio buttons si están en columnas
                            "& .MuiRadio-root": {
-                              color: "#1976d2"
+                              color: "#c5c8cc" //"#1976d2"
                            },
                            "& .MuiFormControlLabel-label": {
-                              color: "#1976d2",
+                              color: "#1E2126", //"#1976d2",
                               fontSize: "14px"
                            },
                            "& .Mui-checked": {
-                              color: "#1976d2"
+                              color: "#1E2126" //"#1976d2"
                            }
                         }}
                      />
@@ -879,11 +877,9 @@ export const RadioButtonComponent = ({
                </>
             )}
          </RadioGroup>
-         {isError && (
-            <Typography variant="body2" color="error">
-               {errors[idName]}
-            </Typography>
-         )}
+         <FormHelperText error={isError} id={`ht-${idName}`}>
+            {isError ? error : helperText}
+         </FormHelperText>
          {loading && <CircularProgress sx={{ position: "absolute", bottom: "20%", left: "50%" }} />}
       </Grid>
    );

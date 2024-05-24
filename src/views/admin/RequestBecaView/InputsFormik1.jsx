@@ -64,30 +64,20 @@ const InputsFormik1 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
                   disabled={formik.values.id == 0 ? false : true}
                />
                {/* Parentesco */}
-               <Grid container xs={6}>
-                  <Select2Component
-                     col={isTutor ? 5 : 12}
-                     idName={"tutor_relationship_id"}
-                     label={"Parentesco *"}
-                     options={relationships}
-                     handleChangeValueSuccess={handleChangeRelationships}
-                     disabled={formik.values.id == 0 ? false : true}
-                     pluralName={"Parentescos"}
-                     refreshSelect={getRelationshipsSelectIndex}
-                  />
-                  <RadioButtonComponent
-                     xsOffset={1}
-                     col={"auto"}
-                     alignItems="start"
-                     idName={"isTutor"}
-                     title={"Responsabilidad sobre el alumno."}
-                     hidden={!isTutor}
-                     options={[
-                        { value: "Tutor", label: "Tutor" },
-                        { value: "Representate legal", label: "Representate legal" }
-                     ]}
-                  />
-               </Grid>
+               <Select2Component
+                  col={6}
+                  idName={"tutor_relationship_id"}
+                  label={"Parentesco *"}
+                  helperText={
+                     isTutor &&
+                     "Al ser tutor, deberás subir en la última sección de esta solicitud tu INE vigente más alguno de los siguientes documentos que comprueban la tutoria legal; Carta de dependencia economica del DIF, Hoja custodia o Acta de defunsión del padre o madre."
+                  }
+                  options={relationships}
+                  handleChangeValueSuccess={handleChangeRelationships}
+                  disabled={formik.values.id == 0 ? false : true}
+                  pluralName={"Parentescos"}
+                  refreshSelect={getRelationshipsSelectIndex}
+               />
                {/* Nombre Tutor */}
                <InputComponent
                   col={6}
@@ -123,6 +113,20 @@ const InputsFormik1 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
                   placeholder={"10 dígitos"}
                   inputProps={{ maxLength: 10 }}
                   disabled={formik.values.id == 0 ? false : true}
+               />
+               <RadioButtonComponent
+                  col={12}
+                  alignItems="start"
+                  idName={"second_ref"}
+                  title={"Representante (2da opción a recoger el apoyo)."}
+                  helperText="Si habrá un representate (2da opción) ademas de subir la INE vigente del padre o madre o Tutor en la última sección de esta solicitud, se solicitará subir la INE vigente del representante."
+                  // hidden={!isTutor}
+                  options={[
+                     { value: "NULL", label: "Ninguna" },
+                     { value: "Familiar", label: "Familiar" },
+                     { value: "Tutor", label: "Tutor" },
+                     { value: "Representate legal", label: "Representate legal" }
+                  ]}
                />
             </Grid>
          </Grid>
