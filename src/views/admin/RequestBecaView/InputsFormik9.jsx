@@ -138,7 +138,7 @@ const InputsFormik9 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
    };
 
    useEffect(() => {
-      console.log(formik.values.b6_finished);
+      // console.log(formik.values.b6_finished);
    }, []);
 
    return (
@@ -155,11 +155,18 @@ const InputsFormik9 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
                      )}
                      {dataInput.isTutor !== null && (
                         <>
+                           {/* {console.log(
+                              dataInput.name,
+                              dataInput.fieldApproved,
+                              formik.values,
+                              ["EN REVISIÓN", "EN EVALUACIÓN"].includes(formik.values.status),
+                              !formik.values[dataInput.fieldApproved]
+                           )} */}
                            <Grid container xs={12}>
                               <FileInputComponent
                                  key={dataInput.idName}
                                  col={6}
-                                 color={["EN REVISIÓN", "EN EVALUACIÓN"].includes(formik.values.state) && !formik.values[dataInput.fieldApproved] && "red"}
+                                 color={["EN REVISIÓN", "EN EVALUACIÓN"].includes(formik.values.status) && !formik.values[dataInput.fieldApproved] && "red"}
                                  idName={dataInput.idName}
                                  label={dataInput.label}
                                  filePreviews={dataInput.filePreviews}
@@ -207,9 +214,11 @@ const InputsFormik9 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
             setValues
          </Button> */}
 
-         {folio > 0 && ["", "ALTA", "EN REVISIÓN", "EN EVALUACIÓN"].includes(formData.status) && (
-            <ButtonsBeforeOrNext isSubmitting={formik.isSubmitting} setValues={formik.setValues} />
-         )}
+         {folio > 0 &&
+            (["", "ALTA"].includes(formData.status) ||
+               (["EN REVISIÓN", "EN EVALUACIÓN"].includes(formData.status) && auth.permissions.more_permissions.includes("16@Corregir Documentos"))) && (
+               <ButtonsBeforeOrNext isSubmitting={formik.isSubmitting} setValues={formik.setValues} />
+            )}
 
          {auth.role_id <= ROLE_ADMIN && folio > 0 && ["TERMINADA", "EN REVISIÓN", "EN EVALUACIÓN"].includes(formData.status) && (
             <Grid container xs={12} sx={{ pt: 2, justifyContent: "end" }}>

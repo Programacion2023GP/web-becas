@@ -313,6 +313,7 @@ const RequestBecaDT = ({ status = null }) => {
    const ButtonsAction = ({ id, name, current_page, obj }) => {
       if (["CANCELADA"].includes(obj.status)) return;
 
+      console.log(obj);
       console.log(obj.correction_permission);
 
       return (

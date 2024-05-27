@@ -119,7 +119,7 @@ const RequestBecaView = () => {
          setFilePreviews: setImgAcademicTranscript,
          fieldApproved: "b7_approved_academic_transcript",
          fieldComments: "b7_comments_academic_transcript",
-         name: "Acta de Nacimiento",
+         name: "Certificado Estudiantil con Calificaciones",
          isTutor: false
       }
    ];

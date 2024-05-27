@@ -79,6 +79,9 @@ const formDataInitialState = {
    b7_img_tutor_power_letter: "",
    b7_approved_tutor_power_letter: "",
    b7_comments_tutor_power_letter: "",
+   b7_img_second_ref: "",
+   b7_approved_second_ref: "",
+   b7_comments_second_ref: "",
    b7_img_proof_address: "",
    b7_approved_proof_address: "",
    b7_comments_proof_address: "",
@@ -91,7 +94,10 @@ const formDataInitialState = {
    b7_img_academic_transcript: "",
    b7_approved_academic_transcript: "",
    b7_comments_academic_transcript: "",
-   b7_finished: ""
+   b7_finished: "",
+
+   correction_permission: false,
+   correction_completed: false
 };
 
 // const formDataInitialState = {
