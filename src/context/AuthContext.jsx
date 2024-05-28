@@ -4,6 +4,7 @@ import sAlert from "../utils/sAlert";
 import { CorrectRes } from "../utils/Response";
 import { ROLE_CIUDADANO, useGlobalContext } from "./GlobalContext";
 import { useEffect } from "react";
+import Toast from "../utils/Toast";
 
 export const AuthContext = createContext();
 
@@ -149,12 +150,13 @@ export default function AuthContextProvider({ children }) {
    };
 
    const counterOfMenus = async () => {
+      let res = CorrectRes;
       try {
          await resetCounters();
+         if (["", "#", "#/", "#/login", "#/register"].includes(window.location.hash)) return;
          counters.requestAll = 0;
          counters.requestInReview = 0;
          // console.log("counterofMenus");
-         let res = CorrectRes;
          const axiosData = await Axios.get(`counters/counterOfMenus`);
          res = await axiosData.data.data;
          const filterCounters = { ...counters };

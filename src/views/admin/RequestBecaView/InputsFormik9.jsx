@@ -155,13 +155,6 @@ const InputsFormik9 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
                      )}
                      {dataInput.isTutor !== null && (
                         <>
-                           {/* {console.log(
-                              dataInput.name,
-                              dataInput.fieldApproved,
-                              formik.values,
-                              ["EN REVISIÓN", "EN EVALUACIÓN"].includes(formik.values.status),
-                              !formik.values[dataInput.fieldApproved]
-                           )} */}
                            <Grid container xs={12}>
                               <FileInputComponent
                                  key={dataInput.idName}

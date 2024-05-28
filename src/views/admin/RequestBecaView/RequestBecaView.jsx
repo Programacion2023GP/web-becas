@@ -171,6 +171,8 @@ const RequestBecaView = () => {
    };
 
    const handleBack = () => {
+      if (formik.current.values.status == "EN REVISIÓN" && formik.current.values.correction_permission)
+         return Toast.Info("Solo esta habilitada la pagina de Documentos.");
       setActiveStep((prevActiveStep) => prevActiveStep - 1);
       if (pagina >= 4 || folio > 0) location.hash = `/admin/solicitud-beca/pagina/${activeStep}/folio/${folio}`;
       else location.hash = `/admin/solicitud-beca/pagina/${activeStep}`;
