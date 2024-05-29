@@ -114,6 +114,7 @@ const InputsFormik1 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
                   inputProps={{ maxLength: 10 }}
                   disabled={formik.values.id == 0 ? false : true}
                />
+               {/* Referencia 2 */}
                <RadioButtonComponent
                   col={12}
                   alignItems="start"

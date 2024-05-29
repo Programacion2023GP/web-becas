@@ -256,10 +256,9 @@ const RequestBecaView = () => {
 
    const onSubmit1 = async (values, { setSubmitting, setErrors, setValues }) => {
       try {
-         console.log("values", values);
+         // console.log("values", values);
          await setFormData({ ...formData, ...values });
-         console.log("formData-1", formData);
-         console.log("formik.current.values");
+         // console.log("formData-1", formData);
          await setValues(formData);
          // console.log("formData", formData);
          // console.log("values", values);
@@ -597,14 +596,13 @@ const RequestBecaView = () => {
                // folio: Yup.number("solo números").required("Folio requerido"),
                tutor_relationship_id: Yup.number().min(1, "Esta opción no es valida").required("Parentesco del tutor requerido"),
                tutor_curp: Yup.string()
-                  .trim()
                   .matches(/^[A-Z]{4}[0-9]{6}[HM][A-Z]{2}[A-Z0-9]{4}[0-9]{1}$/, "Formato de CURP invalido")
                   .required("CURP del tutor requerido"),
-               tutor_name: Yup.string().trim().required("Nombre del tutor requerido"),
-               tutor_paternal_last_name: Yup.string().trim().required("Apellido Paterno requerido"),
-               tutor_maternal_last_name: Yup.string().trim().required("Apellido Materno requerido"),
-               tutor_phone: Yup.string().trim().min(10, "El número telefónico debe ser a 10 digitos").required("Número telefonico del tutor requerido")
-               // second_ref: formik.current.values.second_ref != "NULL" && Yup.string().trim().required("Represnetante")
+               tutor_name: Yup.string().required("Nombre del tutor requerido"),
+               tutor_paternal_last_name: Yup.string().required("Apellido Paterno requerido"),
+               tutor_maternal_last_name: Yup.string().required("Apellido Materno requerido"),
+               tutor_phone: Yup.string().min(10, "El número telefónico debe ser a 10 digitos").required("Número telefonico del tutor requerido")
+               // second_ref: formik.current.values.second_ref != "NULL" && Yup.string().required("Represnetante")
             });
             break;
          case 2: // PAGINA DATOS DEL ALUMNO
@@ -612,20 +610,22 @@ const RequestBecaView = () => {
                // id: 0,
                // student_data_id: 0,
                curp: Yup.string()
-                  .trim()
                   .matches(/^[A-Z]{4}[0-9]{6}[HM][A-Z]{2}[A-Z0-9]{4}[0-9]{1}$/, "Formato de CURP invalido")
                   .required("CURP del alumno requerido"),
-               name: Yup.string().trim().required("Nombre(s) del alumno requerido(s)"),
-               paternal_last_name: Yup.string().trim().required("Apellido Paterno requerido"),
-               maternal_last_name: Yup.string().trim().required("Apellido Materno requerido"),
+               name: Yup.string().required("Nombre(s) del alumno requerido(s)"),
+               paternal_last_name: Yup.string().required("Apellido Paterno requerido"),
+               maternal_last_name: Yup.string().required("Apellido Materno requerido"),
                birthdate: Yup.date("Fecha inválida").required("Fecha de nacimiento requerida"),
-               // gender: Yup.string().trim().required("Género requerido"),
+               // gender: Yup.string().required("Género requerido"),
                zip: Yup.number("Solo números").required("Código Postal requerido"),
                community_id: Yup.number().min(1, "Ésta opción no es valida").required("Colonia requerida"),
-               colony: Yup.string().trim().notOneOf(["Selecciona una opción..."], "Ésta opción no es valida").required("Colonia requerida"),
-               street: Yup.string().trim().required("Dirección requerida"),
-               num_ext: Yup.string().trim().required("Número exterior requerido"),
-               // num_int: Yup.string().trim().required("Clave de escuela requerida"),
+               colony: Yup.string()
+                  .typeError("Vuelve a seleccionar la opción deseada si aparece esta leyenda")
+                  .notOneOf(["Selecciona una opción..."], "Ésta opción no es valida")
+                  .required("Colonia requerida"),
+               street: Yup.string().required("Dirección requerida"),
+               num_ext: Yup.string().required("Número exterior requerido"),
+               // num_int: Yup.string().required("Clave de escuela requerida"),
                disability_id: Yup.number().min(1, "Ésta opción no es valida").required("Discapacidad requerida")
             });
             break;
@@ -635,7 +635,7 @@ const RequestBecaView = () => {
                school_id: Yup.number("Solo números").min(1, "Ésta opción no es valida").required("Escuela requerida"),
                grade: Yup.number("Solo números").required("Grado estudiantil requerido"),
                average: Yup.number("Solo números").required("Promedio actual requerido")
-               // comments: Yup.string().trim().required("Comentarios requeridos"),
+               // comments: Yup.string().required("Comentarios requeridos"),
             });
             break;
          case 4: // PAGINA DATOS FAMILIARES
@@ -655,9 +655,9 @@ const RequestBecaView = () => {
             break;
          case 6: // PAGINA DATOS DE VIVIENDA
             validationSchema = Yup.object().shape({
-               b4_house_is: Yup.string().trim().required("Selecciona una opción"),
-               b4_roof_material: Yup.string().trim().required("Selecciona una opción"),
-               b4_floor_material: Yup.string().trim().required("Selecciona una opción")
+               b4_house_is: Yup.string().required("Selecciona una opción"),
+               b4_roof_material: Yup.string().required("Selecciona una opción"),
+               b4_floor_material: Yup.string().required("Selecciona una opción")
             });
             break;
          case 7:
@@ -689,13 +689,13 @@ const RequestBecaView = () => {
             validationSchema = Yup.object().shape({
                // id: 0,
                // folio: Yup.number("solo números").required("Folio requerido"),
-               // b7_img_tutor_ine: Yup.string().trim().required("INE requerida"),
+               // b7_img_tutor_ine: Yup.string().required("INE requerida"),
                b7_approved_tutor_ine:
                   auth.permissions.more_permissions.includes("16@Validar Documentos") &&
                   ["TERMINADA", "EN REVISIÓN"].includes(formData.status) &&
                   Yup.bool().required("Aprueba o Desaprueba el documento."),
                // b7_comments_tutor_ine: "",
-               // b7_img_tutor_power_letter: isTutor && Yup.string().trim().required("Carta Poder requerida"),
+               // b7_img_tutor_power_letter: isTutor && Yup.string().required("Carta Poder requerida"),
                b7_approved_tutor_power_letter:
                   auth.permissions.more_permissions.includes("16@Validar Documentos") &&
                   ["TERMINADA", "EN REVISIÓN"].includes(formData.status) &&
@@ -705,25 +705,25 @@ const RequestBecaView = () => {
                   ["TERMINADA", "EN REVISIÓN"].includes(formData.status) &&
                   Yup.bool().required("Aprueba o Desaprueba el documento."),
                // b7_comments_tutor_power_letter: "",
-               // b7_img_proof_address: Yup.string().trim().required("Comprobante de Domicilio requerida"),
+               // b7_img_proof_address: Yup.string().required("Comprobante de Domicilio requerida"),
                b7_approved_proof_address:
                   auth.permissions.more_permissions.includes("16@Validar Documentos") &&
                   ["TERMINADA", "EN REVISIÓN"].includes(formData.status) &&
                   Yup.bool().required("Aprueba o Desaprueba el documento."),
                // b7_comments_proof_address: "",
-               // b7_img_curp: Yup.string().trim().required("CURP requerida"),
+               // b7_img_curp: Yup.string().required("CURP requerida"),
                b7_approved_curp:
                   auth.permissions.more_permissions.includes("16@Validar Documentos") &&
                   ["TERMINADA", "EN REVISIÓN"].includes(formData.status) &&
                   Yup.bool().required("Aprueba o Desaprueba el documento."),
                // b7_comments_curp: "",
-               // b7_img_birth_certificate: Yup.string().trim().required("Acta de Nacimiento requerida"),
+               // b7_img_birth_certificate: Yup.string().required("Acta de Nacimiento requerida"),
                b7_approved_birth_certificate:
                   auth.permissions.more_permissions.includes("16@Validar Documentos") &&
                   ["TERMINADA", "EN REVISIÓN"].includes(formData.status) &&
                   Yup.bool().required("Aprueba o Desaprueba el documento."),
                // b7_comments_birth_certificate: "",
-               // b7_img_academic_transcript: Yup.string().trim().required("Constancia Estudiantil con Calificaciones requerida"),
+               // b7_img_academic_transcript: Yup.string().required("Constancia Estudiantil con Calificaciones requerida"),
                b7_approved_academic_transcript:
                   auth.permissions.more_permissions.includes("16@Validar Documentos") &&
                   ["TERMINADA", "EN REVISIÓN"].includes(formData.status) &&
@@ -826,13 +826,13 @@ const RequestBecaView = () => {
                   El presente cuestionario tiene por objetivo conocer el perfil de los aspirantes a obtener una beca del <b>R. Ayuntamiento de Gómez Palacio</b>. La
                   información proporcionada de aqui debe ser completamente verdadera, por ello, lee con atención cada pregunta y contesta adecuadamente.
                </Typography>
-               {auth.permissions.create && (
-                  <Link to={"pagina/1"}>
-                     <Button onClick={handleReset} variant="contained" size="large" fullWidth>
-                        COMENZAR SOLICITUD
-                     </Button>
-                  </Link>
-               )}
+               {/* {auth.permissions.create && ( */}
+               <Link to={"pagina/1"}>
+                  <Button onClick={handleReset} variant="contained" size="large" fullWidth>
+                     COMENZAR SOLICITUD
+                  </Button>
+               </Link>
+               {/* )} */}
             </Box>
          ) : (
             <>

@@ -38,8 +38,10 @@ const InputsFormik2 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
          let axiosReponse = await getStudentByCURP(curp);
          // console.log("🚀 ~ handleChangeCURP ~ axiosReponse:", axiosReponse.result);
 
-         if (axiosReponse.result == null)
+         if (axiosReponse.result == null) {
+            setLoadingCURP(false);
             return sAlert.Info("El CURP ingresado no está registrado, veritifíca que este correcto para guardarse al finalizar esta solicitud.");
+         }
          // debugger;
 
          await setFieldValue("student_data_id", axiosReponse.result.id);
@@ -81,7 +83,7 @@ const InputsFormik2 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
          }
          setLoadingCURP(false);
       } catch (error) {
-         setLoadingCURP(true);
+         setLoadingCURP(false);
          console.log(error);
          Toast.Error(error);
       }

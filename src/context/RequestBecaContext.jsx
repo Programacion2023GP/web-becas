@@ -96,6 +96,7 @@ const formDataInitialState = {
    b7_comments_academic_transcript: "",
    b7_finished: "",
 
+   second_ref: "NULL",
    correction_permission: false,
    correction_completed: false
 };

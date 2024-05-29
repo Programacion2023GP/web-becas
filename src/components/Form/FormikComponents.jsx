@@ -605,6 +605,7 @@ export const Select2Component = ({
    const handleChangeValue = async (value, setFieldValue) => {
       try {
          // console.log("Select2Component->handleChangeValue->value", value);
+
          if (!value) {
             formik.setFieldValue(idName, 0);
             setLabelValue("Selecciona una opción...");
@@ -1156,12 +1157,13 @@ export const getCommunity = async (
       setDataCities(cities);
       setDataColonies(colonies);
       // setDataColoniesComplete(coloniesComplete);
+      setFieldValue("colony", colonies[0]);
       setFieldValue("zip", community_id ? formData.zip : zip);
       setFieldValue("state", community_id ? formData.state : states.length == 1 ? states[0] : states[1]);
       setFieldValue("city", community_id ? formData.city : cities.length == 1 ? cities[0] : cities[1]);
       setFieldValue("colony", community_id ? formData.colony : colonies.length == 2 ? colonies[1] : colonies[0]);
-      // if (!community_id) setFieldValue("community_id", coloniesComplete.length == 2 && coloniesComplete[1].id);
-      // // setFieldValue("colony", community_id ? community_id : colonies[0]["id"]);
+      // if (!community_id) setFieldValue("community_id", colonies.length == 2 && coloniesComplete[1].id);
+      // setFieldValue("colony", community_id ? community_id : colonies[0]["id"]);
       setShowLoading(false);
    } catch (error) {
       console.log(error);
@@ -1268,6 +1270,7 @@ export const InputsCommunityComponent = ({
    };
    const handleChangeColony = async (inputName, colony, setFieldValue) => {
       try {
+         console.log(dataColonies);
          // // const community_selected = dataColoniesComplete.find((c) => c.label === colony);
          // const community_selected = dataColonies.find((c) => c.id === colony.id);
          // values.community_id = community_selected.id;
@@ -1320,12 +1323,16 @@ export const InputsCommunityComponent = ({
          </Grid>
          {/* Calle */}
          {!registerCommunity && (
-            <InputComponent col={4} idName={"street"} label={"Calle *"} placeholder={"Calle de las Garzas"} textStyleCase={true} disabled={disabledColony} />
+            <InputComponent col={4} idName={"street"} label={"Calle *"} placeholder={"Calle de las Garzas"} textStyleCase={true} /* disabled={disabledColony} */ />
          )}
          {/* No. Ext. */}
-         {!registerCommunity && <InputComponent col={4} idName={"num_ext"} label={"No. Ext. *"} placeholder={"S/N"} textStyleCase={true} disabled={disabledColony} />}
+         {!registerCommunity && (
+            <InputComponent col={4} idName={"num_ext"} label={"No. Ext. *"} placeholder={"S/N"} textStyleCase={true} /* disabled={disabledColony} */ />
+         )}
          {/* No. Int. */}
-         {!registerCommunity && <InputComponent col={4} idName={"num_int"} label={"No. Int. *"} placeholder={"S/N"} textStyleCase={true} disabled={disabledColony} />}
+         {!registerCommunity && (
+            <InputComponent col={4} idName={"num_int"} label={"No. Int. *"} placeholder={"S/N"} textStyleCase={true} /* disabled={disabledColony} */ />
+         )}
       </>
    );
 };
