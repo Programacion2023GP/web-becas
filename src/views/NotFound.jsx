@@ -24,9 +24,7 @@ const NotFound = () => {
          srcImg = ImgNotFound;
          break;
    }
-   useEffect(()=>{
-
-   },[])
+   useEffect(() => {}, []);
 
    return (
       <Container sx={{ textAlign: "center" }}>

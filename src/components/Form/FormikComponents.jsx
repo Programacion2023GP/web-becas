@@ -41,6 +41,7 @@ import { useGlobalContext } from "../../context/GlobalContext";
 // import Select2Component from "./Select2Component";
 // import { InputAdornment, OutlinedInput } from "@mui/material";
 import { shouldForwardProp, styled } from "@mui/system";
+
 const OutlineInputStyle = styled(OutlinedInput, { shouldForwardProp })(({ theme }) => ({
    // width: 434,
    // marginLeft: 16,
@@ -643,8 +644,7 @@ export const Select2Component = ({
    };
 
    useEffect(() => {
-      // console.log("error", error);
-      // console.log("isError", isError);
+      // console.log("Select2Component ~ UseEffect ~ options", idName, options);
       setLoading(true);
       const _options = [{ id: 0, label: "Selecciona una opción..." }];
       // console.log(options);
@@ -1102,9 +1102,9 @@ export const getCommunity = async (
       let cities = []; //["Selecciona una opción..."];
       let colonies = []; // ["Selecciona una opción..."];
       // let coloniesComplete = ["Selecciona una opción..."];
-      setDataStates(states);
-      setDataCities(cities);
-      setDataColonies(colonies);
+      await setDataStates(states);
+      await setDataCities(cities);
+      await setDataColonies(colonies);
       // setDataColoniesComplete(coloniesComplete);
       setFieldValue("state", 0);
       setFieldValue("city", 0);
@@ -1150,18 +1150,17 @@ export const getCommunity = async (
       //    setShowLoading(false);
       //    return Toast.Info("No hay comunidades registradas con este C.P.");
       // }
-      if (states.length > 2) setDisabledState(false);
-      if (cities.length > 2) setDisabledCity(false);
+      if (states.length > 1) setDisabledState(false);
+      if (cities.length > 1) setDisabledCity(false);
       if (colonies.length > 1) setDisabledColony(false);
-      setDataStates(states);
-      setDataCities(cities);
-      setDataColonies(colonies);
+      await setDataStates(states);
+      await setDataCities(cities);
+      await setDataColonies(colonies);
       // setDataColoniesComplete(coloniesComplete);
-      setFieldValue("colony", colonies[0]);
       setFieldValue("zip", community_id ? formData.zip : zip);
       setFieldValue("state", community_id ? formData.state : states.length == 1 ? states[0] : states[1]);
       setFieldValue("city", community_id ? formData.city : cities.length == 1 ? cities[0] : cities[1]);
-      setFieldValue("colony", community_id ? formData.colony : colonies.length == 2 ? colonies[1] : colonies[0]);
+      setFieldValue("colony", community_id ? formData.colony : colonies.length == 1 ? colonies[1] : 0);
       // if (!community_id) setFieldValue("community_id", colonies.length == 2 && coloniesComplete[1].id);
       // setFieldValue("colony", community_id ? community_id : colonies[0]["id"]);
       setShowLoading(false);
@@ -1270,7 +1269,7 @@ export const InputsCommunityComponent = ({
    };
    const handleChangeColony = async (inputName, colony, setFieldValue) => {
       try {
-         console.log(dataColonies);
+         // console.log(dataColonies);
          // // const community_selected = dataColoniesComplete.find((c) => c.label === colony);
          // const community_selected = dataColonies.find((c) => c.id === colony.id);
          // values.community_id = community_selected.id;
@@ -1331,7 +1330,7 @@ export const InputsCommunityComponent = ({
          )}
          {/* No. Int. */}
          {!registerCommunity && (
-            <InputComponent col={4} idName={"num_int"} label={"No. Int. *"} placeholder={"S/N"} textStyleCase={true} /* disabled={disabledColony} */ />
+            <InputComponent col={4} idName={"num_int"} label={"No. Int."} placeholder={"S/N"} textStyleCase={true} /* disabled={disabledColony} */ />
          )}
       </>
    );

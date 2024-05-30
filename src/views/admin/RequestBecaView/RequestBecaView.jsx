@@ -362,7 +362,7 @@ const RequestBecaView = () => {
          setLoadingAction(false);
 
          if (axiosResponse.status_code != 200) return Toast.Error(axiosResponse.alert_text);
-         Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
+         Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon, "center");
          // console.log("axiosResponse", axiosResponse);
          setStepFailed(-1);
          // resetForm();
@@ -392,7 +392,7 @@ const RequestBecaView = () => {
          setLoadingAction(false);
 
          if (axiosResponse.status_code != 200) return Toast.Error(axiosResponse.alert_text);
-         Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
+         Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon, "center");
          // console.log("axiosResponse", axiosResponse);
          setStepFailed(-1);
          // resetForm();
@@ -426,7 +426,7 @@ const RequestBecaView = () => {
          setLoadingAction(false);
 
          if (axiosResponse.status_code != 200) return Toast.Error(axiosResponse.alert_text);
-         Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
+         Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon, "center");
          // console.log("axiosResponse", axiosResponse);
          setStepFailed(-1);
          // resetForm();
@@ -480,7 +480,7 @@ const RequestBecaView = () => {
          setLoadingAction(false);
 
          if (axiosResponse.status_code != 200) return Toast.Error(axiosResponse.alert_text);
-         Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
+         Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon, "center");
          // console.log("axiosResponse", axiosResponse);
          setStepFailed(-1);
          // resetForm();
@@ -519,7 +519,7 @@ const RequestBecaView = () => {
             Toast.Success(axiosResponse.alert_text);
             return Toast.Warning(axiosResponse.alert_title);
          }
-         Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
+         Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon, "center");
          // console.log("axiosResponse", axiosResponse);
          setStepFailed(-1);
          // resetForm();
@@ -571,7 +571,7 @@ const RequestBecaView = () => {
             Toast.Success(axiosResponse.alert_text);
             return Toast.Warning(axiosResponse.alert_title);
          }
-         Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
+         Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon, "center");
          // console.log("axiosResponse", axiosResponse);
          setStepFailed(-1);
          // resetForm();
@@ -871,7 +871,7 @@ const RequestBecaView = () => {
                                  recuerda, puedes ver el estatus de tus solicitudes yendo a "Mis Solicitudes" en tú menú lateral
                               </Typography>
                            </Typography>
-                           <Button onClick={RedirectMyRequests()} variant="contained" fullWidth>
+                           <Button onClick={RedirectMyRequests} variant="contained" fullWidth>
                               Ir a Mis Solicitudes
                            </Button>
                            {/* <Button onClick={handleReset} variant="contained" fullWidth>

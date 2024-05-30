@@ -33,7 +33,7 @@ const InputsFormik3 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
                <InputComponent
                   col={6}
                   idName={"grade"}
-                  label={"GRado de Estudio (año) *"}
+                  label={"Grado de Estudio (año) *"}
                   type={"number"}
                   placeholder={"3"}
                   inputProps={{ maxLength: 1, min: 1, max: 6 }}

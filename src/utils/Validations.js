@@ -11,7 +11,7 @@ export const validateImageRequired = (valuesImg, msg = "Imagen requerida") => {
       valuesImg.name == "undefined" ||
       valuesImg.name == "[object Object]"
    ) {
-      Toast.Error(msg);
+      Toast.Error(msg, "center");
       return false;
    } else return true;
 };

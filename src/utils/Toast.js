@@ -2,13 +2,18 @@ import { enqueueSnackbar } from "notistack";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
-const Success = (msg) => enqueueSnackbar(msg, { variant: "success", autoHideDuration: 2500, anchorOrigin: { horizontal: "right", vertical: "bottom" } });
-const Error = (msg) => enqueueSnackbar(msg, { variant: "error", autoHideDuration: 2500, anchorOrigin: { horizontal: "right", vertical: "bottom" } });
-const Info = (msg) => enqueueSnackbar(msg, { variant: "info", autoHideDuration: 2500, anchorOrigin: { horizontal: "right", vertical: "bottom" } });
-const Warning = (msg) => enqueueSnackbar(msg, { variant: "warning", autoHideDuration: 2500, anchorOrigin: { horizontal: "right", vertical: "bottom" } });
-const Default = (msg) => enqueueSnackbar(msg, { variant: "default", autoHideDuration: 2500, anchorOrigin: { horizontal: "right", vertical: "bottom" } });
-const Customizable = (msg, icon = "default") =>
-   enqueueSnackbar(msg, { variant: icon, autoHideDuration: 2500, anchorOrigin: { horizontal: "right", vertical: "bottom" } });
+const Success = (msg, horizontal = "right", vertical = "bottom") =>
+   enqueueSnackbar(msg, { variant: "success", autoHideDuration: 2500, anchorOrigin: { horizontal, vertical } });
+const Error = (msg, horizontal = "right", vertical = "bottom") =>
+   enqueueSnackbar(msg, { variant: "error", autoHideDuration: 2500, anchorOrigin: { horizontal, vertical } });
+const Info = (msg, horizontal = "right", vertical = "bottom") =>
+   enqueueSnackbar(msg, { variant: "info", autoHideDuration: 2500, anchorOrigin: { horizontal, vertical } });
+const Warning = (msg, horizontal = "right", vertical = "bottom") =>
+   enqueueSnackbar(msg, { variant: "warning", autoHideDuration: 2500, anchorOrigin: { horizontal, vertical } });
+const Default = (msg, horizontal = "right", vertical = "bottom") =>
+   enqueueSnackbar(msg, { variant: "default", autoHideDuration: 2500, anchorOrigin: { horizontal, vertical } });
+const Customizable = (msg, icon = "default", horizontal = "right", vertical = "bottom") =>
+   enqueueSnackbar(msg, { variant: icon, autoHideDuration: 2500, anchorOrigin: { horizontal, vertical } });
 
 const Sweet = (msg, icon, position) => {
    const Toast = withReactContent(Swal).mixin({
