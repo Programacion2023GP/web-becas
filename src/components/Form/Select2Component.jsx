@@ -9,7 +9,7 @@ import { Box } from "@mui/system";
 /**
  *
  * {/* Marca *}
-   <Grid xs={12} md={6} sx={{ mb: 2 }}>
+   <Grid item xs={12} md={6} sx={{ mb: 2 }}>
       <Select2Component
          idName={"brand_id"}
          label={"Marca *"}

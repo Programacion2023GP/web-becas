@@ -1,8 +1,8 @@
 import { Field, Formik } from "formik";
 import * as Yup from "yup";
 
-import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
-import { Button, FormControlLabel, InputLabel, Switch, TextField, Typography } from "@mui/material";
+/// import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
+import { Grid, Button, FormControlLabel, InputLabel, Switch, TextField, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { SwipeableDrawer } from "@mui/material";
 import { FormControl } from "@mui/material";
@@ -186,7 +186,7 @@ const UserForm = ({ dataRoles }) => {
                   <Grid container spacing={2} component={"form"} onSubmit={handleSubmit}>
                      <Field id="id" name="id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} />
                      {/* Nombre de Usuario */}
-                     <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                     <Grid item xs={12} md={6} sx={{ mb: 2 }}>
                         <TextField
                            id="username"
                            name="username"
@@ -205,7 +205,7 @@ const UserForm = ({ dataRoles }) => {
                         />
                      </Grid>
                      {/* Correo Electronico */}
-                     <Grid xs={12} md={6} sx={{ mb: 1 }}>
+                     <Grid item xs={12} md={6} sx={{ mb: 1 }}>
                         <TextField
                            id="email"
                            name="email"
@@ -226,7 +226,7 @@ const UserForm = ({ dataRoles }) => {
 
                      {/* Switch para mostrar el cambiar contraseña */}
                      {checkedShowSwitchPassword && (
-                        <Grid xs={12} md={12} sx={{ mb: -2 }}>
+                        <Grid item xs={12} md={12} sx={{ mb: -2 }}>
                            <FormControlLabel
                               control={<Switch />}
                               label="Cambiar Contraseña"
@@ -236,7 +236,7 @@ const UserForm = ({ dataRoles }) => {
                         </Grid>
                      )}
                      {/* Contraseña */}
-                     <Grid xs={12} md={6} sx={{ mb: 2 }}>
+                     <Grid item xs={12} md={6} sx={{ mb: 2 }}>
                         <FormControl fullWidth error={Boolean(touched.password && errors.password)}>
                            <InputLabel htmlFor="password">Contraseña *</InputLabel>
                            <OutlinedInput
@@ -302,7 +302,7 @@ const UserForm = ({ dataRoles }) => {
                      </Grid>
 
                      {/* Rol */}
-                     <Grid xs={12} md={6} sx={{ mb: 1 }}>
+                     <Grid item xs={12} md={6} sx={{ mb: 1 }}>
                         <Select2Component
                            idName={"role_id"}
                            label={"Rol *"}

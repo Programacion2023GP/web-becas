@@ -1,10 +1,11 @@
 import React, { useContext, useEffect } from "react";
-import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
+/// import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
 import TextField from "@mui/material/TextField";
 import CircularProgress from "@mui/material/CircularProgress";
 import { Field, useFormikContext } from "formik"; // Importa el hook useFormikContext
 import InputMask from "react-input-mask";
 import { handleInputFormik } from "../../utils/Formats";
+import { Grid } from "@mui/material";
 
 export const InputComponentEST = ({
    col,
@@ -34,7 +35,12 @@ export const InputComponentEST = ({
    }, [idName]);
 
    return (
-      <Grid xs={12} md={col} sx={{ display: hidden ? "none" : "flex", flexDirection: "column", alignItems: "center", mb: marginBottom ? `${marginBottom} 0` : 2 }}>
+      <Grid
+         item
+         xs={12}
+         md={col}
+         sx={{ display: hidden ? "none" : "flex", flexDirection: "column", alignItems: "center", mb: marginBottom ? `${marginBottom} 0` : 2 }}
+      >
          {mask ? (
             <Field name={idName}>
                {({ field }) => (

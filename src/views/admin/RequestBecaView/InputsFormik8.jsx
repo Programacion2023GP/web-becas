@@ -1,9 +1,9 @@
 import { useFormikContext } from "formik";
-import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
+/// import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
+import { Grid, FormControl, FormGroup, FormLabel, Typography } from "@mui/material";
 import { CheckboxComponent, InputComponent, RadioButtonComponent } from "../../../components/Form/FormikComponents";
 import { useRequestBecaContext } from "../../../context/RequestBecaContext";
 import { useGlobalContext } from "../../../context/GlobalContext";
-import { FormControl, FormGroup, FormLabel, Typography } from "@mui/material";
 
 const InputsFormik8 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBeforeOrNext }) => {
    useGlobalContext();
@@ -16,8 +16,8 @@ const InputsFormik8 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
    return (
       <>
          <Grid width={"100%"} xs={12} spacing={2} height={"67vh"} MaxHeight={"67vh"} overflow={"auto"}>
-            <Grid xs={12} container spacing={2}>
-               <Grid xs={12} md={12} sx={{ mb: 3 }}>
+            <Grid item xs={12} container spacing={2}>
+               <Grid item xs={12} md={12} sx={{ mb: 3 }}>
                   <ol>
                      {/* Programa de Becas */}
                      <FormControl fullWidth sx={{ mb: 3 }}>

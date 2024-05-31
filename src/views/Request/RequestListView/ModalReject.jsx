@@ -1,8 +1,8 @@
 import { Formik } from "formik";
 import * as Yup from "yup";
 
-import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
-import { TextField } from "@mui/material";
+/// import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
+import { Grid, TextField } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { useEffect, useRef, useState } from "react";
 import { ModalComponent } from "../../../components/ModalComponent";
@@ -73,7 +73,7 @@ function ModalReject({ folio, open, setOpen, statusCurrent }) {
             {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
                <Grid container spacing={2} component={"form"} onSubmit={handleSubmit} mx={1} my={1}>
                   {/* Retroalimentación del Rechazo */}
-                  <Grid xs={12} md={12} sx={{ mb: 0 }}>
+                  <Grid item xs={12} md={12} sx={{ mb: 0 }}>
                      <TextField
                         id="rejected_feedback"
                         name="rejected_feedback"

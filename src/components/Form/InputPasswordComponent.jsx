@@ -4,6 +4,7 @@ import {
    FormControl,
    FormControlLabel,
    FormHelperText,
+   Grid,
    IconButton,
    InputAdornment,
    InputLabel,
@@ -11,7 +12,7 @@ import {
    Switch,
    Typography
 } from "@mui/material";
-import Grid from "@mui/material/Unstable_Grid2";
+/// import Grid from "@mui/material/Unstable_Grid2";
 import { Box } from "@mui/system";
 import { useFormikContext } from "formik";
 import { useEffect, useState } from "react";
@@ -96,7 +97,7 @@ export const InputPasswordCompnent = ({
             </Grid>
          )}
          {/* Contraseña */}
-         <Grid xs={12} sx={{ backgroundColor: "", p: 1 }}>
+         <Grid item xs={12} sx={{ backgroundColor: "", p: 1 }}>
             <FormControl fullWidth error={isError}>
                <InputLabel htmlFor={idName}>{label || "Contraseña *"}</InputLabel>
                <OutlinedInput

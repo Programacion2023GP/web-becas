@@ -8,7 +8,6 @@ import { gpcDark, gpcLight } from "../../context/GlobalContext";
 // import { styled } from "@mui/material/styles";
 import { shouldForwardProp, styled } from "@mui/system";
 import { wrap } from "framer-motion";
-import styledEngineSc from "@mui/styled-engine-sc";
 
 const OutlineInputStyle = styled(OutlinedInput, { shouldForwardProp })(({ theme }) => ({
    // width: 434,

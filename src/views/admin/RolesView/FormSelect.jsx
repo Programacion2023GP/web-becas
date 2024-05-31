@@ -1,13 +1,13 @@
 import { Formik, useFormikContext } from "formik";
 import * as Yup from "yup";
 
-import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
+/// import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
 
 import Select2Component from "../../../components/Form/Select2Component";
 import { useRoleContext } from "../../../context/RoleContext";
 import { useEffect } from "react";
 import { LoadingButton } from "@mui/lab";
-import { Button, ButtonGroup } from "@mui/material";
+import { Grid, Button, ButtonGroup } from "@mui/material";
 import Toast from "../../../utils/Toast";
 import { useGlobalContext } from "../../../context/GlobalContext";
 import { useAuthContext } from "../../../context/AuthContext";
@@ -274,20 +274,20 @@ const FormSelect = ({ setOpenDialogTable, setLoadPermissions }) => {
          // formikRef={formikRef}
          // ref={formikRef}
       >
-         <Grid xs={12} sm={2} sx={{ mb: 1 }}>
+         <Grid item xs={12} sm={2} sx={{ mb: 1 }}>
             <Button type="reset" variant="outlined" color="secondary" size="large" sx={{ mt: 1 }} fullWidth onClick={handleClickShowTable}>
                VER TODOS
             </Button>
          </Grid>
          {auth.permissions.update && (
-            <Grid xs={12} sm={2} sx={{ mb: 1 }}>
+            <Grid item xs={12} sm={2} sx={{ mb: 1 }}>
                <Button type="button" variant="outlined" color="info" fullWidth size="large" sx={{ mt: 1 }} onClick={handleClickEdit}>
                   EDITAR
                </Button>
             </Grid>
          )}
          {auth.permissions.create && (
-            <Grid xs={12} sm={2} sx={{ mb: 1 }}>
+            <Grid item xs={12} sm={2} sx={{ mb: 1 }}>
                <Button type="button" variant="outlined" color="success" fullWidth size="large" sx={{ mt: 1 }} onClick={handleClickAdd}>
                   AGREGAR
                </Button>
@@ -303,7 +303,7 @@ const FormSelect = ({ setOpenDialogTable, setLoadPermissions }) => {
             handleChangeValueSuccess={handleChangeRole}
          />
          {auth.permissions.more_permissions.includes(`6@Asignar Permisos`) && (
-            <Grid xs={12} sm={2} sx={{ mb: 1 }}>
+            <Grid item xs={12} sm={2} sx={{ mb: 1 }}>
                <LoadingButton
                   type="submit"
                   disabled={formikRef.isSubmitting}

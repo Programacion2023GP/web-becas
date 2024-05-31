@@ -1,5 +1,5 @@
 import { LoadingButton } from "@mui/lab";
-import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
+/// import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
 import React, { forwardRef, useEffect, useState, useCallback } from "react";
 import {
    Button,
@@ -20,7 +20,8 @@ import {
    RadioGroup,
    Radio,
    Checkbox,
-   Divider
+   Divider,
+   Grid
 } from "@mui/material";
 import { Formik, Field, useFormikContext } from "formik";
 import InputMask from "react-input-mask";
@@ -62,7 +63,7 @@ const OutlineInputStyle = styled(OutlinedInput, { shouldForwardProp })(({ theme 
 }));
 
 export const DividerComponent = () => (
-   <Grid xs={12}>
+   <Grid item xs={12}>
       <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
    </Grid>
 );
@@ -70,7 +71,7 @@ export const DividerComponent = () => (
 //#region FORMIK COMPONENT
 //#region IMPORTS
 // import { LoadingButton } from "@mui/lab";
-// import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
+// // import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
 // import { Button } from "@mui/material";
 // import { Formik } from "formik";
 // import { useEffect } from "react";
@@ -115,13 +116,13 @@ export const FormikComponent = forwardRef(
             {({ handleSubmit, isSubmitting, resetForm }) => (
                <Grid container spacing={2} component={"form"} onSubmit={handleSubmit} onBlur={onBlur} onChangeCapture={onChange}>
                   {!showActionButtons ? (
-                     <Grid xs={12} container spacing={2}>
+                     <Grid item xs={12} container spacing={2}>
                         {children}
                      </Grid>
                   ) : (
                      <>
                         <Grid width={"100%"} xs={12} spacing={2} height={"79vh"} MaxHeight={"79vh"} overflow={"auto"}>
-                           <Grid xs={12} container spacing={2}>
+                           <Grid item xs={12} container spacing={2}>
                               {children}
                            </Grid>
                         </Grid>
@@ -154,7 +155,7 @@ export const FormikComponent = forwardRef(
 //#region INPUT COMPONENT
 //#region IMPORTS
 // import React, { useEffect, useState } from "react";
-// import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
+// // import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
 // import TextField from "@mui/material/TextField";
 // import CircularProgress from "@mui/material/CircularProgress";
 // import { Field, useFormikContext } from "formik"; // Importa el hook useFormikContext
@@ -362,7 +363,7 @@ export const InputComponent = ({
 //    Switch,
 //    Typography
 // } from "@mui/material";
-// import Grid from "@mui/material/Unstable_Grid2";
+// // import Grid from "@mui/material/Unstable_Grid2";
 // import { Box } from "@mui/system";
 // import { useFormikContext } from "formik";
 // import { useEffect, useState } from "react";
@@ -449,7 +450,7 @@ export const PasswordCompnent = ({
             </Grid>
          )}
          {/* Contraseña */}
-         <Grid xs={12} sx={{ backgroundColor: "", p: 1 }}>
+         <Grid item xs={12} sx={{ backgroundColor: "", p: 1 }}>
             <FormControl fullWidth error={isError}>
                <InputLabel htmlFor={idName}>{label || "Contraseña *"}</InputLabel>
                <OutlinedInput
@@ -735,7 +736,7 @@ export const Select2Component = ({
 //#region SWITCH COMPONENT
 //#region IMPORTS
 // import React, { useEffect, useState } from "react";
-// import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
+// // import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
 // import TextField from "@mui/material/TextField";
 // import CircularProgress from "@mui/material/CircularProgress";
 // import { Field, useFormikContext } from "formik"; // Importa el hook useFormikContext
@@ -768,7 +769,7 @@ export const SwitchComponent = ({
    }, [idName]);
 
    return (
-      <Grid xs={12} md={col} sx={{ display: hidden ? "none" : "flex", flexDirection: "column", alignItems: "start", mb: marginBottom ? `${marginBottom} 0` : 2 }}>
+      <Grid item xs={12} md={col} sx={{ display: hidden ? "none" : "flex", flexDirection: "column", alignItems: "start", mb: marginBottom ? `${marginBottom} 0` : 2 }}>
          <Tooltip title={formik.values[idName] ? textEnable : textDisable} placement="right">
             <Button color="dark" onClick={() => formik.setFieldValue(idName, !Boolean(formik.values[idName]))}>
                <SwitchIOSComponent checked={Boolean(formik.values[idName])} label={label} />
@@ -783,7 +784,7 @@ export const SwitchComponent = ({
 //#region RADIO COMPONENT
 //#region IMPORTS
 // import React, { useEffect, useState } from "react";
-// import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
+// // import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
 // import { RadioGroup, FormControlLabel, Radio, Typography } from "@mui/material";
 // import CircularProgress from "@mui/material/CircularProgress";
 // import { Field, useFormikContext } from "formik"; // Importar Field y useFormikContext de Formik
@@ -890,7 +891,7 @@ export const RadioButtonComponent = ({
 //#region CHECK COMPONENT
 //#region IMPORTS
 // import { useEffect, useState } from "react";
-// import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
+// // import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
 // import { FormControlLabel, Checkbox, CircularProgress, Typography } from "@mui/material";
 // import { useFormikContext } from "formik";
 //#endregion IMPORTS
@@ -926,7 +927,7 @@ export const CheckboxComponent = ({
    return (
       <>
          {rowLayout && <Grid item xs={12} />}
-         <Grid xs={col} sx={{ display: "flex", alignItems: "center", position: "relative", mb: marginBottom ? marginBottom : 2 }}>
+         <Grid item xs={col} sx={{ display: "flex", alignItems: "center", position: "relative", mb: marginBottom ? marginBottom : 2 }}>
             <FormControlLabel
                control={
                   <Checkbox
@@ -985,7 +986,12 @@ export const DatePickerComponent = ({ loading = false, col, idName, label, forma
    useEffect(() => {}, [errors[idName], touched[idName]]);
 
    return (
-      <Grid xs={12} md={col} sx={{ display: hidden ? "none" : "flex", flexDirection: "column", alignItems: "center", mb: marginBottom ? `${marginBottom} 0` : 2 }}>
+      <Grid
+         item
+         xs={12}
+         md={col}
+         sx={{ display: hidden ? "none" : "flex", flexDirection: "column", alignItems: "center", mb: marginBottom ? `${marginBottom} 0` : 2 }}
+      >
          <FormControl fullWidth sx={{ margin: "1rem 0" }}>
             <Field name={idName} id={idName}>
                {({ field, form }) => (
@@ -1014,7 +1020,7 @@ export const DatePickerComponent = ({ loading = false, col, idName, label, forma
 
 //#region INPUTS COMUNNITY COMPONENT
 //#region IMPORTS
-// import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
+// // import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
 // import { Field } from "formik";
 // import Toast from "../../utils/Toast";
 // import { CircularProgress, TextField } from "@mui/material";

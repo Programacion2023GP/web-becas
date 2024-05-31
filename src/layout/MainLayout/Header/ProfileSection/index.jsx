@@ -21,6 +21,7 @@ import {
    Divider,
    FormControl,
    FormHelperText,
+   Grid,
    IconButton,
    InputAdornment,
    InputLabel,
@@ -37,7 +38,7 @@ import {
    TextField,
    Typography
 } from "@mui/material";
-import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
+/// import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
 
 // third-party
 import PerfectScrollbar from "react-perfect-scrollbar";
@@ -501,7 +502,7 @@ const ProfileSection = () => {
                   <DialogContent sx={{ pb: 0, height: 250 }}>
                      <Grid container spacing={2}>
                         {/* Contraseña */}
-                        <Grid xs={12} sx={{ mt: 2, mb: 2 }}>
+                        <Grid item xs={12} sx={{ mt: 2, mb: 2 }}>
                            <FormControl fullWidth error={Boolean(touched.password && errors.password)}>
                               <InputLabel htmlFor="password">Contraseña Actual *</InputLabel>
                               <OutlinedInput
@@ -566,7 +567,7 @@ const ProfileSection = () => {
                            )}
                         </Grid>
                         {/* Nueva Contraseña */}
-                        <Grid xs={12} sx={{ mb: 1 }}>
+                        <Grid item xs={12} sx={{ mb: 1 }}>
                            <FormControl fullWidth error={Boolean(touched.new_password && errors.new_password)}>
                               <InputLabel htmlFor="new_password">Nueva Contraseña *</InputLabel>
                               <OutlinedInput

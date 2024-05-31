@@ -1,9 +1,9 @@
 import { useFormikContext } from "formik";
-import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
+/// import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
+import { Grid, FormControl, FormGroup, FormLabel, Typography } from "@mui/material";
 import { CheckboxComponent, InputComponent, RadioButtonComponent } from "../../../components/Form/FormikComponents";
 import { useRequestBecaContext } from "../../../context/RequestBecaContext";
 import { useGlobalContext } from "../../../context/GlobalContext";
-import { FormControl, FormGroup, FormLabel, Typography } from "@mui/material";
 
 const InputsFormik7 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBeforeOrNext }) => {
    useGlobalContext();
@@ -16,8 +16,8 @@ const InputsFormik7 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
    return (
       <>
          <Grid width={"100%"} xs={12} spacing={2} height={"67vh"} MaxHeight={"67vh"} overflow={"auto"}>
-            <Grid xs={12} container spacing={2}>
-               <Grid xs={12} md={12} sx={{ mb: 3 }}>
+            <Grid item xs={12} container spacing={2}>
+               <Grid item xs={12} md={12} sx={{ mb: 3 }}>
                   <ol>
                      {/* Equipamiento de la casa */}
                      <FormControl fullWidth sx={{ mb: 3 }}>
@@ -27,7 +27,7 @@ const InputsFormik7 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
                            </Typography>
                         </FormLabel>
                         <Grid container spacing={2}>
-                           <Grid xs={12} md={6} sx={{ mb: 1 }}>
+                           <Grid item xs={12} md={6} sx={{ mb: 1 }}>
                               {/* Camas */}
                               <InputComponent
                                  col={6}
@@ -99,7 +99,7 @@ const InputsFormik7 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
                                  styleInput={3}
                               />
                            </Grid>
-                           <Grid xs={12} md={6} sx={{ mb: 1 }}>
+                           <Grid item xs={12} md={6} sx={{ mb: 1 }}>
                               {/* Teléfonos (local o celular) */}
                               <InputComponent
                                  col={6}
@@ -168,7 +168,7 @@ const InputsFormik7 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
                            </Typography>
                         </FormLabel>
                         <Grid container spacing={0}>
-                           <Grid xs={12} md={6} sx={{ mb: 1 }}>
+                           <Grid item xs={12} md={6} sx={{ mb: 1 }}>
                               {/* Agua Potable */}
                               <CheckboxComponent col={12} idName={"b5_drinking_water"} label={"Agua Potable"} value={true} marginBottom={-0.5} />
                               {/* Luz Eléctrica */}
@@ -178,7 +178,7 @@ const InputsFormik7 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
                               {/* Pavimento */}
                               <CheckboxComponent col={12} idName={"b5_pavement"} label={"Pavimento"} value={true} marginBottom={-0.5} />
                            </Grid>
-                           <Grid xs={12} md={6} sx={{ mb: 1 }}>
+                           <Grid item xs={12} md={6} sx={{ mb: 1 }}>
                               {/* Automóvil */}
                               <CheckboxComponent col={12} idName={"b5_automobile"} label={"Automóvil"} value={true} marginBottom={-0.5} />
 

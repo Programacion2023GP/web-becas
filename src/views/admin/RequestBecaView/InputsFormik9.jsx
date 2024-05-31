@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useFormikContext } from "formik";
-import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
+/// import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
 import { FileInputComponent, InputComponent, DividerComponent } from "../../../components/Form/FormikComponents";
 import { useRequestBecaContext } from "../../../context/RequestBecaContext";
 import { ROLE_ADMIN, useGlobalContext } from "../../../context/GlobalContext";
-import { Box, Button, ButtonGroup, FormControl, FormGroup, FormLabel, Icon, Tooltip, Typography } from "@mui/material";
+import { Grid, Box, Button, ButtonGroup, FormControl, FormGroup, FormLabel, Icon, Tooltip, Typography } from "@mui/material";
 import { useAuthContext } from "../../../context/AuthContext";
 import { IconCircleCheck, IconCircleX } from "@tabler/icons";
 import Toast from "../../../utils/Toast";
@@ -28,7 +28,7 @@ const ButtonsApprovedDocument = ({ auth, formik, setFieldValue, fieldApproved, f
    return (
       <>
          {/* Botones */}
-         <Grid xs={4} md={2} sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+         <Grid item xs={4} md={2} sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
             {auth.permissions.more_permissions.includes("16@Validar Documentos") && (
                <>
                   <Icon sx={{ fontSize: iconSize }}>{approved ? <IconCircleCheck size={iconSize} color="green" /> : <IconCircleX size={iconSize} color="red" />}</Icon>
@@ -59,7 +59,7 @@ const ButtonsApprovedDocument = ({ auth, formik, setFieldValue, fieldApproved, f
             )}
          </Grid>
          {/* Comentarios */}
-         <Grid xs={8} md={4} sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+         <Grid item xs={8} md={4} sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
             <InputComponent
                // col={4}
                idName={fieldComments}
@@ -144,7 +144,7 @@ const InputsFormik9 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
    return (
       <>
          <Grid width={"100%"} xs={12} spacing={2} height={"66vh"} MaxHeight={"66vh"} overflow={"auto"}>
-            <Grid xs={12} container spacing={2}>
+            <Grid item xs={12} container spacing={2}>
                {/* IMAGEN DE INE TUTOR */}
                {dataFileInputs.map((dataInput, index) => (
                   <>

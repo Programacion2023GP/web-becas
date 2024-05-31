@@ -1,8 +1,8 @@
 import { useFormikContext } from "formik";
-import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
+/// import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
+import { Grid, Typography } from "@mui/material";
 import { InputComponent } from "../../../components/Form/FormikComponents";
 import { useGlobalContext } from "../../../context/GlobalContext";
-import { Typography } from "@mui/material";
 
 const InputsFormik5 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBeforeOrNext }) => {
    useGlobalContext();
@@ -27,8 +27,8 @@ const InputsFormik5 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
    return (
       <>
          <Grid width={"100%"} xs={12} spacing={2} height={"67vh"} MaxHeight={"67vh"} overflow={"auto"}>
-            <Grid xs={12} container spacing={2}>
-               <Grid xs={12} md={12} sx={{ mb: 3 }}>
+            <Grid item xs={12} container spacing={2}>
+               <Grid item xs={12} md={12} sx={{ mb: 3 }}>
                   <Typography variant="h4" component={"p"} mb={1}>
                      Persona(s) que sostiene el hogar (Padre, Madre, Abuelo)
                   </Typography>
@@ -37,7 +37,7 @@ const InputsFormik5 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
                   </Typography>
                </Grid>
 
-               <Grid xs={12} md={6} sx={{ mb: 3 }}>
+               <Grid item xs={12} md={6} sx={{ mb: 3 }}>
                   {/* Alimentación */}
                   <InputComponent
                      col={12}
@@ -83,7 +83,7 @@ const InputsFormik5 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
                   />
                </Grid>
 
-               <Grid xs={12} md={6} sx={{ mb: 3 }}>
+               <Grid item xs={12} md={6} sx={{ mb: 3 }}>
                   {/* Servicios */}
                   <InputComponent
                      col={12}
@@ -115,7 +115,7 @@ const InputsFormik5 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
                   />
 
                   {/* Gastos Extras */}
-                  <Grid xs={12} md={12} sx={{ mb: 3 }}></Grid>
+                  <Grid item xs={12} md={12} sx={{ mb: 3 }}></Grid>
                </Grid>
 
                {/* Egresos Mensuales Totales */}

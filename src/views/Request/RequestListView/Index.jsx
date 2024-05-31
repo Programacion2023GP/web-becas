@@ -1,44 +1,12 @@
-import { Fragment, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { ROLE_CIUDADANO, useGlobalContext } from "../../../context/GlobalContext";
-import { Box } from "@mui/system";
 import {
-   Button,
-   ButtonGroup,
-   Divider,
-   FormControl,
-   FormControlLabel,
-   FormHelperText,
-   FormLabel,
-   Radio,
-   RadioGroup,
-   Step,
-   StepLabel,
-   Stepper,
-   TextField,
-   Tooltip,
-   Typography
-} from "@mui/material";
-import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
-import { Formik } from "formik";
-import * as Yup from "yup";
+   Box,
+   Typography} from "@mui/material";
+/// import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
 
 import { useRequestBecaContext } from "../../../context/RequestBecaContext";
-import { IconEdit, IconEye, IconInfoCircle, IconPrinter } from "@tabler/icons";
-import { useStudentContext } from "../../../context/StudentContext";
-import Toast from "../../../utils/Toast";
-import sAlert from "../../../utils/sAlert";
-import IconSended from "../../../components/icons/IconSended";
-import Select2Component from "../../../components/Form/Select2Component";
-import InputsCommunityComponent, { getCommunity } from "../../../components/Form/InputsCommunityComponent";
-import { formatDatetime, handleInputFormik } from "../../../utils/Formats";
 
-import DatePickerComponent from "../../../components/Form/DatePickerComponent";
-import { useDisabilityContext } from "../../../context/DisabilityContext";
-import { useSchoolContext } from "../../../context/SchoolContext";
-import { TableComponent } from "../../../components/Table/TableComponent";
-import { any } from "prop-types";
-import IconDelete from "../../../components/icons/IconDelete";
-import DataTableComponent from "../../../components/DataTableComponent";
 import RequestBecaDT from "./RequestDT";
 import { useAuthContext } from "../../../context/AuthContext";
 import { useParams } from "react-router";

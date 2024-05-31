@@ -1,5 +1,6 @@
 import { useFormikContext } from "formik";
-import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
+/// import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
+import { Grid } from "@mui/material";
 import { InputComponent } from "../../../components/Form/FormikComponents";
 import { useGlobalContext } from "../../../context/GlobalContext";
 import { Typography } from "@mui/material";
@@ -15,9 +16,9 @@ const InputsFormik4 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
    return (
       <>
          <Grid width={"100%"} xs={12} spacing={2} height={"67vh"} MaxHeight={"67vh"} overflow={"auto"}>
-            <Grid xs={12} container spacing={2}>
+            <Grid item xs={12} container spacing={2}>
                {/* LISTADO */}
-               <Grid xs={12} md={12} sx={{ mb: 3 }}>
+               <Grid item xs={12} md={12} sx={{ mb: 3 }}>
                   <Typography variant="h2" mb={2}>
                      ¿Quienes viven actualmente con el alumno?
                   </Typography>

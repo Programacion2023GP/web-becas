@@ -1,8 +1,23 @@
 import { Field, Formik } from "formik";
 import * as Yup from "yup";
 
-import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
-import { Button, Card, FormControlLabel, FormLabel, InputLabel, MenuItem, Radio, RadioGroup, Select, Switch, TextField, Tooltip, Typography } from "@mui/material";
+/// import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
+import {
+   Grid,
+   Button,
+   Card,
+   FormControlLabel,
+   FormLabel,
+   InputLabel,
+   MenuItem,
+   Radio,
+   RadioGroup,
+   Select,
+   Switch,
+   TextField,
+   Tooltip,
+   Typography
+} from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { SwipeableDrawer } from "@mui/material";
 import { FormControl } from "@mui/material";
@@ -173,7 +188,7 @@ const MenuForm = () => {
                      <Grid container width={"100%"} maxHeight={"57.9vh"} overflow={"auto"}>
                         <Field id="id" name="id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} />
                         {/* Padre o Hijo */}
-                        <Grid xs={12} md={12} sx={{ mb: 1 }}>
+                        <Grid item xs={12} md={12} sx={{ mb: 1 }}>
                            <FormControl fullWidth sx={{ alignItems: "center" }}>
                               <FormLabel id="type-label">Tipo de Menú</FormLabel>
                               <RadioGroup
@@ -199,7 +214,7 @@ const MenuForm = () => {
                            </FormControl>
                         </Grid>
                         {/* Menú */}
-                        <Grid xs={12} md={12} sx={{ mb: 3 }}>
+                        <Grid item xs={12} md={12} sx={{ mb: 3 }}>
                            <TextField
                               id="menu"
                               name="menu"
@@ -217,7 +232,7 @@ const MenuForm = () => {
                         </Grid>
                         {/* Leyenda */}
                         {values.type === "group" && (
-                           <Grid xs={12} md={12} sx={{ mb: 3 }}>
+                           <Grid item xs={12} md={12} sx={{ mb: 3 }}>
                               <TextField
                                  id="caption"
                                  name="caption"
@@ -237,7 +252,7 @@ const MenuForm = () => {
                         {values.type === "item" && (
                            <>
                               {/* Pertence a */}
-                              <Grid xs={12} md={12} sx={{ mb: 2 }}>
+                              <Grid item xs={12} md={12} sx={{ mb: 2 }}>
                                  <Select2Component
                                     idName={"belongs_to"}
                                     label={"Pertenezco a *"}
@@ -256,7 +271,7 @@ const MenuForm = () => {
                                  />
                               </Grid>
                               {/* URL */}
-                              <Grid xs={12} md={12} sx={{ mb: 3 }}>
+                              <Grid item xs={12} md={12} sx={{ mb: 3 }}>
                                  <TextField
                                     id="url"
                                     name="url"
@@ -273,7 +288,7 @@ const MenuForm = () => {
                                  />
                               </Grid>
                               {/* Icono */}
-                              <Grid xs={12} md={12} sx={{ mb: 3 }}>
+                              <Grid item xs={12} md={12} sx={{ mb: 3 }}>
                                  <TextField
                                     id="icon"
                                     name="icon"
@@ -295,7 +310,7 @@ const MenuForm = () => {
                                  </small>
                               </Grid>
                               {/* Otros Permisos */}
-                              <Grid xs={12} md={12} sx={{ mb: 3 }}>
+                              <Grid item xs={12} md={12} sx={{ mb: 3 }}>
                                  <TextField
                                     id="others_permissions"
                                     name="others_permissions"
@@ -319,7 +334,7 @@ const MenuForm = () => {
                            </>
                         )}
                         {/* Orden */}
-                        <Grid xs={12} md={12} sx={{ mb: 3 }}>
+                        <Grid item xs={12} md={12} sx={{ mb: 3 }}>
                            <TextField
                               id="order"
                               name="order"
@@ -337,7 +352,7 @@ const MenuForm = () => {
                         </Grid>
                         {/* Mostrar contador */}
                         {values.type === "item" && (
-                           <Grid xs={12} md={12} sx={{ mb: 3 }}>
+                           <Grid item xs={12} md={12} sx={{ mb: 3 }}>
                               <Tooltip title={values.show_counter ? "Mostrar" : "Ocultar"} placement="right">
                                  <Button color="dark" onClick={() => setFieldValue("show_counter", !Boolean(values.show_counter))}>
                                     <SwitchIOSComponent checked={Boolean(values.show_counter)} label={"¿Mostrar contador?"} />
@@ -347,7 +362,7 @@ const MenuForm = () => {
                         )}
                         {/* Nombre del Contador */}
                         {values.type === "item" && (
-                           <Grid xs={12} md={12} sx={{ mb: 3 }}>
+                           <Grid item xs={12} md={12} sx={{ mb: 3 }}>
                               <TextField
                                  id="counter_name"
                                  name="counter_name"
@@ -365,7 +380,7 @@ const MenuForm = () => {
                            </Grid>
                         )}
                         {/* Activar */}
-                        <Grid xs={12} md={12} sx={{ mb: 3 }}>
+                        <Grid item xs={12} md={12} sx={{ mb: 3 }}>
                            <Tooltip title={values.active ? "Activo" : "Inactivo"} placement="right">
                               <Button color="dark" onClick={() => setFieldValue("active", !Boolean(values.active))}>
                                  <SwitchIOSComponent checked={Boolean(values.active)} label={"¿Menú Activo?"} />

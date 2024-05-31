@@ -1,8 +1,8 @@
 import { Field, Formik } from "formik";
 import * as Yup from "yup";
 
-import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
-import { Button, FormControlLabel, FormLabel, InputLabel, MenuItem, Radio, RadioGroup, Select, Switch, TextField, Typography } from "@mui/material";
+/// import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
+import { Grid, Button, FormControlLabel, FormLabel, InputLabel, MenuItem, Radio, RadioGroup, Select, Switch, TextField, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { SwipeableDrawer } from "@mui/material";
 import { FormControl } from "@mui/material";
@@ -186,7 +186,7 @@ const SchoolForm = () => {
                      <Grid container width={"100%"} maxHeight={"79vh"} overflow={"auto"}>
                         <Field id="id" name="id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} />
                         {/* Codigo */}
-                        <Grid xs={12} md={4} sx={{ mb: 3 }}>
+                        <Grid item xs={12} md={4} sx={{ mb: 3 }}>
                            {/* <InputComponent idName={"code"} /> */}
                            <TextField
                               id="code"
@@ -206,7 +206,7 @@ const SchoolForm = () => {
                            />
                         </Grid>
                         {/* Nivel */}
-                        <Grid xs={12} md={8} sx={{ mb: 1 }}>
+                        <Grid item xs={12} md={8} sx={{ mb: 1 }}>
                            <Select2Component
                               idName={"level_id"}
                               label={"Nivel *"}
@@ -225,7 +225,7 @@ const SchoolForm = () => {
                            />
                         </Grid>
                         {/* Escuela */}
-                        <Grid xs={12} md={12} sx={{ mb: 3 }}>
+                        <Grid item xs={12} md={12} sx={{ mb: 3 }}>
                            <TextField
                               id="school"
                               name="school"
@@ -255,7 +255,7 @@ const SchoolForm = () => {
                         />
 
                         {/* Telefono */}
-                        <Grid xs={12} md={4} sx={{ mb: 1 }}>
+                        <Grid item xs={12} md={4} sx={{ mb: 1 }}>
                            <TextField
                               id="phone"
                               name="phone"
@@ -272,7 +272,7 @@ const SchoolForm = () => {
                            />
                         </Grid>
                         {/* Director */}
-                        <Grid xs={12} md={8} sx={{ mb: 1 }}>
+                        <Grid item xs={12} md={8} sx={{ mb: 1 }}>
                            {/* <ReactInputMask mask={"(999)-999-99-99"} value={values.director} disabled={false} maskChar=" "> */}
                            <TextField
                               id="director"
@@ -290,7 +290,7 @@ const SchoolForm = () => {
                            />
                         </Grid>
                         {/* Local o Foraneo */}
-                        <Grid xs={12} md={6} sx={{ mb: 1 }}>
+                        <Grid item xs={12} md={6} sx={{ mb: 1 }}>
                            <FormControl fullWidth sx={{ alignItems: "center" }}>
                               <FormLabel id="loc_for-label">Ubicacion de escuela</FormLabel>
                               <RadioGroup
@@ -313,7 +313,7 @@ const SchoolForm = () => {
                            </FormControl>
                         </Grid>
                         {/* Zona */}
-                        <Grid xs={12} md={6} sx={{ mb: 3 }}>
+                        <Grid item xs={12} md={6} sx={{ mb: 3 }}>
                            <FormControl fullWidth sx={{ alignItems: "center" }}>
                               <FormLabel id="zone-label">Zona</FormLabel>
                               <RadioGroup row aria-labelledby="zone-label" id="zone" name="zone" value={values.zone} onChange={handleChange} onBlur={handleBlur}>

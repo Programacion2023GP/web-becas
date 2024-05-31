@@ -1,8 +1,8 @@
 import { Field, Formik } from "formik";
 import * as Yup from "yup";
 
-import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
-import { Button, FormControlLabel, FormLabel, InputLabel, MenuItem, Radio, RadioGroup, Select, Switch, TextField, Typography } from "@mui/material";
+/// import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
+import { Grid, Button, FormControlLabel, FormLabel, InputLabel, MenuItem, Radio, RadioGroup, Select, Switch, TextField, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { SwipeableDrawer } from "@mui/material";
 import { FormControl } from "@mui/material";
@@ -185,7 +185,7 @@ const CommunityForm = () => {
                         registerCommunity={true}
                      />
                      {/* Communidad */}
-                     <Grid xs={12} md={12} sx={{ mb: 3 }}>
+                     <Grid item xs={12} md={12} sx={{ mb: 3 }}>
                         <TextField
                            id="name"
                            name="name"
@@ -202,7 +202,7 @@ const CommunityForm = () => {
                         />
                      </Grid>
                      {/* Tipo de Communidad */}
-                     <Grid xs={12} md={6} sx={{ mb: 3 }}>
+                     <Grid item xs={12} md={6} sx={{ mb: 3 }}>
                         <TextField
                            id="type"
                            name="type"
@@ -219,7 +219,7 @@ const CommunityForm = () => {
                         />
                      </Grid>
                      {/* Zona */}
-                     <Grid xs={12} md={6} sx={{ mb: 3 }}>
+                     <Grid item xs={12} md={6} sx={{ mb: 3 }}>
                         <FormControl fullWidth sx={{ alignItems: "center" }}>
                            <FormLabel id="zone-label">Zona</FormLabel>
                            <RadioGroup row aria-labelledby="zone-label" id="zone" name="zone" value={values.zone} onChange={handleChange} onBlur={handleBlur}>
@@ -234,7 +234,7 @@ const CommunityForm = () => {
                         </FormControl>
                      </Grid>
                      {/* Perímetro */}
-                     <Grid xs={12} md={12} sx={{ mb: 1 }}>
+                     <Grid item xs={12} md={12} sx={{ mb: 1 }}>
                         <Select2Component
                            idName={"perimeter_id"}
                            label={"Perímetro *"}

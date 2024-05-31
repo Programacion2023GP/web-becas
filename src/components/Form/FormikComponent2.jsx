@@ -1,6 +1,6 @@
 import { LoadingButton } from "@mui/lab";
-import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
-import { Button } from "@mui/material";
+/// import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
+import { Button, Grid } from "@mui/material";
 import { Formik } from "formik";
 import { useEffect } from "react";
 export const FormikComponent = ({ initialValues = {}, validationSchema = {}, onSubmit, children, textBtnSubmit, formikRef = null, handleCancel }) => {
@@ -12,8 +12,8 @@ export const FormikComponent = ({ initialValues = {}, validationSchema = {}, onS
       <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit} innerRef={formikRef}>
          {({ handleSubmit, isSubmitting, resetForm }) => (
             <Grid container spacing={2} component={"form"} onSubmit={handleSubmit}>
-               <Grid width={"100%"} xs={12} spacing={2} height={"79vh"} MaxHeight={"79vh"} overflow={"auto"}>
-                  <Grid xs={12} container spacing={2}>
+               <Grid item xs={12} width={"100%"} spacing={2} height={"79vh"} MaxHeight={"79vh"} overflow={"auto"}>
+                  <Grid item xs={12} container spacing={2}>
                      {children}
                   </Grid>
                </Grid>

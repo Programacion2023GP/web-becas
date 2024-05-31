@@ -1,5 +1,6 @@
 import { useFormikContext } from "formik";
-import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
+/// import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
+import { Grid } from "@mui/material";
 import { InputComponent, RadioButtonComponent, Select2Component } from "../../../components/Form/FormikComponents";
 import { useRelationshipContext } from "../../../context/RelationshipContext";
 import { useTutorContext } from "../../../context/TutorContext";
@@ -50,7 +51,7 @@ const InputsFormik1 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
    return (
       <>
          <Grid width={"100%"} xs={12} spacing={2} height={"67vh"} MaxHeight={"67vh"} overflow={"auto"}>
-            <Grid xs={12} container spacing={2}>
+            <Grid item xs={12} container spacing={2}>
                {/* CURP tutor */}
                <InputComponent
                   col={6}

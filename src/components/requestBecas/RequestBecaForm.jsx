@@ -1,8 +1,9 @@
 import { Field, Formik } from "formik";
 import * as Yup from "yup";
 
-import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
+/// import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
 import {
+   Grid,
    Autocomplete,
    Backdrop,
    Button,
@@ -151,7 +152,7 @@ const RequestBecaForm = ({ dataCities, dataColonies }) => {
                   <Grid container spacing={2} component={"form"} onSubmit={handleSubmit}>
                      <Field id="id" name="id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} />
                      {/* Codigo */}
-                     <Grid xs={12} md={4} sx={{ mb: 3 }}>
+                     <Grid item xs={12} md={4} sx={{ mb: 3 }}>
                         <TextField
                            id="code"
                            name="code"
@@ -168,7 +169,7 @@ const RequestBecaForm = ({ dataCities, dataColonies }) => {
                         />
                      </Grid>
                      {/* Escuela */}
-                     <Grid xs={12} md={8} sx={{ mb: 3 }}>
+                     <Grid item xs={12} md={8} sx={{ mb: 3 }}>
                         <TextField
                            id="school"
                            name="school"
@@ -184,7 +185,7 @@ const RequestBecaForm = ({ dataCities, dataColonies }) => {
                         />
                      </Grid>
                      {/* Ciduad */}
-                     <Grid xs={12} md={6} sx={{ mb: 1 }}>
+                     <Grid item xs={12} md={6} sx={{ mb: 1 }}>
                         <FormControl fullWidth>
                            <InputLabel id="city-label">Ciudad *</InputLabel>
                            <Select
@@ -216,7 +217,7 @@ const RequestBecaForm = ({ dataCities, dataColonies }) => {
                         </FormControl>
                      </Grid>
                      {/* Colonia */}
-                     <Grid xs={12} md={6} sx={{ mb: 1 }}>
+                     <Grid item xs={12} md={6} sx={{ mb: 1 }}>
                         <FormControl fullWidth>
                            <InputLabel id="colony-label">Colonia *</InputLabel>
                            <Select
@@ -279,7 +280,7 @@ const RequestBecaForm = ({ dataCities, dataColonies }) => {
                   </FormControl> */}
                      </Grid>
                      {/* Direccion */}
-                     <Grid xs={12} md={12} sx={{ mb: 1 }}>
+                     <Grid item xs={12} md={12} sx={{ mb: 1 }}>
                         <TextField
                            id="street"
                            name="street"
@@ -295,7 +296,7 @@ const RequestBecaForm = ({ dataCities, dataColonies }) => {
                         />
                      </Grid>
                      {/* Telefono */}
-                     <Grid xs={12} md={4} sx={{ mb: 1 }}>
+                     <Grid item xs={12} md={4} sx={{ mb: 1 }}>
                         <TextField
                            id="phone"
                            name="phone"
@@ -312,7 +313,7 @@ const RequestBecaForm = ({ dataCities, dataColonies }) => {
                         />
                      </Grid>
                      {/* Director */}
-                     <Grid xs={12} md={8} sx={{ mb: 1 }}>
+                     <Grid item xs={12} md={8} sx={{ mb: 1 }}>
                         {/* <ReactInputMask mask={"(999)-999-99-99"} value={values.director} disabled={false} maskChar=" "> */}
                         <TextField
                            id="director"
@@ -329,7 +330,7 @@ const RequestBecaForm = ({ dataCities, dataColonies }) => {
                         />
                      </Grid>
                      {/* Local o Foraneo */}
-                     <Grid xs={12} md={6} sx={{ mb: 1 }}>
+                     <Grid item xs={12} md={6} sx={{ mb: 1 }}>
                         <FormControl fullWidth>
                            <FormLabel id="loc_for-label">Ubicacion de escuela</FormLabel>
                            <RadioGroup
@@ -352,7 +353,7 @@ const RequestBecaForm = ({ dataCities, dataColonies }) => {
                         </FormControl>
                      </Grid>
                      {/* Zona */}
-                     <Grid xs={12} md={6} sx={{ mb: 3 }}>
+                     <Grid item xs={12} md={6} sx={{ mb: 3 }}>
                         <FormControl fullWidth>
                            <FormLabel id="zone-label">Zona</FormLabel>
                            <RadioGroup row aria-labelledby="zone-label" id="zone" name="zone" value={values.zone} onChange={handleChange} onBlur={handleBlur}>

@@ -1,8 +1,9 @@
 import { Field, Formik } from "formik";
 import * as Yup from "yup";
 
-import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
+/// import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
 import {
+   Grid,
    Button,
    Dialog,
    DialogActions,
@@ -181,7 +182,7 @@ const CommunityFormAssignPerimeter = ({ openDialog, setOpenDialog }) => {
                {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
                   <Grid container spacing={2} component={"form"} onSubmit={handleSubmit} flexDirection={"row-reverse"}>
                      <Field id="id" name="id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} />
-                     <Grid xs={12} md={12} sx={{ mb: 1 }}>
+                     <Grid item xs={12} md={12} sx={{ mb: 1 }}>
                         <Select2Component
                            idName={"perimeter_id"}
                            label={"Perímetro *"}

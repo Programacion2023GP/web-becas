@@ -23,9 +23,10 @@ import {
    ToggleButton,
    ToggleButtonGroup,
    Tooltip,
-   Typography
+   Typography,
+   Grid
 } from "@mui/material";
-import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
+/// import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
 import { Formik } from "formik";
 import * as Yup from "yup";
 
@@ -1118,7 +1119,7 @@ const RequestBecaView = () => {
                               //                }}
                               //                disabled={values.id == 0 ? false : true}
                               //             /> */}
-                              //             {/* <Grid xs={12} md={6} sx={{ mb: 3 }}>
+                              //             {/* <Grid item xs={12} md={6} sx={{ mb: 3 }}>
                               //                <TextField
                               //                   id="tutor_curp"
                               //                   name="tutor_curp"
@@ -1153,7 +1154,7 @@ const RequestBecaView = () => {
                               //                refreshSelect={getRelationshipsSelectIndex}
                               //                activeStep={pagina}
                               //             /> */}
-                              //             {/* <Grid xs={12} md={6} sx={{ mb: 3 }}>
+                              //             {/* <Grid item xs={12} md={6} sx={{ mb: 3 }}>
                               //                <Select2Component
                               //                   idName={"tutor_relationship_id"}
                               //                   label={"Parentesco *"}
@@ -1180,7 +1181,7 @@ const RequestBecaView = () => {
                               //                placeholder={"Escribe tú nombre completo"}
                               //                textStyleCase={true}
                               //             /> */}
-                              //             {/* <Grid xs={12} md={6} sx={{ mb: 3 }}>
+                              //             {/* <Grid item xs={12} md={6} sx={{ mb: 3 }}>
                               //                <TextField
                               //                   id="tutor_name"
                               //                   name="tutor_name"
@@ -1199,7 +1200,7 @@ const RequestBecaView = () => {
                               //                />
                               //             </Grid> */}
                               //             // {/* Apellido Paterno Tutor */}
-                              //             // <Grid xs={12} md={6} sx={{ mb: 3 }}>
+                              //             // <Grid item xs={12} md={6} sx={{ mb: 3 }}>
                               //             //    <TextField
                               //             //       id="tutor_paternal_last_name"
                               //             //       name="tutor_paternal_last_name"
@@ -1222,7 +1223,7 @@ const RequestBecaView = () => {
                               //             //    />
                               //             // </Grid>
                               //             // {/* Apellido Materno Tutor */}
-                              //             // <Grid xs={12} md={6} sx={{ mb: 3 }}>
+                              //             // <Grid item xs={12} md={6} sx={{ mb: 3 }}>
                               //             //    <TextField
                               //             //       id="tutor_maternal_last_name"
                               //             //       name="tutor_maternal_last_name"
@@ -1245,7 +1246,7 @@ const RequestBecaView = () => {
                               //             //    />
                               //             // </Grid>
                               //             // {/* Tel Tutor */}
-                              //             // <Grid xs={12} md={6} sx={{ mb: 3 }}>
+                              //             // <Grid item xs={12} md={6} sx={{ mb: 3 }}>
                               //             //    <TextField
                               //             //       id="tutor_phone"
                               //             //       name="tutor_phone"
@@ -1279,7 +1280,7 @@ const RequestBecaView = () => {
                                     >
                                        <Grid container spacing={2}>
                                           {/* CURP */}
-                                          <Grid xs={12} md={4} sx={{ mb: 3 }}>
+                                          <Grid item xs={12} md={4} sx={{ mb: 3 }}>
                                              <TextField
                                                 id="curp"
                                                 name="curp"
@@ -1303,7 +1304,7 @@ const RequestBecaView = () => {
                                              />
                                           </Grid>
                                           {/* Nombre del Alumno */}
-                                          <Grid xs={12} md={8} sx={{ mb: 3 }}>
+                                          <Grid item xs={12} md={8} sx={{ mb: 3 }}>
                                              <TextField
                                                 id="name"
                                                 name="name"
@@ -1321,7 +1322,7 @@ const RequestBecaView = () => {
                                              />
                                           </Grid>
                                           {/* Apellido Paterno del Alumno */}
-                                          <Grid xs={12} md={6} sx={{ mb: 3 }}>
+                                          <Grid item xs={12} md={6} sx={{ mb: 3 }}>
                                              <TextField
                                                 id="paternal_last_name"
                                                 name="paternal_last_name"
@@ -1339,7 +1340,7 @@ const RequestBecaView = () => {
                                              />
                                           </Grid>
                                           {/* Apellido Materno del Alumno */}
-                                          <Grid xs={12} md={6} sx={{ mb: 3 }}>
+                                          <Grid item xs={12} md={6} sx={{ mb: 3 }}>
                                              <TextField
                                                 id="maternal_last_name"
                                                 name="maternal_last_name"
@@ -1357,7 +1358,7 @@ const RequestBecaView = () => {
                                              />
                                           </Grid>
                                           {/* Fecha de Nacimiento */}
-                                          <Grid xs={12} md={4} sx={{ mb: 3 }}>
+                                          <Grid item xs={12} md={4} sx={{ mb: 3 }}>
                                              <DatePickerComponent
                                                 idName={"birthdate"}
                                                 label={"Fecha de Nacimiento"}
@@ -1371,7 +1372,7 @@ const RequestBecaView = () => {
                                              />
                                           </Grid>
                                           {/* Genero */}
-                                          <Grid xs={12} md={4} sx={{ mb: 1 }}>
+                                          <Grid item xs={12} md={4} sx={{ mb: 1 }}>
                                              <FormControl fullWidth sx={{ alignItems: "center" }} disabled={values.id == 0 ? false : true}>
                                                 <FormLabel id="gender-label">Género</FormLabel>
                                                 <RadioGroup
@@ -1390,7 +1391,7 @@ const RequestBecaView = () => {
                                              </FormControl>
                                           </Grid>
                                           {/* Discapacidad */}
-                                          <Grid xs={12} md={4} sx={{ mb: 1 }}>
+                                          <Grid item xs={12} md={4} sx={{ mb: 1 }}>
                                              <Select2Component
                                                 idName={"disability_id"}
                                                 label={"Discapacidad *"}
@@ -1413,7 +1414,7 @@ const RequestBecaView = () => {
                                              />
                                           </Grid>
 
-                                          <Grid xs={12}>
+                                          <Grid item xs={12}>
                                              <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
                                           </Grid>
 
@@ -1459,7 +1460,7 @@ const RequestBecaView = () => {
                                     >
                                        <Grid container spacing={2}>
                                           {/* Escuela */}
-                                          <Grid xs={12} md={12} sx={{ mb: 3 }}>
+                                          <Grid item xs={12} md={12} sx={{ mb: 3 }}>
                                              <Select2Component
                                                 idName={"school_id"}
                                                 label={"Escuela *"}
@@ -1483,7 +1484,7 @@ const RequestBecaView = () => {
                                              />
                                           </Grid>
                                           {/* Grado */}
-                                          <Grid xs={12} md={6} sx={{ mb: 3 }}>
+                                          <Grid item xs={12} md={6} sx={{ mb: 3 }}>
                                              <TextField
                                                 id="grade"
                                                 name="grade"
@@ -1501,7 +1502,7 @@ const RequestBecaView = () => {
                                              />
                                           </Grid>
                                           {/* Promedio */}
-                                          <Grid xs={12} md={6} sx={{ mb: 3 }}>
+                                          <Grid item xs={12} md={6} sx={{ mb: 3 }}>
                                              <TextField
                                                 id="average"
                                                 name="average"
@@ -1519,7 +1520,7 @@ const RequestBecaView = () => {
                                              />
                                           </Grid>
                                           {/* Comentarios */}
-                                          <Grid xs={12} md={12} sx={{ mb: 3 }}>
+                                          <Grid item xs={12} md={12} sx={{ mb: 3 }}>
                                              <TextField
                                                 id="comments"
                                                 name="comments"
@@ -1554,7 +1555,7 @@ const RequestBecaView = () => {
                                     >
                                        <Grid container spacing={2}>
                                           {/* LISTADO */}
-                                          <Grid xs={12} md={12} sx={{ mb: 3 }}>
+                                          <Grid item xs={12} md={12} sx={{ mb: 3 }}>
                                              <Typography variant="h2" mb={2}>
                                                 ¿Quienes viven actualmente con el alumno?
                                              </Typography>
@@ -1562,7 +1563,7 @@ const RequestBecaView = () => {
                                           </Grid>
 
                                           {/* Ingresos Extra */}
-                                          <Grid xs={12} md={6} sx={{ mb: 3 }}>
+                                          <Grid item xs={12} md={6} sx={{ mb: 3 }}>
                                              <TextField
                                                 id="extra_income"
                                                 name="extra_income"
@@ -1580,7 +1581,7 @@ const RequestBecaView = () => {
                                              />
                                           </Grid>
                                           {/* Ingreso Mensuales Totales */}
-                                          <Grid xs={12} md={6} sx={{ mb: 3 }}>
+                                          <Grid item xs={12} md={6} sx={{ mb: 3 }}>
                                              <TextField
                                                 id="monthly_income"
                                                 name="monthly_income"
@@ -1613,7 +1614,7 @@ const RequestBecaView = () => {
                                        onSubmit={handleSubmit}
                                     >
                                        <Grid container spacing={2}>
-                                          <Grid xs={12} md={12} sx={{ mb: 3 }}>
+                                          <Grid item xs={12} md={12} sx={{ mb: 3 }}>
                                              <Typography variant="h4" component={"p"} mb={1}>
                                                 Persona(s) que sostiene el hogar (Padre, Madre, Abuelo)
                                              </Typography>
@@ -1622,9 +1623,9 @@ const RequestBecaView = () => {
                                              </Typography>
                                           </Grid>
 
-                                          <Grid xs={12} md={6} sx={{ mb: 3 }}>
+                                          <Grid item xs={12} md={6} sx={{ mb: 3 }}>
                                              {/* Alimentación */}
-                                             <Grid xs={12} md={12} sx={{ mb: 3 }}>
+                                             <Grid item xs={12} md={12} sx={{ mb: 3 }}>
                                                 <InputComponentv2
                                                    idName="b3_food"
                                                    label="Alimentación (despensa) * $"
@@ -1649,7 +1650,7 @@ const RequestBecaView = () => {
                                                 />
                                              </Grid>
                                              {/* Transporte */}
-                                             <Grid xs={12} md={12} sx={{ mb: 3 }}>
+                                             <Grid item xs={12} md={12} sx={{ mb: 3 }}>
                                                 <InputComponentv2
                                                    idName="b3_transport"
                                                    label="Transporte * $"
@@ -1674,7 +1675,7 @@ const RequestBecaView = () => {
                                                 />
                                              </Grid>
                                              {/* Vivienda */}
-                                             <Grid xs={12} md={12} sx={{ mb: 3 }}>
+                                             <Grid item xs={12} md={12} sx={{ mb: 3 }}>
                                                 <InputComponentv2
                                                    idName="b3_living_place"
                                                    label="Vivienda (renta, infonavit) * $"
@@ -1699,9 +1700,9 @@ const RequestBecaView = () => {
                                                 />
                                              </Grid>
                                           </Grid>
-                                          <Grid xs={12} md={6} sx={{ mb: 3 }}>
+                                          <Grid item xs={12} md={6} sx={{ mb: 3 }}>
                                              {/* Servicios */}
-                                             <Grid xs={12} md={12} sx={{ mb: 3 }}>
+                                             <Grid item xs={12} md={12} sx={{ mb: 3 }}>
                                                 <InputComponentv2
                                                    idName="b3_services"
                                                    label="Servicios (agua y luz) * $"
@@ -1726,7 +1727,7 @@ const RequestBecaView = () => {
                                                 />
                                              </Grid>
                                              {/* Automovil */}
-                                             <Grid xs={12} md={12} sx={{ mb: 3 }}>
+                                             <Grid item xs={12} md={12} sx={{ mb: 3 }}>
                                                 <InputComponentv2
                                                    idName="b3_automobile"
                                                    label="Automóvil * $"
@@ -1751,11 +1752,11 @@ const RequestBecaView = () => {
                                                 />
                                              </Grid>
                                              {/* Gastos Extras */}
-                                             <Grid xs={12} md={12} sx={{ mb: 3 }}></Grid>
+                                             <Grid item xs={12} md={12} sx={{ mb: 3 }}></Grid>
                                           </Grid>
 
                                           {/* Egresos Mensuales Totales */}
-                                          <Grid xs={12} xsOffset={6} md={6} sx={{ mb: 3 }}>
+                                          <Grid item xs={12} xsOffset={6} md={6} sx={{ mb: 3 }}>
                                              <InputComponentv2
                                                 idName={"total_expenses"}
                                                 label={"TOTAL DE EGRESOS $"}
@@ -1790,7 +1791,7 @@ const RequestBecaView = () => {
                                        onSubmit={handleSubmit}
                                     >
                                        <Grid container spacing={2}>
-                                          <Grid xs={12} md={12} sx={{ mb: 3 }}>
+                                          <Grid item xs={12} md={12} sx={{ mb: 3 }}>
                                              <ol>
                                                 {/* La casa es */}
                                                 <FormControl fullWidth sx={{ mb: 5 }}>
@@ -1915,7 +1916,7 @@ const RequestBecaView = () => {
                                        onSubmit={handleSubmit}
                                     >
                                        <Grid container spacing={2}>
-                                          <Grid xs={12} md={12} sx={{ mb: 3 }}>
+                                          <Grid item xs={12} md={12} sx={{ mb: 3 }}>
                                              <ol>
                                                 {/* Equipamiento de la casa */}
                                                 <FormControl fullWidth sx={{ mb: 3 }}>
@@ -1933,9 +1934,9 @@ const RequestBecaView = () => {
                                                       </FormHelperText>
                                                    )}
                                                    <Grid container spacing={2}>
-                                                      <Grid xs={12} md={6} sx={{ mb: 1 }}>
+                                                      <Grid item xs={12} md={6} sx={{ mb: 1 }}>
                                                          {/* Camas */}
-                                                         <Grid xs={12} md={6} sx={{ mb: 1 }}>
+                                                         <Grid item xs={12} md={6} sx={{ mb: 1 }}>
                                                             <InputComponentv3
                                                                idName="b5_beds"
                                                                label="Camas"
@@ -1957,7 +1958,7 @@ const RequestBecaView = () => {
                                                             />
                                                          </Grid>
                                                          {/* Lavadoras */}
-                                                         <Grid xs={12} md={6} sx={{ mb: 1 }}>
+                                                         <Grid item xs={12} md={6} sx={{ mb: 1 }}>
                                                             <InputComponentv3
                                                                idName="b5_washing_machines"
                                                                label="Lavadoras"
@@ -1977,7 +1978,7 @@ const RequestBecaView = () => {
                                                             />
                                                          </Grid>
                                                          {/* Calentador de agua (boiler) */}
-                                                         <Grid xs={12} md={6} sx={{ mb: 1 }}>
+                                                         <Grid item xs={12} md={6} sx={{ mb: 1 }}>
                                                             <InputComponentv3
                                                                idName="b5_boilers"
                                                                label="Calentador de agua (boiler)"
@@ -1997,7 +1998,7 @@ const RequestBecaView = () => {
                                                             />
                                                          </Grid>
                                                          {/* Televisores */}
-                                                         <Grid xs={12} md={6} sx={{ mb: 1 }}>
+                                                         <Grid item xs={12} md={6} sx={{ mb: 1 }}>
                                                             <InputComponentv3
                                                                idName="b5_tvs"
                                                                label="Televisores"
@@ -2017,7 +2018,7 @@ const RequestBecaView = () => {
                                                             />
                                                          </Grid>
                                                          {/* Computadoras */}
-                                                         <Grid xs={12} md={6} sx={{ mb: 1 }}>
+                                                         <Grid item xs={12} md={6} sx={{ mb: 1 }}>
                                                             <InputComponentv3
                                                                idName="b5_pcs"
                                                                label="Computadoras"
@@ -2037,9 +2038,9 @@ const RequestBecaView = () => {
                                                             />
                                                          </Grid>
                                                       </Grid>
-                                                      <Grid xs={12} md={6} sx={{ mb: 1 }}>
+                                                      <Grid item xs={12} md={6} sx={{ mb: 1 }}>
                                                          {/* Teléfonos (local o celular) */}
-                                                         <Grid xs={12} md={6} sx={{ mb: 1 }}>
+                                                         <Grid item xs={12} md={6} sx={{ mb: 1 }}>
                                                             <InputComponentv3
                                                                idName="b5_phones"
                                                                label="Teléfonos (local o celular)"
@@ -2059,7 +2060,7 @@ const RequestBecaView = () => {
                                                             />
                                                          </Grid>
                                                          {/* Reproductores de Música */}
-                                                         <Grid xs={12} md={6} sx={{ mb: 1 }}>
+                                                         <Grid item xs={12} md={6} sx={{ mb: 1 }}>
                                                             <InputComponentv3
                                                                idName="b5_music_player"
                                                                label="Reproductores de Música"
@@ -2079,7 +2080,7 @@ const RequestBecaView = () => {
                                                             />
                                                          </Grid>
                                                          {/* Estufas */}
-                                                         <Grid xs={12} md={6} sx={{ mb: 1 }}>
+                                                         <Grid item xs={12} md={6} sx={{ mb: 1 }}>
                                                             <InputComponentv3
                                                                idName="b5_stoves"
                                                                label="Estufas"
@@ -2099,7 +2100,7 @@ const RequestBecaView = () => {
                                                             />
                                                          </Grid>
                                                          {/* Refrigeradores */}
-                                                         <Grid xs={12} md={6} sx={{ mb: 1 }}>
+                                                         <Grid item xs={12} md={6} sx={{ mb: 1 }}>
                                                             <InputComponentv3
                                                                idName="b5_refrigerators"
                                                                label="Refrigeradores"
@@ -2135,7 +2136,7 @@ const RequestBecaView = () => {
                                                       </FormHelperText>
                                                    )}
                                                    <Grid container spacing={2}>
-                                                      <Grid xs={12} md={6} sx={{ mb: 1 }}>
+                                                      <Grid item xs={12} md={6} sx={{ mb: 1 }}>
                                                          <FormGroup>
                                                             {/* Agua Potable */}
                                                             <FormControlLabel
@@ -2191,7 +2192,7 @@ const RequestBecaView = () => {
                                                             />
                                                          </FormGroup>
                                                       </Grid>
-                                                      <Grid xs={12} md={6} sx={{ mb: 1 }}>
+                                                      <Grid item xs={12} md={6} sx={{ mb: 1 }}>
                                                          <FormGroup>
                                                             {/* Automóvil */}
                                                             <FormControlLabel
@@ -2248,7 +2249,7 @@ const RequestBecaView = () => {
                                        onSubmit={handleSubmit}
                                     >
                                        <Grid container spacing={2}>
-                                          <Grid xs={12} md={12} sx={{ mb: 3 }}>
+                                          <Grid item xs={12} md={12} sx={{ mb: 3 }}>
                                              <ol>
                                                 {/* Programa de Becas */}
                                                 <FormControl fullWidth sx={{ mb: 3 }}>
@@ -2262,7 +2263,7 @@ const RequestBecaView = () => {
                                                          {errors.scholarship_program}
                                                       </FormHelperText>
                                                    )}
-                                                   <Grid xs={12} md={12} sx={{ mb: 1 }}>
+                                                   <Grid item xs={12} md={12} sx={{ mb: 1 }}>
                                                       <FormGroup sx={{ display: "flex", flexDirection: "row" }}>
                                                          {/* Beca de Transporte */}
                                                          <FormControlLabel
@@ -2351,7 +2352,7 @@ const RequestBecaView = () => {
                                        <Grid container spacing={2} sx={{ height: "90%", overflowY: "auto" }}>
                                           {/* IMAGEN DE INE TUTOR */}
                                           <>
-                                             <Grid xs={12} md={6} sx={{}}>
+                                             <Grid item xs={12} md={6} sx={{}}>
                                                 <InputFileComponent
                                                    idName="b7_img_tutor_ine"
                                                    label="Foto INE del tutor *"
@@ -2413,13 +2414,13 @@ const RequestBecaView = () => {
                                           {/* IMAGEN DE CARTA PODER TUTOR */}
                                           {isTutor && (
                                              <>
-                                                <Grid xs={12}>
+                                                <Grid item xs={12}>
                                                    <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
                                                 </Grid>
-                                                <Grid xs={12} sx={{ mb: 1 }}>
+                                                <Grid item xs={12} sx={{ mb: 1 }}>
                                                    <Typography variant="h4">Al no ser familiar directo favor de cargar el documento de Carta Poder</Typography>
                                                 </Grid>
-                                                <Grid xs={12} md={6} sx={{ mb: 3 }}>
+                                                <Grid item xs={12} md={6} sx={{ mb: 3 }}>
                                                    <InputFileComponent
                                                       idName="b7_img_tutor_power_letter"
                                                       label="Foto Carta Poder del tutor *"
@@ -2481,10 +2482,10 @@ const RequestBecaView = () => {
                                           )}
                                           {/* IMAGEN DEL COMPROBANTE DE DOMICILIO */}
                                           <>
-                                             <Grid xs={12}>
+                                             <Grid item xs={12}>
                                                 <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
                                              </Grid>
-                                             <Grid xs={12} md={6} sx={{ mb: 3 }}>
+                                             <Grid item xs={12} md={6} sx={{ mb: 3 }}>
                                                 <InputFileComponent
                                                    idName="b7_img_proof_address"
                                                    label="Foto Comprobante de Domicilio *"
@@ -2545,10 +2546,10 @@ const RequestBecaView = () => {
                                           </>
                                           {/* IMAGEN DE LA CURP */}
                                           <>
-                                             <Grid xs={12}>
+                                             <Grid item xs={12}>
                                                 <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
                                              </Grid>
-                                             <Grid xs={12} md={6} sx={{ mb: 3 }}>
+                                             <Grid item xs={12} md={6} sx={{ mb: 3 }}>
                                                 <InputFileComponent
                                                    idName="b7_img_curp"
                                                    label="Foto de la CURP *"
@@ -2605,10 +2606,10 @@ const RequestBecaView = () => {
                                           </>
                                           {/* IMAGEN DE LA ACTA DE NACIMIENTO */}
                                           <>
-                                             <Grid xs={12}>
+                                             <Grid item xs={12}>
                                                 <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
                                              </Grid>
-                                             <Grid xs={12} md={6} sx={{ mb: 3 }}>
+                                             <Grid item xs={12} md={6} sx={{ mb: 3 }}>
                                                 <InputFileComponent
                                                    idName="b7_img_birth_certificate"
                                                    label="Foto de la Acta de Nacimiento *"
@@ -2669,10 +2670,10 @@ const RequestBecaView = () => {
                                           </>
                                           {/* IMAGEN DEL CERTIFICADO ESTUDIANTIL */}
                                           <>
-                                             <Grid xs={12}>
+                                             <Grid item xs={12}>
                                                 <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
                                              </Grid>
-                                             <Grid xs={12} md={6} sx={{ mb: 3 }}>
+                                             <Grid item xs={12} md={6} sx={{ mb: 3 }}>
                                                 <InputFileComponent
                                                    idName="b7_img_academic_transcript"
                                                    label="Foto del Certificado Estudiantil con Calificaciones *"
