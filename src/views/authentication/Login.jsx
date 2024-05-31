@@ -43,7 +43,7 @@ const Login = () => {
                <Grid item xs={12} sx={{ zIndex: 20 }}>
                   <Grid container justifyContent="center" alignItems="center" sx={{ minHeight: "calc(100vh - 68px)", zIndex: 20 }}>
                      <Grid item sx={{ m: { xs: 1, sm: 3 }, mb: 0 }}>
-                        <AuthCardWrapper>
+                        <AuthCardWrapper className="animate__animated animate__backInDown">
                            <Grid container spacing={2} alignItems="center" justifyContent="center">
                               <Grid item sx={{ mb: 3 }}>
                                  {/* <Link to="#"> */}
