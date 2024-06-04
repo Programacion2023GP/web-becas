@@ -106,10 +106,14 @@ const RequestBecaDT = ({ status = null }) => {
          <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
          <style>
             table{font-family: 'Roboto', sans-serif;}
+            svg{maxWidth:50px; maxHeight:50px}
+            .checkCross{maxWidth:50px; maxHeight:50px}
          </style>
       </head><body>`);
       printWindow.document.write(content);
-      printWindow.document.write(`</body></html>`);
+      printWindow.document.write(`</body>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/material-ui/4.12.4/index.min.js" integrity="sha512-kIdy/WIexvksScC2I+uDkS0mx9tkTDDcYHjeY5Rmeum5GQuq8wgZqUv6FUMtGv0bm5KPY0vlps5nKBj+8BGutQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+      </html>`);
       printWindow.document.close();
       setTimeout(() => {
          printWindow.print();
@@ -204,6 +208,7 @@ const RequestBecaDT = ({ status = null }) => {
          setOpenDialogPreview(true);
          setLoadingAction(false);
       } catch (error) {
+         setLoadingAction(false);
          console.log(error);
          Toast.Error(error);
       }
@@ -468,13 +473,13 @@ const RequestBecaDT = ({ status = null }) => {
                <Typography sx={{ ml: 2, flex: 1 }} variant="h3" component="div">
                   {}
                </Typography>
-               {auth.permissions.update && (
+               {/* {auth.permissions.update && (
                   <Tooltip title={`Exportar Reporte a PDF`} placement="top">
                      <IconButton color="inherit" onClick={() => downloadPDF("reportPaper")}>
                         <IconFileTypePdf color="red" />
                      </IconButton>
                   </Tooltip>
-               )}
+               )} */}
                <Tooltip title={`Imprimir Reporte`} placement="top">
                   <IconButton color="inherit" onClick={() => printContent("reportPaper")}>
                      <IconPrinter />

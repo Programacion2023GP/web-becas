@@ -35,10 +35,6 @@ const InputsFormik7 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
                                  label={"Camas"}
                                  placeholder={"0"}
                                  type="number"
-                                 onChange={(e) => {
-                                    formik.handleChange(e);
-                                    handleChangeTotal(e, formik.values, formik.setFieldValue);
-                                 }}
                                  inputProps={{ min: 0, max: 100000 }}
                                  styleInput={3}
                               />
@@ -49,10 +45,6 @@ const InputsFormik7 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
                                  label={"Lavadoras"}
                                  placeholder={"0"}
                                  type="number"
-                                 onChange={(e) => {
-                                    formik.handleChange(e);
-                                    handleChangeTotal(e, formik.values, formik.setFieldValue);
-                                 }}
                                  inputProps={{ min: 0, max: 100000 }}
                                  styleInput={3}
                               />
@@ -63,10 +55,6 @@ const InputsFormik7 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
                                  label={"Calentador de agua (boiler)"}
                                  placeholder={"0"}
                                  type="number"
-                                 onChange={(e) => {
-                                    formik.handleChange(e);
-                                    handleChangeTotal(e, formik.values, formik.setFieldValue);
-                                 }}
                                  inputProps={{ min: 0, max: 100000 }}
                                  styleInput={3}
                               />
@@ -77,10 +65,6 @@ const InputsFormik7 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
                                  label={"Televisores"}
                                  placeholder={"0"}
                                  type="number"
-                                 onChange={(e) => {
-                                    formik.handleChange(e);
-                                    handleChangeTotal(e, formik.values, formik.setFieldValue);
-                                 }}
                                  inputProps={{ min: 0, max: 100000 }}
                                  styleInput={3}
                               />
@@ -91,10 +75,6 @@ const InputsFormik7 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
                                  label={"Computadoras"}
                                  placeholder={"0"}
                                  type="number"
-                                 onChange={(e) => {
-                                    formik.handleChange(e);
-                                    handleChangeTotal(e, formik.values, formik.setFieldValue);
-                                 }}
                                  inputProps={{ min: 0, max: 100000 }}
                                  styleInput={3}
                               />
@@ -107,10 +87,6 @@ const InputsFormik7 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
                                  label={"Teléfonos (local o celular)"}
                                  placeholder={"0"}
                                  type="number"
-                                 onChange={(e) => {
-                                    formik.handleChange(e);
-                                    handleChangeTotal(e, formik.values, formik.setFieldValue);
-                                 }}
                                  inputProps={{ min: 0, max: 100000 }}
                                  styleInput={3}
                               />
@@ -121,10 +97,6 @@ const InputsFormik7 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
                                  label={"Reproductores de Música"}
                                  placeholder={"0"}
                                  type="number"
-                                 onChange={(e) => {
-                                    formik.handleChange(e);
-                                    handleChangeTotal(e, formik.values, formik.setFieldValue);
-                                 }}
                                  inputProps={{ min: 0, max: 100000 }}
                                  styleInput={3}
                               />
@@ -135,10 +107,6 @@ const InputsFormik7 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
                                  label={"Estufas"}
                                  placeholder={"0"}
                                  type="number"
-                                 onChange={(e) => {
-                                    formik.handleChange(e);
-                                    handleChangeTotal(e, formik.values, formik.setFieldValue);
-                                 }}
                                  inputProps={{ min: 0, max: 100000 }}
                                  styleInput={3}
                               />
@@ -149,10 +117,6 @@ const InputsFormik7 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
                                  label={"Refrigeradores"}
                                  placeholder={"0"}
                                  type="number"
-                                 onChange={(e) => {
-                                    formik.handleChange(e);
-                                    handleChangeTotal(e, formik.values, formik.setFieldValue);
-                                 }}
                                  inputProps={{ min: 0, max: 100000 }}
                                  styleInput={3}
                               />

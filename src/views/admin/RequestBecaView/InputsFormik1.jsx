@@ -84,6 +84,7 @@ const InputsFormik1 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
                   idName={"tutor_name"}
                   label={"Nombre del Tutor *"}
                   placeholder={"Escribir nombre completo"}
+                  textStyleCase={true}
                   disabled={formik.values.id == 0 ? false : true}
                />
 

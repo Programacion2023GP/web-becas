@@ -2,7 +2,7 @@ import { Link, Navigate } from "react-router-dom";
 
 // material-ui
 import { useTheme } from "@mui/material/styles";
-import { Divider, Grid, Stack, Typography, useMediaQuery } from "@mui/material";
+import { Button, Divider, Grid, Stack, Typography, useMediaQuery } from "@mui/material";
 
 // project imports
 import AuthWrapper from "./AuthWrapper";
@@ -10,11 +10,11 @@ import AuthCardWrapper from "./AuthCardWrapper";
 import Logo from "../../ui-component/Logo";
 import AuthRegister from "./auth-forms/AuthRegister";
 import AuthFooter from "../../ui-component/cards/AuthFooter";
-import { useRedirectTo } from "../../hooks/useRedirectTo";
+// import { useRedirectToAuth } from "../../hooks/useRedirectToAuth";
 // import { useAuthContext } from "../../context/AuthContextFirebase";
 import { useAuthContext } from "../../context/AuthContext";
 import { useGlobalContext } from "../../context/GlobalContext";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 
 // assets
 
@@ -23,7 +23,28 @@ import { useEffect } from "react";
 const Register = () => {
    const { auth } = useAuthContext();
    const { setLoading } = useGlobalContext();
-   // useRedirectTo(auth, "/admin");
+   const [animateIn, setAnimationIn] = useState(true);
+   const authCardRef = useRef(null);
+
+   const handleClickReturn = () => setAnimationIn(!animateIn);
+
+   useEffect(() => {
+      const authCard = document.querySelector("#authCard");
+      const handleAnimationEnd = (e) => {
+         if (e.animationName == "flipInY") window.location.hash = "#/register";
+      };
+
+      if (authCard) {
+         authCard.addEventListener("animationend", handleAnimationEnd);
+      }
+
+      // Cleanup event listener
+      return () => {
+         if (authCard) {
+            authCard.removeEventListener("animationend", handleAnimationEnd);
+         }
+      };
+   }, [animateIn]);
 
    useEffect(() => {
       setLoading(false);
@@ -44,7 +65,7 @@ const Register = () => {
                <Grid item xs={12} sx={{ zIndex: 2 }}>
                   <Grid container justifyContent="center" alignItems="center" sx={{ minHeight: "calc(100vh - 68px)" }}>
                      <Grid item sx={{ m: { xs: 1, sm: 3 }, mb: 0 }}>
-                        <AuthCardWrapper className="animate__animated animate__backInDown">
+                        <AuthCardWrapper /* id="authCard" className={`animate__animated ${animateIn ? "animate__flipInY" : "animate__flipOutY"}`} ref={authCardRef} */>
                            <Grid container spacing={2} alignItems="center" justifyContent="center">
                               <Grid item sx={{ mb: 3 }}>
                                  {/* <Link to="#"> */}
@@ -73,6 +94,9 @@ const Register = () => {
                               </Grid>
                               <Grid item xs={12}>
                                  <Grid item container direction="column" alignItems="center" xs={12}>
+                                    {/* <Button color="inherit" variant="text" onClick={handleClickReturn}>
+                                       Ya tengo cuenta, Ingresar
+                                    </Button> */}
                                     <Typography component={Link} to="/login" variant="subtitle1" sx={{ textDecoration: "none" }}>
                                        Ya tengo cuenta, Ingresar
                                     </Typography>

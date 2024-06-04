@@ -74,7 +74,7 @@ const ButtonsApprovedDocument = ({ auth, formik, setFieldValue, fieldApproved, f
    );
 };
 
-const InputsFormik9 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBeforeOrNext, isTutor, dataFileInputs = [] }) => {
+const InputsFormik9 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBeforeOrNext, isTutor, haveSecondRef, dataFileInputs = [] }) => {
    const { auth } = useAuthContext();
    const { setLoading, setLoadingAction } = useGlobalContext();
    const { formData, setFormData, saveOrFinishReview } = useRequestBecaContext();
@@ -116,6 +116,8 @@ const InputsFormik9 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
             return Toast.Info("Solo al tener todos los docuemntos aprobados puedes finalizar la revisión");
          if (isTutor && Boolean(values.b7_approved_tutor_power_letter) == false)
             return Toast.Info("Solo al tener todos los docuemntos aprobados puedes finalizar la revisión");
+         if (haveSecondRef && Boolean(values.b7_approved_second_ref) == false)
+            return Toast.Info("Solo al tener todos los docuemntos aprobados puedes finalizar la revisión");
 
          values.action = "finish";
          await setFormData({ ...formData, ...values });
@@ -143,17 +145,27 @@ const InputsFormik9 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
 
    return (
       <>
-         <Grid width={"100%"} xs={12} spacing={2} height={"66vh"} MaxHeight={"66vh"} overflow={"auto"}>
+         <Grid width={"100%"} xs={12} spacing={2} height={"66vh"} maxHeight={"66vh"} overflow={"auto"}>
             <Grid xs={12} container spacing={2}>
                {/* IMAGEN DE INE TUTOR */}
                {dataFileInputs.map((dataInput, index) => (
                   <>
                      {dataInput.isTutor === true && (
-                        <Typography variant="h4" sx={{ display: "block", width: "100%", mb: 1 }}>
-                           {`Al no ser familiar directo favor de cargar el documento de ${dataInput.name}`}
-                        </Typography>
+                        <>
+                           <Typography variant="h5" sx={{ display: "block", width: "100%", mb: 1 }}>
+                              Al no ser familiar directo favor de cargar algúno de los siguientes documentos <br />
+                              <small>Carta de dependencia economica del DIF &nbsp;|&nbsp; Hoja custodia &nbsp;|&nbsp; Acta de defunsión del padre o madre</small>
+                           </Typography>
+                        </>
                      )}
-                     {dataInput.isTutor !== null && (
+                     {dataInput.haveSecondRef === true && (
+                        <>
+                           <Typography variant="h5" sx={{ display: "block", width: "100%", mb: 1 }}>
+                              Se eligio una 2da opción para recoger el apoyo, un "{formData.second_ref}"
+                           </Typography>
+                        </>
+                     )}
+                     {![dataInput.isTutor, dataInput.haveSecondRef].includes(null) && (
                         <>
                            <Grid container xs={12}>
                               <FileInputComponent

@@ -71,9 +71,14 @@ const MainLayout = () => {
    const { cursorLoading } = useGlobalContext();
 
    useEffect(() => {
-      // console.log("holaaa");
+      // console.log("validateAccessPage()");
       validateAccessPage();
    });
+
+   // useEffect(() => {
+   //    // console.log("cambio el has?");
+   //    validateAccessPage();
+   // }, [window.location.hash]);
 
    return (
       auth && (

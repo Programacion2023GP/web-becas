@@ -1,8 +1,8 @@
-import { Link, Navigate } from "react-router-dom";
+import { Link, Navigate, useNavigation } from "react-router-dom";
 
 // material-ui
 import { useTheme } from "@mui/material/styles";
-import { Divider, Grid, Stack, Typography, useMediaQuery } from "@mui/material";
+import { Button, Divider, Grid, Stack, Typography, useMediaQuery } from "@mui/material";
 
 // project imports
 import AuthWrapper from "./AuthWrapper";
@@ -11,9 +11,9 @@ import AuthLogin from "./auth-forms/AuthLogin";
 import Logo from "../../ui-component/Logo";
 import AuthFooter from "../../ui-component/cards/AuthFooter";
 // import { useAuthContext } from "../../../../context/AuthContextFirebase";
-import { useRedirectTo } from "../../hooks/useRedirectTo";
+import { useNavigateTo } from "../../hooks/useRedirectTo";
 import { useAuthContext } from "../../context/AuthContext";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useGlobalContext } from "../../context/GlobalContext";
 
 // assets
@@ -22,9 +22,32 @@ import { useGlobalContext } from "../../context/GlobalContext";
 const Login = () => {
    const { auth } = useAuthContext();
    const { setLoading } = useGlobalContext();
-   // useRedirectTo(auth, "/admin");
+   const [animateIn, setAnimationIn] = useState(true);
+   const authCardRef = useRef(null);
+
+   const handleClickRegister = () => setAnimationIn(!animateIn);
 
    useEffect(() => {
+      console.log("el animeteIn2", animateIn);
+      const authCard = document.querySelector("#authCard");
+      const handleAnimationEnd = (e) => {
+         if (e.animationName == "flipOutY") window.location.hash = "#/register";
+      };
+
+      if (authCard) {
+         authCard.addEventListener("animationend", handleAnimationEnd);
+      }
+
+      // Cleanup event listener
+      return () => {
+         if (authCard) {
+            authCard.removeEventListener("animationend", handleAnimationEnd);
+         }
+      };
+   }, [animateIn]);
+
+   useEffect(() => {
+      console.log("el animeteIn", animateIn);
       setLoading(false);
       setTimeout(() => {
          setLoading(false);
@@ -43,7 +66,8 @@ const Login = () => {
                <Grid item xs={12} sx={{ zIndex: 20 }}>
                   <Grid container justifyContent="center" alignItems="center" sx={{ minHeight: "calc(100vh - 68px)", zIndex: 20 }}>
                      <Grid item sx={{ m: { xs: 1, sm: 3 }, mb: 0 }}>
-                        <AuthCardWrapper className="animate__animated animate__backInDown">
+                        <AuthCardWrapper /* id="authCard" className={`animate__animated ${animateIn ? "animate__backInDown" : "animate__flipOutY"}`} ref={authCardRef} */
+                        >
                            <Grid container spacing={2} alignItems="center" justifyContent="center">
                               <Grid item sx={{ mb: 3 }}>
                                  {/* <Link to="#"> */}
@@ -72,6 +96,9 @@ const Login = () => {
                               </Grid>
                               <Grid item xs={12}>
                                  <Grid item container direction="column" alignItems="center" xs={12}>
+                                    {/* <Button color="inherit" variant="text" onClick={handleClickRegister}>
+                                       ¿No tienes una cuenta?
+                                    </Button> */}
                                     <Typography component={Link} to="/register" variant="subtitle1" sx={{ textDecoration: "none" }}>
                                        ¿No tienes una cuenta?
                                     </Typography>

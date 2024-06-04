@@ -23,7 +23,16 @@ import CheckIcon from "@mui/icons-material/Check";
 export default function RequestReportPDF({ obj }) {
    const checkCross = (value, size = 24) => {
       try {
-         return value ? <CheckIcon height={size} /> : <CloseIcon fontSize="small" />;
+         return value ? (
+            <div className="checkCross" style={{ color: "green", fontSize: size + 5 }}>
+               ✔️
+            </div>
+         ) : (
+            <div className="checkCross" style={{ color: "red", fontSize: size }}>
+               ❌
+            </div>
+         );
+         // return value ? <CheckIcon height={size} /> : <CloseIcon fontSize="small" />;
       } catch (error) {
          console.log(error);
          Toast.Error(error);

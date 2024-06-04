@@ -993,7 +993,7 @@ export const DatePickerComponent = ({ loading = false, col, idName, label, forma
                      <DatePicker
                         label={label}
                         value={dayjs(field.value) || null}
-                        // format={format}
+                        format={format}
                         onChange={(date) => form.setFieldValue(field.name, dayjs(date).format("YYYY-MM-DD"))}
                         error={errors[idName] && touched[idName]}
                         disabled={loading || disabled}
@@ -1152,7 +1152,8 @@ export const getCommunity = async (
       // }
       if (states.length > 1) setDisabledState(false);
       if (cities.length > 1) setDisabledCity(false);
-      if (colonies.length > 1) setDisabledColony(false);
+      // if (colonies.length > 1)
+      setDisabledColony(false);
       await setDataStates(states);
       await setDataCities(cities);
       await setDataColonies(colonies);
@@ -1160,7 +1161,7 @@ export const getCommunity = async (
       setFieldValue("zip", community_id ? formData.zip : zip);
       setFieldValue("state", community_id ? formData.state : states.length == 1 ? states[0] : states[1]);
       setFieldValue("city", community_id ? formData.city : cities.length == 1 ? cities[0] : cities[1]);
-      setFieldValue("colony", community_id ? formData.colony : colonies.length == 1 ? colonies[1] : 0);
+      setFieldValue("colony", community_id ? formData.colony : colonies.length == 1 ? colonies[0] : 0);
       // if (!community_id) setFieldValue("community_id", colonies.length == 2 && coloniesComplete[1].id);
       // setFieldValue("colony", community_id ? community_id : colonies[0]["id"]);
       setShowLoading(false);

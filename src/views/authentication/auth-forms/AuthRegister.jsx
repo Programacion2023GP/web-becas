@@ -36,7 +36,7 @@ import { strengthColor, strengthIndicator } from "../../../utils/password-streng
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 // import { useAuthContext } from "../../../context/AuthContextFirebase";
-import { useRedirectTo } from "../../../hooks/useRedirectTo";
+// import { useRedirectToAuth } from "../../../hooks/useRedirectToAuth";
 // import { register } from "../../../config/firebase";
 import { LoadingButton } from "@mui/lab";
 import { useAuthContext } from "../../../context/AuthContext";
