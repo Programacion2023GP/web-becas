@@ -203,7 +203,7 @@ export default function MenuContextProvider({ children }) {
          let res = CorrectRes;
          const axiosData = await Axios.get(`/menus/counterOfMenus`);
          res = axiosData.data.data;
-         console.log("counterOfMenus()-<res", res);
+         // console.log("counterOfMenus()->res", res);
 
          return res;
       } catch (error) {

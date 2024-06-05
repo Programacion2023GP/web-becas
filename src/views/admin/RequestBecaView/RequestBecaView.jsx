@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useRef, useState } from "react";
-import { ROLE_ADMIN, useGlobalContext } from "../../../context/GlobalContext";
+import { useGlobalContext } from "../../../context/GlobalContext";
 import { Box } from "@mui/system";
 import { Button, Step, StepLabel, Stepper, Typography } from "@mui/material";
 import * as Yup from "yup";
@@ -36,7 +36,7 @@ const RequestBecaView = () => {
    // const { result } = useLoaderData();
    // const dataDisabilities = result.disabilities;
    // const dataSchools = result.schools;
-   let { folio, pagina = 0 } = useParams();
+   let { folio, pagina = 0, accion } = useParams();
 
    // const [folio, setFolio] = useState(null);
 
@@ -185,7 +185,8 @@ const RequestBecaView = () => {
             : activeStep + 1;
 
       setActiveStep(newActiveStep);
-      if (formData.correction_permission == 1) location.hash = "/admin/solicitudes/mis-solicitudes";
+      if (accion != undefined) return (location.hash = "/admin/solicitudes/mis-solicitudes");
+
       if (pagina >= 4 || folio > 0) location.hash = `/admin/solicitud-beca/pagina/${activeStep + 2}/folio/${folio}`;
       else location.hash = `/admin/solicitud-beca/pagina/${activeStep + 2}`;
    };
@@ -232,7 +233,7 @@ const RequestBecaView = () => {
    };
    const ButtonsBeforeOrNext = ({ isSubmitting, setValues, values = null }) => (
       <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between", pt: 2, width: "100%" }}>
-         {(values == null || values.b6_finished == 0) && (
+         {(values == null || values.b6_finished == 0) && [undefined].includes(accion) && (
             <Button color="inherit" variant="contained" disabled={activeStep === 0} onClick={handleBack} sx={{ mr: 1 }}>
                ATRAS
             </Button>
@@ -267,12 +268,12 @@ const RequestBecaView = () => {
                   // loadingPosition="start"
                   variant="contained"
                >
-                  {completedSteps() === totalSteps() - 1 ? "ENVIAR SOLICITUD" : "ADELANTE"}
+                  {completedSteps() === totalSteps() - 1 ? (["correccion"].includes(accion) ? "TERMINAR CORRECCIÓN" : "ENVIAR SOLICITUD") : "ADELANTE"}
                </Button>
             ))}
-         <Button type="button" color="info" id="btnModify" sx={{ mt: 1, display: "none" }} onClick={() => handleModify(setValues)}>
+         {/* <Button type="button" color="info" id="btnModify" sx={{ mt: 1, display: "none" }} onClick={() => handleModify(setValues)}>
             setValues
-         </Button>
+         </Button> */}
       </Box>
    );
 
@@ -564,7 +565,7 @@ const RequestBecaView = () => {
    const onSubmit9 = async (values, { setSubmitting, setErrors }) => {
       try {
          // console.log("🚀 ~ onSubmit9 ~ values:", values);
-         console.log("🚀 ~ onSubmit9 ~ formData:", formData);
+         // console.log("🚀 ~ onSubmit9 ~ formData:", formData);
 
          values.b7_img_tutor_ine = imgTutorIne.length == 0 ? "" : imgTutorIne[0].file;
          if (isTutor) values.b7_img_tutor_power_letter = imgTutorPowerLetter.length == 0 ? "" : imgTutorPowerLetter[0].file;
@@ -599,7 +600,7 @@ const RequestBecaView = () => {
          }
          Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon, "center");
          // console.log("formData", formData);
-         if (formData.correction_permission) location.hash = "/admin/solicitudes/mis-solicitudes";
+         if (formData.correction_permission == 1) location.hash = "/admin/solicitudes/mis-solicitudes";
          setStepFailed(-1);
          handleComplete();
       } catch (error) {
@@ -764,6 +765,7 @@ const RequestBecaView = () => {
    const handleModify = async (setValues) => {
       try {
          // console.log("hola handleModify()", pagina);
+         setLoadingAction(true);
          setCompleted({ 0: true, 1: true, 2: true });
          const ajaxResponse = await getRequestBecasByFolio(folio);
          // console.log("holaaaaa familia", ajaxResponse.result.requestBecas);
@@ -784,11 +786,8 @@ const RequestBecaView = () => {
          // console.log("que paso?f :c", formData);
          // console.log("isTutor :c", isTutor);
          if (pagina == 9) {
-            console.log("🚀 ~ handleModify ~ ajaxResponse.result.requestBecas:", ajaxResponse.result.requestBecas);
-            console.log("🚀 ~ handleModify ~ ajaxResponse.result.requestBecas.second_ref:", ajaxResponse.result.requestBecas.second_ref != "NULL");
             setIsTutor(ajaxResponse.result.requestBecas.tutor_relationship_id > 2 ? true : false);
             setHaveSecondRef(ajaxResponse.result.requestBecas.second_ref != "NULL" ? true : false);
-            console.log("🚀 ~ handleModify ~ b7_img_second_ref:", ajaxResponse.result.requestBecas.b7_img_second_ref);
             // console.log("holaa soy pagina9 - siTutor:", isTutor, ajaxResponse.result.requestBecas.tutor_relationship_id);
             setObjImg(ajaxResponse.result.requestBecas.b7_img_tutor_ine, setImgTutorIne);
             if (ajaxResponse.result.requestBecas.tutor_relationship_id > 2)
@@ -799,7 +798,9 @@ const RequestBecaView = () => {
             setObjImg(ajaxResponse.result.requestBecas.b7_img_birth_certificate, setImgBirthCertificate);
             setObjImg(ajaxResponse.result.requestBecas.b7_img_academic_transcript, setImgAcademicTranscript);
          }
+         setLoadingAction(false);
       } catch (error) {
+         setLoadingAction(false);
          console.log(error);
          Toast.Error(error);
       }
@@ -812,8 +813,9 @@ const RequestBecaView = () => {
          // console.log("folio de params?", folio);
          // console.log("pagina de params?", pagina);
          if (folio) {
-            const btnModify = document.getElementById("btnModify");
-            if (btnModify != null) btnModify.click();
+            handleModify(formik.current.setValues);
+            // const btnModify = document.getElementById("btnModify");
+            // if (btnModify != null) btnModify.click();
          }
          getDisabilitiesSelectIndex();
          getSchoolsSelectIndex();

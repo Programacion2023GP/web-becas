@@ -61,9 +61,11 @@ const OutlineInputStyle = styled(OutlinedInput, { shouldForwardProp })(({ theme 
    }
 }));
 
-export const DividerComponent = () => (
+export const DividerComponent = ({ title, textAlign = "center", orientation = "horizontal" }) => (
    <Grid xs={12}>
-      <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={"horizontal"} />
+      <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={orientation} textAlign={textAlign}>
+         {title}
+      </Divider>
    </Grid>
 );
 

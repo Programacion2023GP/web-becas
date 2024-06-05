@@ -9,7 +9,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TablePagination from "@mui/material/TablePagination";
 
 import logo_gpd from "/src/assets/images/logo-gpd.png";
-import { width } from "@mui/system";
+import { display, width } from "@mui/system";
 import { Typography } from "@mui/material";
 import { formatCurrency, formatDatetime, formatPhone, splitArroba } from "../../../utils/Formats";
 import Toast from "../../../utils/Toast";
@@ -40,7 +40,16 @@ export default function RequestReportPDF({ obj }) {
    };
    const titleStyle = { backgroundColor: "#364152", color: "whitesmoke", fontSize: 18, padding: 8, borderBottom: "1px solid white" },
       subtitleStyle = { backgroundColor: "#525C6A", color: "whitesmoke", fontSize: 14, padding: 6, border: "1px solid #364152" },
-      valueStyle = { fontSize: 12, padding: 6, border: "1px solid #364152" };
+      valueStyle = { fontSize: 12, padding: 6, border: "1px solid #364152" },
+      subtitleStyleHidden = {
+         backgroundColor: "#525C6A",
+         color: "whitesmoke",
+         fontSize: 14,
+         padding: 6,
+         border: "1px solid #364152",
+         display: ["RECHAZADA", "CANCELADA"].includes(obj.status) ? "block" : "none"
+      },
+      valueStyleHidden = { fontSize: 12, padding: 6, border: "1px solid #364152", display: ["RECHAZADA", "CANCELADA"].includes(obj.status) ? "block" : "none" };
 
    const tableRows = [
       //DATOS GENERALES
@@ -55,6 +64,7 @@ export default function RequestReportPDF({ obj }) {
                      { colSpan: null, style: subtitleStyle, title: "Folio" },
                      { colSpan: null, style: subtitleStyle, title: "Fecha de Solicitud" },
                      { colSpan: null, style: subtitleStyle, title: "Fecha de Termino" },
+                     { colSpan: null, style: subtitleStyle, title: "Estudio Socio-Económico" },
                      { colSpan: null, style: subtitleStyle, title: "Estatus de la solicitud" }
                   ]
                ],
@@ -62,8 +72,13 @@ export default function RequestReportPDF({ obj }) {
                   { colSpan: null, style: valueStyle, value: obj.folio },
                   { colSpan: null, style: valueStyle, value: formatDatetime(obj.created_at, true) },
                   { colSpan: null, style: valueStyle, value: formatDatetime(obj.end_date, true) },
+                  { colSpan: null, style: valueStyle, value: obj.socioeconomic_study },
                   { colSpan: null, style: valueStyle, value: obj.status }
                ]
+            },
+            {
+               tHeadRows: [[{ colSpan: 5, style: subtitleStyleHidden, title: obj.status == "RECHAZADA" ? "Causa del Rechazo" : "" }]],
+               tBodyCells: [{ colSpan: 5, style: valueStyleHidden, value: obj.status == "RECHAZADA" ? obj.rejected_feedback : "" }]
             }
          ]
       },
@@ -159,6 +174,10 @@ export default function RequestReportPDF({ obj }) {
                   { colSpan: 2, style: valueStyle, value: obj.community.Colonia },
                   { colSpan: 3, style: valueStyle, value: `${obj.street} #${obj.num_ext} ${obj.num_int !== "S/N" ? `N° interior: ${obj.num_int}` : ""}` }
                ]
+            },
+            {
+               tHeadRows: [[{ colSpan: 5, style: subtitleStyle, title: "Comentarios de Solicitud" }]],
+               tBodyCells: [{ colSpan: 5, style: valueStyle, value: obj.comments }]
             }
          ]
       },

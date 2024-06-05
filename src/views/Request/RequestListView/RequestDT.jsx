@@ -53,7 +53,8 @@ const RequestBecaDT = ({ status = null }) => {
       "current_page",
       "created_at",
       "end_date",
-      "socioeconomic_study"
+      "socioeconomic_study",
+      "score_total"
    ];
    const { getIndexByFolio } = useFamilyContext();
    const [folio, setFolio] = useState(0);
@@ -129,8 +130,8 @@ const RequestBecaDT = ({ status = null }) => {
    const UserBodyTemplate = (obj) => (
       <Typography textAlign={"center"}>
          <b>{obj.username}</b> <br />
-         {obj.email} <br />
-         {obj.correction_permission ? "a corregir" : "no corriges"}
+         {obj.email}
+         {/* <br /> {obj.correction_permission ? "a corregir" : "no corriges"} */}
       </Typography>
    );
    const SchoolBodyTemplate = (obj) => (
@@ -171,6 +172,11 @@ const RequestBecaDT = ({ status = null }) => {
          <b>{obj.socioeconomic_study}</b>
       </Typography>
    );
+   const ScoreTotalBodyTemplate = (obj) => (
+      <Typography textAlign={"center"}>
+         <b>{obj.score_total}</b>
+      </Typography>
+   );
    const RequestDateBodyTemplate = (obj) => <Typography textAlign={"center"}>{formatDatetime(obj.created_at)}</Typography>;
    const EndDateBodyTemplate = (obj) => <Typography textAlign={"center"}>{formatDatetime(obj.end_date)}</Typography>;
    //#endregion BODY TEMPLATES
@@ -186,6 +192,8 @@ const RequestBecaDT = ({ status = null }) => {
       { field: "end_date", header: "Fecha de Termino", sortable: true, functionEdit: null, body: EndDateBodyTemplate },
       { field: "socioeconomic_study", header: "Estudio Socio-Económico", sortable: true, functionEdit: null, body: SocioeconomicStudyBodyTemplate }
    ];
+   auth.permissions.more_permissions.includes("16@Ver Puntaje") &&
+      columns.push({ field: "score_total", header: "Puntaje", sortable: true, functionEdit: null, body: ScoreTotalBodyTemplate });
    auth.role_id === ROLE_SUPER_ADMIN &&
       columns.push(
          { field: "active", header: "Activo", sortable: true, functionEdit: null, body: ActiveBodyTemplate, filterField: null },
@@ -214,13 +222,13 @@ const RequestBecaDT = ({ status = null }) => {
       }
    };
 
-   const handleClickValidateDocuments = async (folio, current_status) => {
+   const handleClickValidateDocuments = async (folio, current_status, accion) => {
       try {
          if (current_status == "TERMINADA") {
             const axiosResponse = await updateStatusBeca(folio, "EN REVISIÓN", null, status);
             Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
          }
-         location.hash = `/admin/solicitud-beca/pagina/9/folio/${folio}`;
+         location.hash = `/admin/solicitud-beca/pagina/9/folio/${folio}/${accion}`;
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -340,14 +348,14 @@ const RequestBecaDT = ({ status = null }) => {
                ["TERMINADA", "EN REVISIÓN", "EN EVALUACIÓN"].includes(obj.status) &&
                obj.correction_permission && (
                   <Tooltip title={`Corregir Documentos del Folio #${name}`} placement="top">
-                     <Button color="dark" onClick={() => handleClickValidateDocuments(obj.folio, obj.status)}>
+                     <Button color="dark" onClick={() => handleClickValidateDocuments(obj.folio, obj.status, "correccion")}>
                         <IconChecklist />
                      </Button>
                   </Tooltip>
                )}
             {auth.permissions.more_permissions.includes(`16@Validar Documentos`) && ["TERMINADA", "EN REVISIÓN"].includes(obj.status) && (
                <Tooltip title={`Validar Documentos del Folio #${name}`} placement="top">
-                  <Button color="primary" onClick={() => handleClickValidateDocuments(obj.folio, obj.status)}>
+                  <Button color="primary" onClick={() => handleClickValidateDocuments(obj.folio, obj.status, "revision")}>
                      <IconChecklist />
                   </Button>
                </Tooltip>
@@ -429,6 +437,7 @@ const RequestBecaDT = ({ status = null }) => {
    const formatData = async () => {
       try {
          // console.log("cargar listado", requestBecas);
+
          await requestBecas.map((obj, index) => {
             // console.log(obj);
             let register = obj;

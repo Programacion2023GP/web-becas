@@ -93,7 +93,7 @@ export function formatearCantidadDeRenglones(tds) {
 
 export function formatPhone(phone) {
    if (!phone) return "Sin numero";
-   return `(${phone.slice(0, 3)})${phone.slice(3, 6)}-${phone.slice(6, 8)}-${phone.slice(-2)}`;
+   return `${phone.slice(0, 3)} ${phone.slice(3, 6)} ${phone.slice(6, 8)}${phone.slice(-2)}`;
 }
 
 export function formatToLowerCase(event) {

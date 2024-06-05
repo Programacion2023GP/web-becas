@@ -8,8 +8,9 @@ import { Box, Button, ButtonGroup, FormControl, FormGroup, FormLabel, Icon, Tool
 import { useAuthContext } from "../../../context/AuthContext";
 import { IconCircleCheck, IconCircleX } from "@tabler/icons";
 import Toast from "../../../utils/Toast";
+import { useParams } from "react-router-dom";
 
-const ButtonsApprovedDocument = ({ auth, formik, setFieldValue, fieldApproved, fieldComments, name = "documento", approved = true }) => {
+const ButtonsApprovedDocument = ({ auth, formik, setFieldValue, fieldApproved, fieldComments, name = "documento", approved = true, accion }) => {
    const iconSize = 65;
 
    const handleClickBtnCheckApproved = (setFieldValue, fieldApproved, fieldComments) => {
@@ -29,7 +30,7 @@ const ButtonsApprovedDocument = ({ auth, formik, setFieldValue, fieldApproved, f
       <>
          {/* Botones */}
          <Grid xs={4} md={2} sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-            {auth.permissions.more_permissions.includes("16@Validar Documentos") && (
+            {auth.permissions.more_permissions.includes("16@Validar Documentos") && ["revision"].includes(accion) && (
                <>
                   <Icon sx={{ fontSize: iconSize }}>{approved ? <IconCircleCheck size={iconSize} color="green" /> : <IconCircleX size={iconSize} color="red" />}</Icon>
                   <ButtonGroup sx={{ mb: 1 }}>
@@ -79,6 +80,7 @@ const InputsFormik9 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
    const { setLoading, setLoadingAction } = useGlobalContext();
    const { formData, setFormData, saveOrFinishReview } = useRequestBecaContext();
    const formik = useFormikContext();
+   const { accion } = useParams();
 
    const [imgTutorIne, setImgTutorIne] = useState([]);
 
@@ -141,12 +143,15 @@ const InputsFormik9 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
 
    useEffect(() => {
       // console.log(formik.values.b6_finished);
+      // console.log("dataFileInputs", dataFileInputs);
+      // console.log("accion", accion);
+      // console.log("[undefined, 'revision'].includes(accion)", ["revision"].includes(accion));
    }, []);
 
    return (
       <>
          <Grid width={"100%"} xs={12} spacing={2} height={"66vh"} maxHeight={"66vh"} overflow={"auto"}>
-            <Grid xs={12} container spacing={2}>
+            <Grid xs={12} container spacing={2} key={"alo"}>
                {/* IMAGEN DE INE TUTOR */}
                {dataFileInputs.map((dataInput, index) => (
                   <>
@@ -194,7 +199,8 @@ const InputsFormik9 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
                               />
                               {(auth.permissions.more_permissions.includes("16@Validar Documentos") ||
                                  auth.permissions.more_permissions.includes("16@Corregir Documentos")) &&
-                                 ["EN REVISIÓN", "EN EVALUACIÓN"].includes(formData.status) && (
+                                 ["EN REVISIÓN", "EN EVALUACIÓN"].includes(formData.status) &&
+                                 ["revision", "correccion"].includes(accion) && (
                                     <ButtonsApprovedDocument
                                        key={`btns_${dataInput.idName}`}
                                        auth={auth}
@@ -204,6 +210,7 @@ const InputsFormik9 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
                                        fieldComments={dataInput.fieldComments}
                                        approved={formik.values[dataInput.fieldApproved]}
                                        name={dataInput.name}
+                                       accion={accion}
                                     />
                                  )}
                            </Grid>
@@ -221,11 +228,10 @@ const InputsFormik9 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
 
          {folio > 0 &&
             (["", "ALTA"].includes(formData.status) ||
-               (["EN REVISIÓN", "EN EVALUACIÓN"].includes(formData.status) && auth.permissions.more_permissions.includes("16@Corregir Documentos"))) && (
-               <ButtonsBeforeOrNext isSubmitting={formik.isSubmitting} setValues={formik.setValues} />
-            )}
+               (["EN REVISIÓN", "EN EVALUACIÓN"].includes(formData.status) && auth.permissions.more_permissions.includes("16@Corregir Documentos"))) &&
+            [undefined, "correccion"].includes(accion) && <ButtonsBeforeOrNext isSubmitting={formik.isSubmitting} setValues={formik.setValues} />}
 
-         {auth.role_id <= ROLE_ADMIN && folio > 0 && ["TERMINADA", "EN REVISIÓN", "EN EVALUACIÓN"].includes(formData.status) && (
+         {auth.role_id <= ROLE_ADMIN && folio > 0 && ["TERMINADA", "EN REVISIÓN", "EN EVALUACIÓN"].includes(formData.status) && ["revision"].includes(accion) && (
             <Grid container xs={12} sx={{ pt: 2, justifyContent: "end" }}>
                <Button color="primary" variant="contained" onClick={() => handleClickFinishReview(formik.values)} sx={{ mr: 1 }}>
                   TERMINAR REVISIÓN
