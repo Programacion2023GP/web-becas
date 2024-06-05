@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useRef, useState } from "react";
-import { ROLE_ADMIN, useGlobalContext } from "../../../context/GlobalContext";
+import { useGlobalContext } from "../../../context/GlobalContext";
 import { Box } from "@mui/system";
 import { Button, Step, StepLabel, Stepper, Typography } from "@mui/material";
 import * as Yup from "yup";
@@ -36,7 +36,7 @@ const RequestBecaView = () => {
    // const { result } = useLoaderData();
    // const dataDisabilities = result.disabilities;
    // const dataSchools = result.schools;
-   let { folio, pagina = 0 } = useParams();
+   let { folio, pagina = 0, accion } = useParams();
 
    // const [folio, setFolio] = useState(null);
 
@@ -52,8 +52,10 @@ const RequestBecaView = () => {
       useRequestBecaContext();
 
    const [isTutor, setIsTutor] = useState(false); // es true cuando el tutor no es el padre ni la madre
+   const [haveSecondRef, setHaveSecondRef] = useState(false); // es true cuando el tutor no es el padre ni la madre
    const [imgTutorIne, setImgTutorIne] = useState([]);
    const [imgTutorPowerLetter, setImgTutorPowerLetter] = useState([]);
+   const [imgSecondRef, setImgSecondRef] = useState([]);
    const [imgProofAddress, setImgProofAddress] = useState([]);
    const [imgCurp, setImgCurp] = useState([]);
    const [imgBirthCertificate, setImgBirthCertificate] = useState([]);
@@ -70,17 +72,30 @@ const RequestBecaView = () => {
          fieldApproved: "b7_approved_tutor_ine",
          fieldComments: "b7_comments_tutor_ine",
          name: "INE del tutor",
-         isTutor: false
+         isTutor: false,
+         haveSecondRef: false
       },
       {
          idName: "b7_img_tutor_power_letter",
-         label: "Foto Carta Poder del tutor *",
+         label: "Foto del Documento Extra por Tutoria *",
          filePreviews: imgTutorPowerLetter,
          setFilePreviews: setImgTutorPowerLetter,
          fieldApproved: "b7_approved_tutor_power_letter",
          fieldComments: "b7_comments_tutor_power_letter",
-         name: "Carta Poder",
-         isTutor: isTutor ? true : null
+         name: "Documento Extra por Tutoria",
+         isTutor: isTutor ? true : null,
+         haveSecondRef: false
+      },
+      {
+         idName: "b7_img_second_ref",
+         label: "Foto INE del Representante (2da Opción)*",
+         filePreviews: imgSecondRef,
+         setFilePreviews: setImgSecondRef,
+         fieldApproved: "b7_approved_second_ref",
+         fieldComments: "b7_comments_second_ref",
+         name: "INE del Representante (2da Opción)",
+         isTutor: false,
+         haveSecondRef: haveSecondRef ? true : null
       },
       {
          idName: "b7_img_proof_address",
@@ -90,7 +105,8 @@ const RequestBecaView = () => {
          fieldApproved: "b7_approved_proof_address",
          fieldComments: "b7_comments_proof_address",
          name: "Comprobante de Domicilio",
-         isTutor: false
+         isTutor: false,
+         haveSecondRef: false
       },
       {
          idName: "b7_img_curp",
@@ -100,7 +116,8 @@ const RequestBecaView = () => {
          fieldApproved: "b7_approved_curp",
          fieldComments: "b7_comments_curp",
          name: "CURP",
-         isTutor: false
+         isTutor: false,
+         haveSecondRef: false
       },
       {
          idName: "b7_img_birth_certificate",
@@ -110,7 +127,8 @@ const RequestBecaView = () => {
          fieldApproved: "b7_approved_birth_certificate",
          fieldComments: "b7_comments_birth_certificate",
          name: "Acta de Nacimiento",
-         isTutor: false
+         isTutor: false,
+         haveSecondRef: false
       },
       {
          idName: "b7_img_academic_transcript",
@@ -120,7 +138,8 @@ const RequestBecaView = () => {
          fieldApproved: "b7_approved_academic_transcript",
          fieldComments: "b7_comments_academic_transcript",
          name: "Certificado Estudiantil con Calificaciones",
-         isTutor: false
+         isTutor: false,
+         haveSecondRef: false
       }
    ];
 
@@ -166,6 +185,8 @@ const RequestBecaView = () => {
             : activeStep + 1;
 
       setActiveStep(newActiveStep);
+      if (accion != undefined) return (location.hash = "/admin/solicitudes/mis-solicitudes");
+
       if (pagina >= 4 || folio > 0) location.hash = `/admin/solicitud-beca/pagina/${activeStep + 2}/folio/${folio}`;
       else location.hash = `/admin/solicitud-beca/pagina/${activeStep + 2}`;
    };
@@ -191,6 +212,7 @@ const RequestBecaView = () => {
 
    const handleReset = () => {
       setIsTutor(false);
+      setHaveSecondRef(false);
       setActiveStep(0);
       setCompleted({});
       resetFormData();
@@ -203,6 +225,7 @@ const RequestBecaView = () => {
    //#endregion
    const RedirectMyRequests = () => {
       setIsTutor(false);
+      setHaveSecondRef(false);
       setActiveStep(0);
       setCompleted({});
       resetFormData();
@@ -210,7 +233,7 @@ const RequestBecaView = () => {
    };
    const ButtonsBeforeOrNext = ({ isSubmitting, setValues, values = null }) => (
       <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between", pt: 2, width: "100%" }}>
-         {(values == null || values.b6_finished == 0) && (
+         {(values == null || values.b6_finished == 0) && [undefined].includes(accion) && (
             <Button color="inherit" variant="contained" disabled={activeStep === 0} onClick={handleBack} sx={{ mr: 1 }}>
                ATRAS
             </Button>
@@ -245,12 +268,12 @@ const RequestBecaView = () => {
                   // loadingPosition="start"
                   variant="contained"
                >
-                  {completedSteps() === totalSteps() - 1 ? "ENVIAR SOLICITUD" : "ADELANTE"}
+                  {completedSteps() === totalSteps() - 1 ? (["correccion"].includes(accion) ? "TERMINAR CORRECCIÓN" : "ENVIAR SOLICITUD") : "ADELANTE"}
                </Button>
             ))}
-         <Button type="button" color="info" id="btnModify" sx={{ mt: 1, display: "none" }} onClick={() => handleModify(setValues)}>
+         {/* <Button type="button" color="info" id="btnModify" sx={{ mt: 1, display: "none" }} onClick={() => handleModify(setValues)}>
             setValues
-         </Button>
+         </Button> */}
       </Box>
    );
 
@@ -528,6 +551,7 @@ const RequestBecaView = () => {
          // console.log("el formData en el onSubmit8", formData);
          // console.log("el values en el onSubmit8", values);
          setIsTutor(values.tutor_relationship_id > 2 ? true : false);
+         setHaveSecondRef(values.second_ref != "NULL" ? true : false);
          // if (!checkAdd) setOpenDialog(false);
       } catch (error) {
          console.error(error);
@@ -541,16 +565,19 @@ const RequestBecaView = () => {
    const onSubmit9 = async (values, { setSubmitting, setErrors }) => {
       try {
          // console.log("🚀 ~ onSubmit9 ~ values:", values);
+         // console.log("🚀 ~ onSubmit9 ~ formData:", formData);
 
          values.b7_img_tutor_ine = imgTutorIne.length == 0 ? "" : imgTutorIne[0].file;
          if (isTutor) values.b7_img_tutor_power_letter = imgTutorPowerLetter.length == 0 ? "" : imgTutorPowerLetter[0].file;
+         if (haveSecondRef) values.b7_img_second_ref = imgSecondRef.length == 0 ? "" : imgSecondRef[0].file;
          values.b7_img_proof_address = imgProofAddress.length == 0 ? "" : imgProofAddress[0].file;
          values.b7_img_curp = imgCurp.length == 0 ? "" : imgCurp[0].file;
          values.b7_img_birth_certificate = imgBirthCertificate.length == 0 ? "" : imgBirthCertificate[0].file;
          values.b7_img_academic_transcript = imgAcademicTranscript.length == 0 ? "" : imgAcademicTranscript[0].file;
 
          if (!validateImageRequired(values.b7_img_tutor_ine, "La foto de la INE es requerida")) return;
-         if (isTutor && !validateImageRequired(values.b7_img_tutor_power_letter, "La foto de la Carta Poder es requerida")) return;
+         if (isTutor && !validateImageRequired(values.b7_img_tutor_power_letter, "La foto del Documento Extra por tutoria es requerida")) return;
+         if (haveSecondRef && !validateImageRequired(values.b7_img_second_ref, "La foto de la INE 2da Referencia es requerida")) return;
          if (!validateImageRequired(values.b7_img_proof_address, "La foto del Comprobante de Domicilio es requerida")) return;
          if (!validateImageRequired(values.b7_img_curp, "La foto de la CURP es requerida")) return;
          if (!validateImageRequired(values.b7_img_birth_certificate, "La foto del Acta de Nacimiento es requerida")) return;
@@ -572,12 +599,10 @@ const RequestBecaView = () => {
             return Toast.Warning(axiosResponse.alert_title);
          }
          Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon, "center");
-         // console.log("axiosResponse", axiosResponse);
+         // console.log("formData", formData);
+         if (formData.correction_permission == 1) location.hash = "/admin/solicitudes/mis-solicitudes";
          setStepFailed(-1);
-         // resetForm();
-         // resetFormData();
          handleComplete();
-         // if (!checkAdd) setOpenDialog(false);
       } catch (error) {
          console.error(error);
          setErrors({ submit: error.message });
@@ -740,6 +765,7 @@ const RequestBecaView = () => {
    const handleModify = async (setValues) => {
       try {
          // console.log("hola handleModify()", pagina);
+         setLoadingAction(true);
          setCompleted({ 0: true, 1: true, 2: true });
          const ajaxResponse = await getRequestBecasByFolio(folio);
          // console.log("holaaaaa familia", ajaxResponse.result.requestBecas);
@@ -760,16 +786,21 @@ const RequestBecaView = () => {
          // console.log("que paso?f :c", formData);
          // console.log("isTutor :c", isTutor);
          if (pagina == 9) {
-            await setIsTutor(ajaxResponse.result.requestBecas.tutor_relationship_id > 2 ? true : false);
+            setIsTutor(ajaxResponse.result.requestBecas.tutor_relationship_id > 2 ? true : false);
+            setHaveSecondRef(ajaxResponse.result.requestBecas.second_ref != "NULL" ? true : false);
             // console.log("holaa soy pagina9 - siTutor:", isTutor, ajaxResponse.result.requestBecas.tutor_relationship_id);
             setObjImg(ajaxResponse.result.requestBecas.b7_img_tutor_ine, setImgTutorIne);
-            if (isTutor) setObjImg(ajaxResponse.result.requestBecas.b7_img_tutor_power_letter, setImgTutorPowerLetter);
+            if (ajaxResponse.result.requestBecas.tutor_relationship_id > 2)
+               setObjImg(ajaxResponse.result.requestBecas.b7_img_tutor_power_letter, setImgTutorPowerLetter);
+            if (ajaxResponse.result.requestBecas.second_ref != "NULL") setObjImg(ajaxResponse.result.requestBecas.b7_img_second_ref, setImgSecondRef);
             setObjImg(ajaxResponse.result.requestBecas.b7_img_proof_address, setImgProofAddress);
             setObjImg(ajaxResponse.result.requestBecas.b7_img_curp, setImgCurp);
             setObjImg(ajaxResponse.result.requestBecas.b7_img_birth_certificate, setImgBirthCertificate);
             setObjImg(ajaxResponse.result.requestBecas.b7_img_academic_transcript, setImgAcademicTranscript);
          }
+         setLoadingAction(false);
       } catch (error) {
+         setLoadingAction(false);
          console.log(error);
          Toast.Error(error);
       }
@@ -782,8 +813,9 @@ const RequestBecaView = () => {
          // console.log("folio de params?", folio);
          // console.log("pagina de params?", pagina);
          if (folio) {
-            const btnModify = document.getElementById("btnModify");
-            if (btnModify != null) btnModify.click();
+            handleModify(formik.current.setValues);
+            // const btnModify = document.getElementById("btnModify");
+            // if (btnModify != null) btnModify.click();
          }
          getDisabilitiesSelectIndex();
          getSchoolsSelectIndex();
@@ -1062,6 +1094,7 @@ const RequestBecaView = () => {
                                     setStepFailed={setStepFailed}
                                     ButtonsBeforeOrNext={ButtonsBeforeOrNext}
                                     isTutor={isTutor}
+                                    haveSecondRef={haveSecondRef}
                                     dataFileInputs={dataFileInputsFormik9}
                                  />
                               </FormikComponent>

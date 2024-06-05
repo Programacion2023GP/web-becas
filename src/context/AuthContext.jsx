@@ -298,11 +298,23 @@ export default function AuthContextProvider({ children }) {
          localStorage.setItem("auth", JSON.stringify(auth));
          // console.log("el permissionRead", permissionRead);
          // console.log(location.hash.split("/"));
+         // console.log("🚀 ~ validateAccessPage ~ permission:", permission);
+         // console.log("🚀 ~ validateAccessPage ~ location.hash:", location.hash.split("/"));
          if (!permission) {
-            console.log("sigue entrando");
+            // console.log("sigue entrando");
             if (location.hash.split("/").length <= 3) {
                // console.log("y tengo menos de 3 slash");
-               window.location.hash = auth.page_index;
+               window.location.hash = `#${auth.page_index}`;
+            }
+            // console.log("🚀 ~ validateAccessPage ~ !location.hash.split('/').includes('solicitud-beca'):", !location.hash.split("/").includes("solicitud-beca"));
+            if (!location.hash.split("/").includes("solicitud-beca")) {
+               // console.log("mandar al page_index", auth.page_index);
+               // console.log(window.location.hash);
+               window.location.hash = `#${auth.page_index}`;
+               // auth.permissions.read = true;
+               setPermissionRead(true);
+               // localStorage.setItem("auth", JSON.stringify(auth));
+               // console.log("los permisos del auth", auth);
             }
          }
 

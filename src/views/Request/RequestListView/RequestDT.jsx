@@ -53,7 +53,8 @@ const RequestBecaDT = ({ status = null }) => {
       "current_page",
       "created_at",
       "end_date",
-      "socioeconomic_study"
+      "socioeconomic_study",
+      "score_total"
    ];
    const { getIndexByFolio } = useFamilyContext();
    const [folio, setFolio] = useState(0);
@@ -106,10 +107,14 @@ const RequestBecaDT = ({ status = null }) => {
          <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
          <style>
             table{font-family: 'Roboto', sans-serif;}
+            svg{maxWidth:50px; maxHeight:50px}
+            .checkCross{maxWidth:50px; maxHeight:50px}
          </style>
       </head><body>`);
       printWindow.document.write(content);
-      printWindow.document.write(`</body></html>`);
+      printWindow.document.write(`</body>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/material-ui/4.12.4/index.min.js" integrity="sha512-kIdy/WIexvksScC2I+uDkS0mx9tkTDDcYHjeY5Rmeum5GQuq8wgZqUv6FUMtGv0bm5KPY0vlps5nKBj+8BGutQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+      </html>`);
       printWindow.document.close();
       setTimeout(() => {
          printWindow.print();
@@ -125,8 +130,8 @@ const RequestBecaDT = ({ status = null }) => {
    const UserBodyTemplate = (obj) => (
       <Typography textAlign={"center"}>
          <b>{obj.username}</b> <br />
-         {obj.email} <br />
-         {obj.correction_permission ? "a corregir" : "no corriges"}
+         {obj.email}
+         {/* <br /> {obj.correction_permission ? "a corregir" : "no corriges"} */}
       </Typography>
    );
    const SchoolBodyTemplate = (obj) => (
@@ -167,6 +172,11 @@ const RequestBecaDT = ({ status = null }) => {
          <b>{obj.socioeconomic_study}</b>
       </Typography>
    );
+   const ScoreTotalBodyTemplate = (obj) => (
+      <Typography textAlign={"center"}>
+         <b>{obj.score_total}</b>
+      </Typography>
+   );
    const RequestDateBodyTemplate = (obj) => <Typography textAlign={"center"}>{formatDatetime(obj.created_at)}</Typography>;
    const EndDateBodyTemplate = (obj) => <Typography textAlign={"center"}>{formatDatetime(obj.end_date)}</Typography>;
    //#endregion BODY TEMPLATES
@@ -182,6 +192,8 @@ const RequestBecaDT = ({ status = null }) => {
       { field: "end_date", header: "Fecha de Termino", sortable: true, functionEdit: null, body: EndDateBodyTemplate },
       { field: "socioeconomic_study", header: "Estudio Socio-Económico", sortable: true, functionEdit: null, body: SocioeconomicStudyBodyTemplate }
    ];
+   auth.permissions.more_permissions.includes("16@Ver Puntaje") &&
+      columns.push({ field: "score_total", header: "Puntaje", sortable: true, functionEdit: null, body: ScoreTotalBodyTemplate });
    auth.role_id === ROLE_SUPER_ADMIN &&
       columns.push(
          { field: "active", header: "Activo", sortable: true, functionEdit: null, body: ActiveBodyTemplate, filterField: null },
@@ -204,18 +216,19 @@ const RequestBecaDT = ({ status = null }) => {
          setOpenDialogPreview(true);
          setLoadingAction(false);
       } catch (error) {
+         setLoadingAction(false);
          console.log(error);
          Toast.Error(error);
       }
    };
 
-   const handleClickValidateDocuments = async (folio, current_status) => {
+   const handleClickValidateDocuments = async (folio, current_status, accion) => {
       try {
          if (current_status == "TERMINADA") {
             const axiosResponse = await updateStatusBeca(folio, "EN REVISIÓN", null, status);
             Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
          }
-         location.hash = `/admin/solicitud-beca/pagina/9/folio/${folio}`;
+         location.hash = `/admin/solicitud-beca/pagina/9/folio/${folio}/${accion}`;
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -335,14 +348,14 @@ const RequestBecaDT = ({ status = null }) => {
                ["TERMINADA", "EN REVISIÓN", "EN EVALUACIÓN"].includes(obj.status) &&
                obj.correction_permission && (
                   <Tooltip title={`Corregir Documentos del Folio #${name}`} placement="top">
-                     <Button color="dark" onClick={() => handleClickValidateDocuments(obj.folio, obj.status)}>
+                     <Button color="dark" onClick={() => handleClickValidateDocuments(obj.folio, obj.status, "correccion")}>
                         <IconChecklist />
                      </Button>
                   </Tooltip>
                )}
             {auth.permissions.more_permissions.includes(`16@Validar Documentos`) && ["TERMINADA", "EN REVISIÓN"].includes(obj.status) && (
                <Tooltip title={`Validar Documentos del Folio #${name}`} placement="top">
-                  <Button color="primary" onClick={() => handleClickValidateDocuments(obj.folio, obj.status)}>
+                  <Button color="primary" onClick={() => handleClickValidateDocuments(obj.folio, obj.status, "revision")}>
                      <IconChecklist />
                   </Button>
                </Tooltip>
@@ -424,6 +437,7 @@ const RequestBecaDT = ({ status = null }) => {
    const formatData = async () => {
       try {
          // console.log("cargar listado", requestBecas);
+
          await requestBecas.map((obj, index) => {
             // console.log(obj);
             let register = obj;
@@ -468,13 +482,13 @@ const RequestBecaDT = ({ status = null }) => {
                <Typography sx={{ ml: 2, flex: 1 }} variant="h3" component="div">
                   {}
                </Typography>
-               {auth.permissions.update && (
+               {/* {auth.permissions.update && (
                   <Tooltip title={`Exportar Reporte a PDF`} placement="top">
                      <IconButton color="inherit" onClick={() => downloadPDF("reportPaper")}>
                         <IconFileTypePdf color="red" />
                      </IconButton>
                   </Tooltip>
-               )}
+               )} */}
                <Tooltip title={`Imprimir Reporte`} placement="top">
                   <IconButton color="inherit" onClick={() => printContent("reportPaper")}>
                      <IconPrinter />

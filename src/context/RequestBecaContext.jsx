@@ -154,7 +154,7 @@ export default function RequestBecaContextProvider({ children }) {
          let res = CorrectRes;
          const axiosData = await Axios.post(`/documents/folio/${folio}/page/${page}/saveOrFinishReview`, beca);
          res = axiosData.data.data;
-         if (auth.role_id <= ROLE_ADMIN) getRequestBecas();
+         if (auth.role_id <= ROLE_ADMIN) getRequestBecas("en-revision");
          else getRequestBecasByUser(auth.id);
          // setRequestBecas(axiosData.data.data.result);
          // console.log("requestBecas", requestBecas);
@@ -225,6 +225,7 @@ export default function RequestBecaContextProvider({ children }) {
 
          // console.log("axiosData", axiosData);
          res = await axiosData.data.data;
+         if (status == "en-evaluacion") res.result = res.result.sort((a, b) => b.score_total - a.score_total);
          await setRequestBecas(res.result);
          // console.log("requestBecas", requestBecas);
          await counterOfMenus();

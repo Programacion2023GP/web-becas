@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-export const useRedirectTo = (user, pathRedirect) => { 
+export const useRedirectToAuth = (user, pathRedirect) => {
    // console.log("el redirectTo");
    const navigate = useNavigate();
    useEffect(() => {
@@ -9,4 +9,10 @@ export const useRedirectTo = (user, pathRedirect) => {
          navigate(pathRedirect);
       }
    }, [user]);
- }
+};
+
+export const useNavigateTo = (pathRedirect) => {
+   // console.log("el redirectTo");
+   const navigate = useNavigate();
+   navigate(pathRedirect);
+};
