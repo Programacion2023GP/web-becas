@@ -16,7 +16,7 @@ const InputsFormik3 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
 
    return (
       <>
-         <Grid width={"100%"} xs={12} spacing={2} height={"67vh"} MaxHeight={"67vh"} overflow={"auto"}>
+         <Grid width={"100%"} xs={12} spacing={2} height={"67vh"} maxHeight={"67vh"} overflow={"auto"}>
             <Grid xs={12} container spacing={2}>
                {/* Escuela */}
                <Select2Component
@@ -27,6 +27,7 @@ const InputsFormik3 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
                   refreshSelect={getSchoolsSelectIndex}
                   pluralName={"Escuelas"}
                   disabled={formik.values.id == 0 ? false : true}
+                  focus={true}
                />
 
                {/* Grado */}

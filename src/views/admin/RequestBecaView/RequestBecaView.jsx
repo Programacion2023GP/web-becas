@@ -6,7 +6,7 @@ import * as Yup from "yup";
 
 import { useRequestBecaContext } from "../../../context/RequestBecaContext";
 import Toast from "../../../utils/Toast";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useAuthContext } from "../../../context/AuthContext";
 import sAlert from "../../../utils/sAlert";
 import IconSended from "../../../components/icons/IconSended";
@@ -30,6 +30,7 @@ import InputsFormik6 from "./InputsFormik6";
 import InputsFormik7 from "./InputsFormik7";
 import InputsFormik8 from "./InputsFormik8";
 import InputsFormik9 from "./InputsFormik9";
+// import { useNavigateTo } from "../../../hooks/useRedirectTo";
 
 const RequestBecaView = () => {
    const { auth } = useAuthContext();
@@ -37,7 +38,7 @@ const RequestBecaView = () => {
    // const dataDisabilities = result.disabilities;
    // const dataSchools = result.schools;
    let { folio, pagina = 0, accion } = useParams();
-
+   const navigate = useNavigate();
    // const [folio, setFolio] = useState(null);
 
    const { setLoading, setLoadingAction } = useGlobalContext();
@@ -60,6 +61,9 @@ const RequestBecaView = () => {
    const [imgCurp, setImgCurp] = useState([]);
    const [imgBirthCertificate, setImgBirthCertificate] = useState([]);
    const [imgAcademicTranscript, setImgAcademicTranscript] = useState([]);
+   const [pageInAnimation, setPageInAnimation] = useState([true, true, true, true, true, true, true, true, true, true]);
+   const [animate, setAnimate] = useState(false);
+   const pageActiveRef = useRef(null);
 
    const inputRefSchoolId = useRef(null);
    const formik = useRef(null);
@@ -215,6 +219,9 @@ const RequestBecaView = () => {
    const handleBack = () => {
       if (formik.current.values.status == "EN REVISIÓN" && formik.current.values.correction_permission)
          return Toast.Info("Solo esta habilitada la pagina de Documentos.");
+
+      // setPageInAnimation({...pageInAnimation})
+
       setActiveStep((prevActiveStep) => prevActiveStep - 1);
       if (pagina >= 4 || folio > 0) location.hash = `/admin/solicitud-beca/pagina/${activeStep}/folio/${folio}`;
       else location.hash = `/admin/solicitud-beca/pagina/${activeStep}`;
@@ -297,6 +304,20 @@ const RequestBecaView = () => {
          </Button> */}
       </Box>
    );
+
+   const handleClickInitRequest = () => {
+      console.log("clickk");
+      handleReset();
+      const pagesIA = pageInAnimation;
+      console.log("🚀 ~ handleClickInitRequest ~ pagesIA:", pagesIA);
+      pagesIA[pagina] = false;
+      setPageInAnimation(pagesIA);
+      setAnimate(true);
+      // navigate("pagina/1");
+      // setPageInAnimation({ ...pageInAnimation, page0: true });
+      // useNavigateTo("pagina/1");
+      // location.hash = "pagina/1";
+   };
 
    const onSubmit1 = async (values, { setSubmitting, setErrors, setValues }) => {
       try {
@@ -854,6 +875,28 @@ const RequestBecaView = () => {
    }, [formData, folio]);
    // }, [formData, pagina, activeStep]);
 
+   useEffect(() => {
+      console.log("el animate", animate);
+      // const authCard = document.querySelector("#authCard");
+      const authCard = pageActiveRef.current;
+      console.log("🚀 ~ useEffect ~ authCard:", authCard);
+      const handleAnimationEnd = (e) => {
+         console.log("ya acabo la animacion");
+         // if (e.animationName == "flipOutY") window.location.hash = "#/register";
+      };
+
+      if (authCard) {
+         authCard.addEventListener("animationend", handleAnimationEnd);
+      }
+
+      // Cleanup event listener
+      return () => {
+         if (authCard) {
+            authCard.removeEventListener("animationend", handleAnimationEnd);
+         }
+      };
+   }, [animate]);
+
    return (
       <Box sx={{ width: "100%", height: "100%" }}>
          <Typography variant="h1" color={"#364152"} mb={2}>
@@ -870,6 +913,12 @@ const RequestBecaView = () => {
                   position: "relative"
                }}
                p={2}
+               ref={pageActiveRef}
+               className={
+                  pagina == 0
+                     ? `animate__animated ${pageInAnimation[pagina] ? "animate__fadeIn" : "animate__backOutLeft"}`
+                     : setPageInAnimation({ ...pageInAnimation, [pagina]: true })
+               }
             >
                <img src={LogoGPD} className="bg-request-index" />
                <Typography variant="h2" mb={2} sx={{ position: "relative" }}>
@@ -880,11 +929,11 @@ const RequestBecaView = () => {
                   información proporcionada de aqui debe ser completamente verdadera, por ello, lee con atención cada pregunta y contesta adecuadamente.
                </Typography>
                {/* {auth.permissions.create && ( */}
-               <Link to={"pagina/1"}>
-                  <Button onClick={handleReset} variant="contained" size="large" fullWidth>
-                     COMENZAR SOLICITUD
-                  </Button>
-               </Link>
+               {/* <Link to={"pagina/1"}> */}
+               <Button onClick={handleClickInitRequest} variant="contained" size="large">
+                  COMENZAR SOLICITUD
+               </Button>
+               {/* </Link> */}
                {/* )} */}
             </Box>
          ) : (
@@ -945,6 +994,7 @@ const RequestBecaView = () => {
                                  activeStep={activeStep}
                                  setStepFailed={setStepFailed}
                                  showActionButtons={false}
+                                 className={activeStep + 1 == 1 && `animate__animated ${pageInAnimation.page1 ? "animate__backInRight" : "animate__backOutLeft"} `}
                               >
                                  <InputsFormik1
                                     folio={folio}

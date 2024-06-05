@@ -93,7 +93,7 @@ const InputsFormik2 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
 
    return (
       <>
-         <Grid width={"100%"} xs={12} spacing={2} height={"67vh"} MaxHeight={"67vh"} overflow={"auto"}>
+         <Grid width={"100%"} xs={12} spacing={2} height={"67vh"} maxHeight={"67vh"} overflow={"auto"}>
             <Grid xs={12} container spacing={2}>
                {/* CURP */}
                <InputComponent
@@ -108,6 +108,7 @@ const InputsFormik2 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
                   textStyleCase={true}
                   disabled={formik.values.id == 0 ? false : true}
                   loading={loadingCURP}
+                  focus={true}
                   // inputRef={inputRefCurp}
                />
 

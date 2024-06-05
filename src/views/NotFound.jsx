@@ -4,9 +4,12 @@ import { Link, useRouteError } from "react-router-dom";
 import { HomeTwoTone } from "@mui/icons-material";
 import ImgNotFound from "../assets/images/not-found.jpg";
 import { useEffect } from "react";
+import { useGlobalContext } from "../context/GlobalContext";
 
 const NotFound = () => {
+   const { setLoading, setLoadingAction } = useGlobalContext();
    const error = useRouteError();
+
    console.log(error);
    let errorText = "",
       srcImg = "";
@@ -24,7 +27,9 @@ const NotFound = () => {
          srcImg = ImgNotFound;
          break;
    }
-   useEffect(() => {}, []);
+   useEffect(() => {
+      setLoadingAction(false);
+   }, []);
 
    return (
       <Container sx={{ textAlign: "center" }}>

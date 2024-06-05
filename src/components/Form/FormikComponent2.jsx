@@ -12,7 +12,7 @@ export const FormikComponent = ({ initialValues = {}, validationSchema = {}, onS
       <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit} innerRef={formikRef}>
          {({ handleSubmit, isSubmitting, resetForm }) => (
             <Grid container spacing={2} component={"form"} onSubmit={handleSubmit}>
-               <Grid width={"100%"} xs={12} spacing={2} height={"79vh"} MaxHeight={"79vh"} overflow={"auto"}>
+               <Grid width={"100%"} xs={12} spacing={2} height={"79vh"} maxHeight={"79vh"} overflow={"auto"}>
                   <Grid xs={12} container spacing={2}>
                      {children}
                   </Grid>

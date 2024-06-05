@@ -49,7 +49,7 @@ const InputsFormik1 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
    const formik = useFormikContext();
    return (
       <>
-         <Grid width={"100%"} xs={12} spacing={2} height={"67vh"} MaxHeight={"67vh"} overflow={"auto"}>
+         <Grid width={"100%"} xs={12} spacing={2} height={"67vh"} maxHeight={"67vh"} overflow={"auto"}>
             <Grid xs={12} container spacing={2}>
                {/* CURP tutor */}
                <InputComponent
@@ -62,6 +62,7 @@ const InputsFormik1 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
                      handleChangeTutorCURP(e, formik.values, formik.setFieldValue);
                   }}
                   disabled={formik.values.id == 0 ? false : true}
+                  focus={true}
                />
                {/* Parentesco */}
                <Select2Component

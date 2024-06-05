@@ -2,7 +2,7 @@ import { styled } from "@mui/material/styles";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
 
-const SwitchIOSComponent = ({ checked, label, height = 26 }) => {
+const SwitchIOSComponent = ({ checked, label, height = 26, ref }) => {
    const width = Math.ceil(height * 1.6); //42
    const boxSizingSize = Math.ceil(height * 0.825); //22
 
@@ -52,6 +52,6 @@ const SwitchIOSComponent = ({ checked, label, height = 26 }) => {
       }
    }));
 
-   return <FormControlLabel control={<IOSSwitch sx={{ m: 0, p: 0, mr: 1 }} defaultChecked={checked} />} label={label} />;
+   return <FormControlLabel control={<IOSSwitch sx={{ m: 0, p: 0, mr: 1 }} defaultChecked={checked} />} label={label} ref={ref} />;
 };
 export default SwitchIOSComponent;

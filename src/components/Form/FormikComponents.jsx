@@ -1,6 +1,6 @@
 import { LoadingButton } from "@mui/lab";
 import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
-import React, { forwardRef, useEffect, useState, useCallback } from "react";
+import React, { forwardRef, useEffect, useState, useCallback, useRef } from "react";
 import {
    Button,
    TextField,
@@ -91,7 +91,8 @@ export const FormikComponent = forwardRef(
          handleCancel,
          showActionButtons = true,
          activeStep = null,
-         setStepFailed = null
+         setStepFailed = null,
+         className
       },
       ref
    ) => {
@@ -117,13 +118,13 @@ export const FormikComponent = forwardRef(
             {({ handleSubmit, isSubmitting, resetForm }) => (
                <Grid container spacing={2} component={"form"} onSubmit={handleSubmit} onBlur={onBlur} onChangeCapture={onChange}>
                   {!showActionButtons ? (
-                     <Grid xs={12} container spacing={2}>
+                     <Grid xs={12} container spacing={2} className={className}>
                         {children}
                      </Grid>
                   ) : (
                      <>
-                        <Grid width={"100%"} xs={12} spacing={2} height={"79vh"} MaxHeight={"79vh"} overflow={"auto"}>
-                           <Grid xs={12} container spacing={2}>
+                        <Grid width={"100%"} xs={12} spacing={2} height={"79vh"} maxHeight={"79vh"} overflow={"auto"}>
+                           <Grid xs={12} container spacing={2} className={className}>
                               {children}
                            </Grid>
                         </Grid>
@@ -184,12 +185,14 @@ export const InputComponent = ({
    textStyleCase = null,
    styleInput = 1,
    size = "medium",
+   focus,
    ...props
 }) => {
    const formik = useFormikContext(); // Obtiene el contexto de Formik
    const errors = formik.errors;
    const error = formik.touched[idName] && formik.errors[idName] ? formik.errors[idName] : null;
    const isError = error == null ? false : true;
+   const inputRef = useRef(null);
 
    let flexDirection = "column";
    let alignItems = "center";
@@ -212,6 +215,14 @@ export const InputComponent = ({
       // console.log("isError", isError);
    }, [idName, formik.values[idName]]);
 
+   useEffect(() => {
+      if (focus && inputRef.current) {
+         // console.log("🚀 ~ useEffect ~ inputRef.current:", inputRef.current.querySelector("input"));
+         const input = inputRef.current.querySelector("input");
+         input.focus();
+      }
+   }, [inputRef]);
+
    return (
       <Grid
          xs={12}
@@ -224,6 +235,7 @@ export const InputComponent = ({
                {({ field }) => (
                   <InputMask
                      id={`${idName}_mask`}
+                     ref={inputRef}
                      mask={mask}
                      value={formik.values && formik.values[idName] ? formik.values[idName] : ""}
                      onChange={(e) => field.onChange(e)} // Utiliza field.onChange para actualizar el valor en Formik
@@ -262,6 +274,7 @@ export const InputComponent = ({
                      label={styleInput == 1 && label}
                      placeholder={placeholder}
                      type={type !== null && type !== undefined ? type : "text"} // Utiliza type si está definido, de lo contrario, usa "text"
+                     ref={inputRef}
                      variant={variant}
                      value={formik.values && formik.values[idName] ? formik.values[idName] : ""}
                      onChange={formik.handleChange} // Utiliza el handleChange de Formik
@@ -302,6 +315,7 @@ export const InputComponent = ({
                      label={styleInput == 1 && label}
                      placeholder={placeholder}
                      type={type !== null && type !== undefined ? type : "text"} // Utiliza type si está definido, de lo contrario, usa "text"
+                     ref={inputRef}
                      variant={variant}
                      value={formik.values && formik.values[idName] ? formik.values[idName] : ""}
                      onChange={formik.handleChange} // Utiliza el handleChange de Formik
@@ -388,12 +402,14 @@ export const PasswordCompnent = ({
    newPasswordChecked,
    setNewPasswordChecked,
    checkedShowSwitchPassword = false,
+   focus,
    ...props
 }) => {
    const formik = useFormikContext(); // Obtiene el contexto de Formik
    const errors = formik.errors;
    const error = formik.touched[idName] && formik.errors[idName] ? formik.errors[idName] : null;
    const isError = error == null ? false : true;
+   const inputRef = useRef(null);
 
    // #region Boton de Contraseña
    const [showPassword, setShowPassword] = useState(false);
@@ -421,6 +437,14 @@ export const PasswordCompnent = ({
    useEffect(() => {
       if (formik.values[idName] == "" || !newPasswordChecked) setStrength(0);
    }, [newPasswordChecked, formik.values[idName]]);
+
+   useEffect(() => {
+      if (focus && inputRef.current) {
+         // console.log("🚀 ~ useEffect ~ inputRef.current:", inputRef.current.querySelector("input"));
+         const input = inputRef.current.querySelector("input");
+         input.focus();
+      }
+   }, [inputRef]);
 
    return (
       <Grid
@@ -458,6 +482,7 @@ export const PasswordCompnent = ({
                   key={idName}
                   id={idName}
                   name={idName}
+                  ref={inputRef}
                   label={label || "Contraseña *"}
                   placeholder={placeholder || "Ingrese su contraseña, minimo 6 dígitos"}
                   type={showPassword ? "text" : "password"}
@@ -574,12 +599,14 @@ export const Select2Component = ({
    refreshSelectParams = null,
    handleGetValue = null,
    handleChangeValueSuccess,
+   focus,
    ...props
 }) => {
    const formik = useFormikContext(); // Obtiene el contexto de Formik
    const errors = formik.errors;
    const error = formik.touched[idName] && formik.errors[idName] ? formik.errors[idName] : null;
    const isError = error == null ? false : true;
+   const inputRef = useRef(null);
 
    const [dataOptions, setDataOptions] = useState([]);
    const [labelValue, setLabelValue] = useState("Selecciona una opción...");
@@ -669,6 +696,14 @@ export const Select2Component = ({
       }
    }, [options, formik.values[idName]]);
 
+   useEffect(() => {
+      if (focus && inputRef.current) {
+         // console.log("🚀 ~ useEffect ~ inputRef.current:", inputRef.current.querySelector("input"));
+         const input = inputRef.current.querySelector("input");
+         input.focus();
+      }
+   }, [inputRef]);
+
    return (
       <>
          {dataOptions.length > 0 && (
@@ -692,6 +727,7 @@ export const Select2Component = ({
                               // getOptionLabel={(option) => option.label}
                               // isOptionEqualToValue={(option, value) => option && value && option.id === value.id}
                               {...field}
+                              ref={inputRef}
                               value={Number(formik.values[idName]) > 0 ? dataOptions.find((option) => option.id === formik.values[idName])?.label : labelValue}
                               defaultValue={Number(formik.values[idName]) > 0 ? dataOptions.find((option) => option.id === formik.values[idName])?.label : labelValue}
                               // defaultValue={labelValue || "Selecciona una opción..."}
@@ -758,22 +794,32 @@ export const SwitchComponent = ({
    loading = false,
    hidden,
    marginBottom,
+   focus,
    ...props
 }) => {
    const formik = useFormikContext(); // Obtiene el contexto de Formik
    const errors = formik.errors;
    const error = formik.touched[idName] && formik.errors[idName] ? formik.errors[idName] : null;
    const isError = error == null ? false : true;
+   const inputRef = useRef(null);
 
    useEffect(() => {
       // console.log("formik.values[idName]", formik.values[idName]);
    }, [idName]);
 
+   useEffect(() => {
+      if (focus && inputRef.current) {
+         // console.log("🚀 ~ useEffect ~ inputRef.current:", inputRef.current.querySelector("input"));
+         const input = inputRef.current.querySelector("input");
+         input.focus();
+      }
+   }, [inputRef]);
+
    return (
       <Grid xs={12} md={col} sx={{ display: hidden ? "none" : "flex", flexDirection: "column", alignItems: "start", mb: marginBottom ? `${marginBottom} 0` : 2 }}>
          <Tooltip title={formik.values[idName] ? textEnable : textDisable} placement="right">
             <Button color="dark" onClick={() => formik.setFieldValue(idName, !Boolean(formik.values[idName]))}>
-               <SwitchIOSComponent checked={Boolean(formik.values[idName])} label={label} />
+               <SwitchIOSComponent checked={Boolean(formik.values[idName])} label={label} ref={inputRef} />
             </Button>
          </Tooltip>
          {loading && <CircularProgress sx={{ position: "relative", top: "-50%", left: "20%" }} />}
@@ -805,10 +851,13 @@ export const RadioButtonComponent = ({
    handleGetValue,
    alignItems = "center",
    marginBottom = 2,
-   rowLayout = true // Cambiar a false para poner en columnas
+   rowLayout = true, // Cambiar a false para poner en columnas
+   focus
 }) => {
    const { values, errors, touched, handleChange, handleBlur } = useFormikContext(); // Obtener valores, errores y funciones de Formik
    const [loading, setLoading] = useState(false);
+   const inputRef = useRef(null);
+
    useEffect(() => {
       if (Array.isArray(options) && options.length > 0) {
          setLoading(false);
@@ -821,6 +870,14 @@ export const RadioButtonComponent = ({
          options = [];
       }
    }, [title, idName, values[idName], options]);
+
+   useEffect(() => {
+      if (focus && inputRef.current) {
+         // console.log("🚀 ~ useEffect ~ inputRef.current:", inputRef.current.querySelector("input"));
+         const input = inputRef.current.querySelector("input");
+         input.focus();
+      }
+   }, [inputRef]);
 
    const isError = touched[idName] && errors[idName];
    const handleValue = (idName, value) => {
@@ -847,6 +904,7 @@ export const RadioButtonComponent = ({
             onChange={handleChange} // Usar la función de cambio de Formik
             onBlur={handleBlur} // Usar la función de desenfoque de Formik
             sx={{ flexDirection: rowLayout ? "row" : "column" }} // Ajustar la dirección del grupo de radio
+            ref={inputRef}
          >
             {options.length > 0 && (
                <>
