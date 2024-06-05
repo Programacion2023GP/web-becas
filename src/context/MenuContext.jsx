@@ -323,7 +323,7 @@ export default function MenuContextProvider({ children }) {
       try {
          let res = CorrectRes;
          const axiosData = await Axios.get(`/menus/id/${id}`);
-         console.log("axiosData", axiosData);
+         // console.log("axiosData", axiosData);
          res = axiosData.data.data;
          // await setMenu(res.result);
          setFormData(res.result);

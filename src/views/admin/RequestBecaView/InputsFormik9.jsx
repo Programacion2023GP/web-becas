@@ -82,8 +82,6 @@ const InputsFormik9 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
    const formik = useFormikContext();
    const { accion } = useParams();
 
-   const [imgTutorIne, setImgTutorIne] = useState([]);
-
    const handleClickSaveReview = async (values) => {
       try {
          values.action = "save";
@@ -155,6 +153,7 @@ const InputsFormik9 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
                {/* IMAGEN DE INE TUTOR */}
                {dataFileInputs.map((dataInput, index) => (
                   <>
+                     {![dataInput.isTutor, dataInput.haveSecondRef].includes(null) && <DividerComponent title={dataInput.infoDivider.title} />}
                      {dataInput.isTutor === true && (
                         <>
                            <Typography variant="h5" sx={{ display: "block", width: "100%", mb: 1 }}>
@@ -214,7 +213,7 @@ const InputsFormik9 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
                                     />
                                  )}
                            </Grid>
-                           {index < dataFileInputs.length && <DividerComponent />}
+                           {/* {index < dataFileInputs.length && <DividerComponent />} */}
                         </>
                      )}
                   </>

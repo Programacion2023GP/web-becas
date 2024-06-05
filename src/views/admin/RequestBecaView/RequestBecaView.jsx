@@ -73,7 +73,10 @@ const RequestBecaView = () => {
          fieldComments: "b7_comments_tutor_ine",
          name: "INE del tutor",
          isTutor: false,
-         haveSecondRef: false
+         haveSecondRef: false,
+         infoDivider: {
+            title: "DOCUMENTOS DEL TUTOR"
+         }
       },
       {
          idName: "b7_img_tutor_power_letter",
@@ -84,7 +87,10 @@ const RequestBecaView = () => {
          fieldComments: "b7_comments_tutor_power_letter",
          name: "Documento Extra por Tutoria",
          isTutor: isTutor ? true : null,
-         haveSecondRef: false
+         haveSecondRef: false,
+         infoDivider: {
+            title: "DOCUMENTO EXTRA EN CASO DE NO SER PADRE O MADRE"
+         }
       },
       {
          idName: "b7_img_second_ref",
@@ -95,7 +101,10 @@ const RequestBecaView = () => {
          fieldComments: "b7_comments_second_ref",
          name: "INE del Representante (2da Opción)",
          isTutor: false,
-         haveSecondRef: haveSecondRef ? true : null
+         haveSecondRef: haveSecondRef ? true : null,
+         infoDivider: {
+            title: "DOCUMENTO DEL REPRESENTATE (2da Opción)"
+         }
       },
       {
          idName: "b7_img_proof_address",
@@ -106,7 +115,10 @@ const RequestBecaView = () => {
          fieldComments: "b7_comments_proof_address",
          name: "Comprobante de Domicilio",
          isTutor: false,
-         haveSecondRef: false
+         haveSecondRef: false,
+         infoDivider: {
+            title: "DATOS DEL ALUMNO"
+         }
       },
       {
          idName: "b7_img_curp",
@@ -117,7 +129,10 @@ const RequestBecaView = () => {
          fieldComments: "b7_comments_curp",
          name: "CURP",
          isTutor: false,
-         haveSecondRef: false
+         haveSecondRef: false,
+         infoDivider: {
+            title: ""
+         }
       },
       {
          idName: "b7_img_birth_certificate",
@@ -128,7 +143,10 @@ const RequestBecaView = () => {
          fieldComments: "b7_comments_birth_certificate",
          name: "Acta de Nacimiento",
          isTutor: false,
-         haveSecondRef: false
+         haveSecondRef: false,
+         infoDivider: {
+            title: ""
+         }
       },
       {
          idName: "b7_img_academic_transcript",
@@ -139,7 +157,10 @@ const RequestBecaView = () => {
          fieldComments: "b7_comments_academic_transcript",
          name: "Certificado Estudiantil con Calificaciones",
          isTutor: false,
-         haveSecondRef: false
+         haveSecondRef: false,
+         infoDivider: {
+            title: ""
+         }
       }
    ];
 
