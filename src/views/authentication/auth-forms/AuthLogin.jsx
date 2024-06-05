@@ -74,7 +74,7 @@ const FirebaseLogin = ({ ...others }) => {
       // console.log(inputUsername);
    };
 
-   const onSubmit = async ({ email, password }, { setSubmitting, setErrors, resetForm }) => {
+   const onSubmit = async ({ email, password }, { setSubmitting, setErrors, resetForm, setStatus }) => {
       try {
          await login({ email, password });
          await loggetInCheck;
