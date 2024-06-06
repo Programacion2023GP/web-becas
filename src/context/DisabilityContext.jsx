@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { Axios } from "./AuthContext";
 import { CorrectRes, ErrorRes } from "../utils/Response";
 
@@ -20,6 +20,7 @@ export default function DisabilityContextProvider({ children }) {
    const [disabilities, setDisabilities] = useState([]);
    const [disability, setDisability] = useState(null);
    const [formData, setFormData] = useState(formDataInitialState);
+   const formikRef = useRef();
 
    const resetFormData = () => {
       try {
@@ -153,7 +154,8 @@ export default function DisabilityContextProvider({ children }) {
             formTitle,
             setFormTitle,
             singularName,
-            pluralName
+            pluralName,
+            formikRef
          }}
       >
          {children}

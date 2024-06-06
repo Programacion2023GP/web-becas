@@ -1,7 +1,5 @@
 import React, { useEffect } from "react";
 import { Button, ButtonGroup, Tooltip, Typography } from "@mui/material";
-import IconEdit from "../../../components/icons/IconEdit";
-import IconDelete from "../../../components/icons/IconDelete";
 
 import { useRoleContext } from "../../../context/RoleContext";
 import Swal from "sweetalert2";

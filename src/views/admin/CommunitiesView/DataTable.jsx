@@ -47,7 +47,8 @@ const CommunityDT = () => {
       resetCommunity,
       setTextBtnSumbit,
       setFormTitle,
-      assignPerimeterToCommunity
+      assignPerimeterToCommunity,
+      formikRef
    } = useCommunityContext();
 
    const globalFilterFields = ["CodigoPostal", "Colonia", "Municipio", "Estado", "Perimetro", "Tipo", "Zona", "active", "created_at"];
@@ -120,7 +121,8 @@ const CommunityDT = () => {
    const handleClickAssign = async (id, name) => {
       try {
          setLoadingAction(true);
-         await showCommunity(id);
+         const axiosResponse = await showCommunity(id);
+         console.log("🚀 ~ handleClickAssign ~ axiosResponse:", axiosResponse);
          // setNameCommunity(name);
          // setIdCommunity(id);
          setOpenDialogPreview(true);
@@ -169,7 +171,7 @@ const CommunityDT = () => {
                   <IconEdit />
                </Button>
             </Tooltip> */}
-            {console.log(idPage)}
+            {/* {console.log(idPage)} */}
             {auth.permissions.more_permissions.includes(`14@Asignar Perímetro`) && (
                <Tooltip title={`Asignar Perímetro a ${singularName}`} placement="top">
                   <Button color="info" onClick={() => handleClickAssign(id, name)}>
@@ -198,7 +200,7 @@ const CommunityDT = () => {
       try {
          // console.log("cargar listado", communities);
          await communities.map((obj, index) => {
-            if (index === 1) console.log(obj);
+            // if (index === 1) console.log(obj);
             let register = obj;
             register.key = index + 1;
             register.actions = <ButtonsAction id={obj.id} name={obj.Colonia} active={obj.active} />;
@@ -208,6 +210,7 @@ const CommunityDT = () => {
          // console.log("la data del formatData", globalFilterFields);
          setLoading(false);
       } catch (error) {
+         setLoading(false);
          console.log(error);
          Toast.Error(error);
       }

@@ -12,11 +12,10 @@ import {
 import Toast from "../../../utils/Toast";
 import { useRequestBecaContext } from "../../../context/RequestBecaContext";
 import sAlert from "../../../utils/sAlert";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useStudentContext } from "../../../context/StudentContext";
 import { useDisabilityContext } from "../../../context/DisabilityContext";
 import { useGlobalContext } from "../../../context/GlobalContext";
-import { Button } from "@mui/material";
 
 const InputsFormik2 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBeforeOrNext }) => {
    const { setDisabledState, setDisabledCity, setDisabledColony, setShowLoading, setDataStates, setDataCities, setDataColonies, setDataColoniesComplete } =

@@ -1,14 +1,9 @@
 import SchoolForm from "./Form";
 import SchoolDT from "./DataTable";
 
-import { CorrectRes, ErrorRes } from "../../../utils/Response";
-import { useLoaderData } from "react-router-dom";
-import { Axios } from "../../../context/AuthContext";
-
 import { useEffect } from "react";
 import { useSchoolContext } from "../../../context/SchoolContext";
-import { Alert, AlertTitle, Typography } from "@mui/material";
-import sAlert from "../../../utils/sAlert";
+import { Typography } from "@mui/material";
 import Toast from "../../../utils/Toast";
 import { useGlobalContext } from "../../../context/GlobalContext";
 import LevelContextProvider from "../../../context/LevelContext";

@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 // import { Axios } from "./AuthContext";
 import { CorrectRes, ErrorRes } from "../utils/Response";
 import axios from "axios";
@@ -29,6 +29,7 @@ export default function CommunityContextProvider({ children }) {
    const [communities, setCommunities] = useState([]);
    const [community, setCommunity] = useState(null);
    const [formData, setFormData] = useState(formDataInitialState);
+   const formikRef = useRef();
 
    const resetFormData = () => {
       try {
@@ -170,7 +171,8 @@ export default function CommunityContextProvider({ children }) {
             setFormTitle,
             singularName,
             pluralName,
-            assignPerimeterToCommunity
+            assignPerimeterToCommunity,
+            formikRef
          }}
       >
          {children}

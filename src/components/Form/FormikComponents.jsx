@@ -25,7 +25,6 @@ import {
 import { Formik, Field, useFormikContext } from "formik";
 import InputMask from "react-input-mask";
 import propTypes from "prop-types";
-// import CircularProgress from "@mui/material/CircularProgress";
 import { handleInputFormik } from "../../utils/Formats";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { strengthColor, strengthIndicator } from "../../utils/password-strength";
@@ -92,6 +91,7 @@ export const FormikComponent = forwardRef(
          showActionButtons = true,
          activeStep = null,
          setStepFailed = null,
+         maxHeight = "79v",
          className
       },
       ref
@@ -123,7 +123,7 @@ export const FormikComponent = forwardRef(
                      </Grid>
                   ) : (
                      <>
-                        <Grid width={"100%"} xs={12} spacing={2} height={"79vh"} maxHeight={"79vh"} overflow={"auto"}>
+                        <Grid width={"100%"} xs={12} spacing={2} height={maxHeight} maxHeight={maxHeight} overflow={"auto"}>
                            <Grid xs={12} container spacing={2} className={className}>
                               {children}
                            </Grid>
@@ -852,7 +852,8 @@ export const RadioButtonComponent = ({
    alignItems = "center",
    marginBottom = 2,
    rowLayout = true, // Cambiar a false para poner en columnas
-   focus
+   focus,
+   ...props
 }) => {
    const { values, errors, touched, handleChange, handleBlur } = useFormikContext(); // Obtener valores, errores y funciones de Formik
    const [loading, setLoading] = useState(false);
@@ -880,6 +881,8 @@ export const RadioButtonComponent = ({
    }, [inputRef]);
 
    const isError = touched[idName] && errors[idName];
+   const error = isError ? errors[idName] : null;
+
    const handleValue = (idName, value) => {
       if (handleGetValue) {
          handleGetValue(idName, value);
@@ -895,7 +898,7 @@ export const RadioButtonComponent = ({
          sx={{ display: hidden ? "none" : "flex", flexDirection: "column", alignItems: alignItems }}
          mb={marginBottom ?? 2}
       >
-         <Typography variant="subtitle1" align="center" color="textPrimary" sx={{ mb: 0 }}>
+         <Typography variant="subtitle1" align="center" sx={{ mb: 0, display: "block" }}>
             {title}
          </Typography>
          <RadioGroup
@@ -916,20 +919,32 @@ export const RadioButtonComponent = ({
                            //  console.log("hola", handleGetValue);
                            handleValue(idName, option.value);
                         }}
-                        control={<Radio />}
+                        control={
+                           <Radio
+                              sx={{
+                                 color: "black",
+                                 "&.Mui-checked": {
+                                    color: "#1E2126"
+                                 },
+                                 "&.MuiSvgIcon-root": {
+                                    fill: "#1E2126"
+                                 }
+                              }}
+                           />
+                        }
                         label={option.label}
                         disabled={loading}
                         sx={{
                            mr: rowLayout && 5,
                            marginBottom: rowLayout ? 0 : "8px", // Espacio entre los radio buttons si están en columnas
-                           "& .MuiRadio-root": {
+                           "&.MuiRadio-root": {
                               color: "#c5c8cc" //"#1976d2"
                            },
-                           "& .MuiFormControlLabel-label": {
+                           "&.MuiFormControlLabel-label": {
                               color: "#1E2126", //"#1976d2",
                               fontSize: "14px"
                            },
-                           "& .Mui-checked": {
+                           "&.Mui-checked": {
                               color: "#1E2126" //"#1976d2"
                            }
                         }}

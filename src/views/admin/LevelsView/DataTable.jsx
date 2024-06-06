@@ -90,6 +90,8 @@ const LevelDT = () => {
          setOpenDialog(true);
          setLoadingAction(false);
       } catch (error) {
+         setOpenDialog(false);
+         setLoadingAction(false);
          console.log(error);
          Toast.Error(error);
       }

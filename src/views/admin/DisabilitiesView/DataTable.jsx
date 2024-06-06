@@ -38,7 +38,8 @@ const DisabilityDT = () => {
       resetFormData,
       resetDisability,
       setTextBtnSumbit,
-      setFormTitle
+      setFormTitle,
+      formikRef
    } = useDisabilityContext();
    const globalFilterFields = ["disability", "description", "active", "created_at"];
 
@@ -71,6 +72,7 @@ const DisabilityDT = () => {
       try {
          // resetDisability();
          resetFormData();
+         formikRef.current.setValues(formikRef.current.initialValues);
          setOpenDialog(true);
          setTextBtnSumbit("AGREGAR");
          setFormTitle(`REGISTRAR ${singularName.toUpperCase()}`);
@@ -85,10 +87,14 @@ const DisabilityDT = () => {
          setLoadingAction(true);
          setTextBtnSumbit("GUARDAR");
          setFormTitle(`EDITAR ${singularName.toUpperCase()}`);
-         await showDisability(id);
+         const axiosResponse = await showDisability(id);
+         if (axiosResponse.result.description) axiosResponse.result.description == null && (axiosResponse.result.description = "");
+         formikRef.current.setValues(axiosResponse.result);
          setOpenDialog(true);
          setLoadingAction(false);
       } catch (error) {
+         setOpenDialog(false);
+         setLoadingAction(false);
          console.log(error);
          Toast.Error(error);
       }

@@ -282,9 +282,9 @@ const RequestBecaDT = ({ status = null }) => {
 
    const handleClickEdit = async (id) => {
       try {
-         setLoadingAction(true);
          setTextBtnSumbit("GUARDAR");
          setFormTitle(`EDITAR ${singularName.toUpperCase()}`);
+         setLoadingAction(true);
          await showRequestBeca(id);
          setOpenDialog(true);
          setLoadingAction(false);
