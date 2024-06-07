@@ -313,7 +313,7 @@ const RequestBecaView = () => {
       pagesIA[pagina] = false;
       setPageInAnimation(pagesIA);
       setAnimate(true);
-      // navigate("pagina/1");
+      navigate("pagina/1");
       // setPageInAnimation({ ...pageInAnimation, page0: true });
       // useNavigateTo("pagina/1");
       // location.hash = "pagina/1";
@@ -914,11 +914,11 @@ const RequestBecaView = () => {
                }}
                p={2}
                ref={pageActiveRef}
-               className={
-                  pagina == 0
-                     ? `animate__animated ${pageInAnimation[pagina] ? "animate__fadeIn" : "animate__backOutLeft"}`
-                     : setPageInAnimation({ ...pageInAnimation, [pagina]: true })
-               }
+               // className={
+               //    pagina == 0
+               //       ? `animate__animated ${pageInAnimation[pagina] ? "animate__fadeIn" : "animate__backOutLeft"}`
+               //       : setPageInAnimation({ ...pageInAnimation, [pagina]: true })
+               // }
             >
                <img src={LogoGPD} className="bg-request-index" />
                <Typography variant="h2" mb={2} sx={{ position: "relative" }}>
@@ -994,7 +994,7 @@ const RequestBecaView = () => {
                                  activeStep={activeStep}
                                  setStepFailed={setStepFailed}
                                  showActionButtons={false}
-                                 className={activeStep + 1 == 1 && `animate__animated ${pageInAnimation.page1 ? "animate__backInRight" : "animate__backOutLeft"} `}
+                                 // className={activeStep + 1 == 1 && `animate__animated ${pageInAnimation.page1 ? "animate__backInRight" : "animate__backOutLeft"} `}
                               >
                                  <InputsFormik1
                                     folio={folio}

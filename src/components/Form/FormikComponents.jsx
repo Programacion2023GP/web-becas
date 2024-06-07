@@ -123,7 +123,7 @@ export const FormikComponent = forwardRef(
                      </Grid>
                   ) : (
                      <>
-                        <Grid width={"100%"} xs={12} spacing={2} height={maxHeight}overflow={"auto"}>
+                        <Grid width={"100%"} xs={12} spacing={2} height={maxHeight} maxHeight={maxHeight} overflow={"auto"}>
                            <Grid xs={12} container spacing={2} className={className}>
                               {children}
                            </Grid>

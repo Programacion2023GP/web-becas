@@ -25,7 +25,7 @@ const CommunityFormAssignPerimeter = ({ openDialog, setOpenDialog }) => {
    const onSubmit = async (values, { setSubmitting, setErrors, resetForm }) => {
       try {
          // values.id = community_id;
-         return console.log("values", values);
+         // return console.log("values", values);
          setLoadingAction(true);
          let axiosResponse = await assignPerimeterToCommunity(values.perimeter_id, values.id);
          resetForm();
@@ -35,6 +35,8 @@ const CommunityFormAssignPerimeter = ({ openDialog, setOpenDialog }) => {
          Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
          if (!checkAdd) setOpenDialog(false);
       } catch (error) {
+         setSubmitting(false);
+         setLoadingAction(false);
          console.error(error);
          setErrors({ submit: error.message });
          setSubmitting(false);
@@ -77,7 +79,7 @@ const CommunityFormAssignPerimeter = ({ openDialog, setOpenDialog }) => {
          setOpen={setOpenDialog}
          maxWidth="sm"
          modalTitle="ASIGNACIÓN DE PERÍMETRO"
-         height={"100%"}
+         height={"42vh"}
          dialogActions={false}
          formikRef={formikRefAssing}
          textBtnSubmit={textBtnSubmit}
@@ -90,7 +92,7 @@ const CommunityFormAssignPerimeter = ({ openDialog, setOpenDialog }) => {
             textBtnSubmit={textBtnSubmit}
             formikRef={formikRefAssing}
             handleCancel={handleCancel}
-            // maxHeight={null}
+            maxHeight={"31vh"}
             // showActionButtons={false}
          >
             <InputComponent col={12} idName={"id"} label={"ID"} placeholder={"ID"} textStyleCase={true} hidden={true} />

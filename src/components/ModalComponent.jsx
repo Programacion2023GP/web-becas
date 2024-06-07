@@ -79,7 +79,7 @@ export const ModalComponent = ({ children, open, setOpen, modalTitle = "", maxWi
                </Toolbar>
             </DialogTitle>
             <DialogContent sx={{ pb: 0, marginTop: 2, height: height, maxHeight: "90vh" }}>
-               <Box sx={{ mt: 1, height: "100%" }}>{children}</Box>
+               <Box sx={{ mt: 1 }}>{children}</Box>
             </DialogContent>
             {dialogActions && (
                <DialogActions>
