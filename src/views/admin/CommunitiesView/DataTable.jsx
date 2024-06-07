@@ -37,6 +37,7 @@ const CommunityDT = () => {
    const {
       singularName,
       formData,
+      setFormData,
       community,
       communities,
       getCommunities,
@@ -48,7 +49,8 @@ const CommunityDT = () => {
       setTextBtnSumbit,
       setFormTitle,
       assignPerimeterToCommunity,
-      formikRef
+      formikRef,
+      formikRefAssing
    } = useCommunityContext();
 
    const globalFilterFields = ["CodigoPostal", "Colonia", "Municipio", "Estado", "Perimetro", "Tipo", "Zona", "active", "created_at"];
@@ -123,6 +125,9 @@ const CommunityDT = () => {
          setLoadingAction(true);
          const axiosResponse = await showCommunity(id);
          console.log("🚀 ~ handleClickAssign ~ axiosResponse:", axiosResponse);
+         // setFormData({ ...formData, perimeter_id: axiosResponse.result.perimeter_id });
+         await formikRefAssing.current.setFieldValue("id", id);
+         await formikRefAssing.current.setFieldValue("perimeter_id", axiosResponse.result.perimeter_id);
          // setNameCommunity(name);
          // setIdCommunity(id);
          setOpenDialogPreview(true);

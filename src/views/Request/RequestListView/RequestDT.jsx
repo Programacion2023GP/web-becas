@@ -21,6 +21,7 @@ import { useFamilyContext } from "../../../context/FamilyContext";
 import html2pdf from "html2pdf.js";
 import RequestReportPDF from "./RequestReportPDF";
 import ModalReject from "./ModalReject";
+import IconDelete from "../../../components/icons/IconDelete";
 
 const RequestBecaDT = ({ status = null }) => {
    const { auth } = useAuthContext();
@@ -293,6 +294,21 @@ const RequestBecaDT = ({ status = null }) => {
          Toast.Error(error);
       }
    };
+   const handleClickDelete = async (id, name) => {
+      try {
+         mySwal.fire(QuestionAlertConfig(`Estas seguro de eliminar a ${name}`)).then(async (result) => {
+            if (result.isConfirmed) {
+               setLoadingAction(true);
+               const axiosResponse = await deleteRequestBeca(id);
+               setLoadingAction(false);
+               Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
+            }
+         });
+      } catch (error) {
+         console.log(error);
+         Toast.Error(error);
+      }
+   };
 
    const handleClickCancel = async (id, folio, name) => {
       try {
@@ -393,6 +409,13 @@ const RequestBecaDT = ({ status = null }) => {
                   <IconEdit />
                </Button>
             </Tooltip> */}
+            {auth.permissions.delete && (
+               <Tooltip title={`Eliminar ${singularName}`} placement="top">
+                  <Button color="error" onClick={() => handleClickDelete(id, name)}>
+                     <IconDelete />
+                  </Button>
+               </Tooltip>
+            )}
             {/* {auth.role_id == ROLE_SUPER_ADMIN && (
                <Tooltip title={active ? "Desactivar" : "Reactivar"} placement="right">
                   <Button color="dark" onClick={() => handleClickDisEnable(id, name, active)} sx={{}}>

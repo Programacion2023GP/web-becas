@@ -14,10 +14,16 @@ import { useEffect } from "react";
 import { ButtonGroup } from "@mui/material";
 import Toast from "../../../utils/Toast";
 import { useGlobalContext } from "../../../context/GlobalContext";
-import Select2Component from "../../../components/Form/Select2Component";
-import InputsCommunityComponent, { getCommunity } from "../../../components/Form/InputsCommunityComponent";
 import { handleInputFormik } from "../../../utils/Formats";
 import { usePerimeterContext } from "../../../context/PerimeterContext";
+import {
+   FormikComponent,
+   InputComponent,
+   InputsCommunityComponent,
+   RadioButtonComponent,
+   Select2Component,
+   getCommunity
+} from "../../../components/Form/FormikComponents";
 // import InputComponent from "../Form/InputComponent";
 
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
@@ -49,7 +55,8 @@ const CommunityForm = () => {
       resetFormData,
       setTextBtnSumbit,
       formTitle,
-      setFormTitle
+      setFormTitle,
+      formikRef
    } = useCommunityContext();
 
    const { perimeters, getPerimetersSelectIndex } = usePerimeterContext();
@@ -147,8 +154,8 @@ const CommunityForm = () => {
 
    useEffect(() => {
       try {
-         const btnModify = document.getElementById("btnModify");
-         if (btnModify != null) btnModify.click();
+         // const btnModify = document.getElementById("btnModify");
+         // if (btnModify != null) btnModify.click();
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -166,126 +173,53 @@ const CommunityForm = () => {
                   label="Seguir Agregando"
                />
             </Typography>
-            <Formik initialValues={formData} validationSchema={validationSchema} onSubmit={onSubmit}>
-               {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
-                  <Grid container spacing={2} component={"form"} onSubmit={handleSubmit}>
-                     <Field id="id" name="id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} />
+            <FormikComponent
+               key={"formikComponent"}
+               initialValues={formData}
+               validationSchema={validationSchema}
+               onSubmit={onsubmit}
+               textBtnSubmit={textBtnSubmit}
+               formikRef={formikRef}
+               handleCancel={handleCancel}
+            >
+               <InputComponent col={12} idName={"id"} label={"ID"} placeholder={"ID"} textStyleCase={true} hidden={true} />
 
-                     {/* Comunidad */}
-                     <InputsCommunityComponent
-                        formData={formData}
-                        setFormData={setFormData}
-                        values={values}
-                        setValues={setValues}
-                        setFieldValue={setFieldValue}
-                        handleChange={handleChange}
-                        handleBlur={handleBlur}
-                        errors={errors}
-                        touched={touched}
-                        registerCommunity={true}
-                     />
-                     {/* Communidad */}
-                     <Grid xs={12} md={12} sx={{ mb: 3 }}>
-                        <TextField
-                           id="name"
-                           name="name"
-                           label="Communidad *"
-                           type="text"
-                           value={values.name}
-                           placeholder="PRIMARIA"
-                           onChange={handleChange}
-                           onBlur={handleBlur}
-                           onInput={(e) => handleInputFormik(e, setFieldValue, "name", true)}
-                           fullWidth
-                           error={errors.name && touched.name}
-                           helperText={errors.name && touched.name && errors.name}
-                        />
-                     </Grid>
-                     {/* Tipo de Communidad */}
-                     <Grid xs={12} md={6} sx={{ mb: 3 }}>
-                        <TextField
-                           id="type"
-                           name="type"
-                           label="Tipo de Communidad *"
-                           type="text"
-                           value={values.type}
-                           placeholder="colonia | fraccionamiento | ejido | rancho"
-                           onChange={handleChange}
-                           onBlur={handleBlur}
-                           onInput={(e) => handleInputFormik(e, setFieldValue, "type", false)}
-                           fullWidth
-                           error={errors.type && touched.type}
-                           helperText={errors.type && touched.type && errors.type}
-                        />
-                     </Grid>
-                     {/* Zona */}
-                     <Grid xs={12} md={6} sx={{ mb: 3 }}>
-                        <FormControl fullWidth sx={{ alignItems: "center" }}>
-                           <FormLabel id="zone-label">Zona</FormLabel>
-                           <RadioGroup row aria-labelledby="zone-label" id="zone" name="zone" value={values.zone} onChange={handleChange} onBlur={handleBlur}>
-                              <FormControlLabel value="urbana" control={<Radio />} label="Urbana" />
-                              <FormControlLabel value="rural" control={<Radio />} label="Rural" />
-                           </RadioGroup>
-                           {touched.zone && errors.zone && (
-                              <FormHelperText error id="ht-zone">
-                                 {errors.zone}
-                              </FormHelperText>
-                           )}
-                        </FormControl>
-                     </Grid>
-                     {/* Perímetro */}
-                     <Grid xs={12} md={12} sx={{ mb: 1 }}>
-                        <Select2Component
-                           idName={"perimeter_id"}
-                           label={"Perímetro *"}
-                           valueLabel={values.perimeter}
-                           formDataLabel={"perimeter"}
-                           placeholder={"Selecciona una opción..."}
-                           options={perimeters}
-                           fullWidth={true}
-                           // handleChangeValueSuccess={handleChangeLevel}
-                           handleBlur={handleBlur}
-                           error={errors.perimeter_id}
-                           touched={touched.perimeter_id}
-                           disabled={false}
-                           pluralName={"Perímetros"}
-                           refreshSelect={getPerimetersSelectIndex}
-                        />
-                     </Grid>
+               {/* INPUTS DE COMUNIDAD */}
+               <InputsCommunityComponent formData={formData} setFormData={setFormData} columnsByTextField={6} />
 
-                     <LoadingButton
-                        type="submit"
-                        disabled={isSubmitting}
-                        loading={isSubmitting}
-                        // loadingPosition="start"
-                        variant="contained"
-                        fullWidth
-                        size="large"
-                     >
-                        {textBtnSubmit}
-                     </LoadingButton>
-                     <ButtonGroup variant="outlined" fullWidth>
-                        <Button
-                           type="reset"
-                           variant="outlined"
-                           color="secondary"
-                           fullWidth
-                           size="large"
-                           sx={{ mt: 1, display: "none" }}
-                           onClick={() => handleReset(resetForm, setFieldValue, values.id)}
-                        >
-                           LIMPIAR
-                        </Button>
-                        <Button type="reset" variant="outlined" color="error" fullWidth size="large" sx={{ mt: 1 }} onClick={() => handleCancel(resetForm)}>
-                           CANCELAR
-                        </Button>
-                     </ButtonGroup>
-                     <Button type="button" color="info" fullWidth id="btnModify" sx={{ mt: 1, display: "none" }} onClick={() => handleModify(setValues)}>
-                        setValues
-                     </Button>
-                  </Grid>
-               )}
-            </Formik>
+               {/* Communidad */}
+               <InputComponent col={12} idName={"name"} label={"Comunidad *"} placeholder={"Ejido la Esperanza"} textStyleCase={null} />
+
+               {/* Tipo de Communidad */}
+               <Select2Component
+                  col={12}
+                  idName={"type"}
+                  label={"Tipo de Comunidad *"}
+                  options={["colonia", "fraccionamiento", "ejido", "rancho"]}
+                  pluralName={"colonia | fraccionamiento | ejido | rancho"}
+               />
+
+               {/* Zona */}
+               <RadioButtonComponent
+                  col={12}
+                  idName={"zone"}
+                  title={"Zona *"}
+                  options={[
+                     { value: "rural", label: "Rural" },
+                     { value: "urbana", label: "Urbana" }
+                  ]}
+               />
+
+               {/* Perímetro */}
+               <Select2Component
+                  col={12}
+                  idName={"perimeter_id"}
+                  label={"Perímetro *"}
+                  options={perimeters}
+                  pluralName={"Perímetros"}
+                  refreshSelect={getPerimetersSelectIndex}
+               />
+            </FormikComponent>
          </Box>
       </SwipeableDrawer>
    );

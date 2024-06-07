@@ -106,8 +106,6 @@ const LevelForm = () => {
 
    useEffect(() => {
       try {
-         const btnModify = document.getElementById("btnModify");
-         if (btnModify != null) btnModify.click();
       } catch (error) {
          console.log(error);
          Toast.Error(error);

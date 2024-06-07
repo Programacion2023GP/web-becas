@@ -85,7 +85,6 @@ const LevelDT = () => {
          setTextBtnSumbit("GUARDAR");
          setFormTitle(`EDITAR ${singularName.toUpperCase()}`);
          const axiosResponse = await showLevel(id);
-         console.log(axiosResponse);
          await formikRef.current.setValues(axiosResponse.result);
          setOpenDialog(true);
          setLoadingAction(false);

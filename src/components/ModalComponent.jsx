@@ -5,17 +5,19 @@ import Slide from "@mui/material/Slide";
 
 import Typography from "@mui/material/Typography";
 import { forwardRef, useEffect, useLayoutEffect, useState } from "react";
-import { IconButton, Toolbar, Tooltip } from "@mui/material";
+import { Box, DialogActions, IconButton, Toolbar, Tooltip } from "@mui/material";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import { IconWindowMaximize, IconWindowMinimize, IconX } from "@tabler/icons";
 import { useAuthContext } from "../context/AuthContext";
 import { gpcDark, gpcLight, useGlobalContext } from "../context/GlobalContext";
+import { height } from "@mui/system";
+import { LoadingButton } from "@mui/lab";
 
 const Transition = forwardRef(function Transition(props, ref) {
    return <Slide direction="down" ref={ref} {...props} />;
 });
-export const ModalComponent = ({ children, open, setOpen, modalTitle = "", maxWidth = "lg" }) => {
+export const ModalComponent = ({ children, open, setOpen, modalTitle = "", maxWidth = "lg", height, dialogActions = null, formikRef, textBtnSubmit }) => {
    const { auth } = useAuthContext();
    const mySwal = withReactContent(Swal);
    const [fullScreenDialog, setFullScreenDialog] = useState(false);
@@ -26,6 +28,7 @@ export const ModalComponent = ({ children, open, setOpen, modalTitle = "", maxWi
    };
 
    useEffect(() => {
+      console.log("formikRef", formikRef);
       // console.log("estoy en el modal", voucher);
    }, []);
    useLayoutEffect(() => {
@@ -75,7 +78,24 @@ export const ModalComponent = ({ children, open, setOpen, modalTitle = "", maxWi
                   </Tooltip>
                </Toolbar>
             </DialogTitle>
-            <DialogContent sx={{ pb: 0, maxHeight: "90vh" }}>{children}</DialogContent>
+            <DialogContent sx={{ pb: 0, marginTop: 2, height: height, maxHeight: "90vh" }}>
+               <Box sx={{ mt: 1, height: "100%" }}>{children}</Box>
+            </DialogContent>
+            {dialogActions && (
+               <DialogActions>
+                  <LoadingButton
+                     type="submit"
+                     disabled={formikRef.isSubmitting}
+                     loading={formikRef.isSubmitting}
+                     // loadingPosition="start"
+                     variant="contained"
+                     fullWidth
+                     size="large"
+                  >
+                     {textBtnSubmit}
+                  </LoadingButton>
+               </DialogActions>
+            )}
          </Dialog>
       </div>
    );

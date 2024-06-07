@@ -13,10 +13,10 @@ const formDataInitialState = {
    type: "",
    zone: "",
    municipalities_id: "",
-   perimeter_id: "",
+   perimeter_id: ""
 
-   perimeter: "Selecciona una opción...",
-   municipality: "Selecciona una opción..."
+   // perimeter: "Selecciona una opción...",
+   // municipality: "Selecciona una opción..."
 };
 
 export default function CommunityContextProvider({ children }) {
@@ -30,6 +30,7 @@ export default function CommunityContextProvider({ children }) {
    const [community, setCommunity] = useState(null);
    const [formData, setFormData] = useState(formDataInitialState);
    const formikRef = useRef();
+   const formikRefAssing = useRef();
 
    const resetFormData = () => {
       try {
@@ -66,8 +67,8 @@ export default function CommunityContextProvider({ children }) {
    const showCommunity = async (id) => {
       let res = CorrectRes;
       try {
-         const axiosData = await axiosMyCommunity.get(`${import.meta.env.VITE_API_CP}/comunidades/${id}`);
-         console.log("axiosData", axiosData);
+         const axiosData = await axiosMyCommunity.get(`${import.meta.env.VITE_API_CP}/comunidades/id/${id}`);
+         // console.log("axiosData", axiosData);
          res = axiosData.data.data;
          setCommunity(res.result);
          setFormData(res.result);
@@ -158,6 +159,7 @@ export default function CommunityContextProvider({ children }) {
             communities,
             community,
             formData,
+            setFormData,
             resetFormData,
             resetCommunity,
             getCommunities,
@@ -172,7 +174,8 @@ export default function CommunityContextProvider({ children }) {
             singularName,
             pluralName,
             assignPerimeterToCommunity,
-            formikRef
+            formikRef,
+            formikRefAssing
          }}
       >
          {children}
