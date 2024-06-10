@@ -761,7 +761,7 @@ export const Select2Component = ({
                   <FormHelperText error={isError} id={`ht-${idName}`}>
                      {isError ? error : helperText}
                   </FormHelperText>
-                  {loading && <CircularProgress sx={{ position: "absolute", top: "10%", left: "60%" }} />}
+                  {loading && <CircularProgress sx={{ position: "absolute", top: "10%", left: "60%", borderColor: "green" }} />}
                </FormControl>
             </Grid>
          )}

@@ -13,17 +13,19 @@ const formDataInitialState = {
    type: "",
    zone: "",
    municipalities_id: "",
-   perimeter_id: ""
+   perimeter_id: "",
 
-   // perimeter: "Selecciona una opción...",
-   // municipality: "Selecciona una opción..."
+   // community_id: 0,
+   zip: "",
+   state: "",
+   city: ""
 };
 
 export default function CommunityContextProvider({ children }) {
    const singularName = "Comunidad"; //Escribirlo siempre letra Capital
    const pluralName = "Comunidades"; //Escribirlo siempre letra Capital
 
-   const [formTitle, setFormTitle] = useState(`REGISTRAR ${singularName}`);
+   const [formTitle, setFormTitle] = useState(`REGISTRAR ${singularName.toUpperCase()}`);
    const [textBtnSubmit, setTextBtnSumbit] = useState("AGREGAR");
 
    const [communities, setCommunities] = useState([]);
@@ -31,6 +33,13 @@ export default function CommunityContextProvider({ children }) {
    const [formData, setFormData] = useState(formDataInitialState);
    const formikRef = useRef();
    const formikRefAssing = useRef();
+
+   const dataCommunityTypes = [
+      { id: "colonia", label: "colonia" },
+      { id: "fraccionamiento", label: "Fraccionamiento" },
+      { id: "ejido", label: "Ejido" },
+      { id: "rancho", label: "Rancho" }
+   ];
 
    const resetFormData = () => {
       try {
@@ -82,9 +91,11 @@ export default function CommunityContextProvider({ children }) {
    };
 
    const createCommunity = async (community) => {
+      console.log("🚀 ~ createCommunity ~ community:", community);
+      console.log("🚀 ~ createCommunity ~ BD: id, name, postalCode, type, zone, municipalities_id, perimeter_id");
       let res = CorrectRes;
       try {
-         const axiosData = await axiosMyCommunity.post(`${import.meta.env.VITE_API_CP}/perimetros/create`, community);
+         const axiosData = await axiosMyCommunity.post(`${import.meta.env.VITE_API_CP}/comunidades/create`, community);
          res = axiosData.data.data;
          getCommunities();
       } catch (error) {
@@ -99,7 +110,7 @@ export default function CommunityContextProvider({ children }) {
    const updateCommunity = async (community) => {
       let res = CorrectRes;
       try {
-         const axiosData = await axiosMyCommunity.post(`${import.meta.env.VITE_API_CP}/perimetros/update/${community.id}`, community);
+         const axiosData = await axiosMyCommunity.post(`${import.meta.env.VITE_API_CP}/comunidades/update/${community.id}`, community);
          // console.log("axiosData", axiosData);
          res = axiosData.data.data;
          getCommunities();
@@ -175,7 +186,8 @@ export default function CommunityContextProvider({ children }) {
             pluralName,
             assignPerimeterToCommunity,
             formikRef,
-            formikRefAssing
+            formikRefAssing,
+            dataCommunityTypes
          }}
       >
          {children}

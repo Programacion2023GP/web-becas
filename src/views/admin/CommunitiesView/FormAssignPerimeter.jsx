@@ -25,7 +25,7 @@ const CommunityFormAssignPerimeter = ({ openDialog, setOpenDialog }) => {
    const onSubmit = async (values, { setSubmitting, setErrors, resetForm }) => {
       try {
          // values.id = community_id;
-         // return console.log("values", values);
+         // return console.log("onSubmit de FormAssignPerimeter ~ values", values);
          setLoadingAction(true);
          let axiosResponse = await assignPerimeterToCommunity(values.perimeter_id, values.id);
          resetForm();
@@ -64,9 +64,7 @@ const CommunityFormAssignPerimeter = ({ openDialog, setOpenDialog }) => {
 
    useEffect(() => {
       try {
-         console.log("formData", formData);
-         // const btnModify = document.getElementById("btnModify");
-         // if (btnModify != null) btnModify.click();
+         // console.log("formData", formData);
       } catch (error) {
          console.log(error);
          Toast.Error(error);

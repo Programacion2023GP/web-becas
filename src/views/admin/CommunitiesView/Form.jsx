@@ -56,7 +56,8 @@ const CommunityForm = () => {
       setTextBtnSumbit,
       formTitle,
       setFormTitle,
-      formikRef
+      formikRef,
+      dataCommunityTypes
    } = useCommunityContext();
 
    const { perimeters, getPerimetersSelectIndex } = usePerimeterContext();
@@ -79,8 +80,14 @@ const CommunityForm = () => {
 
    const onSubmit = async (values, { setSubmitting, setErrors, resetForm }) => {
       try {
-         // return console.log("values", values);
+         // return console.log("onSubmit de FormCommunities ~ values", values);
          setLoadingAction(true);
+
+         console.log("🚀 ~ createCommunity ~ BD: id, name, postalCode, type, zone, municipalities_id, perimeter_id");
+         // Cambiar datos correspondientes
+         values.postalCode = values.zip;
+         values.municipality = values.city.label;
+
          let axiosResponse;
          if (values.id == 0) axiosResponse = await createCommunity(values);
          else axiosResponse = await updateCommunity(values);
@@ -96,47 +103,24 @@ const CommunityForm = () => {
          console.error(error);
          setErrors({ submit: error.message });
          setSubmitting(false);
+         setLoadingAction(false);
          // if (error.code === "auth/user-not-found") setErrors({ email: "Usuario no registrado" });
          // if (error.code === "auth/wrong-password") setErrors({ password: "Contraseña incorrecta" });
       } finally {
          setSubmitting(false);
+         setLoadingAction(false);
       }
    };
 
-   const handleReset = (resetForm, setFieldValue, id) => {
-      try {
-         resetForm();
-         setFieldValue("id", id);
-      } catch (error) {
-         console.log(error);
-         Toast.Error(error);
-      }
-   };
-
-   const handleModify = (setValues, setFieldValue) => {
-      try {
-         getCommunity(
-            formData.zip,
-            setFieldValue,
-            formData.community_id,
-            formData,
-            setFormData,
-            setDisabledState,
-            setDisabledCity,
-            setDisabledColony,
-            setShowLoading,
-            setDataStates,
-            setDataCities,
-            setDataColonies,
-            setDataColoniesComplete
-         );
-         if (formData.description) formData.description == null && (formData.description = "");
-         setValues(formData);
-      } catch (error) {
-         console.log(error);
-         Toast.Error(error);
-      }
-   };
+   // const handleReset = (resetForm, setFieldValue, id) => {
+   //    try {
+   //       resetForm();
+   //       setFieldValue("id", id);
+   //    } catch (error) {
+   //       console.log(error);
+   //       Toast.Error(error);
+   //    }
+   // };
 
    const handleCancel = (resetForm) => {
       try {
@@ -149,13 +133,22 @@ const CommunityForm = () => {
    };
 
    const validationSchema = Yup.object().shape({
-      name: Yup.string().trim().required("Communidad requerido")
+      zip: Yup.number("Solo números").required("Código Postal requerido"),
+      name: Yup.string().trim().required("Communidad requerido"),
+      // type: Yup.string()
+      //    .typeError("Vuelve a seleccionar la opción deseada si aparece esta leyenda")
+      //    .notOneOf(["Selecciona una opción..."], "Ésta opción no es valida"),
+      // // .required("Tipo de Comunidad requerida"),
+      zone: Yup.string().trim().required("Zona requerida"),
+      perimeter_id: Yup.string()
+         .typeError("Vuelve a seleccionar la opción deseada si aparece esta leyenda")
+         .notOneOf(["Selecciona una opción..."], "Ésta opción no es valida")
+         .required("Perímetro requerido")
    });
 
    useEffect(() => {
       try {
-         // const btnModify = document.getElementById("btnModify");
-         // if (btnModify != null) btnModify.click();
+         console.log("formikRef", formikRef.current);
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -177,7 +170,7 @@ const CommunityForm = () => {
                key={"formikComponent"}
                initialValues={formData}
                validationSchema={validationSchema}
-               onSubmit={onsubmit}
+               onSubmit={onSubmit}
                textBtnSubmit={textBtnSubmit}
                formikRef={formikRef}
                handleCancel={handleCancel}
@@ -185,23 +178,23 @@ const CommunityForm = () => {
                <InputComponent col={12} idName={"id"} label={"ID"} placeholder={"ID"} textStyleCase={true} hidden={true} />
 
                {/* INPUTS DE COMUNIDAD */}
-               <InputsCommunityComponent formData={formData} setFormData={setFormData} columnsByTextField={6} />
+               <InputsCommunityComponent formData={formData} setFormData={setFormData} columnsByTextField={6} registerCommunity={true} />
 
                {/* Communidad */}
                <InputComponent col={12} idName={"name"} label={"Comunidad *"} placeholder={"Ejido la Esperanza"} textStyleCase={null} />
 
                {/* Tipo de Communidad */}
                <Select2Component
-                  col={12}
+                  col={6}
                   idName={"type"}
                   label={"Tipo de Comunidad *"}
-                  options={["colonia", "fraccionamiento", "ejido", "rancho"]}
+                  options={dataCommunityTypes}
                   pluralName={"colonia | fraccionamiento | ejido | rancho"}
                />
 
                {/* Zona */}
                <RadioButtonComponent
-                  col={12}
+                  col={6}
                   idName={"zone"}
                   title={"Zona *"}
                   options={[
