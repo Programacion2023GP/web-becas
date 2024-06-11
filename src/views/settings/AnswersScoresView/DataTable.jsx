@@ -1,12 +1,4 @@
-import { Fragment, useEffect, useState } from "react";
-import { ThemeProvider } from "@mui/material/styles";
-import { createTheme } from "@mui/material/styles";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
-import { CacheProvider } from "@emotion/react";
-import createCache from "@emotion/cache";
+import { useEffect } from "react";
 import { Button, ButtonGroup, Tooltip, Typography } from "@mui/material";
 import IconEdit from "../../../components/icons/IconEdit";
 import IconDelete from "../../../components/icons/IconDelete";
@@ -14,7 +6,7 @@ import IconDelete from "../../../components/icons/IconDelete";
 import { useAnswerScoreContext } from "../../../context/AnswerScoreContext";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import sAlert, { QuestionAlertConfig } from "../../../utils/sAlert";
+import { QuestionAlertConfig } from "../../../utils/sAlert";
 import Toast from "../../../utils/Toast";
 import { ROLE_SUPER_ADMIN, useGlobalContext } from "../../../context/GlobalContext";
 import DataTableComponent from "../../../components/DataTableComponent";
@@ -22,7 +14,6 @@ import { IconCircleCheckFilled } from "@tabler/icons-react";
 import { IconCircleXFilled } from "@tabler/icons-react";
 import { formatDatetime } from "../../../utils/Formats";
 import { useAuthContext } from "../../../context/AuthContext";
-import SwitchIOSComponent from "../../../components/SwitchIOSComponent";
 
 const AnswerScoreDT = () => {
    const { auth } = useAuthContext();

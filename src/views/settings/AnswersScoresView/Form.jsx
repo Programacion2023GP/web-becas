@@ -1,41 +1,16 @@
-import { Field, Formik } from "formik";
+import { Formik } from "formik";
 import * as Yup from "yup";
 
 import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
-import {
-   Button,
-   DialogContentText,
-   Divider,
-   FormControlLabel,
-   FormLabel,
-   InputLabel,
-   List,
-   ListItemText,
-   MenuItem,
-   Radio,
-   RadioGroup,
-   Select,
-   Switch,
-   TextField,
-   Tooltip,
-   Typography
-} from "@mui/material";
+import { Button, DialogContentText, Divider, List, ListItemText, Tooltip, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
-import { SwipeableDrawer } from "@mui/material";
-import { FormControl } from "@mui/material";
-import { FormHelperText } from "@mui/material";
-import { Fragment, cloneElement, useMemo, useState } from "react";
+import { cloneElement, useState } from "react";
 import { useAnswerScoreContext } from "../../../context/AnswerScoreContext";
 import { Box } from "@mui/system";
 import { useEffect } from "react";
 import { ButtonGroup } from "@mui/material";
 import Toast from "../../../utils/Toast";
 import { useGlobalContext } from "../../../context/GlobalContext";
-import Select2Component from "../../../components/Form/Select2Component";
-import InputsCommunityComponent, { getCommunity } from "../../../components/Form/InputsCommunityComponent";
-import { handleInputFormik } from "../../../utils/Formats";
-import TabsComponent from "../../../components/TabsComponent";
-import { SliderWithScoreComponent } from "../../../components/SliderComponent";
 import { InputComponentv3 } from "../../../components/Form/InputComponent2";
 
 // import InputComponent from "../Form/InputComponent";

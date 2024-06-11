@@ -276,7 +276,16 @@ export const InputComponent = ({
                      type={type !== null && type !== undefined ? type : "text"} // Utiliza type si está definido, de lo contrario, usa "text"
                      ref={inputRef}
                      variant={variant}
-                     value={formik.values && formik.values[idName] ? formik.values[idName] : ""}
+                     // value={formik.values && formik.values[idName] ? formik.values[idName] : ""}
+                     value={
+                        formik.values && formik.values[idName]
+                           ? type === "number"
+                              ? formik.values[idName].toString().replace(/^0+(?=\d)/, "")
+                              : formik.values[idName]
+                           : type === "number" && !isNaN(parseInt(formik.values[idName]))
+                           ? parseInt(formik.values[idName])
+                           : ""
+                     }
                      onChange={formik.handleChange} // Utiliza el handleChange de Formik
                      onBlur={(e) => {
                         formik.handleBlur(e); // Usa handleBlur de Formik para manejar el blur
@@ -317,7 +326,16 @@ export const InputComponent = ({
                      type={type !== null && type !== undefined ? type : "text"} // Utiliza type si está definido, de lo contrario, usa "text"
                      ref={inputRef}
                      variant={variant}
-                     value={formik.values && formik.values[idName] ? formik.values[idName] : ""}
+                     // value={formik.values && formik.values[idName] ? formik.values[idName] : ""}
+                     value={
+                        formik.values && formik.values[idName]
+                           ? type === "number"
+                              ? formik.values[idName].toString().replace(/^0+(?=\d)/, "")
+                              : formik.values[idName]
+                           : type === "number" && !isNaN(parseInt(formik.values[idName]))
+                           ? parseInt(formik.values[idName])
+                           : ""
+                     }
                      onChange={formik.handleChange} // Utiliza el handleChange de Formik
                      onBlur={(e) => {
                         formik.handleBlur(e); // Usa handleBlur de Formik para manejar el blur

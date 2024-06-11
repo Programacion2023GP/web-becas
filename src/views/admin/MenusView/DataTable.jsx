@@ -81,6 +81,8 @@ const MenuDT = () => {
                Path: <b>{obj.url ?? "-"}</b>
                <br />
                Nombre del Contador: <b>{obj.counter_name ?? "-"}</b>
+               <br />
+               Solo lectura en permisos: <b>{obj.read_only ? <IconCircleCheckFilled style={{ color: "green" }} /> : <IconCircleXFilled style={{ color: "red" }} />}</b>
             </Typography>
          ) : (
             <>
@@ -238,7 +240,7 @@ const MenuDT = () => {
    useEffect(() => {
       setLoading(false);
    }, []);
-   
+
    return (
       <DataTableComponent
          columns={columns}

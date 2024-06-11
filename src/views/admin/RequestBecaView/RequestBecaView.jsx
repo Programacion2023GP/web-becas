@@ -306,10 +306,10 @@ const RequestBecaView = () => {
    );
 
    const handleClickInitRequest = () => {
-      console.log("clickk");
+      // console.log("clickk");
       handleReset();
       const pagesIA = pageInAnimation;
-      console.log("🚀 ~ handleClickInitRequest ~ pagesIA:", pagesIA);
+      // console.log("🚀 ~ handleClickInitRequest ~ pagesIA:", pagesIA);
       pagesIA[pagina] = false;
       setPageInAnimation(pagesIA);
       setAnimate(true);
@@ -876,12 +876,12 @@ const RequestBecaView = () => {
    // }, [formData, pagina, activeStep]);
 
    useEffect(() => {
-      console.log("el animate", animate);
+      // console.log("el animate", animate);
       // const authCard = document.querySelector("#authCard");
       const authCard = pageActiveRef.current;
-      console.log("🚀 ~ useEffect ~ authCard:", authCard);
+      // console.log("🚀 ~ useEffect ~ authCard:", authCard);
       const handleAnimationEnd = (e) => {
-         console.log("ya acabo la animacion");
+         // console.log("ya acabo la animacion");
          // if (e.animationName == "flipOutY") window.location.hash = "#/register";
       };
 

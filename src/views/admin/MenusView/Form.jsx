@@ -138,17 +138,18 @@ const MenuForm = () => {
          validationSchema = Yup.object().shape({
             menu: Yup.string().trim().required("Menú requerido"),
             belongs_to: Yup.number().min(1, "Esta opción no es valida").required("Pertenencia requerida"),
-            patern: Yup.string().trim().notOneOf(["Selecciona una opción..."], "Ésta opción no es valida").required("Pertenencia requerida"),
 
             url: Yup.string().trim().required("URL requerido"),
             icon: Yup.string().trim().required("Icono requerido"),
             order: Yup.number().required("Orden requerido")
          });
+      // console.log("🚀 ~ validationSchemas ~ validationSchema:", validationSchema);
       return validationSchema;
    };
 
    useEffect(() => {
       try {
+         console.log("validationSchema", validationSchemas());
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -209,8 +210,10 @@ const MenuForm = () => {
                         pluralName={"Menús Padres"}
                         refreshSelect={getHeaderMenusSelectIndex}
                      />
+
                      {/* URL */}
                      <InputComponent col={12} idName={"url"} label={"URL / Path *"} placeholder={"/app/nombre-de-pagina"} textStyleCase={false} />
+
                      {/* Icono */}
                      <InputComponent
                         col={12}
@@ -226,6 +229,7 @@ const MenuForm = () => {
                            </small>
                         }
                      />
+
                      {/* Otros Permisos */}
                      <InputComponent
                         col={12}
@@ -247,11 +251,14 @@ const MenuForm = () => {
 
                {isItem && (
                   <>
+                     {/* Solo lectura */}
+                     <SwitchComponent col={12} idName={"read_only"} label={"¿Solo lectura?"} textEnable={"Solo lectura"} textDisable={"Con Permisos"} />
+
                      {/* Mostrar contador */}
-                     <SwitchComponent col={12} idName={"show_counter"} label={"¿Mostrar contador?"} textEnable={"Mostrar"} textDisable={"Ocultar"} />
+                     <SwitchComponent col={5} idName={"show_counter"} label={"¿Mostrar contador?"} textEnable={"Mostrar"} textDisable={"Ocultar"} />
 
                      {/* Nombre del Contador */}
-                     <InputComponent col={12} idName={"counter_name"} label={"Nombre del Contador"} placeholder={"requestApproved"} textStyleCase={null} />
+                     <InputComponent col={7} idName={"counter_name"} label={"Nombre del Contador"} placeholder={"requestApproved"} textStyleCase={null} />
                   </>
                )}
                {/* Activar */}
