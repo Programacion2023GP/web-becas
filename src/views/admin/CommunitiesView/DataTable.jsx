@@ -120,20 +120,22 @@ const CommunityDT = () => {
       }
    };
 
-   const handleClickAssign = async (id, name) => {
+   const handleClickAssign = async (id, name, perimeterId) => {
       try {
          setLoadingAction(true);
-         const axiosResponse = await showCommunity(id);
-         console.log("🚀 ~ handleClickAssign ~ axiosResponse:", axiosResponse);
+         // const axiosResponse = await showCommunity(id);
+         // console.log("🚀 ~ handleClickAssign ~ axiosResponse:", axiosResponse);
          // setFormData({ ...formData, perimeter_id: axiosResponse.result.perimeter_id });
          await formikRefAssing.current.setFieldValue("id", id);
-         await formikRefAssing.current.setFieldValue("perimeter_id", axiosResponse.result.perimeter_id);
+         await formikRefAssing.current.setFieldValue("perimeter_id", perimeterId); //axiosResponse.result.perimeter_id);
          // setNameCommunity(name);
          // setIdCommunity(id);
          setOpenDialogPreview(true);
          // setOpenDialog(true);
          setLoadingAction(false);
       } catch (error) {
+         setOpenDialogPreview(true);
+         setLoadingAction(false);
          console.log(error);
          Toast.Error(error);
       }
@@ -168,7 +170,7 @@ const CommunityDT = () => {
    //    }
    // };
 
-   const ButtonsAction = ({ id, name, active }) => {
+   const ButtonsAction = ({ id, name, active, perimeterId }) => {
       return (
          <ButtonGroup variant="outlined">
             {/* <Tooltip title={`Editar ${singularName}`} placement="top">
@@ -179,7 +181,7 @@ const CommunityDT = () => {
             {/* {console.log(idPage)} */}
             {auth.permissions.more_permissions.includes(`14@Asignar Perímetro`) && (
                <Tooltip title={`Asignar Perímetro a ${singularName}`} placement="top">
-                  <Button color="info" onClick={() => handleClickAssign(id, name)}>
+                  <Button color="info" onClick={() => handleClickAssign(id, name, perimeterId)}>
                      <IconCirclesRelation />
                   </Button>
                </Tooltip>
@@ -208,7 +210,7 @@ const CommunityDT = () => {
             // if (index === 1) console.log(obj);
             let register = obj;
             register.key = index + 1;
-            register.actions = <ButtonsAction id={obj.id} name={obj.Colonia} active={obj.active} />;
+            register.actions = <ButtonsAction id={obj.id} name={obj.Colonia} active={obj.active} perimeterId={obj.PerimetroId} />;
             data.push(register);
          });
          // if (data.length > 0) setGlobalFilterFields(Object.keys(communities[0]));

@@ -28,7 +28,7 @@ export const ModalComponent = ({ children, open, setOpen, modalTitle = "", maxWi
    };
 
    useEffect(() => {
-      console.log("formikRef", formikRef);
+      // console.log("formikRef", formikRef);
       // console.log("estoy en el modal", voucher);
    }, []);
    useLayoutEffect(() => {

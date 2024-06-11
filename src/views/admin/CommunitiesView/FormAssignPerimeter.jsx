@@ -43,6 +43,7 @@ const CommunityFormAssignPerimeter = ({ openDialog, setOpenDialog }) => {
          // if (error.code === "auth/user-not-found") setErrors({ email: "Usuario no registrado" });
          // if (error.code === "auth/wrong-password") setErrors({ password: "Contraseña incorrecta" });
       } finally {
+         setLoadingAction(false);
          setSubmitting(false);
       }
    };

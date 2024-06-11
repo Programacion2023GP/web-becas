@@ -83,10 +83,9 @@ const CommunityForm = () => {
          // return console.log("onSubmit de FormCommunities ~ values", values);
          setLoadingAction(true);
 
-         console.log("🚀 ~ createCommunity ~ BD: id, name, postalCode, type, zone, municipalities_id, perimeter_id");
          // Cambiar datos correspondientes
          values.postalCode = values.zip;
-         values.municipality = values.city.label;
+         values.municipalities_id = values.city.id;
 
          let axiosResponse;
          if (values.id == 0) axiosResponse = await createCommunity(values);
@@ -135,10 +134,10 @@ const CommunityForm = () => {
    const validationSchema = Yup.object().shape({
       zip: Yup.number("Solo números").required("Código Postal requerido"),
       name: Yup.string().trim().required("Communidad requerido"),
-      // type: Yup.string()
-      //    .typeError("Vuelve a seleccionar la opción deseada si aparece esta leyenda")
-      //    .notOneOf(["Selecciona una opción..."], "Ésta opción no es valida"),
-      // // .required("Tipo de Comunidad requerida"),
+      type: Yup.string()
+         .typeError("Vuelve a seleccionar la opción deseada si aparece esta leyenda")
+         .notOneOf(["Selecciona una opción..."], "Ésta opción no es valida")
+         .required("Tipo de Comunidad requerida"),
       zone: Yup.string().trim().required("Zona requerida"),
       perimeter_id: Yup.string()
          .typeError("Vuelve a seleccionar la opción deseada si aparece esta leyenda")
@@ -148,7 +147,6 @@ const CommunityForm = () => {
 
    useEffect(() => {
       try {
-         console.log("formikRef", formikRef.current);
       } catch (error) {
          console.log(error);
          Toast.Error(error);

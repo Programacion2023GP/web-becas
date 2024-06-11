@@ -91,8 +91,6 @@ export default function CommunityContextProvider({ children }) {
    };
 
    const createCommunity = async (community) => {
-      console.log("🚀 ~ createCommunity ~ community:", community);
-      console.log("🚀 ~ createCommunity ~ BD: id, name, postalCode, type, zone, municipalities_id, perimeter_id");
       let res = CorrectRes;
       try {
          const axiosData = await axiosMyCommunity.post(`${import.meta.env.VITE_API_CP}/comunidades/create`, community);
@@ -146,7 +144,7 @@ export default function CommunityContextProvider({ children }) {
       let res = CorrectRes;
       try {
          const axiosData = await axiosMyCommunity.get(`${import.meta.env.VITE_API_CP}/perimetros/${id}/assignToCommunity/${community_id}`);
-         console.log("axiosData", axiosData);
+         // console.log("axiosData", axiosData);
          res = axiosData.data.data;
          setCommunity(res.result);
          setFormData(res.result);

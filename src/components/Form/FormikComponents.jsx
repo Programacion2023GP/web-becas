@@ -1164,7 +1164,8 @@ export const getCommunity = async (
    setShowLoading,
    setDataStates,
    setDataCities,
-   setDataColonies
+   setDataColonies,
+   registerCommunity = false
    // setDataColoniesComplete
 ) => {
    try {
@@ -1196,7 +1197,9 @@ export const getCommunity = async (
          formData.state = data.data.result.Estado;
          formData.city = data.data.result.Municipio;
          formData.colony = data.data.result.Colonia;
+         if (registerCommunity) formData.municipalities_id = data.data.result.MunicipioId;
          // formData.colony = community_id;
+         // console.log("🚀 ~ formData:", formData);
          await setFormData(formData);
          zip = formData.zip;
       }
@@ -1206,7 +1209,7 @@ export const getCommunity = async (
          if (axiosRes.data.data.status_code != 200) return Toast.Error(axiosRes.data.data.alert_text);
          await axiosRes.data.data.result.map((d) => {
             states.push({ id: d.Estado, label: d.Estado });
-            cities.push({ id: d.Municipio, label: d.Municipio });
+            cities.push({ id: d.MunicipioId, label: d.Municipio });
             colonies.push({ id: d.id, label: d.Colonia });
             // coloniesComplete.push({ id: d.id, label: d.Colonia });
          });
