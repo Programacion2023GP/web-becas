@@ -1,12 +1,4 @@
-import { Fragment, useEffect, useState } from "react";
-import { ThemeProvider } from "@mui/material/styles";
-import { createTheme } from "@mui/material/styles";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
-import { CacheProvider } from "@emotion/react";
-import createCache from "@emotion/cache";
+import { useEffect } from "react";
 import { Button, ButtonGroup, Tooltip, Typography } from "@mui/material";
 import IconEdit from "../../../components/icons/IconEdit";
 import IconDelete from "../../../components/icons/IconDelete";
@@ -14,7 +6,7 @@ import IconDelete from "../../../components/icons/IconDelete";
 import { useUserContext } from "../../../context/UserContext";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import sAlert, { QuestionAlertConfig } from "../../../utils/sAlert";
+import { QuestionAlertConfig } from "../../../utils/sAlert";
 import Toast from "../../../utils/Toast";
 import { ROLE_SUPER_ADMIN, useGlobalContext } from "../../../context/GlobalContext";
 import DataTableComponent from "../../../components/DataTableComponent";
@@ -29,7 +21,6 @@ const UserDT = () => {
    const { setLoading, setLoadingAction, setOpenDialog } = useGlobalContext();
    const {
       singularName,
-      user,
       users,
       getUsers,
       showUser,
@@ -81,6 +72,7 @@ const UserDT = () => {
          setTextBtnSumbit("AGREGAR");
          setFormTitle(`REGISTRAR ${singularName.toUpperCase()}`);
       } catch (error) {
+         setOpenDialog(false);
          console.log(error);
          Toast.Error(error);
       }
@@ -97,12 +89,13 @@ const UserDT = () => {
          setOpenDialog(true);
          setLoadingAction(false);
       } catch (error) {
+         setLoadingAction(false);
          console.log(error);
          Toast.Error(error);
       }
    };
 
-   const handleClickDelete = async (id, name, active) => {
+   const handleClickDelete = async (id, name) => {
       try {
          mySwal.fire(QuestionAlertConfig(`Estas seguro de eliminar a ${name}`)).then(async (result) => {
             if (result.isConfirmed) {

@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 // import { Axios } from "./AuthContext";
 import { CorrectRes, ErrorRes } from "../utils/Response";
 import axios from "axios";
@@ -21,6 +21,7 @@ export default function PerimeterContextProvider({ children }) {
    const [perimeters, setPerimeters] = useState([]);
    const [perimeter, setPerimeter] = useState(null);
    const [formData, setFormData] = useState(formDataInitialState);
+   const formikRef = useRef();
 
    const resetFormData = () => {
       try {
@@ -180,7 +181,8 @@ export default function PerimeterContextProvider({ children }) {
             formTitle,
             setFormTitle,
             singularName,
-            pluralName
+            pluralName,
+            formikRef
          }}
       >
          {children}

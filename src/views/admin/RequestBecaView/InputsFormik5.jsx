@@ -26,7 +26,7 @@ const InputsFormik5 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
 
    return (
       <>
-         <Grid width={"100%"} xs={12} spacing={2} height={"67vh"} MaxHeight={"67vh"} overflow={"auto"}>
+         <Grid width={"100%"} xs={12} spacing={2} height={"67vh"} maxHeight={"67vh"} overflow={"auto"}>
             <Grid xs={12} container spacing={2}>
                <Grid xs={12} md={12} sx={{ mb: 3 }}>
                   <Typography variant="h4" component={"p"} mb={1}>

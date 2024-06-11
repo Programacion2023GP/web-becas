@@ -1,23 +1,13 @@
-import { Field, Formik } from "formik";
 import * as Yup from "yup";
 
-import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
-import { Button, Card, FormControlLabel, FormLabel, InputLabel, Radio, RadioGroup, Select, Switch, TextField, Tooltip, Typography } from "@mui/material";
-import { LoadingButton } from "@mui/lab";
+import { Card, FormControlLabel, Switch, Typography } from "@mui/material";
 import { SwipeableDrawer } from "@mui/material";
-import { FormControl } from "@mui/material";
-import { FormHelperText } from "@mui/material";
-import { useLayoutEffect, useMemo, useState } from "react";
+import { useState } from "react";
 import { useRoleContext } from "../../../context/RoleContext";
 import { Box } from "@mui/system";
 import { useEffect } from "react";
-import { ButtonGroup } from "@mui/material";
 import Toast from "../../../utils/Toast";
 import { useGlobalContext } from "../../../context/GlobalContext";
-import InputsCommunityComponent, { getCommunity } from "../../../components/Form/InputsCommunityComponent";
-import { handleInputFormik } from "../../../utils/Formats";
-import SwitchIOSComponent from "../../../components/SwitchIOSComponent";
-import { Label } from "@mui/icons-material";
 import { useMenuContext } from "../../../context/MenuContext";
 import { FormikComponent, InputComponent, Select2Component, SwitchComponent } from "../../../components/Form/FormikComponents";
 // import InputComponent from "../Form/InputComponent";

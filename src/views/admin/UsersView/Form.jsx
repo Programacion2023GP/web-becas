@@ -1,33 +1,15 @@
-import { Field, Formik } from "formik";
 import * as Yup from "yup";
 
-import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
-import { Button, FormControlLabel, InputLabel, Switch, TextField, Typography } from "@mui/material";
-import { LoadingButton } from "@mui/lab";
+import { FormControlLabel, Switch, Typography } from "@mui/material";
 import { SwipeableDrawer } from "@mui/material";
-import { FormControl } from "@mui/material";
-import { FormHelperText } from "@mui/material";
 import { useState } from "react";
 import { useUserContext } from "../../../context/UserContext";
 import { Box } from "@mui/system";
 import { useEffect } from "react";
-import { ButtonGroup } from "@mui/material";
 import Toast from "../../../utils/Toast";
 import { useGlobalContext } from "../../../context/GlobalContext";
-import { handleInputFormik } from "../../../utils/Formats";
-import { OutlinedInput } from "@mui/material";
-import { InputAdornment } from "@mui/material";
-import { IconButton } from "@mui/material";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { strengthColor, strengthIndicator } from "../../../utils/password-strength";
-import Select2Component from "../../../components/Form/Select2Component";
 import { useRoleContext } from "../../../context/RoleContext";
-// import { FormikComponent } from "../../../components/Form/FormikComponent";
-// import { InputComponentEST } from "../../../components/Form/InputComponentEST";
-import { RadioButtonComponent } from "../../../components/Form/RadioButtonComponent";
-import { InputNumericComponent } from "../../../components/Form/InputNumericComponent";
-import { FormikComponent, InputComponent, PasswordCompnent } from "../../../components/Form/FormikComponents";
-// import { InputPasswordCompnent } from "../../../components/Form/InputPasswordComponent";
+import { FormikComponent, InputComponent, PasswordCompnent, Select2Component } from "../../../components/Form/FormikComponents";
 
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
 const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
@@ -36,26 +18,6 @@ const UserForm = ({ dataRoles }) => {
    const { formikRef } = useUserContext();
    const { getRolesSelectIndex } = useRoleContext();
    const [checkedShowSwitchPassword, setCheckedShowSwitchPassword] = useState(false);
-   // #region Boton de Contraseña
-   // const [showPassword, setShowPassword] = useState(false);
-   // const [checkedShowSwitchPassword, setCheckedShowSwitchPassword] = useState(true);
-
-   // const [strength, setStrength] = useState(0);
-   // const [level, setLevel] = useState();
-   // const handleClickShowPassword = () => {
-   //    setShowPassword(!showPassword);
-   // };
-
-   // const handleMouseDownPassword = (event) => {
-   //    event.preventDefault();
-   // };
-
-   // const changePassword = (value) => {
-   //    const temp = strengthIndicator(value);
-   //    setStrength(temp);
-   //    setLevel(strengthColor(temp));
-   // };
-   // #endregion Boton de Contraseña
 
    const { setLoadingAction, openDialog, setOpenDialog, toggleDrawer } = useGlobalContext();
    // const { roles, getRolesSelectIndex } = useRoleContext();
@@ -208,24 +170,6 @@ const UserForm = ({ dataRoles }) => {
 
                {/* Correo Electronico */}
                <InputComponent col={6} idName="email" label={"Correo Electrónico *"} placeholder={"mi@correo.com"} textStyleCase={false} />
-               {/* <Grid xs={12} md={6} sx={{ mb: 1 }}>
-                  <TextField
-                     id="email"
-                     name="email"
-                     label="Correo Electrónico *"
-                     type="email"
-                     value={values.email}
-                     placeholder="mi@correo.com"
-                     onChange={handleChange}
-                     onBlur={handleBlur}
-                     onInput={(e) => handleInputFormik(e, setFieldValue, "email", false)}
-                     // inputProps={{ maxLength: 2 }}
-                     fullWidth
-                     // disabled={values.id == 0 ? false : true}
-                     error={errors.email && touched.email}
-                     helperText={errors.email && touched.email && errors.email}
-                  />
-               </Grid> */}
 
                {/* Contraseña */}
                <PasswordCompnent
@@ -235,82 +179,6 @@ const UserForm = ({ dataRoles }) => {
                   setNewPasswordChecked={setNewPasswordChecked}
                   checkedShowSwitchPassword={checkedShowSwitchPassword}
                />
-               {/* Switch para mostrar el cambiar contraseña */}
-               {/* {checkedShowSwitchPassword && (
-                  <Grid xs={12} md={12} sx={{ mb: -2 }}>
-                     <FormControlLabel
-                        control={<Switch />}
-                        label="Cambiar Contraseña"
-                        checked={newPasswordChecked}
-                        onChange={() => setNewPasswordChecked(!newPasswordChecked)}
-                     />
-                  </Grid>
-               )} */}
-               {/* Contraseña */}
-               {/* <Grid xs={12} md={6} sx={{ mb: 2 }}>
-                  <FormControl fullWidth error={Boolean(touched.password && errors.password)}>
-                     <InputLabel htmlFor="password">Contraseña *</InputLabel>
-                     <OutlinedInput
-                        id="password"
-                        name="password"
-                        label="Contraseña *"
-                        type={showPassword ? "text" : "password"}
-                        value={values.password}
-                        placeholder="Ingrese su contraseña, minimo 6 dígitos"
-                        onBlur={handleBlur}
-                        onChange={(e) => {
-                           handleChange(e);
-                           changePassword(e.target.value);
-                        }}
-                        endAdornment={
-                           <InputAdornment position="end">
-                              <IconButton
-                                 aria-label="toggle password visibility"
-                                 onClick={handleClickShowPassword}
-                                 onMouseDown={handleMouseDownPassword}
-                                 edge="end"
-                                 size="large"
-                              >
-                                 {showPassword ? <Visibility /> : <VisibilityOff />}
-                              </IconButton>
-                           </InputAdornment>
-                        }
-                        inputProps={{}}
-                        fullWidth
-                        disabled={newPasswordChecked ? false : true} // DESHABILITAR CON UN CHECK
-                        // disabled={values.id == 0 ? false : true}
-                        error={errors.password && touched.password}
-                     />
-                     {touched.password && errors.password && (
-                        <FormHelperText error id="ht-password">
-                           {errors.password}
-                        </FormHelperText>
-                     )}
-                  </FormControl>
-                  {strength !== 0 && (
-                     <FormControl fullWidth>
-                        <Box sx={{ mb: 2 }}>
-                           <Grid container spacing={2} alignItems="center">
-                              <Grid>
-                                 <Box
-                                    style={{ backgroundColor: level?.color }}
-                                    sx={{
-                                       width: 85,
-                                       height: 8,
-                                       borderRadius: "7px"
-                                    }}
-                                 />
-                              </Grid>
-                              <Grid>
-                                 <Typography variant="subtitle1" fontSize="0.75rem">
-                                    {level?.label}
-                                 </Typography>
-                              </Grid>
-                           </Grid>
-                        </Box>
-                     </FormControl>
-                  )}
-               </Grid> */}
 
                {/* Rol */}
                <Select2Component
@@ -322,24 +190,6 @@ const UserForm = ({ dataRoles }) => {
                   pluralName={"Roles"}
                   refreshSelect={getRolesSelectIndex}
                />
-               {/* <Grid xs={12} md={6} sx={{ mb: 1 }}>
-                  <Select2Component
-                     idName={"role_id"}
-                     label={"Rol *"}
-                     valueLabel={values.role}
-                     formDataLabel={"role"}
-                     placeholder={"Selecciona una opción..."}
-                     options={dataRoles}
-                     fullWidth={true}
-                     // handleChangeValueSuccess={handleChangeRole}
-                     handleBlur={handleBlur}
-                     error={errors.role_id}
-                     touched={touched.role_id}
-                     disabled={false}
-                     pluralName={"Roles"}
-                     refreshSelect={getRolesSelectIndex}
-                  />
-               </Grid> */}
             </FormikComponent>
          </Box>
       </SwipeableDrawer>

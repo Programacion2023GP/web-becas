@@ -1,12 +1,4 @@
-import { Fragment, useEffect, useState } from "react";
-import { ThemeProvider } from "@mui/material/styles";
-import { createTheme } from "@mui/material/styles";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
-import { CacheProvider } from "@emotion/react";
-import createCache from "@emotion/cache";
+import { useEffect } from "react";
 import { Button, ButtonGroup, Tooltip, Typography } from "@mui/material";
 import IconEdit from "../../../components/icons/IconEdit";
 import IconDelete from "../../../components/icons/IconDelete";
@@ -14,7 +6,7 @@ import IconDelete from "../../../components/icons/IconDelete";
 import { useSchoolContext } from "../../../context/SchoolContext";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import sAlert, { QuestionAlertConfig } from "../../../utils/sAlert";
+import { QuestionAlertConfig } from "../../../utils/sAlert";
 import Toast from "../../../utils/Toast";
 import { ROLE_SUPER_ADMIN, useGlobalContext } from "../../../context/GlobalContext";
 import DataTableComponent from "../../../components/DataTableComponent";
@@ -23,11 +15,38 @@ import { IconCircleXFilled } from "@tabler/icons-react";
 import { formatDatetime, formatPhone } from "../../../utils/Formats";
 import { GetDataCommunity } from "../../../utils/GetDataCommunity";
 import { useAuthContext } from "../../../context/AuthContext";
+import { getCommunity } from "../../../components/Form/FormikComponents";
 
 const SchoolDT = () => {
    const { auth } = useAuthContext();
-   const { setLoading, setLoadingAction, setOpenDialog } = useGlobalContext();
-   const { singularName, school, schools, getSchools, showSchool, deleteSchool, resetFormData, resetSchool, setTextBtnSumbit, setFormTitle } = useSchoolContext();
+   const {
+      setLoading,
+      setLoadingAction,
+      setOpenDialog,
+      setDisabledState,
+      setDisabledCity,
+      setDisabledColony,
+      setShowLoading,
+      setDataStates,
+      setDataCities,
+      setDataColonies,
+      setDataColoniesComplete
+   } = useGlobalContext();
+   const {
+      singularName,
+      school,
+      schools,
+      getSchools,
+      showSchool,
+      deleteSchool,
+      formData,
+      setFormData,
+      resetFormData,
+      resetSchool,
+      setTextBtnSumbit,
+      setFormTitle,
+      formikRef
+   } = useSchoolContext();
    const globalFilterFields = ["code", "level", "school", "director", "phone", "loc_for", "zone", "created_at"];
 
    // #region BodysTemplate
@@ -72,11 +91,13 @@ const SchoolDT = () => {
    const handleClickAdd = () => {
       try {
          resetFormData();
+         formikRef.current.resetForm();
          setOpenDialog(true);
          // console.log("klasdklasdl");
          setTextBtnSumbit("AGREGAR");
          setFormTitle(`REGISTRAR ${singularName.toUpperCase()}`);
       } catch (error) {
+         setOpenDialog(false);
          console.log(error);
          Toast.Error(error);
       }
@@ -87,10 +108,32 @@ const SchoolDT = () => {
          setLoadingAction(true);
          setTextBtnSumbit("GUARDAR");
          setFormTitle(`EDITAR ${singularName.toUpperCase()}`);
-         await showSchool(id);
+         const axiosResponse = await showSchool(id);
+
+         if (formData.community_id > 0) {
+            getCommunity(
+               formData.zip,
+               formikRef.current.setFieldValue,
+               formData.community_id,
+               formData,
+               setFormData,
+               setDisabledState,
+               setDisabledCity,
+               setDisabledColony,
+               setShowLoading,
+               setDataStates,
+               setDataCities,
+               setDataColonies,
+               setDataColoniesComplete
+            );
+         }
+         if (formData.description) formData.description == null && (formData.description = "");
+         formikRef.current.setValues(axiosResponse.result);
          setOpenDialog(true);
          setLoadingAction(false);
       } catch (error) {
+         setOpenDialog(false);
+         setLoadingAction(false);
          console.log(error);
          Toast.Error(error);
       }

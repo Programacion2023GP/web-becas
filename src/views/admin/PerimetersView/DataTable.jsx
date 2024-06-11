@@ -1,20 +1,11 @@
-import { Fragment, useEffect, useState } from "react";
-import { ThemeProvider } from "@mui/material/styles";
-import { createTheme } from "@mui/material/styles";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
-import { CacheProvider } from "@emotion/react";
-import createCache from "@emotion/cache";
+import { useEffect } from "react";
 import { Button, ButtonGroup, Tooltip, Typography } from "@mui/material";
 import IconEdit from "../../../components/icons/IconEdit";
-import IconDelete from "../../../components/icons/IconDelete";
 
 import { usePerimeterContext } from "../../../context/PerimeterContext";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import sAlert, { QuestionAlertConfig } from "../../../utils/sAlert";
+import { QuestionAlertConfig } from "../../../utils/sAlert";
 import Toast from "../../../utils/Toast";
 import { ROLE_SUPER_ADMIN, useGlobalContext } from "../../../context/GlobalContext";
 import DataTableComponent from "../../../components/DataTableComponent";
@@ -22,7 +13,6 @@ import { IconCircleCheckFilled } from "@tabler/icons-react";
 import { IconCircleXFilled } from "@tabler/icons-react";
 import { formatDatetime } from "../../../utils/Formats";
 import { useAuthContext } from "../../../context/AuthContext";
-import SwitchIOSComponent from "../../../components/SwitchIOSComponent";
 
 const PerimeterDT = () => {
    const { auth } = useAuthContext();
@@ -38,7 +28,10 @@ const PerimeterDT = () => {
       resetFormData,
       resetPerimeter,
       setTextBtnSumbit,
-      setFormTitle
+      setFormTitle,
+      formData,
+      setFormData,
+      formikRef
    } = usePerimeterContext();
    const globalFilterFields = ["perimeter", "active", "created_at"];
 
@@ -67,10 +60,12 @@ const PerimeterDT = () => {
       try {
          // resetPerimeter();
          resetFormData();
+         formikRef.current.resetForm();
          setOpenDialog(true);
          setTextBtnSumbit("AGREGAR");
          setFormTitle(`REGISTRAR ${singularName.toUpperCase()}`);
       } catch (error) {
+         setOpenDialog(false);
          console.log(error);
          Toast.Error(error);
       }
@@ -81,10 +76,15 @@ const PerimeterDT = () => {
          setLoadingAction(true);
          setTextBtnSumbit("GUARDAR");
          setFormTitle(`EDITAR ${singularName.toUpperCase()}`);
-         await showPerimeter(id);
+         const axiosResponse = await showPerimeter(id);
+         if (formData.description) formData.description == null && (formData.description = "");
+         formikRef.current.setValues(axiosResponse.result);
+
          setOpenDialog(true);
          setLoadingAction(false);
       } catch (error) {
+         setOpenDialog(false);
+         setLoadingAction(false);
          console.log(error);
          Toast.Error(error);
       }

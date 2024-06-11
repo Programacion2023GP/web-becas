@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { Button, ButtonGroup, Tooltip, Typography } from "@mui/material";
 import IconEdit from "../../../components/icons/IconEdit";
-import IconDelete from "../../../components/icons/IconDelete";
 
 import { useMenuContext } from "../../../context/MenuContext";
 import Swal from "sweetalert2";
@@ -16,13 +15,29 @@ import { formatDatetime } from "../../../utils/Formats";
 import { useAuthContext } from "../../../context/AuthContext";
 import { Box } from "@mui/system";
 import SwitchIOSComponent from "../../../components/SwitchIOSComponent";
-import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import * as tablerIcons from "@tabler/icons";
 
 const MenuDT = () => {
    const { auth } = useAuthContext();
    const { setLoading, setLoadingAction, setOpenDialog } = useGlobalContext();
-   const { singularName, menu, menus, getMenus, showMenu, deleteMenu, DisEnableMenu, resetFormData, resetMenu, setTextBtnSumbit, setFormTitle } = useMenuContext();
+   const {
+      singularName,
+      menu,
+      menus,
+      getMenus,
+      showMenu,
+      deleteMenu,
+      DisEnableMenu,
+      formData,
+      setFormData,
+      resetFormData,
+      resetMenu,
+      setTextBtnSumbit,
+      setFormTitle,
+      isItem,
+      setIsItem,
+      formikRef
+   } = useMenuContext();
    const globalFilterFields = ["id", "icon", "menu", "caption", "patern", "order", "url", "counter_name", "others_permissions", "active", "created_at"];
 
    // #region BodysTemplate
@@ -113,10 +128,12 @@ const MenuDT = () => {
       try {
          // resetMenu();
          resetFormData();
+         formikRef.current.resetForm();
          setOpenDialog(true);
          setTextBtnSumbit("AGREGAR");
          setFormTitle(`REGISTRAR ${singularName.toUpperCase()}`);
       } catch (error) {
+         setOpenDialog(false);
          console.log(error);
          Toast.Error(error);
       }
@@ -127,10 +144,14 @@ const MenuDT = () => {
          setLoadingAction(true);
          setTextBtnSumbit("GUARDAR");
          setFormTitle(`EDITAR ${singularName.toUpperCase()}`);
-         await showMenu(id);
+         const axiosResponse = await showMenu(id);
+         setIsItem(axiosResponse.result.type == "item" ? true : false);
+         if (axiosResponse.result.description) axiosResponse.result.description == null && (axiosResponse.result.description = "");
+         formikRef.current.setValues(axiosResponse.result);
          // setOpenDialog(true);
          setLoadingAction(false);
       } catch (error) {
+         setLoadingAction(false);
          console.log(error);
          Toast.Error(error);
       }
@@ -147,6 +168,7 @@ const MenuDT = () => {
             }
          });
       } catch (error) {
+         setLoadingAction(false);
          console.log(error);
          Toast.Error(error);
       }
@@ -206,6 +228,7 @@ const MenuDT = () => {
          // console.log("la data del formatData", globalFilterFields);
          setLoading(false);
       } catch (error) {
+         setLoading(false);
          console.log(error);
          Toast.Error(error);
       }
@@ -215,6 +238,7 @@ const MenuDT = () => {
    useEffect(() => {
       setLoading(false);
    }, []);
+   
    return (
       <DataTableComponent
          columns={columns}

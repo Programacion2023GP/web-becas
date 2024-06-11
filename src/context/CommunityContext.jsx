@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 // import { Axios } from "./AuthContext";
 import { CorrectRes, ErrorRes } from "../utils/Response";
 import axios from "axios";
@@ -15,20 +15,31 @@ const formDataInitialState = {
    municipalities_id: "",
    perimeter_id: "",
 
-   perimeter: "Selecciona una opción...",
-   municipality: "Selecciona una opción..."
+   // community_id: 0,
+   zip: "",
+   state: "",
+   city: ""
 };
 
 export default function CommunityContextProvider({ children }) {
    const singularName = "Comunidad"; //Escribirlo siempre letra Capital
    const pluralName = "Comunidades"; //Escribirlo siempre letra Capital
 
-   const [formTitle, setFormTitle] = useState(`REGISTRAR ${singularName}`);
+   const [formTitle, setFormTitle] = useState(`REGISTRAR ${singularName.toUpperCase()}`);
    const [textBtnSubmit, setTextBtnSumbit] = useState("AGREGAR");
 
    const [communities, setCommunities] = useState([]);
    const [community, setCommunity] = useState(null);
    const [formData, setFormData] = useState(formDataInitialState);
+   const formikRef = useRef();
+   const formikRefAssing = useRef();
+
+   const dataCommunityTypes = [
+      { id: "colonia", label: "colonia" },
+      { id: "fraccionamiento", label: "Fraccionamiento" },
+      { id: "ejido", label: "Ejido" },
+      { id: "rancho", label: "Rancho" }
+   ];
 
    const resetFormData = () => {
       try {
@@ -65,8 +76,8 @@ export default function CommunityContextProvider({ children }) {
    const showCommunity = async (id) => {
       let res = CorrectRes;
       try {
-         const axiosData = await axiosMyCommunity.get(`${import.meta.env.VITE_API_CP}/comunidades/${id}`);
-         console.log("axiosData", axiosData);
+         const axiosData = await axiosMyCommunity.get(`${import.meta.env.VITE_API_CP}/comunidades/id/${id}`);
+         // console.log("axiosData", axiosData);
          res = axiosData.data.data;
          setCommunity(res.result);
          setFormData(res.result);
@@ -82,7 +93,7 @@ export default function CommunityContextProvider({ children }) {
    const createCommunity = async (community) => {
       let res = CorrectRes;
       try {
-         const axiosData = await axiosMyCommunity.post(`${import.meta.env.VITE_API_CP}/perimetros/create`, community);
+         const axiosData = await axiosMyCommunity.post(`${import.meta.env.VITE_API_CP}/comunidades/create`, community);
          res = axiosData.data.data;
          getCommunities();
       } catch (error) {
@@ -97,7 +108,7 @@ export default function CommunityContextProvider({ children }) {
    const updateCommunity = async (community) => {
       let res = CorrectRes;
       try {
-         const axiosData = await axiosMyCommunity.post(`${import.meta.env.VITE_API_CP}/perimetros/update/${community.id}`, community);
+         const axiosData = await axiosMyCommunity.post(`${import.meta.env.VITE_API_CP}/comunidades/update/${community.id}`, community);
          // console.log("axiosData", axiosData);
          res = axiosData.data.data;
          getCommunities();
@@ -133,7 +144,7 @@ export default function CommunityContextProvider({ children }) {
       let res = CorrectRes;
       try {
          const axiosData = await axiosMyCommunity.get(`${import.meta.env.VITE_API_CP}/perimetros/${id}/assignToCommunity/${community_id}`);
-         console.log("axiosData", axiosData);
+         // console.log("axiosData", axiosData);
          res = axiosData.data.data;
          setCommunity(res.result);
          setFormData(res.result);
@@ -157,6 +168,7 @@ export default function CommunityContextProvider({ children }) {
             communities,
             community,
             formData,
+            setFormData,
             resetFormData,
             resetCommunity,
             getCommunities,
@@ -170,7 +182,10 @@ export default function CommunityContextProvider({ children }) {
             setFormTitle,
             singularName,
             pluralName,
-            assignPerimeterToCommunity
+            assignPerimeterToCommunity,
+            formikRef,
+            formikRefAssing,
+            dataCommunityTypes
          }}
       >
          {children}

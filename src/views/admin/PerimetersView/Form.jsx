@@ -2,22 +2,18 @@ import { Field, Formik } from "formik";
 import * as Yup from "yup";
 
 import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
-import { Button, FormControlLabel, FormLabel, InputLabel, MenuItem, Radio, RadioGroup, Select, Switch, TextField, Typography } from "@mui/material";
+import { Button, FormControlLabel, Switch, TextField, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { SwipeableDrawer } from "@mui/material";
-import { FormControl } from "@mui/material";
-import { FormHelperText } from "@mui/material";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { usePerimeterContext } from "../../../context/PerimeterContext";
 import { Box } from "@mui/system";
 import { useEffect } from "react";
 import { ButtonGroup } from "@mui/material";
 import Toast from "../../../utils/Toast";
 import { useGlobalContext } from "../../../context/GlobalContext";
-import Select2Component from "../../../components/Form/Select2Component";
-import InputsCommunityComponent, { getCommunity } from "../../../components/Form/InputsCommunityComponent";
 import { handleInputFormik } from "../../../utils/Formats";
-// import InputComponent from "../Form/InputComponent";
+import { FormikComponent, InputComponent } from "../../../components/Form/FormikComponents";
 
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
 const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
@@ -35,7 +31,8 @@ const PerimeterForm = () => {
       resetFormData,
       setTextBtnSumbit,
       formTitle,
-      setFormTitle
+      setFormTitle,
+      formikRef
    } = usePerimeterContext();
    const [checkAdd, setCheckAdd] = useState(checkAddInitialState);
    const [colorLabelcheck, setColorLabelcheck] = useState(colorLabelcheckInitialState);
@@ -69,12 +66,14 @@ const PerimeterForm = () => {
          Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
          if (!checkAdd) setOpenDialog(false);
       } catch (error) {
+         setLoadingAction(false);
          console.error(error);
          setErrors({ submit: error.message });
          setSubmitting(false);
          // if (error.code === "auth/user-not-found") setErrors({ email: "Usuario no registrado" });
          // if (error.code === "auth/wrong-password") setErrors({ password: "Contraseña incorrecta" });
       } finally {
+         setLoadingAction(false);
          setSubmitting(false);
       }
    };
@@ -83,16 +82,6 @@ const PerimeterForm = () => {
       try {
          resetForm();
          setFieldValue("id", id);
-      } catch (error) {
-         console.log(error);
-         Toast.Error(error);
-      }
-   };
-
-   const handleModify = (setValues, setFieldValue) => {
-      try {
-         if (formData.description) formData.description == null && (formData.description = "");
-         setValues(formData);
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -115,8 +104,6 @@ const PerimeterForm = () => {
 
    useEffect(() => {
       try {
-         const btnModify = document.getElementById("btnModify");
-         if (btnModify != null) btnModify.click();
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -134,62 +121,20 @@ const PerimeterForm = () => {
                   label="Seguir Agregando"
                />
             </Typography>
-            <Formik initialValues={formData} validationSchema={validationSchema} onSubmit={onSubmit}>
-               {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
-                  <Grid container spacing={2} component={"form"} onSubmit={handleSubmit}>
-                     <Field id="id" name="id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} />
+            <FormikComponent
+               key={"formikComponent"}
+               initialValues={formData}
+               validationSchema={validationSchema}
+               onSubmit={onSubmit}
+               textBtnSubmit={textBtnSubmit}
+               formikRef={formikRef}
+               handleCancel={handleCancel}
+            >
+               <InputComponent col={12} idName={"id"} label={"ID"} placeholder={"ID"} textStyleCase={true} hidden={true} />
 
-                     {/* Perímetro */}
-                     <Grid xs={12} md={12} sx={{ mb: 3 }}>
-                        <TextField
-                           id="perimeter"
-                           name="perimeter"
-                           label="Perímetro *"
-                           type="text"
-                           value={values.perimeter}
-                           placeholder="Escribe el nombre del perímetro"
-                           onChange={handleChange}
-                           onBlur={handleBlur}
-                           onInput={(e) => handleInputFormik(e, setFieldValue, "perimeter", true)}
-                           fullWidth
-                           error={errors.perimeter && touched.perimeter}
-                           helperText={errors.perimeter && touched.perimeter && errors.perimeter}
-                        />
-                     </Grid>
-
-                     <LoadingButton
-                        type="submit"
-                        disabled={isSubmitting}
-                        loading={isSubmitting}
-                        // loadingPosition="start"
-                        variant="contained"
-                        fullWidth
-                        size="large"
-                     >
-                        {textBtnSubmit}
-                     </LoadingButton>
-                     <ButtonGroup variant="outlined" fullWidth>
-                        <Button
-                           type="reset"
-                           variant="outlined"
-                           color="secondary"
-                           fullWidth
-                           size="large"
-                           sx={{ mt: 1, display: "none" }}
-                           onClick={() => handleReset(resetForm, setFieldValue, values.id)}
-                        >
-                           LIMPIAR
-                        </Button>
-                        <Button type="reset" variant="outlined" color="error" fullWidth size="large" sx={{ mt: 1 }} onClick={() => handleCancel(resetForm)}>
-                           CANCELAR
-                        </Button>
-                     </ButtonGroup>
-                     <Button type="button" color="info" fullWidth id="btnModify" sx={{ mt: 1, display: "none" }} onClick={() => handleModify(setValues)}>
-                        setValues
-                     </Button>
-                  </Grid>
-               )}
-            </Formik>
+               {/* Perímetro */}
+               <InputComponent col={12} idName={"perimeter"} label={"Perímetro *"} placeholder={"Escribe el nombre del perímetro"} textStyleCase={true} />
+            </FormikComponent>
          </Box>
       </SwipeableDrawer>
    );

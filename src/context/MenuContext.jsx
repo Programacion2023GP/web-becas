@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { Axios, useAuthContext } from "./AuthContext";
 import { CorrectRes, ErrorRes } from "../utils/Response";
 import Toast from "../utils/Toast";
@@ -43,6 +43,8 @@ export default function MenuContextProvider({ children }) {
    const [permissionsByMenu, setPermissionsByMenu] = useState([]);
    const [checkMaster, setCheckMaster] = useState(false);
    const [checkMenus, setCheckMenus] = useState([]);
+   const [isItem, setIsItem] = useState(false);
+   const formikRef = useRef();
 
    const resetFormData = () => {
       try {
@@ -455,7 +457,10 @@ export default function MenuContextProvider({ children }) {
             counterOfMenus,
             getMenusSelectIndexToRoles,
             menusSelect,
-            setMenusSelect
+            setMenusSelect,
+            isItem,
+            setIsItem,
+            formikRef
          }}
       >
          {children}

@@ -17,6 +17,7 @@ import { useGlobalContext } from "../../../context/GlobalContext";
 import Select2Component from "../../../components/Form/Select2Component";
 import InputsCommunityComponent, { getCommunity } from "../../../components/Form/InputsCommunityComponent";
 import { handleInputFormik } from "../../../utils/Formats";
+import { FormikComponent, InputComponent } from "../../../components/Form/FormikComponents";
 // import InputComponent from "../Form/InputComponent";
 
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
@@ -35,7 +36,8 @@ const DisabilityForm = () => {
       resetFormData,
       setTextBtnSumbit,
       formTitle,
-      setFormTitle
+      setFormTitle,
+      formikRef
    } = useDisabilityContext();
    const [checkAdd, setCheckAdd] = useState(checkAddInitialState);
    const [colorLabelcheck, setColorLabelcheck] = useState(colorLabelcheckInitialState);
@@ -89,16 +91,6 @@ const DisabilityForm = () => {
       }
    };
 
-   const handleModify = (setValues, setFieldValue) => {
-      try {
-         if (formData.description) formData.description == null && (formData.description = "");
-         setValues(formData);
-      } catch (error) {
-         console.log(error);
-         Toast.Error(error);
-      }
-   };
-
    const handleCancel = (resetForm) => {
       try {
          resetForm();
@@ -115,8 +107,6 @@ const DisabilityForm = () => {
 
    useEffect(() => {
       try {
-         const btnModify = document.getElementById("btnModify");
-         if (btnModify != null) btnModify.click();
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -134,77 +124,23 @@ const DisabilityForm = () => {
                   label="Seguir Agregando"
                />
             </Typography>
-            <Formik initialValues={formData} validationSchema={validationSchema} onSubmit={onSubmit}>
-               {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
-                  <Grid container spacing={2} component={"form"} onSubmit={handleSubmit}>
-                     <Field id="id" name="id" type="hidden" value={values.id} onChange={handleChange} onBlur={handleBlur} />
-                     {/* Discapacidad */}
-                     <Grid xs={12} md={12} sx={{ mb: 3 }}>
-                        <TextField
-                           id="disability"
-                           name="disability"
-                           label="Nombre de la Discapacidad *"
-                           type="text"
-                           value={values.disability}
-                           placeholder="Seguera"
-                           onChange={handleChange}
-                           onBlur={handleBlur}
-                           onInput={(e) => handleInputFormik(e, setFieldValue, "disability", true)}
-                           fullWidth
-                           error={errors.disability && touched.disability}
-                           helperText={errors.disability && touched.disability && errors.disability}
-                        />
-                     </Grid>
-                     {/* Descripción */}
-                     <Grid xs={12} md={12} sx={{ mb: 1 }}>
-                        <TextField
-                           id="description"
-                           name="description"
-                           label="Descripción"
-                           type="text"
-                           value={values.description}
-                           placeholder="Descripción de la discapacidad"
-                           onChange={handleChange}
-                           onBlur={handleBlur}
-                           fullWidth
-                           // error={errors.description && touched.description}
-                           // helperText={errors.description && touched.description && errors.description}
-                        />
-                     </Grid>
+            <FormikComponent
+               key={"formikComponent"}
+               initialValues={formData}
+               validationSchema={validationSchema}
+               onSubmit={onSubmit}
+               textBtnSubmit={textBtnSubmit}
+               formikRef={formikRef}
+               handleCancel={handleCancel}
+            >
+               <InputComponent col={12} idName={"id"} label={"ID"} placeholder={"ID"} textStyleCase={true} hidden={true} />
 
-                     <LoadingButton
-                        type="submit"
-                        disabled={isSubmitting}
-                        loading={isSubmitting}
-                        // loadingPosition="start"
-                        variant="contained"
-                        fullWidth
-                        size="large"
-                     >
-                        {textBtnSubmit}
-                     </LoadingButton>
-                     <ButtonGroup variant="outlined" fullWidth>
-                        <Button
-                           type="reset"
-                           variant="outlined"
-                           color="secondary"
-                           fullWidth
-                           size="large"
-                           sx={{ mt: 1, display: "none" }}
-                           onClick={() => handleReset(resetForm, setFieldValue, values.id, values.code)}
-                        >
-                           LIMPIAR
-                        </Button>
-                        <Button type="reset" variant="outlined" color="error" fullWidth size="large" sx={{ mt: 1 }} onClick={() => handleCancel(resetForm)}>
-                           CANCELAR
-                        </Button>
-                     </ButtonGroup>
-                     <Button type="button" color="info" fullWidth id="btnModify" sx={{ mt: 1, display: "none" }} onClick={() => handleModify(setValues)}>
-                        setValues
-                     </Button>
-                  </Grid>
-               )}
-            </Formik>
+               {/* Discapacidad */}
+               <InputComponent col={12} idName={"disability"} label={"Nombre de la Discapacidad *"} placeholder={"CEGUERA"} textStyleCase={true} />
+
+               {/* Descripción */}
+               <InputComponent col={12} idName={"description"} label={"Descripción"} placeholder={"Descripción de la discapacidad"} textStyleCase={null} />
+            </FormikComponent>
          </Box>
       </SwipeableDrawer>
    );
