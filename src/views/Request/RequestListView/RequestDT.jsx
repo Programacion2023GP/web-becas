@@ -22,6 +22,7 @@ import html2pdf from "html2pdf.js";
 import RequestReportPDF from "./RequestReportPDF";
 import ModalReject from "./ModalReject";
 import IconDelete from "../../../components/icons/IconDelete";
+import * as XLSX from "xlsx";
 
 const RequestBecaDT = ({ status = null }) => {
    const { auth } = useAuthContext();
@@ -427,22 +428,93 @@ const RequestBecaDT = ({ status = null }) => {
       );
    };
 
-   const handleClickExportPublic = () => {
+   const handleClickExportPublic = async (data) => {
+      // console.log("🚀 ~ handleClickExportPublic ~ data:", data);
       try {
          Toast.Info("no se cual es el formato, ya lo pedi");
-      } catch (error) {}
+         const finalData = [];
+         const titles = ["Apellido Paterno", "Apellido Materno", "Nombres"];
+         finalData.push(titles);
+         data.map((d) => {
+            // console.log("🚀 ~ data.map ~ d:", d);
+            finalData.push([d.paternal_last_name, d.maternal_last_name, d.name]);
+         });
+         exportExcel(finalData);
+
+         //#region OPCION 1 -> obtener plantilla
+         // // // Obtener el archivo a leer
+         // const reqFile = await fetch("/templates/ExportarPublico.xlsx");
+         // const file = await reqFile.arrayBuffer();
+         // if (file.byteLength == 0) return Toast.Warning("El archivo no fue encontrado.");
+         // console.log("🚀 ~ handleClickExportPublic ~ file:", file);
+
+         // // // Leer el archivo Excel
+         // const workbook = XLSX.read(file, { type: "array" });
+         // console.log("🚀 ~ handleClickExportPublic ~ workbook:", workbook);
+
+         // // // Seleccionar la primera hoja de trabajo
+         // const sheetName = workbook.SheetNames[0];
+         // const worksheet = workbook.Sheets[sheetName];
+
+         // // // Convertir la hoja de trabajo a JSON
+         // const data = XLSX.utils.sheet_to_json(worksheet);
+         // // // Imprimir los datos originales
+         // console.log("🚀 ~ handleClickExportPublic ~ data original:", data);
+
+         // // // Realizar alguna modificación en los datos
+         // // data.forEach((row) => {
+         // //    row.NuevaColumna = "Valor"; // Agregar una nueva columna con un valor por defecto
+         // // });
+         // // console.log("🚀 ~ data.forEach ~ data:", data);
+
+         // // // Convertir de nuevo a hoja de trabajo
+         // const newWorksheet = XLSX.utils.json_to_sheet(data);
+
+         // // // Reemplazar la hoja de trabajo antigua con la nueva
+         // workbook.Sheets[sheetName] = worksheet;
+
+         // // // Guardar el archivo modificado
+         // const outputFilePath = "/mnt/data/ExportarPublico_Modificado.xlsx";
+         // XLSX.writeFile(workbook, outputFilePath);
+
+         // console.log(`Archivo guardado en: ${outputFilePath}`);
+         //#endregion
+      } catch (error) {
+         console.log("🚀 ~ handleClickExportPublic ~ error:", error);
+      }
    };
    const handleClickExportContraloria = () => {
       try {
          Toast.Info("no se cual es el formato, ya lo pedi");
       } catch (error) {}
    };
+   const exportExcel = (data) => {
+      if (data.length === 0) {
+         Toast.Info("No hay datos para exportar.");
+         return;
+      }
+
+      const workbook = XLSX.utils.book_new();
+      // Convertir los datos a una hoja de trabajo
+      const worksheet = XLSX.utils.aoa_to_sheet(data);
+
+      // Agregar la hoja de trabajo al libro de trabajo
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Hoja1");
+
+      // // Generar el archivo Excel
+      // const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+
+      // // Crear un blob del buffer
+      // const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
+
+      XLSX.writeFile(workbook, "Becas.xlsx");
+   };
 
    const toolbarContent = () => {
       return (
          <div className="flex flex-wrap gap-2">
             {auth.permissions.more_permissions.includes(`16@Exportar Lista Pública`) && (
-               <Button variant="contained" color="success" startIcon={<IconFileSpreadsheet />} onClick={handleClickExportPublic} sx={{ mx: 1 }}>
+               <Button variant="contained" color="success" startIcon={<IconFileSpreadsheet />} onClick={() => handleClickExportPublic(data)} sx={{ mx: 1 }}>
                   Exprotar al público
                </Button>
             )}

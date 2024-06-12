@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import Highcharts from "highcharts";
 import Highcharts3D from "highcharts/highcharts-3d";
 
-function ChartComponent() {
+function ChartComponent(data) {
    const [isLoading, setIsLoading] = useState(true);
 
    useEffect(() => {
@@ -114,7 +114,7 @@ function ChartComponent() {
          },
          xAxis: {
             categories: causasUnicas,
-               
+
             title: {
                text: "edades",
                align: "middle"

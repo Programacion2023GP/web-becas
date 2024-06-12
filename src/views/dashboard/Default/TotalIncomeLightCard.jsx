@@ -2,15 +2,7 @@ import PropTypes from "prop-types";
 
 // material-ui
 import { useTheme, styled } from "@mui/material/styles";
-import {
-   Avatar,
-   Box,
-   List,
-   ListItem,
-   ListItemAvatar,
-   ListItemText,
-   Typography
-} from "@mui/material";
+import { Avatar, Box, List, ListItem, ListItemAvatar, ListItemText, Typography } from "@mui/material";
 
 // project imports
 import MainCard from "../../../ui-component/cards/MainCard";
@@ -18,6 +10,7 @@ import TotalIncomeCard from "../../../ui-component/cards/Skeleton/TotalIncomeCar
 
 // assets
 import StorefrontTwoToneIcon from "@mui/icons-material/StorefrontTwoTone";
+import * as tablerIcons from "@tabler/icons";
 
 // styles
 const CardWrapper = styled(MainCard)(({ theme }) => ({
@@ -47,8 +40,9 @@ const CardWrapper = styled(MainCard)(({ theme }) => ({
 
 // ==============================|| DASHBOARD - TOTAL INCOME LIGHT CARD ||============================== //
 
-const TotalIncomeLightCard = ({ isLoading }) => {
+const TotalIncomeLightCard = ({ isLoading, title, caption, icon, quantity }) => {
    const theme = useTheme();
+   const Icon = tablerIcons[icon] || tablerIcons["IconListDetails"];
 
    return (
       <>
@@ -58,11 +52,7 @@ const TotalIncomeLightCard = ({ isLoading }) => {
             <CardWrapper border={false} content={false}>
                <Box sx={{ p: 2 }}>
                   <List sx={{ py: 0 }}>
-                     <ListItem
-                        alignItems="center"
-                        disableGutters
-                        sx={{ py: 0 }}
-                     >
+                     <ListItem alignItems="center" disableGutters sx={{ py: 0 }}>
                         <ListItemAvatar>
                            <Avatar
                               variant="rounded"
@@ -73,7 +63,8 @@ const TotalIncomeLightCard = ({ isLoading }) => {
                                  color: theme.palette.warning.dark
                               }}
                            >
-                              <StorefrontTwoToneIcon fontSize="inherit" />
+                              <Icon stroke={1.5} size="1.3rem" />
+                              {/* <StorefrontTwoToneIcon fontSize="inherit" /> */}
                            </Avatar>
                         </ListItemAvatar>
                         <ListItemText
@@ -82,7 +73,7 @@ const TotalIncomeLightCard = ({ isLoading }) => {
                               mt: 0.45,
                               mb: 0.45
                            }}
-                           primary={<Typography variant="h4">$203k</Typography>}
+                           primary={<Typography variant="h4">{title}</Typography>}
                            secondary={
                               <Typography
                                  variant="subtitle2"
@@ -91,10 +82,13 @@ const TotalIncomeLightCard = ({ isLoading }) => {
                                     mt: 0.5
                                  }}
                               >
-                                 Total Income
+                                 {caption}
                               </Typography>
                            }
                         />
+                        <Typography variant="h1" color={"inherit"}>
+                           {quantity}
+                        </Typography>
                      </ListItem>
                   </List>
                </Box>

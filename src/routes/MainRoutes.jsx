@@ -30,6 +30,7 @@ import RolesView from "../views/settings/RolesView/Index";
 import AnswerScoreContextProvider from "../context/AnswerScoreContext";
 import AnswersScoresView from "../views/settings/AnswersScoresView/Index";
 import BecaSettingsView from "../views/settings/BecaSettingsView/Index";
+import DashboardIndex from "../views/dashboard/DashboardView/Index";
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import("../views/dashboard/Default")));
@@ -56,7 +57,8 @@ const MainRoutes = {
    children: [
       {
          index: true,
-         element: <DashboardDefault />
+         //    path: "dashboard",
+         element: <DashboardIndex />
       },
       // {
       //    path: "dashboard",
