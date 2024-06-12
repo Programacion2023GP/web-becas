@@ -229,7 +229,7 @@ const RequestBecaDT = ({ status = null }) => {
             const axiosResponse = await updateStatusBeca(folio, "EN REVISIÓN", null, status);
             Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
          }
-         location.hash = `/admin/solicitud-beca/pagina/9/folio/${folio}/${accion}`;
+         location.hash = `/app/solicitud-beca/pagina/9/folio/${folio}/${accion}`;
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -274,7 +274,7 @@ const RequestBecaDT = ({ status = null }) => {
 
    const handleClickAdd = () => {
       try {
-         location.hash = "/admin/solicitud-beca";
+         location.hash = "/app/solicitud-beca";
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -347,7 +347,7 @@ const RequestBecaDT = ({ status = null }) => {
             {obj.end_date == null && (
                <Tooltip title={`Solicitud ${name}`} placement="top">
                   <Button color="dark">
-                     <Link to={`/admin/solicitud-beca/pagina/${current_page}/folio/${id}`} target="_blank" style={{ textDecoration: "none" }}>
+                     <Link to={`/app/solicitud-beca/pagina/${current_page}/folio/${id}`} target="_blank" style={{ textDecoration: "none" }}>
                         Continuar
                      </Link>
                   </Button>
@@ -397,7 +397,7 @@ const RequestBecaDT = ({ status = null }) => {
                   </Button>
                </Tooltip>
             )}
-            {auth.permissions.more_permissions.includes(`16@Cancelar`) && !["RECHAZADA", "CANCELADA"].includes(obj.status) && (
+            {auth.permissions.more_permissions.includes(`16@Cancelar`) && !["APROBADA", "PAGADA", "RECHAZADA", "CANCELADA"].includes(obj.status) && (
                <Tooltip title={`Cancelar Folio ${name}`} placement="top">
                   <Button color="error" onClick={() => handleClickCancel(id, obj.folio, name)}>
                      <IconBan />
@@ -409,7 +409,7 @@ const RequestBecaDT = ({ status = null }) => {
                   <IconEdit />
                </Button>
             </Tooltip> */}
-            {auth.permissions.delete && (
+            {auth.permissions.delete && !["APROBADA", "PAGADA", "RECHAZADA", "CANCELADA"].includes(obj.status) && (
                <Tooltip title={`Eliminar ${singularName}`} placement="top">
                   <Button color="error" onClick={() => handleClickDelete(id, name)}>
                      <IconDelete />

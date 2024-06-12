@@ -15,7 +15,7 @@ const dashboard = {
          id: "default",
          title: "Dashboard",
          type: "item",
-         url: "/admin/",
+         url: "/app/",
          icon: icons.IconDashboard,
          breadcrumbs: false
       },
@@ -23,7 +23,7 @@ const dashboard = {
          id: "requestBeca",
          title: "Solicitud de Beca",
          type: "item",
-         url: "/admin/solicitud-beca",
+         url: "/app/solicitud-beca",
          icon: icons.IconFileDollar,
          breadcrumbs: false
       }

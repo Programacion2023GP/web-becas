@@ -146,7 +146,6 @@ export default function RoleContextProvider({ children }) {
          let page_index_id = 0;
          const axiosDataMenu =
             axiosData.data.data.result.page_index == null ? null : await Axios.post(`/menus/getIdByUrl`, { url: axiosData.data.data.result.page_index });
-         // console.log("axiosDataMenu", axiosDataMenu);
          page_index_id = axiosDataMenu == null ? 0 : axiosDataMenu.data.data.result.id;
          // console.log(page_index_id);
          axiosData.data.data.result.page_index = page_index_id;

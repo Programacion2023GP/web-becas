@@ -3,32 +3,33 @@ import { lazy } from "react";
 // project imports
 import MainLayout from "../layout/MainLayout";
 import Loadable from "../ui-component/Loadable";
-import SchoolsView from "../views/admin/SchoolsView/Index";
-import LevelsView from "../views/admin/LevelsView/Index";
+import SchoolsView from "../views/catalogs/SchoolsView/Index";
+import LevelsView from "../views/catalogs/LevelsView/Index";
 import SchoolContextProvider from "../context/SchoolContext";
 import LevelContextProvider from "../context/LevelContext";
-import PerimetersView from "../views/admin/PerimetersView/Index";
+import PerimetersView from "../views/catalogs/PerimetersView/Index";
 import PerimeterContextProvider from "../context/PerimeterContext";
-import RequestBecaView from "../views/admin/RequestBecaView/RequestBecaView";
-import DisabilitiesView from "../views/admin/DisabilitiesView/Index";
+import RequestBecaView from "../views/RequestBecaView/RequestBecaView";
+import DisabilitiesView from "../views/catalogs/DisabilitiesView/Index";
 import DisabilityContextProvider from "../context/DisabilityContext";
 import RequestBecaContextProvider from "../context/RequestBecaContext";
 import StudentContextProvider from "../context/StudentContext";
 import UserContextProvider from "../context/UserContext";
-import UsersView from "../views/admin/UsersView/Index";
+import UsersView from "../views/settings/UsersView/Index";
 import RelationshipContextProvider from "../context/RelationshipContext";
 import TutorContextProvider from "../context/TutorContext";
-import { loaderIndexUsersView } from "../views/admin/UsersView/Index";
+import { loaderIndexUsersView } from "../views/settings/UsersView/Index";
 import FamilyContextProvider from "../context/FamilyContext";
 import RequestListView from "../views/Request/RequestListView/Index";
-import CommunitiesView from "../views/admin/CommunitiesView/Index";
+import CommunitiesView from "../views/catalogs/CommunitiesView/Index";
 import CommunityContextProvider from "../context/CommunityContext";
 import MenuContextProvider from "../context/MenuContext";
-import MenusView from "../views/admin/MenusView/Index";
+import MenusView from "../views/settings/MenusView/Index";
 import RoleContextProvider from "../context/RoleContext";
-import RolesView from "../views/admin/RolesView/Index";
+import RolesView from "../views/settings/RolesView/Index";
 import AnswerScoreContextProvider from "../context/AnswerScoreContext";
 import AnswersScoresView from "../views/settings/AnswersScoresView/Index";
+import BecaSettingsView from "../views/settings/BecaSettingsView/Index";
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import("../views/dashboard/Default")));
@@ -46,7 +47,7 @@ const SamplePage = Loadable(lazy(() => import("../views/sample-page")));
 // ==============================|| MAIN ROUTING ||============================== //
 
 const MainRoutes = {
-   path: "/admin",
+   path: "/app",
    element: (
       <MenuContextProvider>
          <MainLayout />
@@ -120,6 +121,15 @@ const MainRoutes = {
                element: (
                   <AnswerScoreContextProvider>
                      <AnswersScoresView />
+                  </AnswerScoreContextProvider>
+               )
+               // loader: loaderIndex
+            },
+            {
+               path: "becas",
+               element: (
+                  <AnswerScoreContextProvider>
+                     <BecaSettingsView />
                   </AnswerScoreContextProvider>
                )
                // loader: loaderIndex

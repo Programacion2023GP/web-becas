@@ -8,14 +8,14 @@ import {
    RadioButtonComponent,
    Select2Component,
    getCommunity
-} from "../../../components/Form/FormikComponents";
-import Toast from "../../../utils/Toast";
-import { useRequestBecaContext } from "../../../context/RequestBecaContext";
-import sAlert from "../../../utils/sAlert";
+} from "../../components/Form/FormikComponents";
+import Toast from "../../utils/Toast";
+import { useRequestBecaContext } from "../../context/RequestBecaContext";
+import sAlert from "../../utils/sAlert";
 import { useState } from "react";
-import { useStudentContext } from "../../../context/StudentContext";
-import { useDisabilityContext } from "../../../context/DisabilityContext";
-import { useGlobalContext } from "../../../context/GlobalContext";
+import { useStudentContext } from "../../context/StudentContext";
+import { useDisabilityContext } from "../../context/DisabilityContext";
+import { useGlobalContext } from "../../context/GlobalContext";
 
 const InputsFormik2 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBeforeOrNext }) => {
    const { setDisabledState, setDisabledCity, setDisabledColony, setShowLoading, setDataStates, setDataCities, setDataColonies, setDataColoniesComplete } =

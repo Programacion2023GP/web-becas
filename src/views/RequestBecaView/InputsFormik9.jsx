@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { useFormikContext } from "formik";
 import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
-import { FileInputComponent, InputComponent, DividerComponent } from "../../../components/Form/FormikComponents";
-import { useRequestBecaContext } from "../../../context/RequestBecaContext";
-import { ROLE_ADMIN, useGlobalContext } from "../../../context/GlobalContext";
+import { FileInputComponent, InputComponent, DividerComponent } from "../../components/Form/FormikComponents";
+import { useRequestBecaContext } from "../../context/RequestBecaContext";
+import { ROLE_ADMIN, useGlobalContext } from "../../context/GlobalContext";
 import { Box, Button, ButtonGroup, FormControl, FormGroup, FormLabel, Icon, Tooltip, Typography } from "@mui/material";
-import { useAuthContext } from "../../../context/AuthContext";
+import { useAuthContext } from "../../context/AuthContext";
 import { IconCircleCheck, IconCircleX } from "@tabler/icons";
-import Toast from "../../../utils/Toast";
+import Toast from "../../utils/Toast";
 import { useParams } from "react-router-dom";
 
 const ButtonsApprovedDocument = ({ auth, formik, setFieldValue, fieldApproved, fieldComments, name = "documento", approved = true, accion }) => {
@@ -97,7 +97,7 @@ const InputsFormik9 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
             return Toast.Warning(axiosResponse.alert_title);
          }
          Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
-         window.location.hash = "/admin/solicitudes/";
+         window.location.hash = "/app/solicitudes/";
       } catch (error) {
          console.error(error);
       } finally {
@@ -132,7 +132,7 @@ const InputsFormik9 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
             return Toast.Warning(axiosResponse.alert_title);
          }
          Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
-         window.location.hash = "/admin/solicitudes/";
+         window.location.hash = "/app/solicitudes/";
       } catch (error) {
          console.error(error);
       } finally {

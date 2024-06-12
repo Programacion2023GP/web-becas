@@ -1,8 +1,8 @@
 import { useFormikContext } from "formik";
 import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
-import { InputComponent, RadioButtonComponent } from "../../../components/Form/FormikComponents";
-import { useRequestBecaContext } from "../../../context/RequestBecaContext";
-import { useGlobalContext } from "../../../context/GlobalContext";
+import { InputComponent, RadioButtonComponent } from "../../components/Form/FormikComponents";
+import { useRequestBecaContext } from "../../context/RequestBecaContext";
+import { useGlobalContext } from "../../context/GlobalContext";
 import { Typography } from "@mui/material";
 
 const InputsFormik6 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBeforeOrNext }) => {
