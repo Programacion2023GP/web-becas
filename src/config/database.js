@@ -68,6 +68,6 @@ const loggedInCheck = async () => {
 //    const asyncCall = async () => await loggedInCheck();
 //    asyncCall();
 //    // let redirectTo = "/";
-//    // if (user) redirectTo = "/admin";
+//    // if (user) redirectTo = "/app";
 //    // useRedirectToAuth(user, redirectTo);
 // }, [user]);

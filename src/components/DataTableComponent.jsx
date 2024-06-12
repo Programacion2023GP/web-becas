@@ -25,6 +25,7 @@ import { QuestionAlertConfig } from "../utils/sAlert";
 import IconDelete from "./icons/IconDelete";
 import { Toolbar } from "primereact/toolbar";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import * as XLSX from "xlsx";
 
 /* COMO IMPROTAR
 *    columns={columns}
@@ -238,16 +239,25 @@ export default function DataTableComponent({
    };
 
    const exportExcel = () => {
-      import("xlsx").then((xlsx) => {
-         const worksheet = xlsx.utils.json_to_sheet(data);
-         const workbook = { Sheets: { data: worksheet }, SheetNames: ["Hoja 1"] };
-         const excelBuffer = xlsx.write(workbook, {
-            bookType: "xlsx",
-            type: "array"
-         });
+      if (data.length === 0) {
+         Toast.Info("No hay datos para exportar.");
+         return;
+      }
 
-         saveAsExcelFile(excelBuffer, "data");
-      });
+      const worksheet = XLSX.utils.json_to_sheet(data);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Hoja 1");
+      XLSX.writeFile(workbook, "datos.xlsx");
+      // import("xlsx").then((xlsx) => {
+      //    const worksheet = xlsx.utils.json_to_sheet(data);
+      //    const workbook = { Sheets: { data: worksheet }, SheetNames: ["Hoja 1"] };
+      //    const excelBuffer = xlsx.write(workbook, {
+      //       bookType: "xlsx",
+      //       type: "array"
+      //    });
+
+      //    saveAsExcelFile(excelBuffer, "data");
+      // });
    };
 
    const saveAsExcelFile = (buffer, fileName) => {

@@ -58,7 +58,7 @@ const Login = () => {
    const matchDownSM = useMediaQuery(theme.breakpoints.down("md"));
 
    return auth ? (
-      <Navigate to={auth.page_index ?? "/admin"} />
+      <Navigate to={auth.page_index ?? "/app"} />
    ) : (
       <>
          <AuthWrapper className="bg-login" sx={{ backgroundColor: "transparent !important" }}>

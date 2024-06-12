@@ -1,21 +1,11 @@
 import AnswerScoreForm from "./Form";
-import AnswerScoreDT from "./DataTable";
 
-import { CorrectRes, ErrorRes } from "../../../utils/Response";
-import { useLoaderData } from "react-router-dom";
-import { Axios } from "../../../context/AuthContext";
 
-import { Fragment, useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useAnswerScoreContext } from "../../../context/AnswerScoreContext";
-import { Alert, AlertTitle, DialogContentText, Divider, List, ListItemText, Slider, Typography } from "@mui/material";
-import sAlert from "../../../utils/sAlert";
+import { Typography } from "@mui/material";
 import Toast from "../../../utils/Toast";
 import { useGlobalContext } from "../../../context/GlobalContext";
-import ChartComponent from "../../../components/ChartComponent";
-import TabsComponent from "../../../components/TabsComponent";
-import { InputComponentv3 } from "../../../components/Form/InputComponent2";
-import { Box } from "@mui/system";
-import SliderComponent, { SliderWithScoreComponent } from "../../../components/SliderComponent";
 
 const AnswersScoresView = () => {
    // const { result } = useLoaderData();

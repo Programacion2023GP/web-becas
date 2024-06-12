@@ -1,11 +1,11 @@
 import { useFormikContext } from "formik";
 import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
-import { InputComponent, RadioButtonComponent, Select2Component } from "../../../components/Form/FormikComponents";
-import { useRelationshipContext } from "../../../context/RelationshipContext";
-import { useTutorContext } from "../../../context/TutorContext";
-import Toast from "../../../utils/Toast";
-import { useRequestBecaContext } from "../../../context/RequestBecaContext";
-import sAlert from "../../../utils/sAlert";
+import { InputComponent, RadioButtonComponent, Select2Component } from "../../components/Form/FormikComponents";
+import { useRelationshipContext } from "../../context/RelationshipContext";
+import { useTutorContext } from "../../context/TutorContext";
+import Toast from "../../utils/Toast";
+import { useRequestBecaContext } from "../../context/RequestBecaContext";
+import sAlert from "../../utils/sAlert";
 import { useEffect } from "react";
 
 const InputsFormik1 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBeforeOrNext, isTutor, setIsTutor }) => {

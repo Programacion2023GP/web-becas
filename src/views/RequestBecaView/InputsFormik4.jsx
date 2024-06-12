@@ -1,7 +1,7 @@
 import { useFormikContext } from "formik";
 import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
-import { InputComponent } from "../../../components/Form/FormikComponents";
-import { useGlobalContext } from "../../../context/GlobalContext";
+import { InputComponent } from "../../components/Form/FormikComponents";
+import { useGlobalContext } from "../../context/GlobalContext";
 import { Typography } from "@mui/material";
 import FamilyDT from "./FamilyDT";
 

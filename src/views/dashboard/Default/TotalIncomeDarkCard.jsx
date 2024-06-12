@@ -2,22 +2,15 @@ import PropTypes from "prop-types";
 
 // material-ui
 import { styled, useTheme } from "@mui/material/styles";
-import {
-   Avatar,
-   Box,
-   List,
-   ListItem,
-   ListItemAvatar,
-   ListItemText,
-   Typography
-} from "@mui/material";
+import { Avatar, Box, List, ListItem, ListItemAvatar, ListItemText, Typography } from "@mui/material";
 
 // project imports
 import MainCard from "../../../ui-component/cards/MainCard";
 import TotalIncomeCard from "../../../ui-component/cards/Skeleton/TotalIncomeCard";
 
 // assets
-import TableChartOutlinedIcon from "@mui/icons-material/TableChartOutlined";
+// import TableChartOutlinedIcon from "@mui/icons-material/TableChartOutlined";
+import * as tablerIcons from "@tabler/icons";
 
 // styles
 const CardWrapper = styled(MainCard)(({ theme }) => ({
@@ -49,8 +42,9 @@ const CardWrapper = styled(MainCard)(({ theme }) => ({
 
 // ==============================|| DASHBOARD - TOTAL INCOME DARK CARD ||============================== //
 
-const TotalIncomeDarkCard = ({ isLoading }) => {
+const TotalIncomeDarkCard = ({ isLoading, title, caption, icon, quantity }) => {
    const theme = useTheme();
+   const Icon = tablerIcons[icon] || tablerIcons["IconListDetails"];
 
    return (
       <>
@@ -60,11 +54,7 @@ const TotalIncomeDarkCard = ({ isLoading }) => {
             <CardWrapper border={false} content={false}>
                <Box sx={{ p: 2 }}>
                   <List sx={{ py: 0 }}>
-                     <ListItem
-                        alignItems="center"
-                        disableGutters
-                        sx={{ py: 0 }}
-                     >
+                     <ListItem alignItems="center" disableGutters sx={{ py: 0 }}>
                         <ListItemAvatar>
                            <Avatar
                               variant="rounded"
@@ -75,7 +65,9 @@ const TotalIncomeDarkCard = ({ isLoading }) => {
                                  color: "#fff"
                               }}
                            >
-                              <TableChartOutlinedIcon fontSize="inherit" />
+                              <Icon stroke={1.5} size="1.3rem" />
+
+                              {/* <TableChartOutlinedIcon fontSize="inherit" /> */}
                            </Avatar>
                         </ListItemAvatar>
                         <ListItemText
@@ -86,18 +78,18 @@ const TotalIncomeDarkCard = ({ isLoading }) => {
                            }}
                            primary={
                               <Typography variant="h4" sx={{ color: "#fff" }}>
-                                 $203k
+                                 {title}
                               </Typography>
                            }
                            secondary={
-                              <Typography
-                                 variant="subtitle2"
-                                 sx={{ color: "primary.light", mt: 0.25 }}
-                              >
-                                 Total Income
+                              <Typography variant="subtitle2" sx={{ color: "primary.light", mt: 0.25 }}>
+                                 {caption}
                               </Typography>
                            }
                         />
+                        <Typography variant="h1" color={"inherit"}>
+                           {quantity}
+                        </Typography>
                      </ListItem>
                   </List>
                </Box>

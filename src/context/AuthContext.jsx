@@ -257,7 +257,7 @@ export default function AuthContextProvider({ children }) {
          };
          // console.log("QUE TRA DE PERMISOS EL AUTH - 1", auth);
          if (auth.read !== "todas") validatePermissions = true;
-         if (currentPath === "/admin") validatePermissions = false;
+         if (currentPath === "/app") validatePermissions = false;
 
          if (menu) {
             permissions.read = auth.read === "todas" ? true : auth.read.split(",").includes(idPage) ? true : false;

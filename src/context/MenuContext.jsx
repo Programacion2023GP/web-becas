@@ -19,9 +19,9 @@ const formDataInitialState = {
    show_counter: false,
    counter_name: "",
    others_permissions: "",
+   read_only: false,
 
-   active: true,
-   patern: ""
+   active: true
 };
 
 export default function MenuContextProvider({ children }) {
@@ -262,7 +262,8 @@ export default function MenuContextProvider({ children }) {
                   const child = {
                      id: iCh.id,
                      title: iCh.menu,
-                     others_permissions: others_permissions
+                     others_permissions: others_permissions,
+                     readOnly: Boolean(iCh.read_only)
                      // type: iCh.type,
                      // url: iCh.url,
                      // icon: tablerIcons[`${iCh.icon}`]
@@ -279,7 +280,8 @@ export default function MenuContextProvider({ children }) {
                         update: false,
                         delete: false,
                         more_permissions: []
-                     }
+                     },
+                     readOnly: false
                   });
                   // #permisos
                });

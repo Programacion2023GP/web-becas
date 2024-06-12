@@ -1,26 +1,26 @@
 import { Fragment, useEffect, useRef, useState } from "react";
-import { useGlobalContext } from "../../../context/GlobalContext";
+import { useGlobalContext } from "../../context/GlobalContext";
 import { Box } from "@mui/system";
 import { Button, Step, StepLabel, Stepper, Typography } from "@mui/material";
 import * as Yup from "yup";
 
-import { useRequestBecaContext } from "../../../context/RequestBecaContext";
-import Toast from "../../../utils/Toast";
+import { useRequestBecaContext } from "../../context/RequestBecaContext";
+import Toast from "../../utils/Toast";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { useAuthContext } from "../../../context/AuthContext";
-import sAlert from "../../../utils/sAlert";
-import IconSended from "../../../components/icons/IconSended";
-import { formatDatetimeToSQL } from "../../../utils/Formats";
+import { useAuthContext } from "../../context/AuthContext";
+import sAlert from "../../utils/sAlert";
+import IconSended from "../../components/icons/IconSended";
+import { formatDatetimeToSQL } from "../../utils/Formats";
 
-import { useDisabilityContext } from "../../../context/DisabilityContext";
-import { useSchoolContext } from "../../../context/SchoolContext";
-import { useRelationshipContext } from "../../../context/RelationshipContext";
-import { setObjImg } from "../../../components/Form/InputFileComponent";
-import { useTutorContext } from "../../../context/TutorContext";
-import { useFamilyContext } from "../../../context/FamilyContext";
-import { validateImageRequired } from "../../../utils/Validations";
-import LogoGPD from "../../../assets/images/icon.png";
-import { FormikComponent } from "../../../components/Form/FormikComponents";
+import { useDisabilityContext } from "../../context/DisabilityContext";
+import { useSchoolContext } from "../../context/SchoolContext";
+import { useRelationshipContext } from "../../context/RelationshipContext";
+import { setObjImg } from "../../components/Form/InputFileComponent";
+import { useTutorContext } from "../../context/TutorContext";
+import { useFamilyContext } from "../../context/FamilyContext";
+import { validateImageRequired } from "../../utils/Validations";
+import LogoGPD from "../../assets/images/icon.png";
+import { FormikComponent } from "../../components/Form/FormikComponents";
 import InputsFormik1 from "./InputsFormik1";
 import InputsFormik2 from "./InputsFormik2";
 import InputsFormik3 from "./InputsFormik3";
@@ -210,10 +210,10 @@ const RequestBecaView = () => {
             : activeStep + 1;
 
       setActiveStep(newActiveStep);
-      if (accion != undefined) return (location.hash = "/admin/solicitudes/mis-solicitudes");
+      if (accion != undefined) return (location.hash = "/app/solicitudes/mis-solicitudes");
 
-      if (pagina >= 4 || folio > 0) location.hash = `/admin/solicitud-beca/pagina/${activeStep + 2}/folio/${folio}`;
-      else location.hash = `/admin/solicitud-beca/pagina/${activeStep + 2}`;
+      if (pagina >= 4 || folio > 0) location.hash = `/app/solicitud-beca/pagina/${activeStep + 2}/folio/${folio}`;
+      else location.hash = `/app/solicitud-beca/pagina/${activeStep + 2}`;
    };
 
    const handleBack = () => {
@@ -223,8 +223,8 @@ const RequestBecaView = () => {
       // setPageInAnimation({...pageInAnimation})
 
       setActiveStep((prevActiveStep) => prevActiveStep - 1);
-      if (pagina >= 4 || folio > 0) location.hash = `/admin/solicitud-beca/pagina/${activeStep}/folio/${folio}`;
-      else location.hash = `/admin/solicitud-beca/pagina/${activeStep}`;
+      if (pagina >= 4 || folio > 0) location.hash = `/app/solicitud-beca/pagina/${activeStep}/folio/${folio}`;
+      else location.hash = `/app/solicitud-beca/pagina/${activeStep}`;
    };
 
    const handleStep = (step) => () => {
@@ -244,7 +244,7 @@ const RequestBecaView = () => {
       setActiveStep(0);
       setCompleted({});
       resetFormData();
-      location.hash = `/admin/solicitud-beca`;
+      location.hash = `/app/solicitud-beca`;
       // setTimeout(() => {
       //    inputRefFullNameTutor.current.focus();
       // }, 1000);
@@ -257,7 +257,7 @@ const RequestBecaView = () => {
       setActiveStep(0);
       setCompleted({});
       resetFormData();
-      location.hash = `/admin/solicitudes/mis-solicitudes`;
+      location.hash = `/app/solicitudes/mis-solicitudes`;
    };
    const ButtonsBeforeOrNext = ({ isSubmitting, setValues, values = null }) => (
       <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between", pt: 2, width: "100%" }}>
@@ -306,10 +306,10 @@ const RequestBecaView = () => {
    );
 
    const handleClickInitRequest = () => {
-      console.log("clickk");
+      // console.log("clickk");
       handleReset();
       const pagesIA = pageInAnimation;
-      console.log("🚀 ~ handleClickInitRequest ~ pagesIA:", pagesIA);
+      // console.log("🚀 ~ handleClickInitRequest ~ pagesIA:", pagesIA);
       pagesIA[pagina] = false;
       setPageInAnimation(pagesIA);
       setAnimate(true);
@@ -400,7 +400,7 @@ const RequestBecaView = () => {
          // resetForm();
          // resetFormData();
          handleComplete();
-         location.hash = `/admin/solicitud-beca/pagina/${activeStep + 2}/folio/${folio}`;
+         location.hash = `/app/solicitud-beca/pagina/${activeStep + 2}/folio/${folio}`;
          setCompleted({ 0: true, 1: true, 2: true });
 
          // if (!checkAdd) setOpenDialog(false);
@@ -642,7 +642,7 @@ const RequestBecaView = () => {
          }
          Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon, "center");
          // console.log("formData", formData);
-         if (formData.correction_permission == 1) location.hash = "/admin/solicitudes/mis-solicitudes";
+         if (formData.correction_permission == 1) location.hash = "/app/solicitudes/mis-solicitudes";
          setStepFailed(-1);
          handleComplete();
       } catch (error) {
@@ -876,12 +876,12 @@ const RequestBecaView = () => {
    // }, [formData, pagina, activeStep]);
 
    useEffect(() => {
-      console.log("el animate", animate);
+      // console.log("el animate", animate);
       // const authCard = document.querySelector("#authCard");
       const authCard = pageActiveRef.current;
-      console.log("🚀 ~ useEffect ~ authCard:", authCard);
+      // console.log("🚀 ~ useEffect ~ authCard:", authCard);
       const handleAnimationEnd = (e) => {
-         console.log("ya acabo la animacion");
+         // console.log("ya acabo la animacion");
          // if (e.animationName == "flipOutY") window.location.hash = "#/register";
       };
 

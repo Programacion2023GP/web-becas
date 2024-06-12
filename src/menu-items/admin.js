@@ -14,7 +14,7 @@ const admin = {
          id: "admin-users",
          title: "Usuarios",
          type: "item",
-         url: "/admin/usuarios",
+         url: "/app/usuarios",
          icon: tablerIcons["IconUsers"],
          breadcrumbs: false
       },
@@ -22,14 +22,14 @@ const admin = {
          id: "admin-roles",
          title: "Roles",
          type: "item",
-         url: "/admin/roles",
+         url: "/app/roles",
          icon: tablerIcons["IconPaperBag"]
       }
       // {
       //    id: "admin-departments",
       //    title: "Departamentos",
       //    type: "item",
-      //    url: "/admin/departamentos",
+      //    url: "/app/departamentos",
       //    icon: tablerIcons["IconBuildingSkyscraper"],
       //    breadcrumbs: false
       // }

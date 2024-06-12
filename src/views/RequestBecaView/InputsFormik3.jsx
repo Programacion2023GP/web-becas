@@ -1,8 +1,8 @@
 import { useFormikContext } from "formik";
 import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
-import { InputComponent, Select2Component } from "../../../components/Form/FormikComponents";
-import { useGlobalContext } from "../../../context/GlobalContext";
-import { useSchoolContext } from "../../../context/SchoolContext";
+import { InputComponent, Select2Component } from "../../components/Form/FormikComponents";
+import { useGlobalContext } from "../../context/GlobalContext";
+import { useSchoolContext } from "../../context/SchoolContext";
 
 const InputsFormik3 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBeforeOrNext }) => {
    useGlobalContext();
