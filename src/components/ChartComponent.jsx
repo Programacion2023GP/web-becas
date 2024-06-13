@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import Highcharts from "highcharts";
 import Highcharts3D from "highcharts/highcharts-3d";
 
-function ChartComponent(data) {
+function ChartComponentDefault(data) {
    const [isLoading, setIsLoading] = useState(true);
 
    useEffect(() => {
@@ -150,4 +150,4 @@ function ChartComponent(data) {
    );
 }
 
-export default ChartComponent;
+export default ChartComponentDefault;

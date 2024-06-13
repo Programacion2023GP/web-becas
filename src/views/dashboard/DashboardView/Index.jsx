@@ -4,10 +4,11 @@ import Toast from "../../../utils/Toast";
 import { useGlobalContext } from "../../../context/GlobalContext";
 import MainCard from "../../../ui-component/cards/MainCard";
 import { DividerComponent } from "../../../components/Form/FormikComponents";
-import ChartComponent from "../../../components/ChartComponent";
+// import ChartComponent from "../../../components/ChartComponent";
 import EarningCard from "../Default/EarningCard";
 import TotalIncomeLightCard from "../Default/TotalIncomeLightCard";
 import TotalIncomeDarkCard from "../Default/TotalIncomeDarkCard";
+import { ChartComponent } from "../../../components/Charts/ChartComponent";
 
 const DashboardIndex = () => {
    // const { result } = useLoaderData();
