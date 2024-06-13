@@ -58,7 +58,11 @@ const MainRoutes = {
       {
          index: true,
          //    path: "dashboard",
-         element: <DashboardIndex />
+         element: (
+            <RequestBecaContextProvider>
+               <DashboardIndex />
+            </RequestBecaContextProvider>
+         )
       },
       // {
       //    path: "dashboard",

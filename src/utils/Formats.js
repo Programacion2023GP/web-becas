@@ -134,3 +134,43 @@ export const splitArroba = (string, returnFirst = true) => {
       Toast.Error(error);
    }
 };
+
+/**
+ * const groupedData = groupBy(data, "category");
+ *
+ * @param {array} data - la data
+ * @param {string} key - nombre de la propiedad para filtrar
+ * @param {boolean} returnArray - retornar el valor como array o como objeto
+ * @param {boolean} consoleLogResult - por si quieres ver el resultaod en consola
+ * @returns La data filtrada
+ */
+export const groupBy = (data, key, returnArray, consoleLogResult = false) => {
+   let result = data.reduce((result, currentValue) => {
+      // Extraer el valor clave
+      const keyValue = currentValue[key];
+
+      // Si el valor clave no existe en el objeto de resultado, cree datos para él
+      if (!result[keyValue]) {
+         result[keyValue] = [];
+      }
+
+      // Agregue el valor actual a los datos correspondientes.
+      result[keyValue].push(currentValue);
+
+      return result;
+   }, {});
+   if (returnArray) result = Object.entries(result);
+
+   if (consoleLogResult) console.log(`🚀 ~ groupBy ~ result ${returnArray ? "array" : "object"}:`, result);
+   return result;
+};
+
+/**
+ *
+ * @param {array<objecT>} data - para arreglos de objetos [{}]
+ * @param {string} key - nombre de la propiedad por la cual se desea filtrar
+ * @returns {array}
+ */
+export const unifyBy = (data, key) => {
+   return Array.from(new Map(data.map((item) => [item[key], item])).values());
+};

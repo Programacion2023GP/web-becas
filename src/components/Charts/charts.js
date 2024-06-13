@@ -2,12 +2,12 @@ import Highcharts from "highcharts";
 import Highcharts3D from "highcharts/highcharts-3d";
 import exportingInit from "highcharts/modules/exporting"; // Importa el módulo de exportación de Highcharts
 
-export const createChart = (id, chart, title, causas, conteos) => {
+export const createChart = (id, chart, title, causas, conteos, enable3D) => {
    Highcharts3D(Highcharts);
    exportingInit(Highcharts);
    const finalChartConfig = [];
 
-   finalChartConfig.push(configChart(chart));
+   finalChartConfig.push(configChart(chart, enable3D));
    finalChartConfig.push(configLegend());
    finalChartConfig.push(configTitle(chart, title, conteos));
    finalChartConfig.push(configPlotOptions(chart));
@@ -46,7 +46,7 @@ export const createChart = (id, chart, title, causas, conteos) => {
    });
    Highcharts.chart(id, Object.assign({}, ...finalChartConfig));
 };
-const configChart = (chart) => {
+const configChart = (chart, enable3D) => {
    switch (chart) {
       case "column":
       case "bar":
@@ -55,7 +55,7 @@ const configChart = (chart) => {
                type: `${chart}`,
                animation: true,
                options3d: {
-                  enabled: true,
+                  enabled: enable3D,
                   alpha: 10,
                   beta: 20,
                   depth: 100,
@@ -68,7 +68,7 @@ const configChart = (chart) => {
             chart: {
                type: `${chart}`,
                options3d: {
-                  enabled: true,
+                  enabled: enable3D,
                   alpha: 45,
                   beta: 0
                }

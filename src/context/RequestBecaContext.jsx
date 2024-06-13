@@ -148,6 +148,8 @@ export default function RequestBecaContextProvider({ children }) {
    const [requestBeca, setRequestBeca] = useState(null);
    const [formData, setFormData] = useState(formDataInitialState);
    const [openDialog, setOpenDialog] = useState(false);
+   const [requestBecasApproved, setRequestBecasApproved] = useState([]);
+   const [requestBecaApproved, setRequestBecaApproved] = useState(null);
 
    const saveOrFinishReview = async (folio, page, beca) => {
       try {
@@ -403,6 +405,25 @@ export default function RequestBecaContextProvider({ children }) {
       }
    };
 
+   //#region CONSULTAS PARA DASHBOARD
+   const getRequestApproved = async () => {
+      try {
+         const res = CorrectRes;
+         const axiosData = await Axios.get(`/becas/approved`);
+         res.result.requestBecasApproved = axiosData.data.data.result;
+         setRequestBecasApproved(axiosData.data.data.result);
+         // console.log("requestBecasApproved", requestBecasApproved);
+
+         return res;
+      } catch (error) {
+         const res = ErrorRes;
+         console.log(error);
+         res.message = error;
+         res.alert_text = error;
+      }
+   };
+   //#endregion CONSULTAS PARA DASHBOARD
+
    // useEffect(() => {
    //    // console.log("el useEffect de RequestBecaContext");
    //    // getRequestBecas();
@@ -437,7 +458,12 @@ export default function RequestBecaContextProvider({ children }) {
             saveBeca,
             getReportRequestByFolio,
             updateStatusBeca,
-            saveOrFinishReview
+            saveOrFinishReview,
+            requestBecaApproved,
+            setRequestBecaApproved,
+            requestBecasApproved,
+            setRequestBecasApproved,
+            getRequestApproved
          }}
       >
          {children}
