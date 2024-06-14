@@ -20,7 +20,8 @@ import {
    RadioGroup,
    Radio,
    Checkbox,
-   Divider
+   Divider,
+   Chip
 } from "@mui/material";
 import { Formik, Field, useFormikContext } from "formik";
 import InputMask from "react-input-mask";
@@ -60,10 +61,10 @@ const OutlineInputStyle = styled(OutlinedInput, { shouldForwardProp })(({ theme 
    }
 }));
 
-export const DividerComponent = ({ title, textAlign = "center", orientation = "horizontal" }) => (
+export const DividerComponent = ({ title, fontWeight, textAlign = "center", orientation = "horizontal", mb = 2, mt = null }) => (
    <Grid xs={12}>
-      <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={orientation} textAlign={textAlign}>
-         {title}
+      <Divider sx={{ flexGrow: 1, mb: mb, mt: mt }} orientation={orientation} textAlign={textAlign}>
+         <div style={{ fontWeight: fontWeight }}>{title}</div>
       </Divider>
    </Grid>
 );
@@ -618,6 +619,7 @@ export const Select2Component = ({
    handleGetValue = null,
    handleChangeValueSuccess,
    focus,
+   multiple,
    ...props
 }) => {
    const formik = useFormikContext(); // Obtiene el contexto de Formik
@@ -736,6 +738,7 @@ export const Select2Component = ({
                         {({ field }) => (
                            <Autocomplete
                               key={`select_${idName}`}
+                              // filterSelectedOptions
                               disablePortal
                               openOnFocus
                               label={label}
@@ -747,7 +750,12 @@ export const Select2Component = ({
                               {...field}
                               ref={inputRef}
                               value={Number(formik.values[idName]) > 0 ? dataOptions.find((option) => option.id === formik.values[idName])?.label : labelValue}
-                              defaultValue={Number(formik.values[idName]) > 0 ? dataOptions.find((option) => option.id === formik.values[idName])?.label : labelValue}
+                              defaultValue={
+                                 Number(multiple ? [dataOptions[0]] : formik.values[idName]) > 0
+                                    ? dataOptions.find((option) => option.id === formik.values[idName])?.label
+                                    : labelValue
+                              }
+                              // defaultValue={[["Selecciona una opción..."]]}
                               // defaultValue={labelValue || "Selecciona una opción..."}
                               onChange={(_, newValue) => {
                                  handleChangeValue(newValue, formik.setFieldValue);
@@ -756,9 +764,37 @@ export const Select2Component = ({
                               fullWidth={fullWidth || true}
                               isOptionEqualToValue={isOptionEqualToValue}
                               renderInput={(params) => <TextField {...params} label={label} error={isError} />}
+                              // renderTags={(value, getTagProps) =>
+                              //    value.map((option, index) => {
+                              //       const { key, ...tagProps } = getTagProps({ index });
+                              //       return <Chip variant="outlined" label={option} key={key} {...tagProps} />;
+                              //    })
+                              // }
                               disabled={disabled || loading}
                               error={isError ? isError : undefined}
                            />
+                           // <Autocomplete
+                           //    key={`select_${idName}`}
+                           //    multiple
+                           //    id="tags-outlined"
+                           //    options={dataOptions}
+                           //    size={size}
+                           //    // {...field}
+                           //    ref={inputRef}
+                           //    value={Number(formik.values[idName]) > 0 ? dataOptions.find((option) => option.id === formik.values[idName])?.label : labelValue}
+                           //    defaultValue={[dataOptions[0]]}
+                           //    filterSelectedOptions
+                           //    openOnFocus
+                           //    renderInput={(params) => <TextField {...params} label={label} placeholder={placeholder} />}
+                           //    onChange={(_, newValue) => {
+                           //       handleChangeValue(newValue, formik.setFieldValue);
+                           //    }}
+                           //    onBlur={formik.handleBlur}
+                           //    fullWidth={fullWidth || true}
+                           //    isOptionEqualToValue={isOptionEqualToValue}
+                           //    disabled={disabled || loading}
+                           //    error={isError ? isError : undefined}
+                           // />
                         )}
                      </Field>
                      {refreshSelect && (

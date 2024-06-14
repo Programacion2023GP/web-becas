@@ -149,7 +149,7 @@ const MenuForm = () => {
 
    useEffect(() => {
       try {
-         console.log("validationSchema", validationSchemas());
+         // console.log("validationSchema", validationSchemas());
       } catch (error) {
          console.log(error);
          Toast.Error(error);

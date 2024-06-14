@@ -29,8 +29,9 @@ import RoleContextProvider from "../context/RoleContext";
 import RolesView from "../views/settings/RolesView/Index";
 import AnswerScoreContextProvider from "../context/AnswerScoreContext";
 import AnswersScoresView from "../views/settings/AnswersScoresView/Index";
-import BecaSettingsView from "../views/settings/BecaSettingsView/Index";
+import SettingsView from "../views/settings/SettingsView/Index";
 import DashboardIndex from "../views/dashboard/DashboardView/Index";
+import SettingContextProvider from "../context/SettingContext";
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import("../views/dashboard/Default")));
@@ -132,11 +133,11 @@ const MainRoutes = {
                // loader: loaderIndex
             },
             {
-               path: "becas",
+               path: "ajustes",
                element: (
-                  <AnswerScoreContextProvider>
-                     <BecaSettingsView />
-                  </AnswerScoreContextProvider>
+                  <SettingContextProvider>
+                     <SettingsView />
+                  </SettingContextProvider>
                )
                // loader: loaderIndex
             }
