@@ -58,7 +58,7 @@ const FormSelect = ({ setOpenDialogTable, setLoadPermissions }) => {
          // console.log("resetCheckMenus", resetCheckMenus);
          if (value2.id < 1) return setLoadPermissions(false); // checks se quedan reiniciados
          const axiosResponse = await showRoleSelect(value2.id);
-         // console.log(axiosResponse);
+         // console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~", axiosResponse);
          const permissions = {
             read: [],
             create: [],
@@ -115,8 +115,10 @@ const FormSelect = ({ setOpenDialogTable, setLoadPermissions }) => {
          }
          permissions.more_permissions.map((mp) => {
             // console.log("el mp", mp);
-            const id = mp.split("@")[0];
-            newCheckMenus.find((check) => check.id === Number(id) && check.permissions.more_permissions.push(mp));
+            if (mp.includes("@")) {
+               const id = mp.split("@")[0];
+               newCheckMenus.find((check) => check.id === Number(id) && check.permissions.more_permissions.push(mp));
+            } else newCheckMenus.find((check) => check.others_permissions.includes(mp));
             // else check.permissions.more_permissions = permissions.more_permissions;
          });
          setCheckMenus(newCheckMenus);

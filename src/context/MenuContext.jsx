@@ -245,6 +245,7 @@ export default function MenuContextProvider({ children }) {
                _checkMenus.push({
                   id: hm.id,
                   isChecked: false,
+                  others_permissions: [],
                   permissions: {
                      read: false,
                      create: false,
@@ -274,6 +275,7 @@ export default function MenuContextProvider({ children }) {
                   _checkMenus.push({
                      id: iCh.id,
                      isChecked: false,
+                     others_permissions: others_permissions,
                      permissions: {
                         read: false,
                         create: false,

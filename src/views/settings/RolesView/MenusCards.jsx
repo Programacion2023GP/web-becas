@@ -19,6 +19,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const CardMenu = ({ id = 0, title = "", others_permissions = [], checkMenus, handleCheckboxChange, isChecked, readOnly }) => {
+   console.log("🚀 ~ CardMenu ~ others_permissions:", others_permissions)
+   console.log("🚀 ~ CardMenu ~ checkMenus:", checkMenus)
    const classes = useStyles();
    // console.log("others_permissions", others_permissions);
    // console.log("isChecked", isChecked);
@@ -28,7 +30,7 @@ const CardMenu = ({ id = 0, title = "", others_permissions = [], checkMenus, han
             <FormControlLabel
                value={`${id}@page`}
                id={`${id}@page`}
-               control={<Checkbox checked={isChecked} onChange={(e) => handleCheckboxChange(e.target)} />}
+               control={<Checkbox checked={isChecked} onChange={(e) => handleCheckboxChange(e.target, id)} />}
                label={
                   <Typography variant="h3" className={classes.titleChildren}>
                      {title}
@@ -41,7 +43,9 @@ const CardMenu = ({ id = 0, title = "", others_permissions = [], checkMenus, han
             <FormControlLabel
                value={`${id}@read`}
                id={`${id}@read`}
-               control={<Checkbox checked={checkMenus.some((check) => check.id === id && check.permissions.read)} onChange={(e) => handleCheckboxChange(e.target)} />}
+               control={
+                  <Checkbox checked={checkMenus.some((check) => check.id === id && check.permissions.read)} onChange={(e) => handleCheckboxChange(e.target, id)} />
+               }
                label="Ver"
                labelPlacement="bottom"
             />
@@ -51,7 +55,10 @@ const CardMenu = ({ id = 0, title = "", others_permissions = [], checkMenus, han
                      value={`${id}@create`}
                      id={`${id}@create`}
                      control={
-                        <Checkbox checked={checkMenus.some((check) => check.id === id && check.permissions.create)} onChange={(e) => handleCheckboxChange(e.target)} />
+                        <Checkbox
+                           checked={checkMenus.some((check) => check.id === id && check.permissions.create)}
+                           onChange={(e) => handleCheckboxChange(e.target, id)}
+                        />
                      }
                      label="Crear"
                      labelPlacement="bottom"
@@ -60,7 +67,10 @@ const CardMenu = ({ id = 0, title = "", others_permissions = [], checkMenus, han
                      value={`${id}@update`}
                      id={`${id}@update`}
                      control={
-                        <Checkbox checked={checkMenus.some((check) => check.id === id && check.permissions.update)} onChange={(e) => handleCheckboxChange(e.target)} />
+                        <Checkbox
+                           checked={checkMenus.some((check) => check.id === id && check.permissions.update)}
+                           onChange={(e) => handleCheckboxChange(e.target, id)}
+                        />
                      }
                      label="Editar"
                      labelPlacement="bottom"
@@ -69,7 +79,10 @@ const CardMenu = ({ id = 0, title = "", others_permissions = [], checkMenus, han
                      value={`${id}@delete`}
                      id={`${id}@delete`}
                      control={
-                        <Checkbox checked={checkMenus.some((check) => check.id === id && check.permissions.delete)} onChange={(e) => handleCheckboxChange(e.target)} />
+                        <Checkbox
+                           checked={checkMenus.some((check) => check.id === id && check.permissions.delete)}
+                           onChange={(e) => handleCheckboxChange(e.target, id)}
+                        />
                      }
                      label="Eliminar"
                      labelPlacement="bottom"
@@ -84,9 +97,10 @@ const CardMenu = ({ id = 0, title = "", others_permissions = [], checkMenus, han
                   control={
                      <Checkbox
                         checked={checkMenus.some(
-                           (check) => check.id === id && (check.permissions.more_permissions.includes(`${op}`) || check.permissions.more_permissions.includes("todas"))
+                           (check) => check.id === id && (check.others_permissions.includes(`${op}`) || check.others_permissions.includes("todas"))
+                           // (check) => check.id === id && (check.permissions.more_permissions.includes(`${op}`) || check.permissions.more_permissions.includes("todas"))
                         )}
-                        onChange={(e) => handleCheckboxChange(e.target)}
+                        onChange={(e) => handleCheckboxChange(e.target, id)}
                      />
                   }
                   label={op.split("@")[1]}
@@ -110,7 +124,7 @@ const CardHeaderMenu = ({ id = 0, title = "", children = [], checkMenus, handleC
             <FormControlLabel
                value={`${id}@menu`}
                id={`${id}@menu`}
-               control={<Checkbox checked={isChecked} onChange={(e) => handleCheckboxChange(e.target)} />}
+               control={<Checkbox checked={isChecked} onChange={(e) => handleCheckboxChange(e.target, id)} />}
                label={
                   <Typography variant="h3" className={classes.titleHeader}>
                      {title.toUpperCase()}
@@ -166,9 +180,13 @@ const MenusCards = ({ loadPermissions }) => {
       // console.log("checkMaster", checkMaster);
    };
 
-   const handleCheckboxChange = (target) => {
-      const id = target.value.split("@")[0];
-      let value = target.value.split("@")[1];
+   const handleCheckboxChange = (target, idMenu) => {
+      let id = idMenu;
+      let value = target.value;
+      if (target.value.includes("@")) {
+         id = target.value.split("@")[0];
+         value = target.value.split("@")[1];
+      }
       if (!["menu", "page", "read", "create", "update", "delete"].includes(value)) value = target.value;
       const isChecked = target.checked;
       // console.log("handleCheckboxChange()->id", id);
@@ -177,7 +195,14 @@ const MenusCards = ({ loadPermissions }) => {
       let _checkMenus = [...checkMenus];
       // console.log("_checkMenus", _checkMenus);
       _checkMenus = _checkMenus.map((check) => {
-         if (Number(check.id) === Number(id)) {
+         console.log("🚀 ~ _checkMenus=_checkMenus.map ~ check:", check);
+         let matchCheckWithPermission = false;
+         if (target.value.includes("@")) {
+            matchCheckWithPermission = Number(check.id) === Number(id);
+         } else {
+            matchCheckWithPermission = check.others_permissions.includes(value);
+         }
+         if (matchCheckWithPermission) {
             // console.log(value);
             if (["menu", "page"].includes(value)) check.isChecked = isChecked;
             // console.log("value", value);
