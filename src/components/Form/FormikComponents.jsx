@@ -1201,8 +1201,9 @@ export const DatePickerComponent = ({ loading = false, col, idName, label, forma
 
 export const getCommunityById = async (community_id) => {
    const axiosMyCommunity = axios;
-   const { data } = await axiosMyCommunity.get(`${import.meta.env.VITE_API_CP}/cp/colonia/${community_id}`);
+   const { data } = await axiosMyCommunity.get(`${import.meta.env.VITE_API_CP}/gpd/cp/colonia/${community_id}`);
    // console.log(data.data);
+   if (data.data.result.length < 1) Toast.Info("el C.P. no corresponde a Gómez Palacio Durango");
    return data.data.result;
 };
 
@@ -1244,7 +1245,8 @@ export const getCommunity = async (
       formData.num_int !== "" && setFieldValue("num_int", formData.num_int);
       if (community_id) {
          const axiosMyCommunity = axios;
-         const { data } = await axiosMyCommunity.get(`${import.meta.env.VITE_API_CP}/cp/colonia/${community_id}`);
+         const { data } = await axiosMyCommunity.get(`${import.meta.env.VITE_API_CP}/gpd/cp/colonia/${community_id}`);
+         if (data.data.result.length < 1) Toast.Info("el C.P. no corresponde a Gómez Palacio Durango");
 
          if (data.data.status_code != 200) return Toast.Error(data.data.alert_text);
          formData.zip = data.data.result.CodigoPostal;
@@ -1259,7 +1261,9 @@ export const getCommunity = async (
       }
       if (zip.length > 1) {
          const axiosCommunities = axios;
-         const axiosRes = await axiosCommunities.get(`${import.meta.env.VITE_API_CP}/cp/${zip}`);
+         const axiosRes = await axiosCommunities.get(`${import.meta.env.VITE_API_CP}/gpd/cp/${zip}`);
+         if (axiosRes.data.data.result.length < 1) Toast.Info("el C.P. no corresponde a Gómez Palacio Durango");
+
          if (axiosRes.data.data.status_code != 200) return Toast.Error(axiosRes.data.data.alert_text);
          await axiosRes.data.data.result.map((d) => {
             states.push({ id: d.Estado, label: d.Estado });

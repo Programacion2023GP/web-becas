@@ -158,7 +158,7 @@ const InputsFormik9 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
                         <>
                            <Typography variant="h5" sx={{ display: "block", width: "100%", mb: 1 }}>
                               Al no ser familiar directo favor de cargar algúno de los siguientes documentos <br />
-                              <small>Carta de dependencia economica del DIF &nbsp;|&nbsp; Hoja custodia &nbsp;|&nbsp; Acta de defunsión del padre o madre</small>
+                              <small>Carta de dependencia económica del DIF &nbsp;|&nbsp; Hoja custodia &nbsp;|&nbsp; Acta de defunción del padre o madre</small>
                            </Typography>
                         </>
                      )}

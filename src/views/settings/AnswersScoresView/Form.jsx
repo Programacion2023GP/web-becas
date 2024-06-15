@@ -954,7 +954,7 @@ const AnswerScoreForm = () => {
                   </Tabs>
                </AppBar>
                <Typography mt={1} textAlign={"center"} variant="h5">
-                  Puntajes mínimos para estudios socio-economicos...
+                  Puntajes mínimos para estudios socio-económicos...
                </Typography>
                <Box key={`div_scores}`} sx={styleContentScores} component={"div"}>
                   <Box

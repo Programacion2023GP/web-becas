@@ -59,7 +59,7 @@ export default function CommunityContextProvider({ children }) {
    const getCommunities = async () => {
       let res = CorrectRes;
       try {
-         const axiosData = await axiosMyCommunity.get(`${import.meta.env.VITE_API_CP}/comunidades`);
+         const axiosData = await axiosMyCommunity.get(`${import.meta.env.VITE_API_CP}/gpd/comunidades`);
          // console.log("axiosData", axiosData);
          res.result.communities = axiosData.data.data.result;
          setCommunities(axiosData.data.data.result);
@@ -76,7 +76,7 @@ export default function CommunityContextProvider({ children }) {
    const showCommunity = async (id) => {
       let res = CorrectRes;
       try {
-         const axiosData = await axiosMyCommunity.get(`${import.meta.env.VITE_API_CP}/comunidades/id/${id}`);
+         const axiosData = await axiosMyCommunity.get(`${import.meta.env.VITE_API_CP}/gpd/comunidades/id/${id}`);
          // console.log("axiosData", axiosData);
          res = axiosData.data.data;
          setCommunity(res.result);

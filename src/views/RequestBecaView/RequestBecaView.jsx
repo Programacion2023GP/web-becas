@@ -618,7 +618,7 @@ const RequestBecaView = () => {
          values.b7_img_academic_transcript = imgAcademicTranscript.length == 0 ? "" : imgAcademicTranscript[0].file;
 
          if (!validateImageRequired(values.b7_img_tutor_ine, "La foto de la INE es requerida")) return;
-         if (isTutor && !validateImageRequired(values.b7_img_tutor_power_letter, "La foto del Documento Extra por tutoria es requerida")) return;
+         if (isTutor && !validateImageRequired(values.b7_img_tutor_power_letter, "La foto del Documento Extra por tutoría es requerida")) return;
          if (haveSecondRef && !validateImageRequired(values.b7_img_second_ref, "La foto de la INE 2da Referencia es requerida")) return;
          if (!validateImageRequired(values.b7_img_proof_address, "La foto del Comprobante de Domicilio es requerida")) return;
          if (!validateImageRequired(values.b7_img_curp, "La foto de la CURP es requerida")) return;
@@ -985,27 +985,33 @@ const RequestBecaView = () => {
                      <Fragment>
                         <Box sx={{ mt: 2, height: "100%" }}>
                            {activeStep + 1 == 1 && (
-                              <FormikComponent
-                                 key={"formikComponent1"}
-                                 initialValues={formData}
-                                 validationSchema={validationSchemas(activeStep + 1)}
-                                 onSubmit={onSubmit1}
-                                 formikRef={formik}
-                                 activeStep={activeStep}
-                                 setStepFailed={setStepFailed}
-                                 showActionButtons={false}
-                                 // className={activeStep + 1 == 1 && `animate__animated ${pageInAnimation.page1 ? "animate__backInRight" : "animate__backOutLeft"} `}
-                              >
-                                 <InputsFormik1
-                                    folio={folio}
-                                    pagina={pagina}
+                              <>
+                                 <FormikComponent
+                                    key={"formikComponent1"}
+                                    initialValues={formData}
+                                    validationSchema={validationSchemas(activeStep + 1)}
+                                    onSubmit={onSubmit1}
+                                    formikRef={formik}
                                     activeStep={activeStep}
                                     setStepFailed={setStepFailed}
-                                    ButtonsBeforeOrNext={ButtonsBeforeOrNext}
-                                    isTutor={isTutor}
-                                    setIsTutor={setIsTutor}
-                                 />
-                              </FormikComponent>
+                                    showActionButtons={false}
+                                    // className={activeStep + 1 == 1 && `animate__animated ${pageInAnimation.page1 ? "animate__backInRight" : "animate__backOutLeft"} `}
+                                 >
+                                    <InputsFormik1
+                                       folio={folio}
+                                       pagina={pagina}
+                                       activeStep={activeStep}
+                                       setStepFailed={setStepFailed}
+                                       ButtonsBeforeOrNext={ButtonsBeforeOrNext}
+                                       isTutor={isTutor}
+                                       setIsTutor={setIsTutor}
+                                    />
+                                 </FormikComponent>
+                                 {true &&
+                                    sAlert.Info(
+                                       "Recuerda que únicamente la persona que sea registrada como tutor podra cobrar la beca en caso de salir seleccionada y un familiar si asi se ha autorizado"
+                                    )}
+                              </>
                            )}
                            {activeStep + 1 == 2 && (
                               <FormikComponent
