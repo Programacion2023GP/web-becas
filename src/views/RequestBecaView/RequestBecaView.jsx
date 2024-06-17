@@ -758,41 +758,41 @@ const RequestBecaView = () => {
                // folio: Yup.number("solo números").required("Folio requerido"),
                // b7_img_tutor_ine: Yup.string().required("INE requerida"),
                b7_approved_tutor_ine:
-                  auth.permissions.more_permissions.includes("16@Validar Documentos") &&
+                  auth.permissions.more_permissions.includes("Validar Documentos") &&
                   ["TERMINADA", "EN REVISIÓN"].includes(formData.status) &&
                   Yup.bool().required("Aprueba o Desaprueba el documento."),
                // b7_comments_tutor_ine: "",
                // b7_img_tutor_power_letter: isTutor && Yup.string().required("Carta Poder requerida"),
                b7_approved_tutor_power_letter:
-                  auth.permissions.more_permissions.includes("16@Validar Documentos") &&
+                  auth.permissions.more_permissions.includes("Validar Documentos") &&
                   ["TERMINADA", "EN REVISIÓN"].includes(formData.status) &&
                   Yup.bool().required("Aprueba o Desaprueba el documento."),
                b7_approved_second_ref:
-                  auth.permissions.more_permissions.includes("16@Validar Documentos") &&
+                  auth.permissions.more_permissions.includes("Validar Documentos") &&
                   ["TERMINADA", "EN REVISIÓN"].includes(formData.status) &&
                   Yup.bool().required("Aprueba o Desaprueba el documento."),
                // b7_comments_tutor_power_letter: "",
                // b7_img_proof_address: Yup.string().required("Comprobante de Domicilio requerida"),
                b7_approved_proof_address:
-                  auth.permissions.more_permissions.includes("16@Validar Documentos") &&
+                  auth.permissions.more_permissions.includes("Validar Documentos") &&
                   ["TERMINADA", "EN REVISIÓN"].includes(formData.status) &&
                   Yup.bool().required("Aprueba o Desaprueba el documento."),
                // b7_comments_proof_address: "",
                // b7_img_curp: Yup.string().required("CURP requerida"),
                b7_approved_curp:
-                  auth.permissions.more_permissions.includes("16@Validar Documentos") &&
+                  auth.permissions.more_permissions.includes("Validar Documentos") &&
                   ["TERMINADA", "EN REVISIÓN"].includes(formData.status) &&
                   Yup.bool().required("Aprueba o Desaprueba el documento."),
                // b7_comments_curp: "",
                // b7_img_birth_certificate: Yup.string().required("Acta de Nacimiento requerida"),
                b7_approved_birth_certificate:
-                  auth.permissions.more_permissions.includes("16@Validar Documentos") &&
+                  auth.permissions.more_permissions.includes("Validar Documentos") &&
                   ["TERMINADA", "EN REVISIÓN"].includes(formData.status) &&
                   Yup.bool().required("Aprueba o Desaprueba el documento."),
                // b7_comments_birth_certificate: "",
                // b7_img_academic_transcript: Yup.string().required("Constancia Estudiantil con Calificaciones requerida"),
                b7_approved_academic_transcript:
-                  auth.permissions.more_permissions.includes("16@Validar Documentos") &&
+                  auth.permissions.more_permissions.includes("Validar Documentos") &&
                   ["TERMINADA", "EN REVISIÓN"].includes(formData.status) &&
                   Yup.bool().required("Aprueba o Desaprueba el documento.")
                // b7_comments_academic_transcript: ""
