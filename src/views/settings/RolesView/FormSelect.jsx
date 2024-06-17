@@ -118,7 +118,7 @@ const FormSelect = ({ setOpenDialogTable, setLoadPermissions }) => {
          // console.log("🚀 ~ permissions.more_permissions.map ~ newCheckMenus:", newCheckMenus);
          // console.log("🚀 ~ handleChangeRole ~ permissions.more_permissions:", typeof permissions.more_permissions, permissions.more_permissions);
          if (isArray(permissions.more_permissions)) {
-            console.log("es array", permissions.more_permissions);
+            // console.log("es array", permissions.more_permissions);
             permissions.more_permissions.map((mp) => {
                // console.log("el mp", mp);
                if (mp.includes("@")) {
@@ -224,7 +224,7 @@ const FormSelect = ({ setOpenDialogTable, setLoadPermissions }) => {
          });
          menus.map((m) => m.children.map((mc) => (count_more_permissions += mc.others_permissions.length)));
          // console.log("values", values);
-         console.log("values.more_permissions", values.more_permissions, "-- count", count_more_permissions);
+         // console.log("values.more_permissions", values.more_permissions, "-- count", count_more_permissions);
          if (values.read.length == totalMenus) values.read = "todas";
          else values.read = values.read.join();
          if (values.create.length == totalMenus) values.create = "todas";
