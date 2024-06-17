@@ -147,6 +147,7 @@ const MenuDT = () => {
          setTextBtnSumbit("GUARDAR");
          setFormTitle(`EDITAR ${singularName.toUpperCase()}`);
          const axiosResponse = await showMenu(id);
+         console.log("🚀 ~ handleClickEdit ~ axiosResponse:", axiosResponse)
          setIsItem(axiosResponse.result.type == "item" ? true : false);
          if (axiosResponse.result.description) axiosResponse.result.description == null && (axiosResponse.result.description = "");
          formikRef.current.setValues(axiosResponse.result);

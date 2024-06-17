@@ -19,8 +19,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const CardMenu = ({ id = 0, title = "", others_permissions = [], checkMenus, handleCheckboxChange, isChecked, readOnly }) => {
-   console.log("🚀 ~ CardMenu ~ others_permissions:", others_permissions)
-   console.log("🚀 ~ CardMenu ~ checkMenus:", checkMenus)
+   // console.log("🚀 ~ CardMenu ~ checkMenus:", checkMenus)
    const classes = useStyles();
    // console.log("others_permissions", others_permissions);
    // console.log("isChecked", isChecked);
@@ -97,13 +96,14 @@ const CardMenu = ({ id = 0, title = "", others_permissions = [], checkMenus, han
                   control={
                      <Checkbox
                         checked={checkMenus.some(
-                           (check) => check.id === id && (check.others_permissions.includes(`${op}`) || check.others_permissions.includes("todas"))
-                           // (check) => check.id === id && (check.permissions.more_permissions.includes(`${op}`) || check.permissions.more_permissions.includes("todas"))
+                           // (check) => check.id === id && (check.others_permissions.includes(`${op}`) || check.others_permissions.includes("todas"))
+                           (check) => check.id === id && (check.permissions.more_permissions.includes(`${op}`) || check.permissions.more_permissions.includes("todas"))
                         )}
                         onChange={(e) => handleCheckboxChange(e.target, id)}
+                        style={{ color: "goldenrod" }}
                      />
                   }
-                  label={op.split("@")[1]}
+                  label={op.includes("@") ? op.split("@")[1] : op}
                   labelPlacement="bottom"
                />
             ))}
@@ -156,7 +156,7 @@ const CardHeaderMenu = ({ id = 0, title = "", children = [], checkMenus, handleC
 const MenusCards = ({ loadPermissions }) => {
    const classes = useStyles();
    const { roleSelect, setRoleSelect, showRoleSelect } = useRoleContext();
-   const { menus, setMenus, getMenus, checkMenus, setCheckMenus, checkMaster, setCheckMaster } = useMenuContext();
+   const { menus, menusSelect, setMenus, getMenus, checkMenus, setCheckMenus, checkMaster, setCheckMaster } = useMenuContext();
    const [headerMenus, setHeaderMenus] = useState([]);
    const [childrenMenus, setChildrenMenus] = useState([]);
    const [checksModules, setChecksModules] = useState([]);
@@ -181,6 +181,11 @@ const MenusCards = ({ loadPermissions }) => {
    };
 
    const handleCheckboxChange = (target, idMenu) => {
+      let allOtherPermissions = checkMenus.filter((check) => check.others_permissions.length > 0);
+      allOtherPermissions = allOtherPermissions.map((op) => op.others_permissions);
+      allOtherPermissions = allOtherPermissions.flat(1);
+      // console.log("🚀 ~ handleCheckboxChange ~ allOtherPermissions:", allOtherPermissions);
+
       let id = idMenu;
       let value = target.value;
       if (target.value.includes("@")) {
@@ -195,11 +200,12 @@ const MenusCards = ({ loadPermissions }) => {
       let _checkMenus = [...checkMenus];
       // console.log("_checkMenus", _checkMenus);
       _checkMenus = _checkMenus.map((check) => {
-         console.log("🚀 ~ _checkMenus=_checkMenus.map ~ check:", check);
+         // console.log("🚀 ~ _checkMenus=_checkMenus.map ~ check:", check);
          let matchCheckWithPermission = false;
          if (target.value.includes("@")) {
             matchCheckWithPermission = Number(check.id) === Number(id);
          } else {
+            // console.log("🚀 ~ _checkMenus=_checkMenus.map ~ check.others_permissions:", check.others_permissions);
             matchCheckWithPermission = check.others_permissions.includes(value);
          }
          if (matchCheckWithPermission) {
@@ -217,15 +223,25 @@ const MenusCards = ({ loadPermissions }) => {
             // }
             if (!["menu", "page"].includes(value)) {
                if (!["read", "create", "update", "delete"].includes(value)) {
+                  if (check.permissions.more_permissions.length > 1 && check.permissions.more_permissions.includes("todas")) {
+                     // check.permissions.more_permissions = [];
+                     const new_more_permissions = check.permissions.more_permissions.filter((permission) => permission !== "todas");
+                     check.permissions.more_permissions = new_more_permissions;
+                  }
                   if (isChecked) {
                      if (!check.permissions.more_permissions.includes(value)) check.permissions.more_permissions.push(value);
+                     if (check.permissions.more_permissions.length == allOtherPermissions.length) check.permissions.more_permissions[0] = "todas";
                   } else {
                      // console.log("quitar permiso:", value);
                      // console.log("check.permissions.more_permissions", check.permissions.more_permissions);
-                     // if (check.permissions.more_permissions == ["todas"]) console.log("tiene todas");
+                     if (check.permissions.more_permissions.length == 1 && check.permissions.more_permissions[0] == "todas") {
+                        // console.log("tiene todas");
+                        check.permissions.more_permissions = allOtherPermissions;
+                     }
                      const new_more_permissions = check.permissions.more_permissions.filter((permission) => permission !== value);
                      check.permissions.more_permissions = new_more_permissions;
                   }
+                  // console.log("🚀 ~ _checkMenus=_checkMenus.map ~ check.permissions.more_permissions:", check.permissions.more_permissions);
                }
             }
          }
@@ -234,7 +250,7 @@ const MenusCards = ({ loadPermissions }) => {
       // console.log("_checkMenus", _checkMenus);
       setCheckMenus(_checkMenus);
 
-      // console.log("checkMenus", checkMenus);
+      console.log("checkMenus", checkMenus);
    };
 
    useEffect(() => {

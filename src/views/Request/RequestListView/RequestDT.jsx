@@ -194,7 +194,7 @@ const RequestBecaDT = ({ status = null }) => {
       { field: "end_date", header: "Fecha de Termino", sortable: true, functionEdit: null, body: EndDateBodyTemplate },
       { field: "socioeconomic_study", header: "Estudio Socio-Económico", sortable: true, functionEdit: null, body: SocioeconomicStudyBodyTemplate }
    ];
-   auth.permissions.more_permissions.includes("16@Ver Puntaje") &&
+   (auth.permissions.more_permissions.includes("Ver Puntaje") || auth.permissions.more_permissions.includes(`todas`)) &&
       columns.push({ field: "score_total", header: "Puntaje", sortable: true, functionEdit: null, body: ScoreTotalBodyTemplate });
    auth.role_id === ROLE_SUPER_ADMIN &&
       columns.push(

@@ -94,18 +94,6 @@ const MenuForm = () => {
       }
    };
 
-   const handleModify = (setValues, setFieldValue) => {
-      try {
-         handleChangeType(formData.type);
-         if (formData.description) formData.description == null && (formData.description = "");
-         setValues(formData);
-         // console.log(formData);
-      } catch (error) {
-         console.log(error);
-         Toast.Error(error);
-      }
-   };
-
    const handleCancel = (resetForm) => {
       try {
          resetForm();
@@ -222,14 +210,14 @@ const MenuForm = () => {
                      {/* Otros Permisos */}
                      <InputComponent
                         col={12}
-                        idName={"other_permissions"}
+                        idName={"others_permissions"}
                         label={"Ingrese los permisos especiales"}
                         placeholder={"Otros Permisos"}
                         textStyleCase={null}
                         rows={5}
                         helperText={
                            <small style={{ fontStyle: "italic" }}>
-                              Los permisos serán separados por coma "<b>( , )</b>" y su estructura: "ID@Nombre Del Permiso"
+                              Los permisos serán separados por coma "<b>( , )</b>" y su estructura: "Nombre Del Permiso"
                            </small>
                         }
                      />

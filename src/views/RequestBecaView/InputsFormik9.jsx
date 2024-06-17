@@ -8,7 +8,7 @@ import { Box, Button, ButtonGroup, FormControl, FormGroup, FormLabel, Icon, Tool
 import { useAuthContext } from "../../context/AuthContext";
 import { IconCircleCheck, IconCircleX } from "@tabler/icons";
 import Toast from "../../utils/Toast";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const ButtonsApprovedDocument = ({ auth, formik, setFieldValue, fieldApproved, fieldComments, name = "documento", approved = true, accion }) => {
    const iconSize = 65;
@@ -81,6 +81,7 @@ const InputsFormik9 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
    const { formData, setFormData, saveOrFinishReview } = useRequestBecaContext();
    const formik = useFormikContext();
    const { accion } = useParams();
+   const navigate = useNavigate();
 
    const handleClickSaveReview = async (values) => {
       try {
@@ -132,7 +133,8 @@ const InputsFormik9 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
             return Toast.Warning(axiosResponse.alert_title);
          }
          Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
-         window.location.hash = "/app/solicitudes/";
+         navigate("/app/solicitudes/en-revision");
+         // window.location.hash = "/app/solicitudes/en-revision";
       } catch (error) {
          console.error(error);
       } finally {

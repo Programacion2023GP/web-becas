@@ -13,6 +13,7 @@ import { useGlobalContext } from "../../../context/GlobalContext";
 import { useAuthContext } from "../../../context/AuthContext";
 import { useMenuContext } from "../../../context/MenuContext";
 import { FormikComponent } from "../../../components/Form/FormikComponents";
+import { isArray } from "highcharts";
 
 const FormSelect = ({ setOpenDialogTable, setLoadPermissions }) => {
    const { auth } = useAuthContext();
@@ -102,7 +103,8 @@ const FormSelect = ({ setOpenDialogTable, setLoadPermissions }) => {
                if (permissions.delete.includes(check.id.toString()) || permissions.delete === "todas") check.permissions.delete = true;
                // console.log(`${permissions.more_permissions}includes(${check.id.toString()})`);
                check.permissions.more_permissions = [];
-               if (permissions.more_permissions === "todas") check.permissions.more_permissions = ["todas"];
+               // if (permissions.more_permissions === "todas") check.permissions.more_permissions = ["todas"];
+
                // else check.permissions.more_permissions = permissions.more_permissions;
                // else {
                //    permissions.more_permissions.map((mp) => {
@@ -113,18 +115,26 @@ const FormSelect = ({ setOpenDialogTable, setLoadPermissions }) => {
                return check;
             });
          }
-         permissions.more_permissions.map((mp) => {
-            // console.log("el mp", mp);
-            if (mp.includes("@")) {
-               const id = mp.split("@")[0];
-               newCheckMenus.find((check) => check.id === Number(id) && check.permissions.more_permissions.push(mp));
-            } else newCheckMenus.find((check) => check.others_permissions.includes(mp));
-            // else check.permissions.more_permissions = permissions.more_permissions;
-         });
+         // console.log("🚀 ~ permissions.more_permissions.map ~ newCheckMenus:", newCheckMenus);
+         // console.log("🚀 ~ handleChangeRole ~ permissions.more_permissions:", typeof permissions.more_permissions, permissions.more_permissions);
+         if (isArray(permissions.more_permissions)) {
+            console.log("es array", permissions.more_permissions);
+            permissions.more_permissions.map((mp) => {
+               // console.log("el mp", mp);
+               if (mp.includes("@")) {
+                  const id = mp.split("@")[0];
+                  newCheckMenus.find((check) => check.id === Number(id) && check.permissions.more_permissions.push(mp));
+               } else newCheckMenus.find((check) => check.others_permissions.includes(mp) && check.permissions.more_permissions.push(mp));
+               // else check.permissions.more_permissions = permissions.more_permissions;
+            });
+         } else if (permissions.more_permissions == "todas")
+            newCheckMenus.map((check) => check.others_permissions.length > 0 && check.permissions.more_permissions.push("todas"));
+         // console.log("🚀 ~ newCheckMenus=checkMenus.map ~ newCheckMenus:", newCheckMenus);
          setCheckMenus(newCheckMenus);
          setLoadPermissions(false);
          // console.log("FormSelect - checkMenus", checkMenus);
       } catch (error) {
+         setLoadPermissions(false);
          console.log(error);
          Toast.Error(error);
       }
@@ -214,7 +224,7 @@ const FormSelect = ({ setOpenDialogTable, setLoadPermissions }) => {
          });
          menus.map((m) => m.children.map((mc) => (count_more_permissions += mc.others_permissions.length)));
          // console.log("values", values);
-         // console.log("values.more_permissions", values.more_permissions, "-- count", count_more_permissions);
+         console.log("values.more_permissions", values.more_permissions, "-- count", count_more_permissions);
          if (values.read.length == totalMenus) values.read = "todas";
          else values.read = values.read.join();
          if (values.create.length == totalMenus) values.create = "todas";
@@ -223,10 +233,9 @@ const FormSelect = ({ setOpenDialogTable, setLoadPermissions }) => {
          else values.update = values.update.join();
          if (values.delete.length == totalMenus) values.delete = "todas";
          else values.delete = values.delete.join();
-         // if (values.more_permissions.length > 0 && values.more_permissions.length == count_more_permissions) values.more_permissions = "todas";
-         // else
+         if (values.more_permissions.length > 0 && values.more_permissions.length == count_more_permissions) values.more_permissions = "todas";
          // console.log(values.more_permissions);
-         values.more_permissions = values.more_permissions.join();
+         else values.more_permissions = values.more_permissions.join();
          // console.log("valuesFinal", values);
          // return;
          const axiosResponse = await updatePermissions(values);
@@ -304,7 +313,7 @@ const FormSelect = ({ setOpenDialogTable, setLoadPermissions }) => {
             refreshSelect={getRolesSelectIndex}
             handleChangeValueSuccess={handleChangeRole}
          />
-         {auth.permissions.more_permissions.includes(`6@Asignar Permisos`) && (
+         {(auth.permissions.more_permissions.includes(`Asignar Permisos`) || auth.permissions.more_permissions.includes(`todas`)) && (
             <Grid xs={12} sm={2} sx={{ mb: 1 }}>
                <LoadingButton
                   type="submit"
