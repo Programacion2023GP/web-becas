@@ -19,20 +19,8 @@ import SwitchIOSComponent from "../../../components/SwitchIOSComponent";
 const UserDT = () => {
    const { auth } = useAuthContext();
    const { setLoading, setLoadingAction, setOpenDialog } = useGlobalContext();
-   const {
-      singularName,
-      users,
-      getUsers,
-      showUser,
-      deleteUser,
-      DisEnableUser,
-      resetFormData,
-      resetUser,
-      setTextBtnSumbit,
-      setFormTitle,
-      deleteMultiple,
-      formikRef
-   } = useUserContext();
+   const { singularName, users, getUsers, showUser, deleteUser, DisEnableUser, resetFormData, resetUser, setTextBtnSumbit, setFormTitle, deleteMultiple, formikRef } =
+      useUserContext();
    const globalFilterFields = ["username", "email", "role", "active", "created_at"];
 
    // #region BodysTemplate

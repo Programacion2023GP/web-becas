@@ -30,34 +30,37 @@ const ButtonsApprovedDocument = ({ auth, formik, setFieldValue, fieldApproved, f
       <>
          {/* Botones */}
          <Grid xs={4} md={2} sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-            {auth.permissions.more_permissions.includes("Validar Documentos") && ["revision"].includes(accion) && (
-               <>
-                  <Icon sx={{ fontSize: iconSize }}>{approved ? <IconCircleCheck size={iconSize} color="green" /> : <IconCircleX size={iconSize} color="red" />}</Icon>
-                  <ButtonGroup sx={{ mb: 1 }}>
-                     <Tooltip title={`Aprobar ${name}`} placement="top">
-                        <Button
-                           variant={approved ? "contained" : "outlined"}
-                           color="success"
-                           onClick={() => handleClickBtnCheckApproved(setFieldValue, fieldApproved, fieldComments)}
-                        >
-                           <IconCircleCheck />
-                        </Button>
-                     </Tooltip>
-                     <Tooltip title={`Rechazar ${name}`} placement="top">
-                        <Button
-                           variant={!approved ? "contained" : "outlined"}
-                           color="error"
-                           onClick={() => handleClickBtnCheckDecline(setFieldValue, fieldApproved, fieldComments)}
-                        >
-                           <IconCircleX />
-                        </Button>
-                     </Tooltip>
-                  </ButtonGroup>
-                  <Typography sx={{ fontWeight: "bolder" }} textAlign={"center"}>
-                     Documento {approved ? "Aprovado" : "Rechazado"}
-                  </Typography>
-               </>
-            )}
+            {(auth.permissions.more_permissions.includes("Validar Documentos") || auth.permissions.more_permissions.includes(`todas`)) &&
+               ["revision"].includes(accion) && (
+                  <>
+                     <Icon sx={{ fontSize: iconSize }}>
+                        {approved ? <IconCircleCheck size={iconSize} color="green" /> : <IconCircleX size={iconSize} color="red" />}
+                     </Icon>
+                     <ButtonGroup sx={{ mb: 1 }}>
+                        <Tooltip title={`Aprobar ${name}`} placement="top">
+                           <Button
+                              variant={approved ? "contained" : "outlined"}
+                              color="success"
+                              onClick={() => handleClickBtnCheckApproved(setFieldValue, fieldApproved, fieldComments)}
+                           >
+                              <IconCircleCheck />
+                           </Button>
+                        </Tooltip>
+                        <Tooltip title={`Rechazar ${name}`} placement="top">
+                           <Button
+                              variant={!approved ? "contained" : "outlined"}
+                              color="error"
+                              onClick={() => handleClickBtnCheckDecline(setFieldValue, fieldApproved, fieldComments)}
+                           >
+                              <IconCircleX />
+                           </Button>
+                        </Tooltip>
+                     </ButtonGroup>
+                     <Typography sx={{ fontWeight: "bolder" }} textAlign={"center"}>
+                        Documento {approved ? "Aprovado" : "Rechazado"}
+                     </Typography>
+                  </>
+               )}
          </Grid>
          {/* Comentarios */}
          <Grid xs={8} md={4} sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
@@ -68,7 +71,7 @@ const ButtonsApprovedDocument = ({ auth, formik, setFieldValue, fieldApproved, f
                placeholder={"Escribe el detalle del porque rechazaste este documento..."}
                rows={5}
                color={!formik.values[fieldApproved] && "red"}
-               disabled={!auth.permissions.more_permissions.includes("Validar Documentos")}
+               disabled={!(auth.permissions.more_permissions.includes("Validar Documentos") || auth.permissions.more_permissions.includes(`todas`))}
             />
          </Grid>
       </>
@@ -189,17 +192,18 @@ const InputsFormik9 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
                                        ? ["", "ALTA"].includes(formData.status)
                                           ? false
                                           : ["EN REVISIÓN", "EN EVALUACIÓN"].includes(formData.status) &&
-                                            auth.permissions.more_permissions.includes("Corregir Documentos")
+                                            (auth.permissions.more_permissions.includes("Corregir Documentos") || auth.permissions.more_permissions.includes(`todas`))
                                           ? false
                                           : true
                                        : ["ALTA", "EN REVISIÓN", "EN EVALUACIÓN"].includes(formData.status) &&
-                                         auth.permissions.more_permissions.includes("Validar Documentos")
+                                         (auth.permissions.more_permissions.includes("Validar Documentos") || auth.permissions.more_permissions.includes(`todas`))
                                        ? false
                                        : true
                                  }
                               />
                               {(auth.permissions.more_permissions.includes("Validar Documentos") ||
-                                 auth.permissions.more_permissions.includes("Corregir Documentos")) &&
+                                 auth.permissions.more_permissions.includes("Corregir Documentos") ||
+                                 auth.permissions.more_permissions.includes(`todas`)) &&
                                  ["EN REVISIÓN", "EN EVALUACIÓN"].includes(formData.status) &&
                                  ["revision", "correccion"].includes(accion) && (
                                     <ButtonsApprovedDocument
@@ -229,7 +233,8 @@ const InputsFormik9 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
 
          {folio > 0 &&
             (["", "ALTA"].includes(formData.status) ||
-               (["EN REVISIÓN", "EN EVALUACIÓN"].includes(formData.status) && auth.permissions.more_permissions.includes("Corregir Documentos"))) &&
+               ((auth.permissions.more_permissions.includes("Corregir Documentos") || auth.permissions.more_permissions.includes(`todas`)) &&
+                  ["EN REVISIÓN", "EN EVALUACIÓN"].includes(formData.status))) &&
             [undefined, "correccion"].includes(accion) && <ButtonsBeforeOrNext isSubmitting={formik.isSubmitting} setValues={formik.setValues} />}
 
          {folio > 0 && ["TERMINADA", "EN REVISIÓN", "EN EVALUACIÓN"].includes(formData.status) && ["revision"].includes(accion) && (

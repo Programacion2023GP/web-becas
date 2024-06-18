@@ -149,18 +149,6 @@ const FormSelect = ({ setOpenDialogTable, setLoadPermissions }) => {
       }
    };
 
-   // const handleModify = (setValues, setFieldValue) => {
-   //    try {
-   //       // fillCheckMenus()
-   //       if (roleSelect.description) roleSelect.description == null && (roleSelect.description = "");
-   //       setValues(roleSelect);
-   //       // console.log(roleSelect);
-   //    } catch (error) {
-   //       console.log(error);
-   //       Toast.Error(error);
-   //    }
-   // };
-
    const handleClickEdit = async () => {
       try {
          // console.log("el roleSelect:", roleSelect);
@@ -203,6 +191,7 @@ const FormSelect = ({ setOpenDialogTable, setLoadPermissions }) => {
          // console.log("checkMenus", checkMenus);
          if (values.id < 1) return Toast.Info("Selecciona un Role");
          setLoadingAction(true);
+         checkMenus = [];
          values.read = [];
          values.create = [];
          values.update = [];
@@ -223,8 +212,8 @@ const FormSelect = ({ setOpenDialogTable, setLoadPermissions }) => {
             }
          });
          menus.map((m) => m.children.map((mc) => (count_more_permissions += mc.others_permissions.length)));
-         // console.log("values", values);
-         // console.log("values.more_permissions", values.more_permissions, "-- count", count_more_permissions);
+         console.log("values", values);
+         console.log("values.more_permissions", values.more_permissions, "-- count", count_more_permissions);
          if (values.read.length == totalMenus) values.read = "todas";
          else values.read = values.read.join();
          if (values.create.length == totalMenus) values.create = "todas";
@@ -234,10 +223,10 @@ const FormSelect = ({ setOpenDialogTable, setLoadPermissions }) => {
          if (values.delete.length == totalMenus) values.delete = "todas";
          else values.delete = values.delete.join();
          if (values.more_permissions.length > 0 && values.more_permissions.length == count_more_permissions) values.more_permissions = "todas";
-         // console.log(values.more_permissions);
          else values.more_permissions = values.more_permissions.join();
-         // console.log("valuesFinal", values);
-         // return;
+         console.log("values.more_permissions FINAL", values.more_permissions);
+         console.log("valuesFinal", values);
+         return;
          const axiosResponse = await updatePermissions(values);
          if (axiosResponse.status_code === 200) {
             resetForm();
