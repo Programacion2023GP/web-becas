@@ -16,6 +16,7 @@ import { useState } from "react";
 import { useStudentContext } from "../../context/StudentContext";
 import { useDisabilityContext } from "../../context/DisabilityContext";
 import { useGlobalContext } from "../../context/GlobalContext";
+import { Link } from "react-router-dom";
 
 const InputsFormik2 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBeforeOrNext }) => {
    const { setDisabledState, setDisabledCity, setDisabledColony, setShowLoading, setDataStates, setDataCities, setDataColonies, setDataColoniesComplete } =
@@ -108,6 +109,7 @@ const InputsFormik2 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
                   disabled={formik.values.id == 0 ? false : true}
                   loading={loadingCURP}
                   focus={true}
+                  helperText="yyayaa"
                   // inputRef={inputRefCurp}
                />
 

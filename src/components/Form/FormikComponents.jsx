@@ -245,7 +245,6 @@ export const InputComponent = ({
                   >
                      {(inputProps) => (
                         <TextField
-                           {...inputProps}
                            key={idName}
                            name={idName}
                            label={label}
@@ -255,12 +254,13 @@ export const InputComponent = ({
                               textStyleCase != null ? handleInputFormik(e, formik.setFieldValue, idName, textStyleCase) : null;
                            }}
                            fullWidth
-                           {...props}
                            error={error}
                            helperText={isError ? error : helperText}
                            InputLabelProps={{
                               style: color ? { color: color } : {}
                            }}
+                           {...inputProps}
+                           {...props}
                         />
                      )}
                   </InputMask>

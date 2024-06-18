@@ -1,4 +1,3 @@
-import { Formik, useFormikContext } from "formik";
 import * as Yup from "yup";
 
 import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
@@ -7,7 +6,7 @@ import Select2Component from "../../../components/Form/Select2Component";
 import { useRoleContext } from "../../../context/RoleContext";
 import { useEffect } from "react";
 import { LoadingButton } from "@mui/lab";
-import { Button, ButtonGroup } from "@mui/material";
+import { Button } from "@mui/material";
 import Toast from "../../../utils/Toast";
 import { useGlobalContext } from "../../../context/GlobalContext";
 import { useAuthContext } from "../../../context/AuthContext";
@@ -17,28 +16,22 @@ import { isArray } from "highcharts";
 
 const FormSelect = ({ setOpenDialogTable, setLoadPermissions }) => {
    const { auth } = useAuthContext();
-   const { openDialog, setOpenDialog, toggleDrawer, setLoadingAction } = useGlobalContext();
+   const { setOpenDialog, setLoadingAction } = useGlobalContext();
    const {
       singularName,
       rolesSelect,
-      createRole,
-      updateRole,
       formData,
-      setFormData,
-      showRole,
       textBtnSubmit,
       resetRoleSelect,
       setTextBtnSumbit,
-      formTitle,
       setFormTitle,
       roleSelect,
-      setRoleSelect,
       showRoleSelect,
       updatePermissions,
       getRolesSelectIndex,
       formikRef
    } = useRoleContext();
-   const { menus, checkMenus, setCheckMenus, checkMaster, setCheckMaster } = useMenuContext();
+   const { menus, checkMenus, setCheckMenus, setCheckMaster } = useMenuContext();
    // const formik = useFormikContext();
 
    const resetCheckMenus = () => {
@@ -51,7 +44,7 @@ const FormSelect = ({ setOpenDialogTable, setLoadPermissions }) => {
       setCheckMenus(resetCheck);
    };
 
-   const handleChangeRole = async (inputName, value2, setFieldValue) => {
+   const handleChangeRole = async (inputName, value2) => {
       try {
          // console.log("amanas", value2);
          setLoadPermissions(true);
@@ -191,7 +184,7 @@ const FormSelect = ({ setOpenDialogTable, setLoadPermissions }) => {
          // console.log("checkMenus", checkMenus);
          if (values.id < 1) return Toast.Info("Selecciona un Role");
          setLoadingAction(true);
-         checkMenus = [];
+         // checkMenus = [];
          values.read = [];
          values.create = [];
          values.update = [];
@@ -207,13 +200,14 @@ const FormSelect = ({ setOpenDialogTable, setLoadPermissions }) => {
             if (check.permissions.delete) values.delete.push(check.id);
             if (check.permissions.more_permissions.length > 0) {
                check.permissions.more_permissions.map((permission) => {
+                  // console.log("🚀 ~ check.permissions.more_permissions.map ~ permission:", permission);
                   values.more_permissions.push(permission);
                });
             }
          });
          menus.map((m) => m.children.map((mc) => (count_more_permissions += mc.others_permissions.length)));
-         console.log("values", values);
-         console.log("values.more_permissions", values.more_permissions, "-- count", count_more_permissions);
+         // console.log("values", values);
+         // console.log("values.more_permissions", values.more_permissions, "-- count", count_more_permissions);
          if (values.read.length == totalMenus) values.read = "todas";
          else values.read = values.read.join();
          if (values.create.length == totalMenus) values.create = "todas";
@@ -222,11 +216,13 @@ const FormSelect = ({ setOpenDialogTable, setLoadPermissions }) => {
          else values.update = values.update.join();
          if (values.delete.length == totalMenus) values.delete = "todas";
          else values.delete = values.delete.join();
-         if (values.more_permissions.length > 0 && values.more_permissions.length == count_more_permissions) values.more_permissions = "todas";
-         else values.more_permissions = values.more_permissions.join();
-         console.log("values.more_permissions FINAL", values.more_permissions);
-         console.log("valuesFinal", values);
-         return;
+         // if (values.more_permissions.length > 0 && values.more_permissions.length == count_more_permissions) values.more_permissions = "todas";
+         // else
+         values.more_permissions = values.more_permissions.join();
+         // console.log("values.more_permissions FINAL", values.more_permissions);
+         // console.log("valuesFinal", values);
+
+         // return setLoadingAction(false);
          const axiosResponse = await updatePermissions(values);
          if (axiosResponse.status_code === 200) {
             resetForm();
@@ -254,9 +250,6 @@ const FormSelect = ({ setOpenDialogTable, setLoadPermissions }) => {
 
    useEffect(() => {
       try {
-         // console.log(formikRef);
-         // const btnModify = document.getElementById("btnModify");
-         // if (btnModify != null && roleSelect.id > 0) btnModify.click();
       } catch (error) {
          console.log(error);
          Toast.Error(error);
