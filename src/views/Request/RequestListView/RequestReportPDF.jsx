@@ -102,6 +102,10 @@ export default function RequestReportPDF({ obj }) {
                   { colSpan: null, style: valueStyle, value: `${obj.tutor_name} ${obj.tutor_paternal_last_name} ${obj.tutor_maternal_last_name}` },
                   { colSpan: null, style: valueStyle, value: formatPhone(obj.tutor_phone) }
                ]
+            },
+            {
+               tHeadRows: [[{ colSpan: 5, style: subtitleStyle, title: "Se autoriza a una familiar recoger el apoyo?" }]],
+               tBodyCells: [{ colSpan: 5, style: valueStyle, value: obj.second_ref == "Familiar" ? `SÍ` : "NO" }]
             }
          ]
       },
@@ -437,7 +441,7 @@ export default function RequestReportPDF({ obj }) {
          ]
       }
    ];
-   // console.log(tableRows);
+   console.log(obj);
 
    return (
       <Paper id="reportPaper" sx={{ width: "100%", overflow: "hidden" }}>
@@ -539,6 +543,9 @@ export default function RequestReportPDF({ obj }) {
                      <p style={{ textAlign: "center", fontWeight: "bolder" }}>NOMBRE Y FIRMA DEL PADRE, MADRE O TUTOR.</p>
                   </td>
                </tr> */}
+               <tr>
+                  <th>DOCUMENTOS ADJUNTOS</th>
+               </tr>
             </tbody>
          </table>
       </Paper>

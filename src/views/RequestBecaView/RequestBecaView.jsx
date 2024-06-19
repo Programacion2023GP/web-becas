@@ -1009,7 +1009,7 @@ const RequestBecaView = () => {
                                  </FormikComponent>
                                  {true &&
                                     sAlert.Info(
-                                       "Recuerda que únicamente la persona que sea registrada como tutor podra cobrar la beca en caso de salir seleccionada y un familiar si asi se ha autorizado"
+                                       "Recuerda que únicamente la persona que sea registrada como tutor podra cobrar la beca en caso de salir seleccionada y un familiar si asi se ha autorizado en esta sección"
                                     )}
                               </>
                            )}

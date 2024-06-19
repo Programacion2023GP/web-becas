@@ -122,7 +122,7 @@ const InputsFormik1 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
                   alignItems="start"
                   idName={"second_ref"}
                   title={"Familiar que autoriza Padre, Madre o Tutor a cobrar la beca (2da opción a cobrar la beca)."}
-                  helperText="Si habrá una 2da persona autorizada, ademas de subir la INE vigente del Padre o Madre o Tutor en la última sección de esta solicitud, se solicitará subir la INE vigente del representante."
+                  helperText="Si habrá una 2da persona autorizada, ademas de subir la INE vigente del Padre o Madre o Tutor en la última sección de esta solicitud, se solicitará subir la INE vigente del familiar autorizado."
                   // hidden={!isTutor}
                   options={[
                      { value: "NULL", label: "Ninguna" },
