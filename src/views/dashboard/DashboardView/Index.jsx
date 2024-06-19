@@ -11,6 +11,8 @@ import TotalIncomeDarkCard from "../Default/TotalIncomeDarkCard";
 import { ChartComponent } from "../../../components/Charts/ChartComponent";
 import { useRequestBecaContext } from "../../../context/RequestBecaContext";
 import { groupBy, unifyBy } from "../../../utils/Formats";
+import { useCommunityContext } from "../../../context/CommunityContext";
+import { useUserContext } from "../../../context/UserContext";
 
 const objDataGraphs = {
    chart: ["bar", "pie"],
@@ -25,35 +27,33 @@ const objDataGraphs = {
 const DashboardIndex = () => {
    // const { result } = useLoaderData();
    const { loading, setLoading } = useGlobalContext();
-   const { getRequestApproved, requestBecasApproved } = useRequestBecaContext();
-   const [dataGraphsByGender, setDataGraphsByGender] = useState({
-      chart: ["bar", "pie"],
-      enable3D: [false, true],
-      name: "Becas Entregadas por Genero",
-      data: [],
-      titles: ["MASCULINO", "FEMENINO"],
-      values: [],
-      inCard: true,
-      width: 12
-   });
-   const [dataGraphsBySchool, setDataGraphsBySchool] = useState({
-      chart: ["bar", "pie"],
-      enable3D: [false, true],
-      name: "Becas Entregadas por Escuela",
-      data: [],
-      titles: [],
-      values: [],
-      inCard: true,
-      width: 12
-   });
+   const { getCommunities } = useCommunityContext();
+   const { getRequestBecas, getRequestApproved } = useRequestBecaContext();
+   const { getUsers } = useUserContext();
+
+   const [usersCiudadanos, setUsersCiudadanos] = useState(0);
+   const [becasApplied, setBecasApplied] = useState(0);
    const [dataGraphs, setDataGraphs] = useState([]);
 
    const getDataGraphs = async () => {
       try {
-         const axiosResponse = await getRequestApproved();
-         const data = await axiosResponse.result.requestBecasApproved;
+         const axiosUsers = await getUsers();
+         setUsersCiudadanos(axiosUsers.result.users.filter((u) => u.role_id == 3).length);
+         const axiosBecasApplied = await getRequestBecas();
+         setBecasApplied(axiosBecasApplied.result.filter((b) => b.status != "CANCELADA").length);
+         const axiosCommunities = await getCommunities();
+         const communities = await axiosCommunities.result.communities;
+         const axiosBecasApproved = await getRequestApproved();
+         const data = await axiosBecasApproved.result.requestBecasApproved;
+         await data.map((d) => {
+            d.community = communities.find((c) => c.id == d.community_id);
+            d.school_community = communities.find((c) => c.id == d.school_community_id);
+         });
+
          await getDataBecasApprovedByGender(data);
          await getDataBecasApprovedBySchool(data);
+         await getDataBecasApprovedByZone(data);
+         await getDataBecasApprovedByPerimeter(data);
          const uniques = unifyBy(dataGraphs, "name");
          setDataGraphs(uniques);
       } catch (error) {
@@ -105,6 +105,50 @@ const DashboardIndex = () => {
          Toast.Error(error);
       }
    };
+   const getDataBecasApprovedByZone = async (data) => {
+      try {
+         const urbanos = data.filter((d) => d.community.Zona.toUpperCase() == "URBANA");
+         const rural = data.filter((d) => d.community.Zona.toUpperCase() == "RURAL");
+         const titles = ["URBANA", "RURAL"];
+         const values = [];
+         values.push(urbanos.length);
+         values.push(rural.length);
+
+         const _data = { ...objDataGraphs };
+         _data.name = "Becas Entregadas por Zona";
+         _data.data = data;
+         _data.titles = titles;
+         _data.values = values;
+
+         dataGraphs.push(_data);
+         setDataGraphs(dataGraphs);
+      } catch (error) {
+         console.log("🚀 ~ getDataBecasApprovedBySchool ~ error:", error);
+         Toast.Error(error);
+      }
+   };
+   const getDataBecasApprovedByPerimeter = async (data) => {
+      try {
+         const groupedValues = groupBy(data, "community.Perimetro", true);
+         const titles = groupedValues.map((item) => item[0].toUpperCase());
+         const values = [];
+         groupedValues.map((item) => {
+            values.push(item[1].length);
+         });
+
+         const _data = { ...objDataGraphs };
+         _data.name = "Becas Entregadas por Perímetro";
+         _data.data = data;
+         _data.titles = titles;
+         _data.values = values;
+
+         dataGraphs.push(_data);
+         setDataGraphs(dataGraphs);
+      } catch (error) {
+         console.log("🚀 ~ getDataBecasApprovedBySchool ~ error:", error);
+         Toast.Error(error);
+      }
+   };
 
    useEffect(() => {
       try {
@@ -135,7 +179,7 @@ const DashboardIndex = () => {
             <Grid item xs={12}>
                <Grid container spacing={2}>
                   <Grid item lg={4} md={6} sm={6} xs={12}>
-                     <TotalIncomeDarkCard isLoading={loading} title={"Usuarios"} caption={"cantidad de usuarios registrados"} icon={"IconUsers"} quantity={1500} />
+                     <TotalIncomeDarkCard isLoading={loading} title={"Usuarios"} caption={"ciudadanos registrados"} icon={"IconUsers"} quantity={usersCiudadanos} />
                   </Grid>
                   <Grid item lg={4} md={6} sm={6} xs={12}>
                      <TotalIncomeLightCard
@@ -143,7 +187,7 @@ const DashboardIndex = () => {
                         title={"Becas Aplicadas"}
                         caption={"Becas sin contar canceladas"}
                         icon={"IconFileStack"}
-                        quantity={51}
+                        quantity={becasApplied}
                      />
                   </Grid>
                   <Grid item lg={4} md={6} sm={6} xs={12}>

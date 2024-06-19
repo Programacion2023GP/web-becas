@@ -146,8 +146,10 @@ export const splitArroba = (string, returnFirst = true) => {
  */
 export const groupBy = (data, key, returnArray, consoleLogResult = false) => {
    let result = data.reduce((result, currentValue) => {
+      const keys = key.includes(".") && key.split(".");
+
       // Extraer el valor clave
-      const keyValue = currentValue[key];
+      const keyValue = keys ? currentValue[keys[0]][keys[1]] : currentValue[key];
 
       // Si el valor clave no existe en el objeto de resultado, cree datos para él
       if (!result[keyValue]) {

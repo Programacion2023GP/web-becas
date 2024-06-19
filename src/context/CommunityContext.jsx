@@ -35,10 +35,10 @@ export default function CommunityContextProvider({ children }) {
    const formikRefAssing = useRef();
 
    const dataCommunityTypes = [
-      { id: "colonia", label: "colonia" },
+      { id: "colonia", label: "Colonia" },
       { id: "fraccionamiento", label: "Fraccionamiento" },
       { id: "ejido", label: "Ejido" },
-      { id: "rancho", label: "Rancho" }
+      { id: "rancheria", label: "Rancheria" }
    ];
 
    const resetFormData = () => {
