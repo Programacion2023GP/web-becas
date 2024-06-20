@@ -98,12 +98,12 @@ const RequestBecaView = () => {
       },
       {
          idName: "b7_img_second_ref",
-         label: "Foto INE del Representante (2da Opción)*",
+         label: "Foto INE del Familiar Autorizado (2da Opción)*",
          filePreviews: imgSecondRef,
          setFilePreviews: setImgSecondRef,
          fieldApproved: "b7_approved_second_ref",
          fieldComments: "b7_comments_second_ref",
-         name: "INE del Representante (2da Opción)",
+         name: "INE del Familiar Autorizado (2da Opción)",
          isTutor: false,
          haveSecondRef: haveSecondRef ? true : null,
          infoDivider: {

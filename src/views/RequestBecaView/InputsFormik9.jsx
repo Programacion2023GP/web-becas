@@ -170,7 +170,7 @@ const InputsFormik9 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
                      {dataInput.haveSecondRef === true && (
                         <>
                            <Typography variant="h5" sx={{ display: "block", width: "100%", mb: 1 }}>
-                              Se eligio una 2da opción para recoger el apoyo, un "{formData.second_ref}"
+                              Se eligio un Familiar como 2da opción para recoger el apoyo
                            </Typography>
                         </>
                      )}

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -441,13 +441,99 @@ export default function RequestReportPDF({ obj }) {
          ]
       }
    ];
-   console.log(obj);
+   const dataDocs = [
+      {
+         idName: "b7_img_tutor_ine",
+         url: obj.b7_img_tutor_ine,
+         name: "INE del tutor",
+         isTutor: false,
+         haveSecondRef: false,
+         infoDivider: {
+            title: "DOCUMENTOS DEL TUTOR"
+         }
+      },
+      {
+         idName: "b7_img_tutor_power_letter",
+         url: obj.b7_img_tutor_power_letter,
+         name: "Documento Extra por Tutoria",
+         isTutor: obj.tutor_relationship > 2 ? true : null,
+         haveSecondRef: false,
+         infoDivider: {
+            title: "DOCUMENTO EXTRA EN CASO DE NO SER PADRE O MADRE"
+         }
+      },
+      {
+         idName: "b7_img_second_ref",
+         url: obj.b7_img_second_ref,
+         name: "INE del Familiar Autorizado (2da Opción)",
+         isTutor: false,
+         haveSecondRef: obj.second_ref == "Familiar" ? true : null,
+         infoDivider: {
+            title: "DOCUMENTO DEL FAMILIAR AUTORIZADO (2da Opción)"
+         }
+      },
+      {
+         idName: "b7_img_proof_address",
+         url: obj.b7_img_proof_address,
+         name: "Comprobante de Domicilio",
+         isTutor: false,
+         haveSecondRef: false,
+         infoDivider: {
+            title: "DATOS DEL ALUMNO"
+         }
+      },
+      {
+         idName: "b7_img_curp",
+         url: obj.b7_img_curp,
+         name: "CURP",
+         isTutor: false,
+         haveSecondRef: false,
+         infoDivider: {
+            title: ""
+         }
+      },
+      {
+         idName: "b7_img_birth_certificate",
+         url: obj.b7_img_birth_certificate,
+         name: "Acta de Nacimiento",
+         isTutor: false,
+         haveSecondRef: false,
+         infoDivider: {
+            title: ""
+         }
+      },
+      {
+         idName: "b7_img_academic_transcript",
+         url: obj.b7_img_academic_transcript,
+         name: "Certificado Estudiantil con Calificaciones",
+         isTutor: false,
+         haveSecondRef: false,
+         infoDivider: {
+            title: ""
+         }
+      }
+   ];
+   const [propDocs, setPropDocs] = useState([]);
+
+   const getDocs = () => {
+      try {
+         const prop_docs = Object.keys(obj).filter((prop) => prop.startsWith("b7_img"));
+         setPropDocs(prop_docs);
+      } catch (error) {
+         console.log("🚀 ~ getDocs ~ error:", error);
+      }
+   };
+
+   useEffect(() => {
+      console.log(obj);
+      getDocs();
+   }, []);
 
    return (
       <Paper id="reportPaper" sx={{ width: "100%", overflow: "hidden" }}>
          <table style={{ border: "none", borderSpacing: "0", fontFamily: "Roboto" }}>
             {/* ENCABEZADO */}
-            <thead>
+            {/* <thead>
                <tr style={{ border: "none" }}>
                   <td align="left">
                      <img src={logo_gpd} style={{ width: "150px" }} />
@@ -477,9 +563,38 @@ export default function RequestReportPDF({ obj }) {
                      </p>
                   </td>
                </tr>
-            </thead>
+            </thead> */}
 
             <tbody>
+               <tr style={{ border: "none" }}>
+                  <td align="left">
+                     <img src={logo_gpd} style={{ width: "150px" }} />
+                  </td>
+                  <td align="center" colSpan={3}>
+                     <img src={logo_gpd} style={{ width: "150px" }} />
+                  </td>
+                  <td align="right">
+                     <img src={logo_gpd} style={{ width: "150px" }} />
+                  </td>
+               </tr>
+               <tr style={{ border: "none" }}>
+                  <td colSpan={5} align="center">
+                     <h1 style={{ fontWeight: "bolder", fontSize: "35px" }}>DIRECCIÓN DE EDUCACIÓN</h1>
+                     <h3>
+                        PROGRAMA DE BECAS MUNICIPALES <br />
+                        <span style={{ fontWeight: "500" }}>ESTUDIO-SOCIOECONOMICO</span>
+                     </h3>
+                  </td>
+               </tr>
+               <tr>
+                  <td colSpan={5} align="center" style={{ marginBottom: "25px" }}>
+                     <p align="justify" style={{ fontWeight: "normal", maxWidth: "100%" }}>
+                        El presente cuestionario tiene por objetivo conocer el perfil de los aspirantes a obtener una beca del
+                        <b> R. Ayuntamiento de Gómez Palacio</b>. La información proporcionada aquí debe ser completamente verdadera, por ello, lee con atención cada
+                        pregunta y contesta adecuadamente.
+                     </p>
+                  </td>
+               </tr>
                {/* DATOS */}
                {tableRows.map((tr, trIndex) => (
                   <tr key={`tr1_${trIndex}`} style={tr.style}>
@@ -543,9 +658,36 @@ export default function RequestReportPDF({ obj }) {
                      <p style={{ textAlign: "center", fontWeight: "bolder" }}>NOMBRE Y FIRMA DEL PADRE, MADRE O TUTOR.</p>
                   </td>
                </tr> */}
-               <tr>
-                  <th>DOCUMENTOS ADJUNTOS</th>
+               <tr style={{ border: "none", pageBreakBefore: "always" }}>
+                  <td colSpan={5} align="center">
+                     <h2 style={{ fontWeight: "bolder", fontSize: "30px" }}>DOCUMENTOS ADJUNTOS</h2>
+                  </td>
                </tr>
+               {dataDocs &&
+                  dataDocs.map((item, index) => (
+                     <tr style={index > 1 ? { border: "none", pageBreakAfter: "always" } : { border: "none" }}>
+                        <td colSpan={5} align="center">
+                           {item.isTutor === true && (
+                              <h5 style={{ display: "block", width: "100%", mb: 1 }}>
+                                 Al no ser familiar directo favor de cargar algúno de los siguientes documentos <br />
+                                 <small>Carta de dependencia económica del DIF &nbsp;|&nbsp; Hoja custodia &nbsp;|&nbsp; Acta de defunción del padre o madre</small>
+                              </h5>
+                           )}
+                           {item.haveSecondRef === true && (
+                              <>
+                                 <h5 style={{ display: "block", width: "100%", mb: 1 }}>Se eligio un Familiar como 2da opción para recoger el apoyo</h5>
+                              </>
+                           )}
+                           {![item.isTutor, item.haveSecondRef].includes(null) && (
+                              <div className="containerImg">
+                                 <div className="title">{item.name}</div>
+                                 <img src={`${import.meta.env.VITE_HOST}/${item.url}`} />
+                                 {/* <p className="caption"></p> */}
+                              </div>
+                           )}
+                        </td>
+                     </tr>
+                  ))}
             </tbody>
          </table>
       </Paper>
