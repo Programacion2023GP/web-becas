@@ -176,3 +176,8 @@ export const groupBy = (data, key, returnArray, consoleLogResult = false) => {
 export const unifyBy = (data, key) => {
    return Array.from(new Map(data.map((item) => [item[key], item])).values());
 };
+
+export const cutLines = (text) => {
+   const lines = text.split(/\r\n|\n/);
+   return lines;
+};

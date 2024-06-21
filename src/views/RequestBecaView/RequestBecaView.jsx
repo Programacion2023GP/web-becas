@@ -98,7 +98,7 @@ const RequestBecaView = () => {
       },
       {
          idName: "b7_img_second_ref",
-         label: "Foto INE del Familiar Autorizado (2da Opción)*",
+         label: "Foto INE del Familiar Autorizado (2da Opción) *",
          filePreviews: imgSecondRef,
          setFilePreviews: setImgSecondRef,
          fieldApproved: "b7_approved_second_ref",
