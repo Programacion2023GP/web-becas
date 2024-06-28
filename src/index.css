@@ -13,13 +13,13 @@
 
 /* Estilo del pulgar (la parte deslizante de la barra) */
 ::-webkit-scrollbar-thumb {
-   background: #1E5529; /* Cambia el color del pulgar */
+   background: #a46c38; /* #1E5529 Cambia el color del pulgar */
    border-radius: 10px; /* Redondea las esquinas del pulgar */
 }
 
 /* Estilo del pulgar al pasar el ratón por encima */
 ::-webkit-scrollbar-thumb:hover {
-   background: #237433; /* Cambia el color del pulgar al pasar el ratón por encima */
+   background: #e6b383; /* #237433 Cambia el color del pulgar al pasar el ratón por encima */
 }
 /* SCROLL */
 

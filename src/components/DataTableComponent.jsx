@@ -100,11 +100,13 @@ export default function DataTableComponent({
    updateData,
    refreshTable,
    btnAdd = true,
+   titleBtnAdd = null,
    newRow = null,
    btnsExport = true,
    showGridlines = false,
    btnDeleteMultiple = false,
-   handleClickDeleteMultipleContinue
+   handleClickDeleteMultipleContinue,
+   scrollHeight = "67vh"
 }) {
    const { setLoadingAction, setOpenDialog } = useGlobalContext();
    const [selectedData, setSelectedData] = useState(null);
@@ -373,16 +375,18 @@ export default function DataTableComponent({
             <InputText value={globalFilterValue} type="search" onChange={onGlobalFilterChange} placeholder="Buscador General" />
          </span>
          {btnAdd && (
-            <Button
-               variant="contained"
-               sx={{ width: 250 }}
-               startIcon={<AddCircleOutlineOutlined sx={{ mr: 0.2 }} />}
-               size="large"
-               disabled={updating}
-               onClick={() => (rowEdit ? addRow() : handleClickAdd())}
-            >
-               AGREGAR
-            </Button>
+            <Tooltip title={titleBtnAdd ? `AGREGAR ${titleBtnAdd}` : "AGREGAR"}>
+               <Button
+                  variant="contained"
+                  sx={{ width: 250 }}
+                  startIcon={<AddCircleOutlineOutlined sx={{ mr: 0.2 }} />}
+                  size="large"
+                  disabled={updating}
+                  onClick={() => (rowEdit ? addRow() : handleClickAdd())}
+               >
+                  {titleBtnAdd ? titleBtnAdd : "AGREGAR"}
+               </Button>
+            </Tooltip>
          )}
       </Box>
    );
@@ -425,7 +429,7 @@ export default function DataTableComponent({
                loading={loading}
                filters={filters}
                scrollable={true}
-               scrollHeight="63vh"
+               scrollHeight={scrollHeight}
                globalFilter={globalFilterValue}
                globalFilterFields={globalFilterFields}
                filterDisplay={headerFilters ? "row" : "menu"}
@@ -447,13 +451,13 @@ export default function DataTableComponent({
                      header={col.header}
                      headerStyle={{ backgroundColor: "#E9ECEF", color: "#364152", textAlign: "center" }}
                      headerClassName="text-center"
-                     filter={headerFilters}
+                     filter={col.filter && headerFilters}
                      filterField={col.filterField}
                      filterHeaderStyle={{ backgroundColor: "#E9ECEF", color: "#364152" }}
                      editor={(options) => col.functionEdit(options)}
                      sortable={col.sortable}
                      body={col.body}
-                     style={{ width: "auto" }}
+                     style={{ minWidth: col.width ? col.width : col.filter ? "12rem" : "auto" }}
                      footerStyle={{ backgroundColor: "#E9ECEF", color: "#364152" }}
                   ></Column>
                ))}
@@ -482,6 +486,8 @@ export default function DataTableComponent({
                      filter={false}
                      style={{ width: "auto" }}
                      footerStyle={{ backgroundColor: "#E9ECEF", color: "#364152" }}
+                     alignFrozen="right"
+                     frozen={true}
                   ></Column>
                )}
             </DataTable>

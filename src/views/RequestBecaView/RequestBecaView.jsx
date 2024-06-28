@@ -64,6 +64,7 @@ const RequestBecaView = () => {
    const [pageInAnimation, setPageInAnimation] = useState([true, true, true, true, true, true, true, true, true, true]);
    const [animate, setAnimate] = useState(false);
    const pageActiveRef = useRef(null);
+   const [showModalRemember, setShowModalRemember] = useState(false);
 
    const inputRefSchoolId = useRef(null);
    const formik = useRef(null);
@@ -314,6 +315,10 @@ const RequestBecaView = () => {
       setPageInAnimation(pagesIA);
       setAnimate(true);
       navigate("pagina/1");
+      setShowModalRemember(true);
+      setTimeout(() => {
+         setShowModalRemember(false);
+      }, 500);
       // setPageInAnimation({ ...pageInAnimation, page0: true });
       // useNavigateTo("pagina/1");
       // location.hash = "pagina/1";
@@ -897,6 +902,11 @@ const RequestBecaView = () => {
       };
    }, [animate]);
 
+   useEffect(() => {
+      if (showModalRemember && pagina == 1) setShowModalRemember(true);
+      else setShowModalRemember(false);
+   }, [pagina]);
+
    return (
       <Box sx={{ width: "100%", height: "100%" }}>
          <Typography variant="h1" color={"#364152"} mb={2}>
@@ -1007,9 +1017,9 @@ const RequestBecaView = () => {
                                        setIsTutor={setIsTutor}
                                     />
                                  </FormikComponent>
-                                 {true &&
+                                 {showModalRemember &&
                                     sAlert.Info(
-                                       "Recuerda que únicamente la persona que sea registrada como tutor podra cobrar la beca en caso de salir seleccionada y un familiar si asi se ha autorizado en esta sección"
+                                       "Recuerda que únicamente la persona que sea registrada como tutor podrá cobrar la beca en caso de salir seleccionada y un familiar si asi se ha autorizado en esta sección"
                                     )}
                               </>
                            )}

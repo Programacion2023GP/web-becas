@@ -572,7 +572,7 @@ const RequestBecaDT = ({ status = null }) => {
             btnAdd={auth.permissions.create}
             rowEdit={false}
             refreshTable={() => getRequestBecas(status)}
-            toolBar={auth.role_id <= ROLE_ADMIN && auth.more_permissions.includes("Exportar Lista Pública") && status == "aprobadas" ? true : false}
+            toolBar={auth.more_permissions.includes("Exportar Lista Pública") && status == "aprobadas" ? true : false}
             positionBtnsToolbar="center"
             toolbarContent={toolbarContent}
          />
