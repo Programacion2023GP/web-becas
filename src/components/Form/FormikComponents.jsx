@@ -907,6 +907,7 @@ export const RadioButtonComponent = ({
    marginBottom = 2,
    rowLayout = true, // Cambiar a false para poner en columnas
    focus,
+   color = "primary",
    ...props
 }) => {
    const { values, errors, touched, handleChange, handleBlur } = useFormikContext(); // Obtener valores, errores y funciones de Formik
@@ -978,10 +979,10 @@ export const RadioButtonComponent = ({
                               sx={{
                                  color: "black",
                                  "&.Mui-checked": {
-                                    color: "#1E2126"
+                                    color: color == "dark" ? "#1E2126" : color
                                  },
                                  "&.MuiSvgIcon-root": {
-                                    fill: "#1E2126"
+                                    fill: color == "dark" ? "#1E2126" : color
                                  }
                               }}
                            />
@@ -995,11 +996,13 @@ export const RadioButtonComponent = ({
                               color: "#c5c8cc" //"#1976d2"
                            },
                            "&.MuiFormControlLabel-label": {
-                              color: "#1E2126", //"#1976d2",
+                              // color: "#1E2126", //"#1976d2",
+                              color: color == "dark" ? "#1E2126" : color,
                               fontSize: "14px"
                            },
                            "&.Mui-checked": {
-                              color: "#1E2126" //"#1976d2"
+                              color: color == "dark" ? "#1E2126" : color
+                              // color: "#1E2126" //"#1976d2"
                            }
                         }}
                      />

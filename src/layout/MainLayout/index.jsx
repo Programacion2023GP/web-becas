@@ -96,8 +96,8 @@ const MainLayout = () => {
                         sx={{
                            // background: "rgb(161,108,41)";
                            // background: "linear-gradient(337deg, rgba(13,52,25,1) 0%, rgba(52,128,63,1) 50%, rgba(13,52,25,1) 100%)",
-                           background: "linear-gradient(315deg, rgba(222,187,154,1) 0%, rgba(242,223,205,1) 50%, rgba(222,187,154,1) 100%)",
-                           background: "linear-gradient(315deg, rgba(161,108,41,1) 0%, rgba(200,156,93,1) 50%, rgba(161,108,41,1) 100%)",
+                           // background: "linear-gradient(315deg, rgba(222,187,154,1) 0%, rgba(242,223,205,1) 50%, rgba(222,187,154,1) 100%)",
+                           // background: "linear-gradient(315deg, rgba(161,108,41,1) 0%, rgba(200,156,93,1) 50%, rgba(161,108,41,1) 100%)",
                            background: "linear-gradient(315deg, rgba(164,108,56,1) 0%, rgba(222,187,154,1) 50%, rgba(164,108,56,1) 100%)",
                            transition: leftDrawerOpened ? theme.transitions.create("width") : "none"
                         }}

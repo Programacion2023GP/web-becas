@@ -23,6 +23,8 @@ import RequestReportPDF from "./RequestReportPDF";
 import ModalReject from "./ModalReject";
 import IconDelete from "../../../components/icons/IconDelete";
 import * as XLSX from "xlsx";
+import { ModalComponent } from "../../../components/ModalComponent";
+import ModalPayment from "./ModalPayment";
 
 const RequestBecaDT = ({ status = null }) => {
    const { auth } = useAuthContext();
@@ -84,6 +86,7 @@ const RequestBecaDT = ({ status = null }) => {
       }
       // pagebreak: { before: "#page2" } // Agrega paginación antes de un elemento con el ID 'page2'
    });
+   const [openModalPayment, setOpenModalPayment] = useState(false);
 
    const downloadPDF = async (elementID) => {
       setLoadingAction(true);
@@ -263,8 +266,9 @@ const RequestBecaDT = ({ status = null }) => {
       try {
          mySwal.fire(QuestionAlertConfig(`Estas seguro de PAGAR y ENTREGAR la beca con folio #${folio}`, "PAGAR!", "CANCELAR")).then(async (result) => {
             if (result.isConfirmed) {
-               const axiosResponse = await updateStatusBeca(folio, "PAGADA", null, status);
-               Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
+               setOpenModalPayment(true);
+               // const axiosResponse = await updateStatusBeca(folio, "PAGADA", null, status);
+               // Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
             }
          });
       } catch (error) {
@@ -519,12 +523,12 @@ const RequestBecaDT = ({ status = null }) => {
       return (
          <div className="flex flex-wrap gap-2">
             {(auth.permissions.more_permissions.includes(`Exportar Lista Pública`) || auth.permissions.more_permissions.includes(`todas`)) && (
-               <Button variant="contained" color="success" startIcon={<IconFileSpreadsheet />} onClick={() => handleClickExportPublic(data)} sx={{ mx: 1 }}>
+               <Button variant="contained" color="secondary" startIcon={<IconFileSpreadsheet />} onClick={() => handleClickExportPublic(data)} sx={{ mx: 1 }}>
                   Exprotar al público
                </Button>
             )}
             {(auth.permissions.more_permissions.includes(`Exportar Lista Contraloría`) || auth.permissions.more_permissions.includes(`todas`)) && (
-               <Button variant="contained" color="success" startIcon={<IconFileSpreadsheet />} onClick={handleClickExportContraloria} sx={{ mx: 1 }}>
+               <Button variant="contained" color="secondary" startIcon={<IconFileSpreadsheet />} onClick={handleClickExportContraloria} sx={{ mx: 1 }}>
                   Exprotar para contraloria
                </Button>
             )}
@@ -627,6 +631,13 @@ const RequestBecaDT = ({ status = null }) => {
             </DialogActions> */}
          </Dialog>
          <ModalReject open={openModalReject} setOpen={setOpenModalReject} folio={folio} statusCurrent={status} />
+
+         {openModalPayment && (
+            <ModalComponent open={openModalPayment} setOpen={setOpenModalPayment} modalTitle="PRIMER PAGO">
+               Se esta trabajando en el modal de pagos
+               {/* <ModalPayment  /> */}
+            </ModalComponent>
+         )}
       </>
    );
 };
