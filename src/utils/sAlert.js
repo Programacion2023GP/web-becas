@@ -62,14 +62,14 @@ const Customizable = (msg, icon, showConfirmButton = false, timer = 1500) => {
    });
 };
 
-export const QuestionAlertConfig = (msg, confirmText, cancelText) => {
+export const QuestionAlertConfig = (msg, confirmText, cancelText, showCancelButton = true) => {
    return {
       icon: "question",
       html: `<h3>${msg}</h3>`,
-      confirmButtonText: confirmText || "Si, eliminar!",
+      confirmButtonText: `<b>${confirmText}<b/>` || "<b>Si, eliminar!<b/>",
       confirmButtonColor: "green",
-      showCancelButton: true,
-      cancelButtonText: cancelText || "No, cancelar!",
+      showCancelButton: showCancelButton,
+      cancelButtonText: `<b>${cancelText}<b/>` || "<b>No, cancelar!<b/>",
       reverseButtons: true
    };
 };

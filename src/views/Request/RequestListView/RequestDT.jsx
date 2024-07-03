@@ -264,8 +264,9 @@ const RequestBecaDT = ({ status = null }) => {
    };
    const handleClickPayed = async (folio) => {
       try {
-         mySwal.fire(QuestionAlertConfig(`Estas seguro de PAGAR y ENTREGAR la beca con folio #${folio}`, "PAGAR!", "CANCELAR")).then(async (result) => {
+         mySwal.fire(QuestionAlertConfig(`Realizar el pago 1 de la beca con folio #${folio}`, "CONFIRMAR", null, false)).then(async (result) => {
             if (result.isConfirmed) {
+               setFolio(folio);
                setOpenModalPayment(true);
                // const axiosResponse = await updateStatusBeca(folio, "PAGADA", null, status);
                // Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
@@ -400,7 +401,7 @@ const RequestBecaDT = ({ status = null }) => {
                )}
             {(auth.permissions.more_permissions.includes(`Pagar Solicitud`) || auth.permissions.more_permissions.includes(`todas`)) &&
                ["APROBADA"].includes(obj.status) && (
-                  <Tooltip title={`Pagar y Entregar del Folio #${name}`} placement="top">
+                  <Tooltip title={`Realizar Pago 1 de Folio #${name}`} placement="top">
                      <Button color="primary" onClick={() => handleClickPayed(obj.folio, obj.status)}>
                         <IconCoin />
                      </Button>
@@ -581,63 +582,60 @@ const RequestBecaDT = ({ status = null }) => {
             toolbarContent={toolbarContent}
          />
          {/* <PDFTable /> */}
-         <Dialog fullWidth maxWidth={"lg"} fullScreen={fullScreenDialog} open={openDialogPreview} onClose={() => setOpenDialogPreview(false)}>
-            {/* <DialogTitle> */}
-            <Toolbar>
-               <Typography sx={{ ml: 2, flex: 1 }} variant="h3" component="div">
-                  {}
-               </Typography>
-               {/* {auth.permissions.update && (
+         {openDialogPreview && (
+            <Dialog fullWidth maxWidth={"lg"} fullScreen={fullScreenDialog} open={openDialogPreview} onClose={() => setOpenDialogPreview(false)}>
+               {/* <DialogTitle> */}
+               <Toolbar>
+                  <Typography sx={{ ml: 2, flex: 1 }} variant="h3" component="div">
+                     {}
+                  </Typography>
+                  {/* {auth.permissions.update && (
                   <Tooltip title={`Exportar Reporte a PDF`} placement="top">
                      <IconButton color="inherit" onClick={() => downloadPDF("reportPaper")}>
                         <IconFileTypePdf color="red" />
                      </IconButton>
                   </Tooltip>
                )} */}
-               <Tooltip title={`Imprimir Reporte`} placement="top">
-                  <IconButton color="inherit" onClick={() => printContent("reportPaper")}>
-                     <IconPrinter />
-                  </IconButton>
-               </Tooltip>
-               <Tooltip title={fullScreenDialog ? `Minimizar ventana` : `Maximizar ventana`} placement="top">
-                  <IconButton color="inherit" onClick={() => setFullScreenDialog(!fullScreenDialog)}>
-                     {fullScreenDialog ? <IconWindowMinimize /> : <IconWindowMaximize />}
-                  </IconButton>
-               </Tooltip>
-               <Tooltip title={`Cerrar ventana`} placement="top">
-                  <IconButton edge="end" color="inherit" onClick={() => setOpenDialogPreview(false)} aria-label="close">
-                     <IconX />
-                  </IconButton>
-               </Tooltip>
-            </Toolbar>
-            {/* </DialogTitle> */}
-            <DialogContent>
-               {/* <DialogContentText>You can set my maximum width and whether to adapt or not.</DialogContentText> */}
-               <Box
-                  noValidate
-                  component="form"
-                  sx={{
-                     display: "flex",
-                     flexDirection: "column",
-                     m: "auto",
-                     width: "95%"
-                  }}
-               >
-                  <RequestReportPDF obj={objReport} />
-               </Box>
-            </DialogContent>
-            {/* <DialogActions>
+                  <Tooltip title={`Imprimir Reporte`} placement="top">
+                     <IconButton color="inherit" onClick={() => printContent("reportPaper")}>
+                        <IconPrinter />
+                     </IconButton>
+                  </Tooltip>
+                  <Tooltip title={fullScreenDialog ? `Minimizar ventana` : `Maximizar ventana`} placement="top">
+                     <IconButton color="inherit" onClick={() => setFullScreenDialog(!fullScreenDialog)}>
+                        {fullScreenDialog ? <IconWindowMinimize /> : <IconWindowMaximize />}
+                     </IconButton>
+                  </Tooltip>
+                  <Tooltip title={`Cerrar ventana`} placement="top">
+                     <IconButton edge="end" color="inherit" onClick={() => setOpenDialogPreview(false)} aria-label="close">
+                        <IconX />
+                     </IconButton>
+                  </Tooltip>
+               </Toolbar>
+               {/* </DialogTitle> */}
+               <DialogContent>
+                  {/* <DialogContentText>You can set my maximum width and whether to adapt or not.</DialogContentText> */}
+                  <Box
+                     noValidate
+                     component="form"
+                     sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        m: "auto",
+                        width: "95%"
+                     }}
+                  >
+                     <RequestReportPDF obj={objReport} />
+                  </Box>
+               </DialogContent>
+               {/* <DialogActions>
                <Button onClick={() => Toast.Success("Guardado")}>Guardar</Button>
             </DialogActions> */}
-         </Dialog>
-         <ModalReject open={openModalReject} setOpen={setOpenModalReject} folio={folio} statusCurrent={status} />
-
-         {openModalPayment && (
-            <ModalComponent open={openModalPayment} setOpen={setOpenModalPayment} modalTitle="PRIMER PAGO">
-               Se esta trabajando en el modal de pagos
-               {/* <ModalPayment  /> */}
-            </ModalComponent>
+            </Dialog>
          )}
+         {openModalReject && <ModalReject open={openModalReject} setOpen={setOpenModalReject} folio={folio} statusCurrent={status} />}
+
+         {openModalPayment && <ModalPayment folio={folio} open={openModalPayment} setOpen={setOpenModalPayment} modalTitle="PRIMER PAGO" maxWidth={"md"} />}
       </>
    );
 };

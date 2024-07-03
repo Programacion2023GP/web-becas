@@ -10,10 +10,13 @@ import { useGlobalContext } from "../../../context/GlobalContext";
 import { useRequestBecaContext } from "../../../context/RequestBecaContext";
 import { formatDatetimeToSQL } from "../../../utils/Formats";
 import Toast from "../../../utils/Toast";
+import { FormikComponent, InputComponent, Select2Component } from "../../../components/Form/FormikComponents";
+import { useRelationshipContext } from "../../../context/RelationshipContext";
 
-function ModalPayment({ folio, open, setOpen, statusCurrent }) {
+function ModalPayment({ folio, open, setOpen, statusCurrent, modalTitle, maxWidth }) {
    const { setLoadingAction } = useGlobalContext();
    const { updateStatusBeca } = useRequestBecaContext();
+   const { relationships, getRelationshipsSelectIndex } = useRelationshipContext();
 
    const formikRef = useRef();
    const [formData, setFormData] = useState({
@@ -22,6 +25,15 @@ function ModalPayment({ folio, open, setOpen, statusCurrent }) {
       rejected_at: ""
    });
 
+   const handleCancel = (resetForm) => {
+      try {
+         resetForm();
+         setOpen(false);
+      } catch (error) {
+         console.log(error);
+         Toast.Error(error);
+      }
+   };
    const resetFormData = () => {
       formData.rejected_feedback = "";
       formData.rejected_at = "";
@@ -68,11 +80,31 @@ function ModalPayment({ folio, open, setOpen, statusCurrent }) {
    }, []);
 
    return (
-      <ModalComponent open={open} setOpen={setOpen} modalTitle="RECHAZAR SOLICITUD" maxWidth="sm">
-         <Formik initialValues={formData} validationSchema={validationSchema} onSubmit={onSubmit} innerRef={formikRef}>
+      <ModalComponent open={open} setOpen={setOpen} modalTitle={modalTitle} maxWidth={maxWidth}>
+         <FormikComponent
+            key={"formikComponent"}
+            initialValues={formData}
+            validationSchema={validationSchema}
+            onSubmit={onSubmit}
+            textBtnSubmit={"PAGAR"}
+            formikRef={formikRef}
+            handleCancel={handleCancel}
+         >
+            <Select2Component
+               col={5}
+               idName={"relationship_id"}
+               label={"Parentezco *"}
+               options={relationships}
+               pluralName={"Parentezcos"}
+               refreshSelect={getRelationshipsSelectIndex}
+            />
+            <InputComponent col={12} idName={"id"} label={"ID"} placeholder={"ID"} textStyleCase={true} hidden={true} />
+
+            <InputComponent col={7} idName={"paid_to"} label={"Nombre de quien Recibio el pago *"} placeholder={"Nombre Completo"} textStyleCase={true} />
+         </FormikComponent>
+         {/* <Formik initialValues={formData} validationSchema={validationSchema} onSubmit={onSubmit} innerRef={formikRef}>
             {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
                <Grid container spacing={2} component={"form"} onSubmit={handleSubmit} mx={1} my={1}>
-                  {/* Retroalimentación del Rechazo */}
                   <Grid xs={12} md={12} sx={{ mb: 0 }}>
                      <TextField
                         id="rejected_feedback"
@@ -104,7 +136,7 @@ function ModalPayment({ folio, open, setOpen, statusCurrent }) {
                   </LoadingButton>
                </Grid>
             )}
-         </Formik>
+         </Formik> */}
       </ModalComponent>
    );
 }

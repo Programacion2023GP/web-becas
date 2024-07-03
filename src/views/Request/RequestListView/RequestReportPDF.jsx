@@ -646,8 +646,8 @@ export default function RequestReportPDF({ obj }) {
                <tr>
                   <td colSpan={5}>
                      <p style={{ textAlign: "center" }}>
-                        <span style={{ fontWeight: "bolder" }}>Nota:</span> Bajo protesta de decir la verdad, manifiesto que la información proporcionada en esta
-                        solicitud es verídica.
+                        <span style={{ fontWeight: "bolder" }}>Nota:</span> El usuario a declarado bajo protesta de decir la verdad, manifiesto que la información
+                        proporcionada en esta solicitud es verídica.
                      </p>
                   </td>
                </tr>
@@ -681,7 +681,7 @@ export default function RequestReportPDF({ obj }) {
                            {![item.isTutor, item.haveSecondRef].includes(null) && (
                               <div className="containerImg">
                                  <div className="title">{item.name}</div>
-                                 <img src={`${import.meta.env.VITE_HOST}/${item.url}`} />
+                                 <img src={`${import.meta.env.VITE_HOST}/${item.url}`} style={{ maxWidth: "90%" }} />
                                  {/* <p className="caption"></p> */}
                               </div>
                            )}
@@ -750,8 +750,8 @@ const first = (second) => {
       <TableRow>
          <TableCell colSpan={5}>
             <Typography textAlign={"center"}>
-               <span style={{ fontWeight: "bolder" }}>Nota:</span> Bajo protesta de decir la verdad, manifiesto que la información proporcionada en esta solicitud es
-               verídica.
+               <span style={{ fontWeight: "bolder" }}>Nota:</span> El usuario a declarado bajo protesta de decir la verdad, manifiesto que la información proporcionada
+               en esta solicitud es verídica.
             </Typography>
          </TableCell>
       </TableRow>

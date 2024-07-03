@@ -162,6 +162,7 @@ const UserForm = ({ dataRoles }) => {
                textBtnSubmit={textBtnSubmit}
                formikRef={formikRef}
                handleCancel={handleCancel}
+               maxHeight={"97%"}
             >
                <InputComponent col={12} idName="id" label={"id"} hidden={true} />
 

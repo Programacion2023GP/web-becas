@@ -92,7 +92,7 @@ export const FormikComponent = forwardRef(
          showActionButtons = true,
          activeStep = null,
          setStepFailed = null,
-         maxHeight = "79v",
+         maxHeight = "80%",
          className
       },
       ref
@@ -117,34 +117,45 @@ export const FormikComponent = forwardRef(
       return (
          <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit} innerRef={formikRef == null ? ref : formikRef}>
             {({ handleSubmit, isSubmitting, resetForm }) => (
-               <Grid container spacing={2} component={"form"} onSubmit={handleSubmit} onBlur={onBlur} onChangeCapture={onChange} height={"100%"}>
+               <Grid
+                  container
+                  spacing={2}
+                  component={"form"}
+                  onSubmit={handleSubmit}
+                  onBlur={onBlur}
+                  onChangeCapture={onChange}
+                  height={"100%"}
+                  style={{ alignContent: "space-between" }}
+               >
                   {!showActionButtons ? (
                      <Grid xs={12} container spacing={2} className={className}>
                         {children}
                      </Grid>
                   ) : (
                      <>
-                        <Grid width={"100%"} xs={12} spacing={2} height={maxHeight} maxHeight={maxHeight} overflow={"auto"}>
+                        <Grid width={"100%"} xs={12} spacing={2} height={maxHeight && maxHeight} maxHeight={maxHeight ?? maxHeight} overflow={"auto"}>
                            <Grid xs={12} container spacing={2} className={className}>
                               {children}
                            </Grid>
                         </Grid>
-                        <LoadingButton
-                           type="submit"
-                           disabled={isSubmitting}
-                           loading={isSubmitting}
-                           // loadingPosition="start"
-                           variant="contained"
-                           fullWidth
-                           size="large"
-                        >
-                           {textBtnSubmit}
-                        </LoadingButton>
-                        {/* <ButtonGroup variant="outlined" fullWidth> */}
-                        <Button type="reset" variant="outlined" color="error" fullWidth size="large" sx={{ mt: 1 }} onClick={() => handleCancel(resetForm)}>
-                           CANCELAR
-                        </Button>
-                        {/* </ButtonGroup> */}
+                        <Grid width={"100%"} xs={12}>
+                           <LoadingButton
+                              type="submit"
+                              disabled={isSubmitting}
+                              loading={isSubmitting}
+                              // loadingPosition="start"
+                              variant="contained"
+                              fullWidth
+                              size="large"
+                           >
+                              {textBtnSubmit}
+                           </LoadingButton>
+                           {/* <ButtonGroup variant="outlined" fullWidth> */}
+                           <Button type="reset" variant="outlined" color="error" fullWidth size="large" sx={{ mt: 1 }} onClick={() => handleCancel(resetForm)}>
+                              CANCELAR
+                           </Button>
+                           {/* </ButtonGroup> */}
+                        </Grid>
                      </>
                   )}
                </Grid>

@@ -48,7 +48,7 @@ export const ModalComponent = ({ children, open, setOpen, modalTitle = "", maxWi
             sx={{ backgroundColor: "transparent" }}
             fullScreen={fullScreenDialog}
          >
-            <DialogTitle my={0} py={0} sx={{ backgroundColor: gpcDark, color: gpcLight }}>
+            <DialogTitle my={0} py={0} sx={{ backgroundColor: "#94230e", color: gpcLight }}>
                <Toolbar sx={{ py: 0 }}>
                   <Typography variant="h2" my={0} py={0} color={gpcLight} sx={{ ml: 2, flex: 1, py: 0, pt: 0, pb: 0, padding: "0px 24px !important" }}>
                      {modalTitle}

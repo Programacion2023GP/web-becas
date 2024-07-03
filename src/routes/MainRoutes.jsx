@@ -218,100 +218,22 @@ const MainRoutes = {
                      </RequestBecaContextProvider>
                   </FamilyContextProvider>
                )
+            },
+            {
+               path: "pagos/:pago?",
+               element: (
+                  <FamilyContextProvider>
+                     <RequestBecaContextProvider>
+                        <RelationshipContextProvider>
+                           <RequestListView />
+                        </RelationshipContextProvider>
+                     </RequestBecaContextProvider>
+                  </FamilyContextProvider>
+               )
             }
-            // {
-            //    path: "en-revision",
-            //    element: (
-            //       <FamilyContextProvider>
-            //          <RequestBecaContextProvider>
-            //             <RequestListView status={"TERMINADA, EN REVISIÓN"} />
-            //          </RequestBecaContextProvider>
-            //       </FamilyContextProvider>
-            //    )
-            // },
-            // {
-            //    path: "en-evaluacion",
-            //    element: (
-            //       <FamilyContextProvider>
-            //          <RequestBecaContextProvider>
-            //             <RequestListView status={"EN EVALUACIÓN"} />
-            //          </RequestBecaContextProvider>
-            //       </FamilyContextProvider>
-            //    )
-            // },
-            // {
-            //    path: "aprobadas",
-            //    element: (
-            //       <FamilyContextProvider>
-            //          <RequestBecaContextProvider>
-            //             <RequestListView status={"APROBADA"} />
-            //          </RequestBecaContextProvider>
-            //       </FamilyContextProvider>
-            //    )
-            // },
-            // {
-            //    path: "pagadas",
-            //    element: (
-            //       <FamilyContextProvider>
-            //          <RequestBecaContextProvider>
-            //             <RequestListView status={"PAGADA"} />
-            //          </RequestBecaContextProvider>
-            //       </FamilyContextProvider>
-            //    )
-            // },
-            // {
-            //    path: "rechazadas",
-            //    element: (
-            //       <FamilyContextProvider>
-            //          <RequestBecaContextProvider>
-            //             <RequestListView status={"RECHAZADA"} />
-            //          </RequestBecaContextProvider>
-            //       </FamilyContextProvider>
-            //    )
-            // },
-            // {
-            //    path: "canceladas",
-            //    element: (
-            //       <FamilyContextProvider>
-            //          <RequestBecaContextProvider>
-            //             <RequestListView status={"CANCELADA"} />
-            //          </RequestBecaContextProvider>
-            //       </FamilyContextProvider>
-            //    )
-            // }
          ]
       },
 
-      {
-         path: "utils",
-         children: [
-            {
-               path: "util-typography",
-               element: <UtilsTypography />
-            },
-            {
-               path: "util-color",
-               element: <UtilsColor />
-            },
-            {
-               path: "util-shadow",
-               element: <UtilsShadow />
-            }
-         ]
-      },
-      {
-         path: "icons",
-         children: [
-            {
-               path: "tabler-icons",
-               element: <UtilsTablerIcons />
-            },
-            {
-               path: "material-icons",
-               element: <UtilsMaterialIcons />
-            }
-         ]
-      },
       {
          path: "sample-page",
          element: <SamplePage />

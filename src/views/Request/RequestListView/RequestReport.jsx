@@ -500,8 +500,8 @@ export default function RequestReport({ obj }) {
                <TableRow>
                   <TableCell colSpan={5}>
                      <Typography textAlign={"center"}>
-                        <span style={{ fontWeight: "bolder" }}>Nota:</span> Bajo protesta de decir la verdad, manifiesto que la información proporcionada en esta
-                        solicitud es verídica.
+                        <span style={{ fontWeight: "bolder" }}>Nota:</span> El usuario a declarado bajo protesta de decir la verdad, manifiesto que la información
+                        proporcionada en esta solicitud es verídica.
                      </Typography>
                   </TableCell>
                </TableRow>
