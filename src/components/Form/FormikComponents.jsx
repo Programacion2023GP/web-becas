@@ -92,7 +92,7 @@ export const FormikComponent = forwardRef(
          showActionButtons = true,
          activeStep = null,
          setStepFailed = null,
-         maxHeight = "80%",
+         maxHeight = "97%",
          className
       },
       ref
@@ -133,7 +133,7 @@ export const FormikComponent = forwardRef(
                      </Grid>
                   ) : (
                      <>
-                        <Grid width={"100%"} xs={12} spacing={2} height={maxHeight && maxHeight} maxHeight={maxHeight ?? maxHeight} overflow={"auto"}>
+                        <Grid width={"100%"} xs={12} spacing={2} height={maxHeight ?? maxHeight} maxHeight={maxHeight ?? maxHeight} overflow={"auto"}>
                            <Grid xs={12} container spacing={2} className={className}>
                               {children}
                            </Grid>
@@ -198,6 +198,8 @@ export const InputComponent = ({
    styleInput = 1,
    size = "medium",
    focus,
+   icon = null,
+   handleChangeExtra = null,
    ...props
 }) => {
    const formik = useFormikContext(); // Obtiene el contexto de Formik
@@ -222,6 +224,10 @@ export const InputComponent = ({
       marginBottom = -2.5;
       size = "small";
    }
+
+   const handleOnChangeExtra = (e) => {
+      return handleChangeExtra(e.target.value);
+   };
 
    useEffect(() => {
       // console.log("isError", isError);
@@ -346,9 +352,14 @@ export const InputComponent = ({
                               : formik.values[idName]
                            : type === "number" && !isNaN(parseInt(formik.values[idName]))
                            ? parseInt(formik.values[idName])
+                           : type === "number" && formik.values[idName] == 0
+                           ? "0"
                            : ""
                      }
-                     onChange={formik.handleChange} // Utiliza el handleChange de Formik
+                     onChange={(e) => {
+                        formik.handleChange(e);
+                        handleChangeExtra != null ? handleOnChangeExtra(e) : null;
+                     }}
                      onBlur={(e) => {
                         formik.handleBlur(e); // Usa handleBlur de Formik para manejar el blur
 
@@ -375,6 +386,7 @@ export const InputComponent = ({
                         <InputAdornment position="start" sx={{ ml: 0.5 }}>
                            <Typography sx={{ color: "whitesmoke", fontWeight: "bolder", fontSize: 14 }}>{label}</Typography>
                            {/* <IconSearch stroke={2.5} size="1.5rem" color={theme.palette.grey[500]} /> */}
+                           {icon ?? icon}
                         </InputAdornment>
                         // </Tooltip>
                      }

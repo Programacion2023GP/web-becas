@@ -16,24 +16,10 @@ const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true :
 const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
 
 const SchoolForm = () => {
-   const {
-      openDialog,
-      setOpenDialog,
-      toggleDrawer,
-      setLoadingAction   } = useGlobalContext();
+   const { openDialog, setOpenDialog, toggleDrawer, setLoadingAction } = useGlobalContext();
    const { singularName, levels, getLevelsSelectIndex } = useLevelContext();
-   const {
-      createSchool,
-      updateSchool,
-      formData,
-      setFormData,
-      textBtnSubmit,
-      resetFormData,
-      setTextBtnSumbit,
-      formTitle,
-      setFormTitle,
-      formikRef
-   } = useSchoolContext();
+   const { createSchool, updateSchool, formData, setFormData, textBtnSubmit, resetFormData, setTextBtnSumbit, formTitle, setFormTitle, formikRef } =
+      useSchoolContext();
    const [checkAdd, setCheckAdd] = useState(checkAddInitialState);
    const [colorLabelcheck, setColorLabelcheck] = useState(colorLabelcheckInitialState);
 
@@ -76,8 +62,6 @@ const SchoolForm = () => {
          setLoadingAction(false);
       }
    };
-
-
 
    const handleCancel = (resetForm) => {
       try {

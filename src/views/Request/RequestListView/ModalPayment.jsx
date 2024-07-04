@@ -2,16 +2,17 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 
 import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
-import { TextField } from "@mui/material";
+import { TextField, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { useEffect, useRef, useState } from "react";
 import { ModalComponent } from "../../../components/ModalComponent";
 import { useGlobalContext } from "../../../context/GlobalContext";
 import { useRequestBecaContext } from "../../../context/RequestBecaContext";
-import { formatDatetimeToSQL } from "../../../utils/Formats";
+import { formatDatetimeToSQL, numberToText } from "../../../utils/Formats";
 import Toast from "../../../utils/Toast";
-import { FormikComponent, InputComponent, Select2Component } from "../../../components/Form/FormikComponents";
+import { DatePickerComponent, FileInputComponent, FormikComponent, InputComponent, Select2Component } from "../../../components/Form/FormikComponents";
 import { useRelationshipContext } from "../../../context/RelationshipContext";
+import { MonetizationOn } from "@mui/icons-material";
 
 function ModalPayment({ folio, open, setOpen, statusCurrent, modalTitle, maxWidth }) {
    const { setLoadingAction } = useGlobalContext();
@@ -24,10 +25,13 @@ function ModalPayment({ folio, open, setOpen, statusCurrent, modalTitle, maxWidt
       rejected_feedback: "",
       rejected_at: ""
    });
+   const [imgEvidence, setImgEvidence] = useState([]);
+   const [textValue, setTextValue] = useState("");
 
    const handleCancel = (resetForm) => {
       try {
-         resetForm();
+         if (resetForm) resetForm();
+         resetFormData();
          setOpen(false);
       } catch (error) {
          console.log(error);
@@ -37,6 +41,7 @@ function ModalPayment({ folio, open, setOpen, statusCurrent, modalTitle, maxWidt
    const resetFormData = () => {
       formData.rejected_feedback = "";
       formData.rejected_at = "";
+      setImgEvidence([]);
       setFormData({
          // folio: 0,
          rejected_feedback: "",
@@ -47,7 +52,8 @@ function ModalPayment({ folio, open, setOpen, statusCurrent, modalTitle, maxWidt
 
    const onSubmit = async (values, { setSubmitting, setErrors, resetForm }) => {
       try {
-         values.rejected_at = formatDatetimeToSQL(new Date());
+         values.img_evidence = imgEvidence.length == 0 ? "" : imgEvidence[0].file;
+
          // console.log("values", values);
          setLoadingAction(true);
          const axiosResponse = await updateStatusBeca(folio, "RECHAZADA", values, statusCurrent);
@@ -71,6 +77,11 @@ function ModalPayment({ folio, open, setOpen, statusCurrent, modalTitle, maxWidt
       }
    };
 
+   const handleChangeAmountPaid = (value) => {
+      if (value.length == 0) return setTextValue("");
+      setTextValue(numberToText(parseFloat(value)));
+   };
+
    const validationSchema = Yup.object().shape({
       rejected_feedback: Yup.string().trim().required("Retroalimentación del Rechazo requerido")
    });
@@ -80,7 +91,7 @@ function ModalPayment({ folio, open, setOpen, statusCurrent, modalTitle, maxWidt
    }, []);
 
    return (
-      <ModalComponent open={open} setOpen={setOpen} modalTitle={modalTitle} maxWidth={maxWidth}>
+      <ModalComponent open={open} setOpen={setOpen} modalTitle={modalTitle} maxWidth={maxWidth} height={"65vh"}>
          <FormikComponent
             key={"formikComponent"}
             initialValues={formData}
@@ -89,7 +100,10 @@ function ModalPayment({ folio, open, setOpen, statusCurrent, modalTitle, maxWidt
             textBtnSubmit={"PAGAR"}
             formikRef={formikRef}
             handleCancel={handleCancel}
+            maxHeight={"80%"}
          >
+            <InputComponent col={12} idName={"id"} label={"ID"} placeholder={"ID"} textStyleCase={true} hidden={true} />
+            <DatePickerComponent col={12} idName={"fec"} label={"Fecha y Hora de Pago"} format={"dddd d MMMM YYYY hh:mm a"} disabled={true} />
             <Select2Component
                col={5}
                idName={"relationship_id"}
@@ -98,45 +112,39 @@ function ModalPayment({ folio, open, setOpen, statusCurrent, modalTitle, maxWidt
                pluralName={"Parentezcos"}
                refreshSelect={getRelationshipsSelectIndex}
             />
-            <InputComponent col={12} idName={"id"} label={"ID"} placeholder={"ID"} textStyleCase={true} hidden={true} />
-
             <InputComponent col={7} idName={"paid_to"} label={"Nombre de quien Recibio el pago *"} placeholder={"Nombre Completo"} textStyleCase={true} />
+            <InputComponent
+               col={2}
+               idName={"amount_paid"}
+               label={"Monto"}
+               placeholder={"$999.99"}
+               type={"numeric"}
+               icon={<MonetizationOn />}
+               handleChangeExtra={handleChangeAmountPaid}
+            />
+            <Typography color={"GrayText"} sx={{ display: "flex", alignItems: "center", fontStyle: "italic" }}>
+               {textValue}
+            </Typography>
+            <FileInputComponent
+               idName="img_evidence"
+               label="Evidencia del pago *"
+               filePreviews={imgEvidence}
+               setFilePreviews={setImgEvidence}
+               multiple={false}
+               accept={"image/*"}
+            />
+            {/* ENVIAR (onSubmit) ----------> */}
+            {/* MODIFICAR (handleModify) ---> setObjImg(formData.img_evidence, setImgEvidence); */}
+            {/* RESET ---------------------->  */}
+            <InputComponent
+               col={12}
+               idName={"paid_feedback"}
+               label={"Comentarios (opcional)"}
+               placeholder={"Escriba comentarios u observaciones si existen..."}
+               textStyleCase={null}
+               rows={3}
+            />
          </FormikComponent>
-         {/* <Formik initialValues={formData} validationSchema={validationSchema} onSubmit={onSubmit} innerRef={formikRef}>
-            {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values, resetForm, setFieldValue, setValues }) => (
-               <Grid container spacing={2} component={"form"} onSubmit={handleSubmit} mx={1} my={1}>
-                  <Grid xs={12} md={12} sx={{ mb: 0 }}>
-                     <TextField
-                        id="rejected_feedback"
-                        name="rejected_feedback"
-                        label="Retroalimentación del Rechazo *"
-                        type="text"
-                        value={values.rejected_feedback}
-                        placeholder="Se rechazo porque..."
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        // onInput={(e) => handleInputFormik(e, setFieldValue, "rejected_feedback", true)}
-                        multiline
-                        rows={3}
-                        fullWidth
-                        error={errors.rejected_feedback && touched.rejected_feedback}
-                        helperText={errors.rejected_feedback && touched.rejected_feedback && errors.rejected_feedback}
-                     />
-                  </Grid>
-
-                  <LoadingButton
-                     type="submit"
-                     disabled={isSubmitting}
-                     loading={isSubmitting}
-                     // loadingPosition="start"
-                     variant="text"
-                     size="large"
-                  >
-                     ACEPTAR
-                  </LoadingButton>
-               </Grid>
-            )}
-         </Formik> */}
       </ModalComponent>
    );
 }

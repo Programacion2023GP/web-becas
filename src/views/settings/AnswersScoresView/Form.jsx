@@ -905,7 +905,7 @@ const AnswerScoreForm = () => {
                   <Tabs
                      value={tabValue}
                      onChange={handleChangeTab}
-                     sx={{ backgroundColor: "green" }}
+                     sx={{ backgroundColor: "wheat" }}
                      indicatorColor="secondary"
                      textColor="inherit"
                      variant="fullWidth"
@@ -940,7 +940,7 @@ const AnswerScoreForm = () => {
                               fullWidth={false}
                               sx={{ width: "auto" }}
                               size="large"
-                              color="warning"
+                              color="secondary"
                               onClick={() => setTextBtnSumbit("NUEVA")}
                            >
                               {"NUEVA"}

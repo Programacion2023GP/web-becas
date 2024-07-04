@@ -130,7 +130,6 @@ const RoleForm = () => {
                textBtnSubmit={textBtnSubmit}
                formikRef={formikRef}
                handleCancel={handleCancel}
-               maxHeight={"97%"}
             >
                <InputComponent col={12} idName={"id"} label={"id"} hidden={true} />
                <InputComponent col={12} idName={"role"} label={"Nombre del Rol *"} placeholder={"Supervisor"} />

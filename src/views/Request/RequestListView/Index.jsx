@@ -1,14 +1,13 @@
 import { useEffect, useState } from "react";
 import { ROLE_CIUDADANO, useGlobalContext } from "../../../context/GlobalContext";
-import { Box } from "@mui/system";
-import { Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 
 import { useRequestBecaContext } from "../../../context/RequestBecaContext";
 
 import RequestBecaDT from "./RequestDT";
 import { useAuthContext } from "../../../context/AuthContext";
 import { useParams } from "react-router";
-import { ModalComponent } from "../../../components/ModalComponent";
+import { useRelationshipContext } from "../../../context/RelationshipContext";
 
 const RequestListView = () => {
    const { status } = useParams();
@@ -18,10 +17,12 @@ const RequestListView = () => {
    const { getRequestBecas } = useRequestBecaContext();
    const [data, setData] = useState([]);
    const [dataUpload, setDataUpload] = useState(false);
+   const { getRelationshipsSelectIndex } = useRelationshipContext();
 
    useEffect(() => {
       setLoading(true);
       getRequestBecas(status);
+      getRelationshipsSelectIndex();
       // console.log("useEffect - formData", requestBecas);
    }, [status]);
 

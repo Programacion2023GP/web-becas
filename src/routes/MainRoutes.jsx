@@ -204,7 +204,9 @@ const MainRoutes = {
                element: (
                   <FamilyContextProvider>
                      <RequestBecaContextProvider>
-                        <RequestListView />
+                        <RelationshipContextProvider>
+                           <RequestListView />
+                        </RelationshipContextProvider>
                      </RequestBecaContextProvider>
                   </FamilyContextProvider>
                )
@@ -214,7 +216,9 @@ const MainRoutes = {
                element: (
                   <FamilyContextProvider>
                      <RequestBecaContextProvider>
-                        <RequestListView />
+                        <RelationshipContextProvider>
+                           <RequestListView />
+                        </RelationshipContextProvider>
                      </RequestBecaContextProvider>
                   </FamilyContextProvider>
                )
