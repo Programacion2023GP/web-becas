@@ -3,11 +3,6 @@ import Toast from "./Toast";
 
 moment.locale("es");
 
-const unidades = ["", "uno", "dos", "tres", "cuatro", "cinco", "seis", "siete", "ocho", "nueve"];
-const especiales = ["diez", "once", "doce", "trece", "catorce", "quince", "dieciséis", "diecisiete", "dieciocho", "diecinueve"];
-const decenas = ["", "diez", "veinte", "treinta", "cuarenta", "cincuenta", "sesenta", "setenta", "ochenta", "noventa"];
-const centenas = ["", "cien", "doscientos", "trescientos", "cuatrocientos", "quinientos", "seiscientos", "setecientos", "ochocientos", "novecientos"];
-
 //#region /** FECHAS - FORMATEADO */
 function validateRangeDates(action, input_initial_date, input_final_date) {
    let current_date = new Date();
@@ -187,89 +182,130 @@ export const cutLines = (text) => {
    return lines;
 };
 
+const unidades = ["", "uno", "dos", "tres", "cuatro", "cinco", "seis", "siete", "ocho", "nueve"];
+const especiales = ["diez", "once", "doce", "trece", "catorce", "quince", "dieciséis", "diecisiete", "dieciocho", "diecinueve"];
+const decenas = ["", "diez", "veinte", "treinta", "cuarenta", "cincuenta", "sesenta", "setenta", "ochenta", "noventa"];
+const centenas = ["", "cien", "doscientos", "trescientos", "cuatrocientos", "quinientos", "seiscientos", "setecientos", "ochocientos", "novecientos"];
 /**
- * Transformará la cantidad de un número y la retornará en texto, por el momento limitada hasta el 999.99
+ * Transformará la cantidad de un número y la retornará en texto, por el momento limitada hasta el 99,999.99
  * @param {number} number
  */
 export const numberToText = (number) => {
-   return convertirNumeroATexto(number);
+   try {
+      return convertirNumeroATexto(number);
 
-   function convertirNumeroATexto(numero) {
-      let [enteros, decimales] = numero.toString().split(".");
+      function convertirNumeroATexto(numero) {
+         let [enteros, decimales] = numero.toString().split(".");
 
-      let textoEnteros = convertirParteEntera(enteros);
-      let textoDecimales = convertirParteDecimal(decimales);
+         let textoEnteros = convertirParteEntera(enteros);
+         let textoDecimales = convertirParteDecimal(decimales);
 
-      let resultado = `son ${textoEnteros} peso${parseInt(enteros) !== 1 ? "s" : ""}`;
-      if (textoDecimales) {
-         resultado += ` con ${textoDecimales} centavo${parseInt(decimales) !== 1 ? "s" : ""}`;
-      }
-
-      return resultado;
-   }
-
-   function convertirParteEntera(numero) {
-      if (numero === "0") return "cero";
-
-      let partes = [];
-      let num = parseInt(numero, 10);
-
-      // if (num >= 10000 && num < 20000) {
-      //    console.log("🚀 ~ convertirParteEntera ~ numero:", numero.slice(0, 2));
-      //    partes.push(`${especiales[numero.slice(0, 2) - 10]} mil`);
-      // }
-      // else {
-      //    partes.push(`${decenas[Math.floor(numero.slice(0, 2) / 10)]} mil`);
-      //    num = num % 10;
-      //    partes.push(unidades[num]);
-      // }
-      if (num >= 1000) {
-         partes.push(`${unidades[Math.floor(num / 1000)]} mil`);
-         num = num % 1000;
-      }
-
-      if (num >= 100) {
-         if (num === 100) {
-            partes.push("cien");
-         } else {
-            partes.push(centenas[Math.floor(num / 100)]);
+         let resultado = `son ${textoEnteros} peso${parseInt(enteros) !== 1 ? "s" : ""}`;
+         if (textoDecimales) {
+            resultado += ` con ${textoDecimales} centavo${parseInt(decimales) !== 1 ? "s" : ""}`;
          }
-         num = num % 100;
+
+         return resultado;
       }
 
-      if (num >= 10 && num < 20) {
-         partes.push(especiales[num - 10]);
-      } else {
-         partes.push(decenas[Math.floor(num / 10)]);
-         num = num % 10;
-         partes.push(unidades[num]);
+      function convertirParteEntera(numero) {
+         if (numero === "0") return "cero";
+
+         let partes = [];
+         let num = parseInt(numero, 10);
+         // console.log("🚀 ~ convertirParteEntera ~ num:", num);
+
+         if (num >= 10000 && num < 20000) {
+            partes.push(`${especiales[parseInt(num.toString().slice(0, 2)) - 10]} mil`);
+            num = num % 1000;
+         } else if (num >= 20000 && num <= 100000) {
+            const miles = Math.floor(num / 1000);
+            if (miles >= 30) partes.push(`${decenas[Math.floor(parseInt(num.toString().slice(0, 2)) / 10)]}`);
+            num = num % 10000;
+
+            if (miles === 20) {
+               partes.push("veinte mil");
+               num = num % 1000;
+            } else if (miles === 21) {
+               partes.push("veintiún mil");
+               num = num % 1000;
+            } else if (miles >= 22 && miles < 30) {
+               partes.push(`veinti${unidades[Math.floor(num / 1000)]} mil`);
+               num = num % 1000;
+            } else {
+               if (miles % 10 > 0) partes.push("y");
+               if (miles % 10 === 1) partes.push("un mil");
+               else partes.push(`${unidades[Math.floor(num / 1000)]} mil`);
+               num = num % 1000;
+            }
+         } else if (num >= 1000) {
+            partes.push(`${unidades[Math.floor(num / 1000)]} mil`);
+            num = num % 1000;
+         }
+
+         if (num >= 100) {
+            if (num >= 101 && num < 200) {
+               partes.push("ciento");
+            } else {
+               partes.push(centenas[Math.floor(num / 100)]);
+            }
+            num = num % 100;
+         }
+
+         if (num >= 10 && num < 20) {
+            partes.push(especiales[num - 10]);
+         } else {
+            const dec = Math.floor(num / 10);
+            if (dec >= 3) partes.push(decenas[Math.floor(num / 10)]);
+            if (dec === 2) {
+               const uni = num % 10;
+               num = num % 10;
+
+               if (uni === 0) partes.push("veinte");
+               else if (uni === 1) partes.push("veintiún");
+               else partes.push(`veinti${unidades[num]}`);
+            } else {
+               num = num % 10;
+               if (dec >= 3 && num > 0) partes.push("y");
+               if (includesInArray(partes, ["cien", "ciento", "mil"]) && num === 1) partes.push("un");
+               else partes.push(unidades[num]);
+            }
+         }
+
+         return partes
+            .filter((p) => p !== "")
+            .join(" ")
+            .trim();
       }
 
-      return partes
-         .filter((p) => p !== "")
-         .join(" ")
-         .trim();
+      function convertirParteDecimal(numero) {
+         if (!numero) return "";
+
+         if (numero.length === 1) {
+            numero += "0";
+         }
+
+         return convertirParteEntera(numero);
+      }
+   } catch (error) {
+      console.log("🚀 ~ includesInArray ~ error:", error);
+      Toast.Error(error);
    }
+};
 
-   function convertirParteDecimal(numero) {
-      if (!numero) return "";
-
-      if (numero.length === 1) {
-         numero += "0";
-      }
-
-      return convertirParteEntera(numero);
+/**
+ * Esta función nos ayuda a saber si almenos un valor de un array se encuentra en otro array o todos los valores, segun se indique en allValues
+ * @param {[*]} array1 - Array que se desea inspeccionar
+ * @param {[*]} array2 - Array de valores a buscar
+ * @param {boolean} allValues - Indicar si deseas que coinsidan todos los valores del array2 (true) o almenos uno (false)
+ * @returns {boolean}
+ */
+export const includesInArray = (array1, array2, allValues = false) => {
+   try {
+      if (allValues) return array2.every((element) => array1.includes(element));
+      else return array2.map((element) => array1.includes(element));
+   } catch (error) {
+      console.log("🚀 ~ includesInArray ~ error:", error);
+      Toast.Error(error);
    }
-
-   //   function convertirNumero() {
-   //       const input = document.getElementById('numberInput').value;
-   //       const numeroConvertido = parseFloat(input);
-   //       const output = document.getElementById('numberText');
-
-   //       if (!isNaN(numeroConvertido)) {
-   //           output.innerText = convertirNumeroATexto(numeroConvertido);
-   //       } else {
-   //           output.innerText = "";
-   //       }
-   //   }
 };

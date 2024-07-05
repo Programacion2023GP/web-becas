@@ -23,6 +23,12 @@
 }
 /* SCROLL */
 
+.MuiDialogTitle-root, .form.MuiBox-root {
+   & h1,h2,h3,h4{
+      font-size: clamp(1.2rem,1.5vw,2rem);
+   }
+}
+
 
 .bg-login {
    position: absolute;

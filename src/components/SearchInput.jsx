@@ -4,7 +4,7 @@ import { display, shouldForwardProp } from "@mui/system";
 import { styled } from "@mui/material/styles";
 import { useTheme } from "@emotion/react";
 import { useState } from "react";
-import { useGlobalContext } from "../context/GlobalContext";
+import { colorPrimaryDark, useGlobalContext } from "../context/GlobalContext";
 import { handleInputStringCase } from "../utils/Formats";
 
 const OutlineInputStyle = styled(OutlinedInput, { shouldForwardProp })(({ theme }) => ({
@@ -101,7 +101,7 @@ const SearchInput = ({
             {showOptions && (
                <FormControl
                   fullWidth
-                  sx={{ color:  "#1F2227", alignItems: "center", backgroundColor: "whitesmoke", borderRadius: "10px", mt: 0.5, p: 0.5 }}
+                  sx={{ color: colorPrimaryDark /* "#1F2227" */, alignItems: "center", backgroundColor: "whitesmoke", borderRadius: "10px", mt: 0.5, p: 0.5 }}
                >
                   <RadioGroup
                      row

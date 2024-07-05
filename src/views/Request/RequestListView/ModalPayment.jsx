@@ -122,7 +122,7 @@ function ModalPayment({ folio, open, setOpen, statusCurrent, modalTitle, maxWidt
                icon={<MonetizationOn />}
                handleChangeExtra={handleChangeAmountPaid}
             />
-            <Typography color={"GrayText"} sx={{ display: "flex", alignItems: "center", fontStyle: "italic" }}>
+            <Typography color={"GrayText"} sx={{ display: "flex", alignItems: "center", fontStyle: "italic", fontWeight: "bolder" }}>
                {textValue}
             </Typography>
             <FileInputComponent

@@ -141,7 +141,7 @@ const SchoolDT = () => {
 
    const handleClickDelete = async (id, name) => {
       try {
-         mySwal.fire(QuestionAlertConfig(`Estas seguro de eliminar a ${name}`)).then(async (result) => {
+         mySwal.fire(QuestionAlertConfig(`Estas seguro de eliminar la escuela ${name}`)).then(async (result) => {
             if (result.isConfirmed) {
                setLoadingAction(true);
                const axiosResponse = await deleteSchool(id);
@@ -204,7 +204,7 @@ const SchoolDT = () => {
             // console.log(obj);
             let register = obj;
             register.key = index + 1;
-            register.actions = <ButtonsAction id={obj.id} name={obj.code} active={obj.active} />;
+            register.actions = <ButtonsAction id={obj.id} name={`${obj.code} - ${obj.school}`} active={obj.active} />;
             data.push(register);
          });
          // if (data.length > 0) setGlobalFilterFields(Object.keys(schools[0]));

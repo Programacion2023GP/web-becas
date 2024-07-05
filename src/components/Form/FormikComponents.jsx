@@ -37,7 +37,7 @@ import dayjs from "dayjs";
 import "dayjs/locale/es";
 import axios from "axios";
 import { useDropzone } from "react-dropzone";
-import { useGlobalContext } from "../../context/GlobalContext";
+import { colorPrimaryDark, useGlobalContext } from "../../context/GlobalContext";
 // import Select2Component from "./Select2Component";
 // import { InputAdornment, OutlinedInput } from "@mui/material";
 import { shouldForwardProp, styled } from "@mui/system";
@@ -215,7 +215,7 @@ export const InputComponent = ({
    if (styleInput == 2) {
       flexDirection = "column";
       alignItems = "center";
-      sxInput = { backgroundColor: "#1F2227" };
+      sxInput = { backgroundColor: colorPrimaryDark /* "#1F2227" */ };
    } else if (styleInput == 3) {
       flexDirection = "row";
       alignItems = "flex-end";

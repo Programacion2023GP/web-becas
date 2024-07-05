@@ -17,7 +17,7 @@ import { FilterMatchMode, FilterOperator } from "primereact/api";
 import { Box } from "@mui/system";
 import { AddCircleOutlineOutlined } from "@mui/icons-material";
 
-import { useGlobalContext } from "../context/GlobalContext";
+import { colorPrimaryMain, colorSecondaryMain, useGlobalContext } from "../context/GlobalContext";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import Toast from "../utils/Toast";
@@ -106,7 +106,7 @@ export default function DataTableComponent({
    showGridlines = false,
    btnDeleteMultiple = false,
    handleClickDeleteMultipleContinue,
-   scrollHeight = "67vh"
+   scrollHeight = "65vh"
 }) {
    const { setLoadingAction, setOpenDialog } = useGlobalContext();
    const [selectedData, setSelectedData] = useState(null);
@@ -116,7 +116,7 @@ export default function DataTableComponent({
    // columns.unshift({ id: 0, label: "Selecciona una opción..." });
 
    // FILTROS
-   let filtersColumns = columns.map((c) => [c.field, { value: null, matchMode: FilterMatchMode.STARTS_WITH }]);
+   let filtersColumns = columns.map((c) => [c.field, { value: null, matchMode: FilterMatchMode.CONTAINS }]);
    filtersColumns = Object.fromEntries(filtersColumns);
    filtersColumns.global = { value: null, matchMode: FilterMatchMode.CONTAINS };
    const [filters, setFilters] = useState(filtersColumns);
@@ -449,26 +449,26 @@ export default function DataTableComponent({
                      key={index}
                      field={col.field}
                      header={col.header}
-                     headerStyle={{ backgroundColor: "#E9ECEF", color: "#364152", textAlign: "center" }}
+                     headerStyle={{ backgroundColor: colorPrimaryMain /* "#E9ECEF" */, color: "#364152", textAlign: "center" }}
                      headerClassName="text-center"
                      filter={col.filter && headerFilters}
                      filterField={col.filterField}
-                     filterHeaderStyle={{ backgroundColor: "#E9ECEF", color: "#364152" }}
+                     filterHeaderStyle={{ backgroundColor: colorPrimaryMain, color: "#364152" }}
                      editor={(options) => col.functionEdit(options)}
                      sortable={col.sortable}
                      body={col.body}
                      style={{ minWidth: col.width ? col.width : col.filter ? "12rem" : "auto" }}
-                     footerStyle={{ backgroundColor: "#E9ECEF", color: "#364152" }}
+                     footerStyle={{ backgroundColor: colorPrimaryMain, color: "#364152" }}
                   ></Column>
                ))}
                {rowEdit ? (
                   <Column
                      rowEditor
                      // headerStyle={{ width: "10%", minWidth: "8rem" }}
-                     headerStyle={{ backgroundColor: "#E9ECEF", color: "#364152", textAlign: "center" }}
+                     headerStyle={{ backgroundColor: colorPrimaryMain, color: "#364152", textAlign: "center" }}
                      headerClassName="text-center"
                      filter={false}
-                     filterHeaderStyle={{ backgroundColor: "#E9ECEF", color: "#364152" }}
+                     filterHeaderStyle={{ backgroundColor: colorPrimaryMain, color: "#364152" }}
                      bodyStyle={{ textAlign: "center" }}
                   ></Column>
                ) : (
@@ -477,15 +477,15 @@ export default function DataTableComponent({
                      field={"actions"}
                      header={"Acciones"}
                      headerClassName="text-center"
-                     headerStyle={{ backgroundColor: "#E9ECEF", color: "#364152" }}
-                     filterHeaderStyle={{ backgroundColor: "#E9ECEF", color: "#364152" }}
+                     headerStyle={{ backgroundColor: colorPrimaryMain, color: "#364152" }}
+                     filterHeaderStyle={{ backgroundColor: colorPrimaryMain, color: "#364152" }}
                      // editor={(options) => col.functionEdit(options)}
                      // body={col.body}
                      sortable={false}
                      bodyStyle={{ textAlign: "center" }}
                      filter={false}
                      style={{ width: "auto" }}
-                     footerStyle={{ backgroundColor: "#E9ECEF", color: "#364152" }}
+                     footerStyle={{ backgroundColor: colorPrimaryMain /* "#E9ECEF" */, color: "#364152" }}
                      alignFrozen="right"
                      frozen={true}
                   ></Column>

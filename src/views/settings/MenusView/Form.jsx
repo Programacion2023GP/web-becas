@@ -1,6 +1,6 @@
 import * as Yup from "yup";
 
-import { Card, Typography } from "@mui/material";
+import { Card, Grid, Typography } from "@mui/material";
 import { useState } from "react";
 import { useMenuContext } from "../../../context/MenuContext";
 import { Box } from "@mui/system";
@@ -137,14 +137,20 @@ const MenuForm = () => {
       // <SwipeableDrawer anchor={"right"} open={openDialog} onClose={toggleDrawer(false)} onOpen={toggleDrawer(true)}>
       <Card>
          <Box role="presentation" p={3} pt={5} className="form" sx={{ maxHeight: "77.2vh", overflowY: "auto" }}>
-            <Typography variant="h2" mb={3} textAlign={"center"}>
-               {formTitle}
-               {/* <FormControlLabel
-                  sx={{ float: "right", color: colorLabelcheck }}
-                  control={<Switch checked={checkAdd} onChange={(e) => handleChangeCheckAdd(e)} />}
-                  label="Seguir Agregando"
-               /> */}
-            </Typography>
+            <Grid container mb={2}>
+               <Grid item xs={12}>
+                  <Typography variant="h2" textAlign={"center"}>
+                     {formTitle}
+                  </Typography>
+               </Grid>
+               {/* <Grid item xs={4}>
+                  <FormControlLabel
+                     sx={{ float: "right", color: colorLabelcheck }}
+                     control={<Switch checked={checkAdd} onChange={(e) => handleChangeCheckAdd(e)} />}
+                     label="Seguir Agregando"
+                  />
+               </Grid> */}
+            </Grid>
             <FormikComponent
                key={"formikComponent"}
                initialValues={formData}
