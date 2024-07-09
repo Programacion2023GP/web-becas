@@ -200,7 +200,8 @@ export default function RequestBecaContextProvider({ children }) {
             // console.log("getRequestBecas()->status", status);
             let filterStatus;
             if (status == "en-revision") {
-               filterStatus = "TERMINADA,EN REVISIÓN";
+               // filterStatus = "TERMINADA,EN REVISIÓN";
+               filterStatus = "EN REVISIÓN";
                // counterName = "requestInReview";
             } else if (status == "en-evaluacion") {
                filterStatus = "EN EVALUACIÓN";
