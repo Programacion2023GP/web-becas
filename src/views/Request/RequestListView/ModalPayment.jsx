@@ -21,9 +21,12 @@ function ModalPayment({ folio, open, setOpen, statusCurrent, modalTitle, maxWidt
 
    const formikRef = useRef();
    const [formData, setFormData] = useState({
-      // folio: folio,
-      rejected_feedback: "",
-      rejected_at: ""
+      id: 0,
+      folio: folio,
+      relationship_id: "",
+      amount_paid: "",
+      img_evidence: "",
+      paid_feedback: ""
    });
    const [imgEvidence, setImgEvidence] = useState([]);
    const [textValue, setTextValue] = useState("");
@@ -43,9 +46,11 @@ function ModalPayment({ folio, open, setOpen, statusCurrent, modalTitle, maxWidt
       formData.rejected_at = "";
       setImgEvidence([]);
       setFormData({
-         // folio: 0,
-         rejected_feedback: "",
-         rejected_at: ""
+         // folio: folio,
+         relationship_id: "",
+         amount_paid: "",
+         img_evidence: "",
+         paid_feedback: ""
       });
       console.log("limpiao");
    };
@@ -83,11 +88,16 @@ function ModalPayment({ folio, open, setOpen, statusCurrent, modalTitle, maxWidt
    };
 
    const validationSchema = Yup.object().shape({
-      rejected_feedback: Yup.string().trim().required("Retroalimentación del Rechazo requerido")
+      relationship_id: Yup.string().trim().required("Parente del Rechazo requerido"),
+      amount_paid: Yup.number().min(0, "Está cantidad no es aceptgable. ").required("Retroalimentación del Rechazo requerido"),
+      img_evidence: Yup.string().trim().required("Retroalimentación del Rechazo requerido"),
+      paid_feedback: Yup.string().trim().required("Retroalimentación del Rechazo requerido")
    });
 
    useEffect(() => {
       // console.log("ModalPayment");
+      // const _formData = formData;
+      // _formData.setFormData;
    }, []);
 
    return (
@@ -103,7 +113,8 @@ function ModalPayment({ folio, open, setOpen, statusCurrent, modalTitle, maxWidt
             maxHeight={"80%"}
          >
             <InputComponent col={12} idName={"id"} label={"ID"} placeholder={"ID"} textStyleCase={true} hidden={true} />
-            <DatePickerComponent col={12} idName={"fec"} label={"Fecha y Hora de Pago"} format={"dddd d MMMM YYYY hh:mm a"} disabled={true} />
+            <InputComponent col={6} idName={"beca_paid_id"} label={"# Folio"} placeholder={"0"} textStyleCase={true} />
+            <DatePickerComponent col={6} idName={"fec"} label={"Fecha y Hora de Pago"} format={"dddd d MMMM YYYY hh:mm a"} disabled={true} />
             <Select2Component
                col={5}
                idName={"relationship_id"}
@@ -116,7 +127,7 @@ function ModalPayment({ folio, open, setOpen, statusCurrent, modalTitle, maxWidt
             <InputComponent
                col={2}
                idName={"amount_paid"}
-               label={"Monto"}
+               label={"Monto *"}
                placeholder={"$999.99"}
                type={"numeric"}
                icon={<MonetizationOn />}
@@ -133,9 +144,7 @@ function ModalPayment({ folio, open, setOpen, statusCurrent, modalTitle, maxWidt
                multiple={false}
                accept={"image/*"}
             />
-            {/* ENVIAR (onSubmit) ----------> */}
             {/* MODIFICAR (handleModify) ---> setObjImg(formData.img_evidence, setImgEvidence); */}
-            {/* RESET ---------------------->  */}
             <InputComponent
                col={12}
                idName={"paid_feedback"}

@@ -346,6 +346,7 @@ const RequestBecaDT = ({ status = null }) => {
    // };
 
    const ButtonsAction = ({ id, name, current_page, obj }) => {
+      console.log("🚀 ~ ButtonsAction ~ obj:", obj);
       if (["CANCELADA"].includes(obj.status)) return;
 
       return (
