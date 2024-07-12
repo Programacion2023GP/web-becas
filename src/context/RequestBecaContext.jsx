@@ -228,7 +228,7 @@ export default function RequestBecaContextProvider({ children }) {
 
          // console.log("axiosData", axiosData);
          res = await axiosData.data.data;
-         if (status == "en-evaluacion") res.result = res.result.sort((a, b) => b.score_total - a.score_total);
+         // if (status == "en-evaluacion") res.result = res.result.sort((a, b) => b.score_total - a.score_total);
          await setRequestBecas(res.result);
          // console.log("requestBecas", requestBecas);
          await counterOfMenus();

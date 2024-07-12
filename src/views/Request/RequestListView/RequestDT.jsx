@@ -346,7 +346,7 @@ const RequestBecaDT = ({ status = null }) => {
    // };
 
    const ButtonsAction = ({ id, name, current_page, obj }) => {
-      console.log("🚀 ~ ButtonsAction ~ obj:", obj);
+      // console.log("🚀 ~ ButtonsAction ~ obj:", obj);
       if (["CANCELADA"].includes(obj.status)) return;
 
       return (
@@ -582,6 +582,7 @@ const RequestBecaDT = ({ status = null }) => {
             positionBtnsToolbar="center"
             toolbarContent={toolbarContent}
          />
+
          {/* <PDFTable /> */}
          {openDialogPreview && (
             <Dialog fullWidth maxWidth={"lg"} fullScreen={fullScreenDialog} open={openDialogPreview} onClose={() => setOpenDialogPreview(false)}>
@@ -634,9 +635,14 @@ const RequestBecaDT = ({ status = null }) => {
             </DialogActions> */}
             </Dialog>
          )}
-         {openModalReject && <ModalReject open={openModalReject} setOpen={setOpenModalReject} folio={folio} statusCurrent={status} />}
 
-         {openModalPayment && <ModalPayment folio={folio} open={openModalPayment} setOpen={setOpenModalPayment} modalTitle="PRIMER PAGO" maxWidth={"md"} />}
+         {openModalReject && (
+            <ModalReject folio={folio} open={openModalReject} setOpen={setOpenModalReject} statusCurrent={status} modalTitle="RECHAZAR SOLICITUD" maxWidth={"md"} />
+         )}
+
+         {openModalPayment && (
+            <ModalPayment folio={folio} open={openModalPayment} setOpen={setOpenModalPayment} statusCurrent={status} modalTitle="PRIMER PAGO" maxWidth={"md"} />
+         )}
       </>
    );
 };

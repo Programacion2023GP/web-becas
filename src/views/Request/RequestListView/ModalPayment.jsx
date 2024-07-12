@@ -1,14 +1,10 @@
-import { Formik } from "formik";
 import * as Yup from "yup";
 
-import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
-import { TextField, Typography } from "@mui/material";
-import { LoadingButton } from "@mui/lab";
+import { Typography } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { ModalComponent } from "../../../components/ModalComponent";
 import { useGlobalContext } from "../../../context/GlobalContext";
 import { useRequestBecaContext } from "../../../context/RequestBecaContext";
-import { formatDatetimeToSQL, numberToText } from "../../../utils/Formats";
 import Toast from "../../../utils/Toast";
 import { DatePickerComponent, FileInputComponent, FormikComponent, InputComponent, Select2Component } from "../../../components/Form/FormikComponents";
 import { useRelationshipContext } from "../../../context/RelationshipContext";
@@ -42,8 +38,9 @@ function ModalPayment({ folio, open, setOpen, statusCurrent, modalTitle, maxWidt
       }
    };
    const resetFormData = () => {
-      formData.rejected_feedback = "";
-      formData.rejected_at = "";
+      formData.relationship_id = "";
+      formData.amount_paid = "";
+      formData.paid_feedback = "";
       setImgEvidence([]);
       setFormData({
          // folio: folio,
@@ -52,7 +49,6 @@ function ModalPayment({ folio, open, setOpen, statusCurrent, modalTitle, maxWidt
          img_evidence: "",
          paid_feedback: ""
       });
-      console.log("limpiao");
    };
 
    const onSubmit = async (values, { setSubmitting, setErrors, resetForm }) => {
@@ -61,7 +57,7 @@ function ModalPayment({ folio, open, setOpen, statusCurrent, modalTitle, maxWidt
 
          // console.log("values", values);
          setLoadingAction(true);
-         const axiosResponse = await updateStatusBeca(folio, "RECHAZADA", values, statusCurrent);
+         const axiosResponse = await updateStatusBeca(folio, "PAGANDO", values, statusCurrent);
 
          if (axiosResponse.status_code === 200) {
             resetForm();
@@ -75,8 +71,6 @@ function ModalPayment({ folio, open, setOpen, statusCurrent, modalTitle, maxWidt
          console.error(error);
          setErrors({ submit: error.message });
          setSubmitting(false);
-         // if (error.code === "auth/user-not-found") setErrors({ email: "Usuario no registrado" });
-         // if (error.code === "auth/wrong-password") setErrors({ password: "Contraseña incorrecta" });
       } finally {
          setSubmitting(false);
       }
@@ -113,7 +107,7 @@ function ModalPayment({ folio, open, setOpen, statusCurrent, modalTitle, maxWidt
             maxHeight={"80%"}
          >
             <InputComponent col={12} idName={"id"} label={"ID"} placeholder={"ID"} textStyleCase={true} hidden={true} />
-            <InputComponent col={6} idName={"beca_paid_id"} label={"# Folio"} placeholder={"0"} textStyleCase={true} />
+            <InputComponent col={6} idName={"beca_id"} label={"# Folio"} placeholder={"0"} textStyleCase={true} />
             <DatePickerComponent col={6} idName={"fec"} label={"Fecha y Hora de Pago"} format={"dddd d MMMM YYYY hh:mm a"} disabled={true} />
             <Select2Component
                col={5}

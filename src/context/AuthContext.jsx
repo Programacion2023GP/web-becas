@@ -159,7 +159,7 @@ export default function AuthContextProvider({ children }) {
          // console.log("counterofMenus");
          const axiosData = await Axios.get(`counters/counterOfMenus`);
          res = await axiosData.data.data;
-         console.log("🚀 ~ counterOfMenus ~ res:", res);
+         // console.log("🚀 ~ counterOfMenus ~ res:", res);
          const filterCounters = { ...counters };
          const newCounters = { ...counters };
 
