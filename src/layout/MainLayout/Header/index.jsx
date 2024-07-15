@@ -12,6 +12,7 @@ import NotificationSection from "./NotificationSection";
 
 // assets
 import { IconMenu2 } from "@tabler/icons";
+import ClockComponent from "../../../components/ClockComponent";
 
 // ==============================|| MAIN NAVBAR / HEADER ||============================== //
 
@@ -66,6 +67,7 @@ const Header = ({ handleLeftDrawerToggle }) => {
          {/* <SearchSection /> */}
          <Box sx={{ flexGrow: 1 }} />
          <Box sx={{ flexGrow: 1 }} />
+         <ClockComponent stylesBox={{ mr: 2 }} />
 
          {/* notification & profile */}
          {/* <NotificationSection /> */}

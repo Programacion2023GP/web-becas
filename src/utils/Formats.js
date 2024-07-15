@@ -43,8 +43,9 @@ function binaryDateTimeFormat(the_date) {
    return datetime;
 }
 
-export function formatDatetime(the_date, long_format = true) {
+export function formatDatetime(the_date, long_format = true, format = null) {
    if (the_date == null) return "Sin Fecha";
+   moment.locale("es");
    let date = new Date(the_date);
    let datetime;
 
@@ -55,7 +56,7 @@ export function formatDatetime(the_date, long_format = true) {
    }
 
    date = new Date(the_date);
-   const formato = long_format ? "DD-MM-YYYY h:mm:ss a" : "DD-MM-YYYY";
+   const formato = !format ? (long_format ? "DD-MM-YYYY h:mm:ss a" : "DD-MM-YYYY") : format;
    return (datetime = moment(date).format(formato));
    // return datetime = new Intl.DateTimeFormat("es-MX", { day: '2-digit', month: '2-digit', year: 'numeric', hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: true }).format(date);
 }

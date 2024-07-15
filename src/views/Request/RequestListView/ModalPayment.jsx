@@ -10,21 +10,23 @@ import { DatePickerComponent, FileInputComponent, FormikComponent, InputComponen
 import { useRelationshipContext } from "../../../context/RelationshipContext";
 import { MonetizationOn } from "@mui/icons-material";
 
+const initialValues = {
+   id: 0,
+   folio: 0,
+   relationship_id: "",
+   amount_paid: "",
+   img_evidence: "",
+   paid_feedback: ""
+};
 function ModalPayment({ folio, open, setOpen, statusCurrent, modalTitle, maxWidth }) {
    const { setLoadingAction } = useGlobalContext();
    const { updateStatusBeca } = useRequestBecaContext();
    const { relationships, getRelationshipsSelectIndex } = useRelationshipContext();
 
    const formikRef = useRef();
-   const [formData, setFormData] = useState({
-      id: 0,
-      folio: folio,
-      relationship_id: "",
-      amount_paid: "",
-      img_evidence: "",
-      paid_feedback: ""
-   });
+   const [formData, setFormData] = useState(initialValues);
    const [imgEvidence, setImgEvidence] = useState([]);
+
    const [textValue, setTextValue] = useState("");
 
    const handleCancel = (resetForm) => {
@@ -38,17 +40,8 @@ function ModalPayment({ folio, open, setOpen, statusCurrent, modalTitle, maxWidt
       }
    };
    const resetFormData = () => {
-      formData.relationship_id = "";
-      formData.amount_paid = "";
-      formData.paid_feedback = "";
       setImgEvidence([]);
-      setFormData({
-         // folio: folio,
-         relationship_id: "",
-         amount_paid: "",
-         img_evidence: "",
-         paid_feedback: ""
-      });
+      setFormData(initialValues);
    };
 
    const onSubmit = async (values, { setSubmitting, setErrors, resetForm }) => {
@@ -89,6 +82,7 @@ function ModalPayment({ folio, open, setOpen, statusCurrent, modalTitle, maxWidt
    });
 
    useEffect(() => {
+      setFormData({ ...formData, folio: folio });
       // console.log("ModalPayment");
       // const _formData = formData;
       // _formData.setFormData;
@@ -107,7 +101,7 @@ function ModalPayment({ folio, open, setOpen, statusCurrent, modalTitle, maxWidt
             maxHeight={"80%"}
          >
             <InputComponent col={12} idName={"id"} label={"ID"} placeholder={"ID"} textStyleCase={true} hidden={true} />
-            <InputComponent col={6} idName={"beca_id"} label={"# Folio"} placeholder={"0"} textStyleCase={true} />
+            <InputComponent col={6} idName={"beca_id"} label={"# Folio"} placeholder={"0"} textStyleCase={true} disabled={true} />
             <DatePickerComponent col={6} idName={"fec"} label={"Fecha y Hora de Pago"} format={"dddd d MMMM YYYY hh:mm a"} disabled={true} />
             <Select2Component
                col={5}

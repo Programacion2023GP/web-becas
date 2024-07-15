@@ -1,26 +1,24 @@
 import * as Yup from "yup";
 
-import { Typography } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { ModalComponent } from "../../../components/ModalComponent";
 import { useGlobalContext } from "../../../context/GlobalContext";
 import { useRequestBecaContext } from "../../../context/RequestBecaContext";
 import Toast from "../../../utils/Toast";
-import { DatePickerComponent, FileInputComponent, FormikComponent, InputComponent, Select2Component } from "../../../components/Form/FormikComponents";
-import { MonetizationOn } from "@mui/icons-material";
+import { FormikComponent, InputComponent } from "../../../components/Form/FormikComponents";
+
+const initialValues = {
+   id: 0,
+   folio: 0,
+   rejected_feedback: ""
+};
 
 function ModalPayment({ folio, open, setOpen, statusCurrent, modalTitle, maxWidth }) {
    const { setLoadingAction } = useGlobalContext();
    const { updateStatusBeca } = useRequestBecaContext();
 
    const formikRef = useRef();
-   const [formData, setFormData] = useState({
-      id: 0,
-      folio: folio,
-      rejected_feedback: ""
-   });
-   const [imgEvidence, setImgEvidence] = useState([]);
-   const [textValue, setTextValue] = useState("");
+   const [formData, setFormData] = useState(initialValues);
 
    const handleCancel = (resetForm) => {
       try {
@@ -33,11 +31,7 @@ function ModalPayment({ folio, open, setOpen, statusCurrent, modalTitle, maxWidt
       }
    };
    const resetFormData = () => {
-      formData.rejected_feedback = "";
-      setFormData({
-         // folio: folio,
-         rejected_feedback: ""
-      });
+      setFormData(initialValues);
    };
 
    const onSubmit = async (values, { setSubmitting, setErrors, resetForm }) => {
@@ -63,22 +57,12 @@ function ModalPayment({ folio, open, setOpen, statusCurrent, modalTitle, maxWidt
       }
    };
 
-   const handleChangeAmountPaid = (value) => {
-      if (value.length == 0) return setTextValue("");
-      setTextValue(numberToText(parseFloat(value)));
-   };
-
    const validationSchema = Yup.object().shape({
-      relationship_id: Yup.string().trim().required("Parente del Rechazo requerido"),
-      amount_paid: Yup.number().min(0, "Está cantidad no es aceptgable. ").required("Retroalimentación del Rechazo requerido"),
-      img_evidence: Yup.string().trim().required("Retroalimentación del Rechazo requerido"),
-      paid_feedback: Yup.string().trim().required("Retroalimentación del Rechazo requerido")
+      rejected_feedback: Yup.string().trim().required("Retroalimentación del Rechazo requerido")
    });
 
    useEffect(() => {
-      // console.log("ModalPayment");
-      // const _formData = formData;
-      // _formData.setFormData;
+      setFormData({ ...formData, folio: folio });
    }, []);
 
    return (
@@ -94,6 +78,7 @@ function ModalPayment({ folio, open, setOpen, statusCurrent, modalTitle, maxWidt
             maxHeight={"80%"}
          >
             <InputComponent col={12} idName={"id"} label={"ID"} placeholder={"ID"} textStyleCase={true} hidden={true} />
+            
             <InputComponent col={6} idName={"beca_paid_id"} label={"# Folio"} placeholder={"0"} textStyleCase={true} />
 
             <InputComponent

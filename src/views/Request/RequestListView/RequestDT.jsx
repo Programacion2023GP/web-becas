@@ -320,10 +320,12 @@ const RequestBecaDT = ({ status = null }) => {
       try {
          mySwal.fire(QuestionAlertConfig(`Estas seguro de cancelar la solicitud con folio #${folio}`, "CANCELAR", "NO CANCELAR")).then(async (result) => {
             if (result.isConfirmed) {
-               setLoadingAction(true);
-               const axiosResponse = await updateStatusBeca(folio, "CANCELADA", null, status);
-               setLoadingAction(false);
-               Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
+               setFolio(folio);
+               setOpenModalReject(true);
+               // setLoadingAction(true);
+               // const axiosResponse = await updateStatusBeca(folio, "CANCELADA", null, status);
+               // setLoadingAction(false);
+               // Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
             }
          });
       } catch (error) {
