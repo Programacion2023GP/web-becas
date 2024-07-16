@@ -16,7 +16,8 @@ const initialValues = {
    relationship_id: "",
    amount_paid: "",
    img_evidence: "",
-   paid_feedback: ""
+   paid_feedback: "",
+   paid_at: ""
 };
 function ModalPayment({ folio, open, setOpen, statusCurrent, modalTitle, maxWidth }) {
    const { setLoadingAction } = useGlobalContext();
@@ -47,8 +48,10 @@ function ModalPayment({ folio, open, setOpen, statusCurrent, modalTitle, maxWidt
    const onSubmit = async (values, { setSubmitting, setErrors, resetForm }) => {
       try {
          values.img_evidence = imgEvidence.length == 0 ? "" : imgEvidence[0].file;
+         values.folio = folio;
+         values.paid_at = formatDatetimeToSQL(new Date());
+         // return console.log("values", values);
 
-         // console.log("values", values);
          setLoadingAction(true);
          const axiosResponse = await updateStatusBeca(folio, "PAGANDO", values, statusCurrent);
 
@@ -77,16 +80,11 @@ function ModalPayment({ folio, open, setOpen, statusCurrent, modalTitle, maxWidt
    const validationSchema = Yup.object().shape({
       relationship_id: Yup.string().trim().required("Parente del Rechazo requerido"),
       amount_paid: Yup.number().min(0, "Está cantidad no es aceptgable. ").required("Retroalimentación del Rechazo requerido"),
-      img_evidence: Yup.string().trim().required("Retroalimentación del Rechazo requerido"),
-      paid_feedback: Yup.string().trim().required("Retroalimentación del Rechazo requerido")
+      img_evidence: Yup.string().trim().required("Retroalimentación del Rechazo requerido")
+      // paid_feedback: Yup.string().trim().required("Retroalimentación del Rechazo requerido")
    });
 
-   useEffect(() => {
-      setFormData({ ...formData, folio: folio });
-      // console.log("ModalPayment");
-      // const _formData = formData;
-      // _formData.setFormData;
-   }, []);
+   useEffect(() => {}, []);
 
    return (
       <ModalComponent open={open} setOpen={setOpen} modalTitle={modalTitle} maxWidth={maxWidth} height={"65vh"}>

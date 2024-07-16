@@ -23,8 +23,8 @@ import RequestReportPDF from "./RequestReportPDF";
 import ModalReject from "./ModalReject";
 import IconDelete from "../../../components/icons/IconDelete";
 import * as XLSX from "xlsx";
-import { ModalComponent } from "../../../components/ModalComponent";
 import ModalPayment from "./ModalPayment";
+import ModalApprove from "./ModalApprove";
 
 const RequestBecaDT = ({ status = null }) => {
    const { auth } = useAuthContext();
@@ -62,7 +62,6 @@ const RequestBecaDT = ({ status = null }) => {
    ];
    const { getIndexByFolio } = useFamilyContext();
    const [folio, setFolio] = useState(0);
-   const [openModalReject, setOpenModalReject] = useState(false);
 
    const [openDialogPreview, setOpenDialogPreview] = useState(false);
    const [fullScreenDialog, setFullScreenDialog] = useState(false);
@@ -86,6 +85,9 @@ const RequestBecaDT = ({ status = null }) => {
       }
       // pagebreak: { before: "#page2" } // Agrega paginación antes de un elemento con el ID 'page2'
    });
+
+   const [openModalApprove, setOpenModalApprove] = useState(false);
+   const [openModalReject, setOpenModalReject] = useState(false);
    const [openModalPayment, setOpenModalPayment] = useState(false);
 
    const downloadPDF = async (elementID) => {
@@ -242,8 +244,8 @@ const RequestBecaDT = ({ status = null }) => {
 
    const handleClickApprove = async (folio) => {
       try {
-         const axiosResponse = await updateStatusBeca(folio, "APROBADA", { user_id: auth.id }, status);
-         Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
+         setFolio(folio);
+         setOpenModalReject(true);
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -251,12 +253,8 @@ const RequestBecaDT = ({ status = null }) => {
    };
    const handleClickReject = async (folio) => {
       try {
-         mySwal.fire(QuestionAlertConfig(`Estas seguro de RECHAZAR la solicitud con folio #${folio}`, "RECHAZAR!", "NO CANCELAR")).then(async (result) => {
-            if (result.isConfirmed) {
-               setFolio(folio);
-               setOpenModalReject(true);
-            }
-         });
+         setFolio(folio);
+         setOpenModalReject(true);
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -636,6 +634,10 @@ const RequestBecaDT = ({ status = null }) => {
                <Button onClick={() => Toast.Success("Guardado")}>Guardar</Button>
             </DialogActions> */}
             </Dialog>
+         )}
+
+         {openModalApprove && (
+            <ModalApprove folio={folio} open={openModalApprove} setOpen={setOpenModalReject} statusCurrent={status} modalTitle="APROBAR SOLICITUD" maxWidth={"md"} />
          )}
 
          {openModalReject && (

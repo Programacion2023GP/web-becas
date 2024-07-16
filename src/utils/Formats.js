@@ -1,6 +1,8 @@
 import moment from "moment";
 import Toast from "./Toast";
+import dayjs from "dayjs";
 
+dayjs.locale("es");
 moment.locale("es");
 
 //#region /** FECHAS - FORMATEADO */
@@ -45,20 +47,40 @@ function binaryDateTimeFormat(the_date) {
 
 export function formatDatetime(the_date, long_format = true, format = null) {
    if (the_date == null) return "Sin Fecha";
+   //#region OPCION DayJS
    moment.locale("es");
    let date = new Date(the_date);
    let datetime;
 
    if (the_date.length <= 10) {
       date = new Date(date.setDate(date.getDate() + 1));
-      return (datetime = moment(date).format("DD-MM-YYYY"));
-      // return datetime = new Intl.DateTimeFormat("es-MX", { day: '2-digit', month: '2-digit', year: 'numeric'}).format(date);
+      return (datetime = dayjs(date).format("DD-MM-YYYY"));
    }
 
    date = new Date(the_date);
    const formato = !format ? (long_format ? "DD-MM-YYYY h:mm:ss a" : "DD-MM-YYYY") : format;
-   return (datetime = moment(date).format(formato));
+   return (datetime = dayjs(date).format(formato));
+   //#endregion OPCION DayJS
+
+   //#region OPCION MomentJS
+   // moment.locale("es");
+   // let date = new Date(the_date);
+   // let datetime;
+
+   // if (the_date.length <= 10) {
+   //    date = new Date(date.setDate(date.getDate() + 1));
+   //    return (datetime = moment(date).format("DD-MM-YYYY"));
+   //    // return datetime = new Intl.DateTimeFormat("es-MX", { day: '2-digit', month: '2-digit', year: 'numeric'}).format(date);
+   // }
+
+   // date = new Date(the_date);
+   // const formato = !format ? (long_format ? "DD-MM-YYYY h:mm:ss a" : "DD-MM-YYYY") : format;
+   // return (datetime = moment(date).format(formato));
+   //#endregion OPCION MomentJS
+
+   //#region OPCION Intl
    // return datetime = new Intl.DateTimeFormat("es-MX", { day: '2-digit', month: '2-digit', year: 'numeric', hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: true }).format(date);
+   //#endregion OPCION Intl
 }
 
 export function formatDatetimeToSQL(the_date) {
