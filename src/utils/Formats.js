@@ -200,9 +200,19 @@ export const unifyBy = (data, key) => {
    return Array.from(new Map(data.map((item) => [item[key], item])).values());
 };
 
-export const cutLines = (text) => {
+export const cutLinesPDF = (text, lengthRow = 100) => {
+   if (typeof text != "string") return;
+   // console.log("🚀 ~ cutLinesPDF ~ text:", text);
    const lines = text.split(/\r\n|\n/);
-   return lines;
+   const rows = [];
+   lines.map((line) => {
+      for (let i = 0; i < line.length; i += lengthRow) {
+         const fragment = line.slice(i, i + lengthRow);
+         rows.push(fragment);
+      }
+   });
+   // console.log("🚀 ~ cutLinesPDF ~ rows:", rows);
+   return rows;
 };
 
 const unidades = ["", "uno", "dos", "tres", "cuatro", "cinco", "seis", "siete", "ocho", "nueve"];

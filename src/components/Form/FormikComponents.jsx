@@ -41,6 +41,9 @@ import { colorPrimaryDark, useGlobalContext } from "../../context/GlobalContext"
 // import Select2Component from "./Select2Component";
 // import { InputAdornment, OutlinedInput } from "@mui/material";
 import { shouldForwardProp, styled } from "@mui/system";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+import { QuestionAlertConfig } from "../../utils/sAlert";
 
 const OutlineInputStyle = styled(OutlinedInput, { shouldForwardProp })(({ theme }) => ({
    // width: 434,
@@ -1658,6 +1661,7 @@ export const setObjImg = (img, setImg) => {
 */
 //  ===================================== COMPONENTE =====================================
 const MB = 1048576; //2621440=2.5MB
+const mySwal = withReactContent(Swal);
 
 export const FileInputComponent = ({
    xsOffset = null,
@@ -1685,6 +1689,7 @@ export const FileInputComponent = ({
    // const [filePreviews, setFilePreviews] = useState([]);
    const [ttShow, setTtShow] = useState("");
    const [fileSizeExceeded, setFileSizeExceeded] = useState(false);
+   const [confirmRemove, setConfirmRemove] = useState(false);
 
    const validationQuantityImages = () => {
       if (multiple) {
@@ -1704,31 +1709,37 @@ export const FileInputComponent = ({
       return true;
    };
 
-   const onDrop = useCallback((acceptedFiles) => {
-      setFilePreviews([]);
-      // if (multiple) if (!validationQuantityImages()) return
-      // Puedes manejar los archivos aceptados aquí y mostrar las vistas previas.
-      acceptedFiles.forEach((file) => {
-         const reader = new FileReader();
+   const onDrop = useCallback(
+      (acceptedFiles) => {
+         if (!confirmRemove) return; // Solo permite la carga de archivos si la eliminación fue confirmada
+         setConfirmRemove(false); // Resetear la confirmación después de la carga
 
-         if (file.size >= MB) return Toast.Info("el archivo es demasiado pesado, intenta con un archivo menor a 1MB");
+         setFilePreviews([]);
+         // if (multiple) if (!validationQuantityImages()) return
+         // Puedes manejar los archivos aceptados aquí y mostrar las vistas previas.
+         acceptedFiles.forEach((file) => {
+            const reader = new FileReader();
 
-         reader.onload = async (e) => {
-            const preview = {
-               file,
-               dataURL: reader.result
+            if (file.size >= MB) return Toast.Info("el archivo es demasiado pesado, intenta con un archivo menor a 1MB");
+
+            reader.onload = async (e) => {
+               const preview = {
+                  file,
+                  dataURL: reader.result
+               };
+               // if (multiple) if (!validationQuantityImages) return;
+
+               // if (multiple) await setFilePreviews((prevPreviews) => [...prevPreviews, preview]);
+               // else
+               await setFilePreviews([preview]);
+               // console.log(filePreviews);
             };
-            // if (multiple) if (!validationQuantityImages) return;
 
-            // if (multiple) await setFilePreviews((prevPreviews) => [...prevPreviews, preview]);
-            // else
-            await setFilePreviews([preview]);
-            // console.log(filePreviews);
-         };
-
-         reader.readAsDataURL(file);
-      });
-   }, []);
+            reader.readAsDataURL(file);
+         });
+      },
+      [confirmRemove, setFilePreviews]
+   );
 
    const simulateUpload = () => {
       // Simulamos la carga con un temporizador.
@@ -1750,7 +1761,12 @@ export const FileInputComponent = ({
       // Filtra la lista de vistas previas para eliminar el archivo seleccionado.
       // console.log(filePreviews);
       // setFilePreviews((prevPreviews) => prevPreviews.filter((preview) => preview.file !== fileToRemove));
-      await setFilePreviews([]);
+      mySwal.fire(QuestionAlertConfig(`¿Estas seguro de eliminar la imágen?`, "CONFIRMAR")).then(async (result) => {
+         if (result.isConfirmed) {
+            await setFilePreviews([]);
+            setConfirmRemove(true); // Establecer la confirmación para permitir la carga de nuevos archivos
+         }
+      });
       // console.log(filePreviews);
    };
 
@@ -1787,7 +1803,7 @@ export const FileInputComponent = ({
                      <>
                         <div className={"dropzone-container"}>
                            <div {...getRootProps({ className: color === "red" ? "dropzone-error" : "dropzone" })}>
-                              <input {...getInputProps()} multiple={multiple} accept={accept} disabled={disabled} />
+                              <input {...getInputProps()} type={confirmRemove ? "file" : "text"} multiple={multiple} accept={accept} disabled={disabled} />
                               <p style={{ display: filePreviews.length > 0 ? "none" : "block", fontStyle: "italic" }}>
                                  Arrastra y suelta archivos aquí, o haz clic para seleccionar archivos
                               </p>
@@ -1872,253 +1888,6 @@ export const FileInputComponent = ({
                </Field>
             </FormControl>
          </Grid>
-      </>
-   );
-};
-
-export const FileInputComponentORIGINAL = ({ idName, label, inputProps, filePreviews, setFilePreviews, error, touched, multiple, maxImages = -1, accept = null }) => {
-   const [uploadProgress, setUploadProgress] = useState(0);
-   // const [filePreviews, setFilePreviews] = useState([]);
-   const [ttShow, setTtShow] = useState("");
-   const [fileSizeExceeded, setFileSizeExceeded] = useState(false);
-
-   const validationQuantityImages = () => {
-      if (multiple) {
-         if (maxImages != -1) {
-            if (filePreviews.length >= maxImages) {
-               console.log("maxImages", maxImages);
-               Toast.Info(`Solo se permiten cargar ${maxImages} imagenes.`);
-               return false;
-            }
-         }
-      } else {
-         if (filePreviews.length >= 1) {
-            Toast.Info(`Solo se permite cargar una imagen.`);
-            return false;
-         }
-      }
-      return true;
-   };
-
-   const onDrop = useCallback((acceptedFiles) => {
-      setFilePreviews([]);
-      // if (multiple) if (!validationQuantityImages()) return
-      // Puedes manejar los archivos aceptados aquí y mostrar las vistas previas.
-      acceptedFiles.forEach((file) => {
-         const reader = new FileReader();
-
-         if (file.size >= MB) return Toast.Info("el archivo es demasiado pesado, intenta con un archivo menor a 1MB");
-
-         reader.onload = async (e) => {
-            const preview = {
-               file,
-               dataURL: reader.result
-            };
-            // if (multiple) if (!validationQuantityImages) return;
-
-            // if (multiple) await setFilePreviews((prevPreviews) => [...prevPreviews, preview]);
-            // else
-            await setFilePreviews([preview]);
-            // console.log(filePreviews);
-         };
-
-         reader.readAsDataURL(file);
-      });
-   }, []);
-
-   const simulateUpload = () => {
-      // Simulamos la carga con un temporizador.
-      setTimeout(() => {
-         const progress = uploadProgress + 10;
-         setUploadProgress(progress);
-
-         if (progress < 100) {
-            // Si no se ha alcanzado el 100% de progreso, simulamos más carga.
-            simulateUpload();
-         } else {
-            // Cuando se completa la carga, restablecemos el progreso.
-            setUploadProgress(0);
-         }
-      }, 1000);
-   };
-   const handleRemoveImage = async (fileToRemove) => {
-      // Filtra la lista de vistas previas para eliminar el archivo seleccionado.
-      // console.log(filePreviews);
-      // setFilePreviews((prevPreviews) => prevPreviews.filter((preview) => preview.file !== fileToRemove));
-      await setFilePreviews([]);
-      // console.log(filePreviews);
-   };
-
-   const { getRootProps, getInputProps } = useDropzone({
-      onDrop
-   });
-
-   const handleMouseEnter = () => {
-      setTtShow("tt_show");
-   };
-   const handleMouseLeave = () => {
-      setTtShow("");
-   };
-
-   return (
-      <>
-         <FormControl fullWidth sx={{}}>
-            <Typography variant="p" mb={1} sx={{ fontWeight: "bolder" }} htmlFor={idName}>
-               {label}
-            </Typography>
-
-            <Field name={idName} id={idName}>
-               {({ field, form }) => (
-                  <>
-                     <div className="dropzone-container">
-                        <div {...getRootProps({ className: "dropzone" })}>
-                           <input {...getInputProps()} multiple={multiple} accept={accept} />
-                           <p style={{ display: filePreviews.length > 0 ? "none" : "block", fontStyle: "italic" }}>
-                              Arrastra y suelta archivos aquí, o haz clic para seleccionar archivos
-                           </p>
-
-                           {/* Vista previa de la imagen o PDF */}
-                           <aside className="file-preview">
-                              {filePreviews.map((preview) => (
-                                 <div key={preview.file.name} className="preview-item">
-                                    {preview.file.name.includes(".pdf") || preview.file.name.includes(".PDF") ? (
-                                       <>
-                                          <embed
-                                             className="preview-pdf"
-                                             src={preview.dataURL}
-                                             type="application/pdf"
-                                             width="100%"
-                                             height="500px"
-                                             onMouseEnter={handleMouseEnter}
-                                             onMouseLeave={handleMouseLeave}
-                                          />
-                                          {preview.file.name !== "undefined" && (
-                                             <embed
-                                                className={`tooltip_imagen ${ttShow}`}
-                                                src={preview.dataURL}
-                                                type="application/pdf"
-                                                width="50%"
-                                                height="80%"
-                                                onMouseEnter={handleMouseEnter}
-                                                onMouseLeave={handleMouseLeave}
-                                             />
-                                          )}
-                                          <div
-                                             className="remove-pdf-button"
-                                             onClick={(e) => {
-                                                e.preventDefault();
-                                                handleRemoveImage(preview.file);
-                                             }}
-                                          >
-                                             Eliminar
-                                          </div>
-                                       </>
-                                    ) : (
-                                       <>
-                                          <img className="preview-img" src={preview.dataURL} alt={preview.file.name} />
-                                          {preview.file.name !== "undefined" && (
-                                             <img
-                                                width={"50%"}
-                                                src={preview.dataURL}
-                                                alt={preview.file.name}
-                                                srcSet=""
-                                                className={`tooltip_imagen ${ttShow}`}
-                                                onMouseEnter={handleMouseEnter}
-                                                onMouseLeave={handleMouseLeave}
-                                             />
-                                          )}
-                                          <div
-                                             className="remove-button"
-                                             onClick={(e) => {
-                                                e.preventDefault();
-                                                handleRemoveImage(preview.file);
-                                             }}
-                                             onMouseEnter={handleMouseEnter}
-                                             onMouseLeave={handleMouseLeave}
-                                          >
-                                             Eliminar
-                                          </div>
-                                       </>
-                                    )}
-                                 </div>
-                              ))}
-                           </aside>
-                        </div>
-                        <small style={{ marginTop: "-10px", fontStyle: "italic", fontSize: "11px" }}>
-                           Tamaño maximo del archivo soportado: <b>1MB MAX.</b>
-                        </small>
-                     </div>
-                     {touched && error && (
-                        <FormHelperText error id={`ht-${idName}`}>
-                           {error}
-                        </FormHelperText>
-                     )}
-                  </>
-               )}
-            </Field>
-         </FormControl>
-      </>
-   );
-};
-
-const FileInputComponent1 = ({
-   idName,
-   label,
-   placeholder,
-   handleChange,
-   handleBlur,
-   inputProps,
-   setFieldValue,
-   setImgFile,
-   imagePreview,
-   setImagePreview,
-   error,
-   touched
-}) => {
-   const handleChangeImg = (event) => {
-      // if (event.target.files)
-      const file = event.target.files[0]; // Obtenemos el primer archivo del campo de entrada
-      setImgFile(file);
-
-      if (file) {
-         const reader = new FileReader();
-
-         reader.onload = (e) => {
-            setImagePreview(e.target.result);
-         };
-
-         reader.readAsDataURL(file);
-      }
-   };
-
-   return (
-      <>
-         <TextField
-            id={idName}
-            name={idName}
-            label={label}
-            type="file"
-            // value={value}
-            placeholder={placeholder}
-            onChange={(e) => {
-               handleChange(e);
-               handleChangeImg(e, setFieldValue);
-            }}
-            onBlur={handleBlur}
-            variant="standard"
-            inputProps={inputProps}
-            fullWidth
-            // disabled={values.id == 0 ? false : true}
-            // inputRef={(el) => (inputsRef.current[0] = el)}
-            // inputRef={inputRefVehicle}
-            error={error && touched}
-            helperText={error && touched && error}
-         />
-
-         {/* Vista previa de la imagen */}
-         <Box textAlign={"center"} sx={{ bgcolor: "#E9ECEF", borderRadius: "0  0 12px 12px" }}>
-            {imagePreview && <img alt="Vista previa de la imagen" src={imagePreview} style={{ maxWidth: 250, maxHeight: 250 }} />}
-         </Box>
       </>
    );
 };

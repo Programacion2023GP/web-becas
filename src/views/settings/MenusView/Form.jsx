@@ -7,10 +7,8 @@ import { Box } from "@mui/system";
 import { useEffect } from "react";
 import Toast from "../../../utils/Toast";
 import { useGlobalContext } from "../../../context/GlobalContext";
-import Select2Component from "../../../components/Form/Select2Component";
 import { useAuthContext } from "../../../context/AuthContext";
-import { FormikComponent, InputComponent, RadioButtonComponent, SwitchComponent } from "../../../components/Form/FormikComponents";
-// import InputComponent from "../Form/InputComponent";
+import { FormikComponent, InputComponent, RadioButtonComponent, Select2Component, SwitchComponent } from "../../../components/Form/FormikComponents";
 
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
 const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
