@@ -395,6 +395,10 @@ export default function DataTableComponent({
       // if (data.length > 0) setGlobalFilterFields(Object.keys(data[0]));
    }, [data]); // eslint-disable-line react-hooks/exhaustive-deps
 
+   useEffect(() => {
+      // console.log("🚀 ~ useEffect ~ window.innerWidth:", window.innerWidth);
+   }, [window]);
+
    return (
       <div className="card p-fluid">
          {/* <Tooltip target=".export-buttons>button" position="bottom" /> */}
@@ -487,7 +491,7 @@ export default function DataTableComponent({
                      style={{ width: "auto" }}
                      footerStyle={{ backgroundColor: colorPrimaryMain /* "#E9ECEF" */, color: "#364152" }}
                      alignFrozen="right"
-                     frozen={true}
+                     frozen={window.innerWidth > 900 ? true : false}
                   ></Column>
                )}
             </DataTable>

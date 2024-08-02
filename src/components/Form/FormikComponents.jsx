@@ -575,7 +575,7 @@ export const PasswordCompnent = ({
             </FormControl>
             {strength !== 0 && (
                <FormControl fullWidth>
-                  <Box sx={{ mb: 2 }}>
+                  <Box sx={{ mb: 2, backgroundColor: "red" }}>
                      <Grid container spacing={2} alignItems="center">
                         <Grid>
                            <Box
@@ -1133,7 +1133,7 @@ export const CheckboxComponent = ({
 //#endregion IMPORTS
 
 // =================== COMPONENTE =======================
-export const DatePickerComponent = ({ loading = false, col, idName, label, format = "DD/MM/YYYY", disabled, hidden, marginBottom, ...props }) => {
+export const DatePickerComponent = ({ loading = false, col, idName, label, format = "DD/MM/YYYY", disabled, hidden, marginBottom, size = "medium", ...props }) => {
    const formik = useFormikContext();
    const { errors, touched } = formik;
    const error = formik.touched[idName] && formik.errors[idName] ? formik.errors[idName] : null;
@@ -1144,7 +1144,7 @@ export const DatePickerComponent = ({ loading = false, col, idName, label, forma
 
    return (
       <Grid xs={12} md={col} sx={{ display: hidden ? "none" : "flex", flexDirection: "column", alignItems: "center", mb: marginBottom ? `${marginBottom} 0` : 2 }}>
-         <FormControl fullWidth sx={{ margin: "1rem 0" }}>
+         <FormControl fullWidth sx={{ margin: size == "small" ? "0rem 0" : "1rem 0" }} size={size}>
             <Field name={idName} id={idName}>
                {({ field, form }) => (
                   <>

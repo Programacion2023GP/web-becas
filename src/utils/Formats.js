@@ -49,6 +49,7 @@ export function formatDatetime(the_date, long_format = true, format = null) {
    if (the_date == null) return "Sin Fecha";
    //#region OPCION DayJS
    moment.locale("es");
+   dayjs.locale("es");
    let date = new Date(the_date);
    let datetime;
 
@@ -342,3 +343,20 @@ export const includesInArray = (array1, array2, allValues = false) => {
       Toast.Error(error);
    }
 };
+
+/**
+ * Función para filtrar propiedades basadas en el objeto original,
+ * si tenes un objeto con más propiedades de las originales,
+ * seran ignoradas.
+ * @param {object} original objeto original
+ * @param {object} newArray objeto con valores nuevos
+ * @returns {object}
+ */
+export function setPropsOriginals(original, newArray) {
+   return Object.keys(original).reduce((obj, key) => {
+      if (newArray.hasOwnProperty(key)) {
+         obj[key] = newArray[key];
+      }
+      return obj;
+   }, {});
+}
