@@ -42,8 +42,10 @@ const DashboardIndex = () => {
          const axiosBecasApplied = await getRequestBecas();
          setBecasApplied(axiosBecasApplied.result.filter((b) => b.status != "CANCELADA").length);
          const axiosCommunities = await getCommunities();
+         // console.log("🚀 ~ getDataGraphs ~ axiosCommunities:", axiosCommunities)
          const communities = await axiosCommunities.result.communities;
          const axiosBecasApproved = await getRequestApproved();
+         // console.log("🚀 ~ getDataGraphs ~ axiosBecasApproved:", axiosBecasApproved);
          const data = await axiosBecasApproved.result.requestBecasApproved;
          await data.map((d) => {
             d.community = communities.find((c) => c.id == d.community_id);

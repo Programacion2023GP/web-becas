@@ -500,7 +500,7 @@ export const PasswordCompnent = ({
             // border: 1,
             display: hidden ? "none" : "flex",
             flexDirection: "column",
-            alignItems: "end",
+            alignItems: "start",
             position: "relative",
             pt: 0,
             p: 0,
@@ -510,7 +510,7 @@ export const PasswordCompnent = ({
       >
          {/* Switch para mostrar el cambiar contraseña */}
          {checkedShowSwitchPassword && (
-            <Grid sx={{ backgroundColor: "", my: 0, py: 0, mt: 0, pt: 0, mb: -1.75 }}>
+            <Grid sx={{ backgroundColor: "", my: 0, py: 0, mt: 0, pt: 0, mb: -1.5 }}>
                <FormControlLabel
                   control={<Switch />}
                   label={"Cambiar Contraseña"}
@@ -575,7 +575,7 @@ export const PasswordCompnent = ({
             </FormControl>
             {strength !== 0 && (
                <FormControl fullWidth>
-                  <Box sx={{ mb: 2, backgroundColor: "red" }}>
+                  <Box sx={{ mb: 2 }}>
                      <Grid container spacing={2} alignItems="center">
                         <Grid>
                            <Box
@@ -1880,6 +1880,7 @@ export const FileInputComponent = ({
                               Tamaño maximo del archivo soportado: <b>1MB MAX.</b>
                            </small>
                         </div>
+                        <InputCameraComponent />
                         <Typography variant="body1" component="label" htmlFor={idName} ml={1}>
                            {isError ? formik.errors[idName] : helperText}
                         </Typography>
@@ -1904,3 +1905,73 @@ FileInputComponent.propTypes = {
    maxImages: propTypes.number
 };
 //#endregion INPUT FILE (Drag&Drop)
+
+//#region INPUT CAMERA COMPONENT
+//#region IMPORTS
+// import { FormControl, FormHelperText, TextField, Typography, Box} from "@mui/material";
+// import { Box } from "@mui/system";
+// import propTypes from "prop-types";
+// import Toast from "../../utils/Toast";
+// import { Field } from "formik";
+// import { useDropzone } from "react-dropzone";
+// import React, { useRef, useState, useEffect } from 'react';
+//#endregion IMPORTS
+
+export const InputCameraComponent = () => {
+   const videoRef = useRef(null);
+   const canvasRef = useRef(null);
+   const [hasCamera, setHasCamera] = useState(false);
+   const [photo, setPhoto] = useState(null);
+
+   useEffect(() => {
+      const detectCameraAndStartVideo = async () => {
+         try {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            videoRef.current.srcObject = stream;
+            setHasCamera(true);
+         } catch (error) {
+            console.error("Error accessing the camera:", error);
+            setHasCamera(false);
+         }
+      };
+
+      detectCameraAndStartVideo();
+
+      return () => {
+         if (videoRef.current && videoRef.current.srcObject) {
+            videoRef.current.srcObject.getTracks().forEach((track) => track.stop());
+         }
+      };
+   }, []);
+
+   const takePhoto = () => {
+      const width = videoRef.current.videoWidth;
+      const height = videoRef.current.videoHeight;
+      const context = canvasRef.current.getContext("2d");
+      canvasRef.current.width = width;
+      canvasRef.current.height = height;
+      context.drawImage(videoRef.current, 0, 0, width, height);
+      const dataUrl = canvasRef.current.toDataURL("image/png");
+      setPhoto(dataUrl);
+   };
+
+   return (
+      <div>
+         {/* {hasCamera ? ( */}
+         <div>
+            <video ref={videoRef} autoPlay style={{ width: "100%", maxHeight: "400px" }} />
+            <Button variant="contained" onClick={takePhoto}>
+               Tomar Foto
+            </Button>
+            <canvas ref={canvasRef} style={{ display: "none" }} />
+            {photo && <img src={photo} alt="Tomada con la cámara" />}
+         </div>
+         {/* ) : (
+            <Typography textAlign={"center"} variant="caption">
+               No se detectó una cámara.
+            </Typography>
+         )} */}
+      </div>
+   );
+};
+//#region INPUT CAMERA COMPONENT

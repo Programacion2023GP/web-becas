@@ -410,7 +410,8 @@ export default function RequestBecaContextProvider({ children }) {
    const getRequestApproved = async () => {
       try {
          const res = CorrectRes;
-         const axiosData = await Axios.get(`/becas/approved`);
+         const axiosData = await Axios.get(`/becas/status/APROBADA`);
+         // console.log("🚀 ~ getRequestApproved ~ axiosData:", axiosData)
          res.result.requestBecasApproved = axiosData.data.data.result;
          setRequestBecasApproved(axiosData.data.data.result);
          // console.log("requestBecasApproved", requestBecasApproved);

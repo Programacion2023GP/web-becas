@@ -8,6 +8,8 @@ import { Box } from "@mui/system";
 import { useEffect, useLayoutEffect, useState } from "react";
 import { Masonry } from "@mui/lab";
 import Toast from "../../../utils/Toast";
+import { ROLE_SUPER_ADMIN } from "../../../context/GlobalContext";
+import { useAuthContext } from "../../../context/AuthContext";
 
 const useStyles = makeStyles((theme) => ({
    title: { color: "#1E2126" },
@@ -136,18 +138,23 @@ const CardHeaderMenu = ({ id = 0, title = "", children = [], checkMenus, handleC
          </Box>
 
          <Masonry columns={children.length == 1 ? 1 : 2} spacing={2} sx={{ backgroundColor: "white", p: 0, m: 0 }}>
-            {children.map((m) => (
-               <CardMenu
-                  key={`CMC_${m.id}`}
-                  id={m.id}
-                  title={m.title}
-                  others_permissions={m.others_permissions}
-                  checkMenus={checkMenus}
-                  handleCheckboxChange={handleCheckboxChange}
-                  isChecked={checkMenus.some((check) => check.id === m.id && check.isChecked)}
-                  readOnly={m.readOnly}
-               />
-            ))}
+            {children.map((m) => {
+               const { auth } = useAuthContext();
+               if (auth.role_id !== ROLE_SUPER_ADMIN && m.title === "Menus") return;
+
+               return (
+                  <CardMenu
+                     key={`CMC_${m.id}`}
+                     id={m.id}
+                     title={m.title}
+                     others_permissions={m.others_permissions}
+                     checkMenus={checkMenus}
+                     handleCheckboxChange={handleCheckboxChange}
+                     isChecked={checkMenus.some((check) => check.id === m.id && check.isChecked)}
+                     readOnly={m.readOnly}
+                  />
+               );
+            })}
          </Masonry>
       </Card>
    );
