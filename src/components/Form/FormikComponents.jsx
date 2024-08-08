@@ -30,20 +30,22 @@ import { handleInputFormik } from "../../utils/Formats";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { strengthColor, strengthIndicator } from "../../utils/password-strength";
 import Toast from "../../utils/Toast";
-import { IconReload } from "@tabler/icons";
+import { IconCamera, IconReload } from "@tabler/icons";
 import SwitchIOSComponent from "../SwitchIOSComponent";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import "dayjs/locale/es";
 import axios from "axios";
 import { useDropzone } from "react-dropzone";
-import { colorPrimaryDark, useGlobalContext } from "../../context/GlobalContext";
+import { colorPrimaryDark, colorPrimaryMain, useGlobalContext } from "../../context/GlobalContext";
 // import Select2Component from "./Select2Component";
 // import { InputAdornment, OutlinedInput } from "@mui/material";
 import { shouldForwardProp, styled } from "@mui/system";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { QuestionAlertConfig } from "../../utils/sAlert";
+import { ModalComponent } from "../ModalComponent";
+import { IconCameraUp } from "@tabler/icons-react";
 
 const OutlineInputStyle = styled(OutlinedInput, { shouldForwardProp })(({ theme }) => ({
    // width: 434,
@@ -1680,6 +1682,7 @@ export const FileInputComponent = ({
    multiple,
    maxImages = -1,
    accept = null,
+   fileSizeMax = 1, // en MB
    ...props
 }) => {
    const formik = useFormikContext();
@@ -1688,7 +1691,7 @@ export const FileInputComponent = ({
    const [uploadProgress, setUploadProgress] = useState(0);
    // const [filePreviews, setFilePreviews] = useState([]);
    const [ttShow, setTtShow] = useState("");
-   const [fileSizeExceeded, setFileSizeExceeded] = useState(false);
+   const [fileSizeExceeded, setFileSizeExceeded] = useState(fileSizeMax * MB);
    const [confirmRemove, setConfirmRemove] = useState(false);
 
    const validationQuantityImages = () => {
@@ -1713,33 +1716,55 @@ export const FileInputComponent = ({
       (acceptedFiles) => {
          if (!confirmRemove) return; // Solo permite la carga de archivos si la eliminación fue confirmada
          setConfirmRemove(false); // Resetear la confirmación después de la carga
+         // else setConfirmRemove(true);
 
          setFilePreviews([]);
          // if (multiple) if (!validationQuantityImages()) return
          // Puedes manejar los archivos aceptados aquí y mostrar las vistas previas.
          acceptedFiles.forEach((file) => {
-            const reader = new FileReader();
-
-            if (file.size >= MB) return Toast.Info("el archivo es demasiado pesado, intenta con un archivo menor a 1MB");
-
-            reader.onload = async (e) => {
-               const preview = {
-                  file,
-                  dataURL: reader.result
-               };
-               // if (multiple) if (!validationQuantityImages) return;
-
-               // if (multiple) await setFilePreviews((prevPreviews) => [...prevPreviews, preview]);
-               // else
-               await setFilePreviews([preview]);
-               // console.log(filePreviews);
-            };
-
-            reader.readAsDataURL(file);
+            handleSetFile(file);
          });
       },
       [confirmRemove, setFilePreviews]
    );
+   const handleSetFile = (file) => {
+      // console.log("🚀 ~ handleSetFile ~ file:", file);
+      const reader = new FileReader();
+
+      if (file.size >= fileSizeExceeded) {
+         if (filePreviews.length == 0) setConfirmRemove(true);
+         return Toast.Info("el archivo es demasiado pesado, intenta con un archivo menor a 1MB");
+      }
+      if (!file.type.includes("image")) {
+         if (filePreviews.length == 0) setConfirmRemove(true);
+         return Toast.Info("el tipo de archivo no es una imagen.");
+      }
+
+      reader.onload = async (e) => {
+         const preview = {
+            file,
+            dataURL: reader.result
+         };
+         // if (multiple) if (!validationQuantityImages) return;
+
+         // if (multiple) await setFilePreviews((prevPreviews) => [...prevPreviews, preview]);
+         // else
+         await setFilePreviews([preview]);
+         // console.log(filePreviews);
+      };
+
+      reader.readAsDataURL(file);
+   };
+
+   const handleGetFileCamera = async (file) => {
+      await setFilePreviews([]);
+      setConfirmRemove(true);
+
+      // if (!confirmRemove) return; // Solo permite la carga de archivos si la eliminación fue confirmada
+      setConfirmRemove(false); // Resetear la confirmación después de la carga
+
+      handleSetFile(file);
+   };
 
    const simulateUpload = () => {
       // Simulamos la carga con un temporizador.
@@ -1876,11 +1901,11 @@ export const FileInputComponent = ({
                                  ))}
                               </aside>
                            </div>
-                           <small style={{ marginTop: "-10px", fontStyle: "italic", fontSize: "11px" }}>
-                              Tamaño maximo del archivo soportado: <b>1MB MAX.</b>
+                           <small style={{ marginTop: "-10px", fontStyle: "italic", fontSize: "11px", textAlign: "center" }}>
+                              Tamaño maximo del archivo soportado: <b>{fileSizeMax}MB MAX.</b>
+                              <InputCameraComponent getFile={handleGetFileCamera} />
                            </small>
                         </div>
-                        <InputCameraComponent />
                         <Typography variant="body1" component="label" htmlFor={idName} ml={1}>
                            {isError ? formik.errors[idName] : helperText}
                         </Typography>
@@ -1917,10 +1942,12 @@ FileInputComponent.propTypes = {
 // import React, { useRef, useState, useEffect } from 'react';
 //#endregion IMPORTS
 
-export const InputCameraComponent = () => {
+export const InputCameraComponent = ({ getFile }) => {
    const videoRef = useRef(null);
    const canvasRef = useRef(null);
-   const [hasCamera, setHasCamera] = useState(false);
+   const [hasCamera, setHasCamera] = useState(true);
+   const [cameraReady, setCameraReady] = useState(false);
+   const [openCamera, setOpenCamera] = useState(false);
    const [photo, setPhoto] = useState(null);
 
    useEffect(() => {
@@ -1935,14 +1962,31 @@ export const InputCameraComponent = () => {
          }
       };
 
+      setPhoto(null);
       detectCameraAndStartVideo();
 
       return () => {
+         setCameraReady(false);
          if (videoRef.current && videoRef.current.srcObject) {
+            setCameraReady(true);
             videoRef.current.srcObject.getTracks().forEach((track) => track.stop());
          }
       };
-   }, []);
+   }, [hasCamera]);
+
+   const dataURLtoFile = (dataurl, filename) => {
+      let arr = dataurl.split(","),
+         mime = arr[0].match(/:(.*?);/)[1],
+         bstr = atob(arr[1]),
+         n = bstr.length,
+         u8arr = new Uint8Array(n);
+
+      while (n--) {
+         u8arr[n] = bstr.charCodeAt(n);
+      }
+
+      return new File([u8arr], filename, { type: mime });
+   };
 
    const takePhoto = () => {
       const width = videoRef.current.videoWidth;
@@ -1953,24 +1997,60 @@ export const InputCameraComponent = () => {
       context.drawImage(videoRef.current, 0, 0, width, height);
       const dataUrl = canvasRef.current.toDataURL("image/png");
       setPhoto(dataUrl);
+      // if (getDataUrl) return photo;
+
+      // Convert the data URL to a file and pass it to the callback
+      const file = dataURLtoFile(dataUrl, "photo.png");
+      if (getFile) getFile(file);
+      setTimeout(() => {
+         setPhoto(null);
+         setOpenCamera(false);
+      }, 2000);
    };
 
    return (
       <div>
-         {/* {hasCamera ? ( */}
-         <div>
-            <video ref={videoRef} autoPlay style={{ width: "100%", maxHeight: "400px" }} />
-            <Button variant="contained" onClick={takePhoto}>
-               Tomar Foto
-            </Button>
-            <canvas ref={canvasRef} style={{ display: "none" }} />
-            {photo && <img src={photo} alt="Tomada con la cámara" />}
-         </div>
-         {/* ) : (
+         {hasCamera ? (
+            <>
+               <Button variant="contained" size="small" onClick={() => setOpenCamera(true)}>
+                  <IconCameraUp /> &nbsp; Abrir camara
+               </Button>
+               <ModalComponent open={openCamera} setOpen={setOpenCamera} modalTitle={"CÁMARA"}>
+                  <video ref={videoRef} autoPlay style={{ width: "100%", maxHeight: "75vh", border: `5px ${colorPrimaryMain} solid`, borderRadius: "15px" }} />
+                  <Button variant="contained" size="large" fullWidth onClick={takePhoto} sx={{}}>
+                     <IconCamera />
+                     &nbsp; TOMAR FOTO
+                  </Button>
+                  <Box position={"static"}>
+                     <canvas ref={canvasRef} style={{ display: "none" }} />
+                     {photo && (
+                        <img
+                           src={photo}
+                           alt="Tomada con la cámara"
+                           style={{
+                              width: canvasRef.current.width + 260,
+                              maxHeight: canvasRef.current.height + 380,
+                              objectFit: "cover",
+                              position: "absolute",
+                              top: "450px",
+                              left: "50%",
+                              transform: "translate(-50%,-50%)"
+                           }}
+                        />
+                     )}
+                  </Box>
+               </ModalComponent>
+            </>
+         ) : (
             <Typography textAlign={"center"} variant="caption">
                No se detectó una cámara.
+               <Tooltip title={"Volver a detectar cámara, si no reconoce la cámara, recarge la página o a volver a conectar el dispositivo."}>
+                  <IconButton size="small" onClick={() => setHasCamera(true)}>
+                     <IconReload />
+                  </IconButton>
+               </Tooltip>
             </Typography>
-         )} */}
+         )}
       </div>
    );
 };

@@ -154,7 +154,7 @@ const InputsFormik9 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
    return (
       <>
          <Grid width={"100%"} xs={12} spacing={2} height={"66vh"} maxHeight={"66vh"} overflow={"auto"}>
-            <Grid xs={12} container spacing={2} key={"alo"}>
+            <Grid xs={12} container spacing={2} key={"key-key-key"}>
                {/* IMAGEN DE INE TUTOR */}
                {dataFileInputs.map((dataInput, index) => (
                   <>
@@ -176,7 +176,7 @@ const InputsFormik9 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
                      )}
                      {![dataInput.isTutor, dataInput.haveSecondRef].includes(null) && (
                         <>
-                           <Grid container xs={12}>
+                           <Grid key={`Key-Grid-${dataInput.idName}`} container xs={12}>
                               <FileInputComponent
                                  key={dataInput.idName}
                                  col={6}
@@ -187,6 +187,7 @@ const InputsFormik9 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
                                  setFilePreviews={dataInput.setFilePreviews}
                                  multiple={false}
                                  accept={"image/*"}
+                                 fileSizeMax={3}
                                  disabled={
                                     auth.id == formik.values.user_id
                                        ? ["", "ALTA"].includes(formData.status)
