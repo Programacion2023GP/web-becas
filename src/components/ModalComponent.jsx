@@ -48,9 +48,9 @@ export const ModalComponent = ({ children, open, setOpen, modalTitle = "", maxWi
             sx={{ backgroundColor: "transparent" }}
             fullScreen={fullScreenDialog}
          >
-            <DialogTitle my={0} py={0} sx={{ backgroundColor: gpcDark, color: gpcLight }}>
+            <DialogTitle my={0} py={0} sx={{ backgroundColor: "wheat", color: gpcDark }}>
                <Toolbar sx={{ py: 0 }}>
-                  <Typography variant="h2" my={0} py={0} color={gpcLight} sx={{ ml: 2, flex: 1, py: 0, pt: 0, pb: 0, padding: "0px 24px !important" }}>
+                  <Typography variant="h2" my={0} py={0} color={gpcDark} sx={{ ml: 2, flex: 1, py: 0, pt: 0, pb: 0, padding: "0px 24px !important" }}>
                      {modalTitle}
                   </Typography>
                   {/* <Typography sx={{ ml: 2, flex: 1 }} variant="h3" component="div">
@@ -79,7 +79,7 @@ export const ModalComponent = ({ children, open, setOpen, modalTitle = "", maxWi
                </Toolbar>
             </DialogTitle>
             <DialogContent sx={{ pb: 0, marginTop: 2, height: height, maxHeight: "90vh" }}>
-               <Box sx={{ mt: 1 }}>{children}</Box>
+               <Box sx={{ mt: 1, height: fullScreenDialog ? "100%" : height, maxHeight: "100%" }}>{children}</Box>
             </DialogContent>
             {dialogActions && (
                <DialogActions>

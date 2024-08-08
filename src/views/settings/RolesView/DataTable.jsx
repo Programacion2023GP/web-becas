@@ -121,7 +121,7 @@ const RoleDT = () => {
                   <IconDelete />
                </Button>
             </Tooltip> */}
-            {auth.role_id == ROLE_SUPER_ADMIN && (
+            {auth.permissions.delete && (
                <Tooltip title={active ? "Desactivar" : "Reactivar"} placement="right">
                   <Button color="dark" onClick={() => handleClickDisEnable(id, name, active)} sx={{}}>
                      <SwitchIOSComponent checked={Boolean(active)} />

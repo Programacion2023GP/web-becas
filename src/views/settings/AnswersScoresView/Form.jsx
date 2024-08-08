@@ -905,7 +905,7 @@ const AnswerScoreForm = () => {
                   <Tabs
                      value={tabValue}
                      onChange={handleChangeTab}
-                     sx={{ backgroundColor: "green" }}
+                     sx={{ backgroundColor: "wheat" }}
                      indicatorColor="secondary"
                      textColor="inherit"
                      variant="fullWidth"
@@ -940,7 +940,7 @@ const AnswerScoreForm = () => {
                               fullWidth={false}
                               sx={{ width: "auto" }}
                               size="large"
-                              color="warning"
+                              color="secondary"
                               onClick={() => setTextBtnSumbit("NUEVA")}
                            >
                               {"NUEVA"}
@@ -954,7 +954,7 @@ const AnswerScoreForm = () => {
                   </Tabs>
                </AppBar>
                <Typography mt={1} textAlign={"center"} variant="h5">
-                  Puntajes mínimos para estudios socio-economicos...
+                  Puntajes mínimos para estudios socio-económicos...
                </Typography>
                <Box key={`div_scores}`} sx={styleContentScores} component={"div"}>
                   <Box

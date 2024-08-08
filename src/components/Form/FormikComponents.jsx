@@ -20,7 +20,8 @@ import {
    RadioGroup,
    Radio,
    Checkbox,
-   Divider
+   Divider,
+   Chip
 } from "@mui/material";
 import { Formik, Field, useFormikContext } from "formik";
 import InputMask from "react-input-mask";
@@ -29,17 +30,22 @@ import { handleInputFormik } from "../../utils/Formats";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { strengthColor, strengthIndicator } from "../../utils/password-strength";
 import Toast from "../../utils/Toast";
-import { IconReload } from "@tabler/icons";
+import { IconCamera, IconReload } from "@tabler/icons";
 import SwitchIOSComponent from "../SwitchIOSComponent";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import "dayjs/locale/es";
 import axios from "axios";
 import { useDropzone } from "react-dropzone";
-import { useGlobalContext } from "../../context/GlobalContext";
+import { colorPrimaryDark, colorPrimaryMain, useGlobalContext } from "../../context/GlobalContext";
 // import Select2Component from "./Select2Component";
 // import { InputAdornment, OutlinedInput } from "@mui/material";
 import { shouldForwardProp, styled } from "@mui/system";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+import { QuestionAlertConfig } from "../../utils/sAlert";
+import { ModalComponent } from "../ModalComponent";
+import { IconCameraUp } from "@tabler/icons-react";
 
 const OutlineInputStyle = styled(OutlinedInput, { shouldForwardProp })(({ theme }) => ({
    // width: 434,
@@ -60,10 +66,10 @@ const OutlineInputStyle = styled(OutlinedInput, { shouldForwardProp })(({ theme 
    }
 }));
 
-export const DividerComponent = ({ title, textAlign = "center", orientation = "horizontal" }) => (
+export const DividerComponent = ({ title, fontWeight, textAlign = "center", orientation = "horizontal", mb = 2, mt = null }) => (
    <Grid xs={12}>
-      <Divider sx={{ flexGrow: 1, mb: 2 }} orientation={orientation} textAlign={textAlign}>
-         {title}
+      <Divider sx={{ flexGrow: 1, mb: mb, mt: mt }} orientation={orientation} textAlign={textAlign}>
+         <div style={{ fontWeight: fontWeight }}>{title}</div>
       </Divider>
    </Grid>
 );
@@ -91,7 +97,7 @@ export const FormikComponent = forwardRef(
          showActionButtons = true,
          activeStep = null,
          setStepFailed = null,
-         maxHeight = "79v",
+         maxHeight = "97%",
          className
       },
       ref
@@ -116,34 +122,45 @@ export const FormikComponent = forwardRef(
       return (
          <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit} innerRef={formikRef == null ? ref : formikRef}>
             {({ handleSubmit, isSubmitting, resetForm }) => (
-               <Grid container spacing={2} component={"form"} onSubmit={handleSubmit} onBlur={onBlur} onChangeCapture={onChange} height={"100%"}>
+               <Grid
+                  container
+                  spacing={2}
+                  component={"form"}
+                  onSubmit={handleSubmit}
+                  onBlur={onBlur}
+                  onChangeCapture={onChange}
+                  height={"100%"}
+                  style={{ alignContent: "space-between" }}
+               >
                   {!showActionButtons ? (
                      <Grid xs={12} container spacing={2} className={className}>
                         {children}
                      </Grid>
                   ) : (
                      <>
-                        <Grid width={"100%"} xs={12} spacing={2} height={maxHeight} maxHeight={maxHeight} overflow={"auto"}>
+                        <Grid width={"100%"} xs={12} spacing={2} height={maxHeight ?? maxHeight} maxHeight={maxHeight ?? maxHeight} overflow={"auto"}>
                            <Grid xs={12} container spacing={2} className={className}>
                               {children}
                            </Grid>
                         </Grid>
-                        <LoadingButton
-                           type="submit"
-                           disabled={isSubmitting}
-                           loading={isSubmitting}
-                           // loadingPosition="start"
-                           variant="contained"
-                           fullWidth
-                           size="large"
-                        >
-                           {textBtnSubmit}
-                        </LoadingButton>
-                        {/* <ButtonGroup variant="outlined" fullWidth> */}
-                        <Button type="reset" variant="outlined" color="error" fullWidth size="large" sx={{ mt: 1 }} onClick={() => handleCancel(resetForm)}>
-                           CANCELAR
-                        </Button>
-                        {/* </ButtonGroup> */}
+                        <Grid width={"100%"} xs={12}>
+                           <LoadingButton
+                              type="submit"
+                              disabled={isSubmitting}
+                              loading={isSubmitting}
+                              // loadingPosition="start"
+                              variant="contained"
+                              fullWidth
+                              size="large"
+                           >
+                              {textBtnSubmit}
+                           </LoadingButton>
+                           {/* <ButtonGroup variant="outlined" fullWidth> */}
+                           <Button type="reset" variant="outlined" color="error" fullWidth size="large" sx={{ mt: 1 }} onClick={() => handleCancel(resetForm)}>
+                              CANCELAR
+                           </Button>
+                           {/* </ButtonGroup> */}
+                        </Grid>
                      </>
                   )}
                </Grid>
@@ -186,6 +203,8 @@ export const InputComponent = ({
    styleInput = 1,
    size = "medium",
    focus,
+   icon = null,
+   handleChangeExtra = null,
    ...props
 }) => {
    const formik = useFormikContext(); // Obtiene el contexto de Formik
@@ -201,7 +220,7 @@ export const InputComponent = ({
    if (styleInput == 2) {
       flexDirection = "column";
       alignItems = "center";
-      sxInput = { backgroundColor: "#1F2227" };
+      sxInput = { backgroundColor: colorPrimaryDark /* "#1F2227" */ };
    } else if (styleInput == 3) {
       flexDirection = "row";
       alignItems = "flex-end";
@@ -210,6 +229,10 @@ export const InputComponent = ({
       marginBottom = -2.5;
       size = "small";
    }
+
+   const handleOnChangeExtra = (e) => {
+      return handleChangeExtra(e.target.value);
+   };
 
    useEffect(() => {
       // console.log("isError", isError);
@@ -244,7 +267,6 @@ export const InputComponent = ({
                   >
                      {(inputProps) => (
                         <TextField
-                           {...inputProps}
                            key={idName}
                            name={idName}
                            label={label}
@@ -254,12 +276,13 @@ export const InputComponent = ({
                               textStyleCase != null ? handleInputFormik(e, formik.setFieldValue, idName, textStyleCase) : null;
                            }}
                            fullWidth
-                           {...props}
                            error={error}
                            helperText={isError ? error : helperText}
                            InputLabelProps={{
                               style: color ? { color: color } : {}
                            }}
+                           {...inputProps}
+                           {...props}
                         />
                      )}
                   </InputMask>
@@ -334,9 +357,14 @@ export const InputComponent = ({
                               : formik.values[idName]
                            : type === "number" && !isNaN(parseInt(formik.values[idName]))
                            ? parseInt(formik.values[idName])
+                           : type === "number" && formik.values[idName] == 0
+                           ? "0"
                            : ""
                      }
-                     onChange={formik.handleChange} // Utiliza el handleChange de Formik
+                     onChange={(e) => {
+                        formik.handleChange(e);
+                        handleChangeExtra != null ? handleOnChangeExtra(e) : null;
+                     }}
                      onBlur={(e) => {
                         formik.handleBlur(e); // Usa handleBlur de Formik para manejar el blur
 
@@ -363,6 +391,7 @@ export const InputComponent = ({
                         <InputAdornment position="start" sx={{ ml: 0.5 }}>
                            <Typography sx={{ color: "whitesmoke", fontWeight: "bolder", fontSize: 14 }}>{label}</Typography>
                            {/* <IconSearch stroke={2.5} size="1.5rem" color={theme.palette.grey[500]} /> */}
+                           {icon ?? icon}
                         </InputAdornment>
                         // </Tooltip>
                      }
@@ -473,7 +502,7 @@ export const PasswordCompnent = ({
             // border: 1,
             display: hidden ? "none" : "flex",
             flexDirection: "column",
-            alignItems: "end",
+            alignItems: "start",
             position: "relative",
             pt: 0,
             p: 0,
@@ -483,7 +512,7 @@ export const PasswordCompnent = ({
       >
          {/* Switch para mostrar el cambiar contraseña */}
          {checkedShowSwitchPassword && (
-            <Grid sx={{ backgroundColor: "", my: 0, py: 0, mt: 0, pt: 0, mb: -1.75 }}>
+            <Grid sx={{ backgroundColor: "", my: 0, py: 0, mt: 0, pt: 0, mb: -1.5 }}>
                <FormControlLabel
                   control={<Switch />}
                   label={"Cambiar Contraseña"}
@@ -618,6 +647,7 @@ export const Select2Component = ({
    handleGetValue = null,
    handleChangeValueSuccess,
    focus,
+   multiple,
    ...props
 }) => {
    const formik = useFormikContext(); // Obtiene el contexto de Formik
@@ -736,6 +766,7 @@ export const Select2Component = ({
                         {({ field }) => (
                            <Autocomplete
                               key={`select_${idName}`}
+                              // filterSelectedOptions
                               disablePortal
                               openOnFocus
                               label={label}
@@ -747,7 +778,12 @@ export const Select2Component = ({
                               {...field}
                               ref={inputRef}
                               value={Number(formik.values[idName]) > 0 ? dataOptions.find((option) => option.id === formik.values[idName])?.label : labelValue}
-                              defaultValue={Number(formik.values[idName]) > 0 ? dataOptions.find((option) => option.id === formik.values[idName])?.label : labelValue}
+                              defaultValue={
+                                 Number(multiple ? [dataOptions[0]] : formik.values[idName]) > 0
+                                    ? dataOptions.find((option) => option.id === formik.values[idName])?.label
+                                    : labelValue
+                              }
+                              // defaultValue={[["Selecciona una opción..."]]}
                               // defaultValue={labelValue || "Selecciona una opción..."}
                               onChange={(_, newValue) => {
                                  handleChangeValue(newValue, formik.setFieldValue);
@@ -756,9 +792,37 @@ export const Select2Component = ({
                               fullWidth={fullWidth || true}
                               isOptionEqualToValue={isOptionEqualToValue}
                               renderInput={(params) => <TextField {...params} label={label} error={isError} />}
+                              // renderTags={(value, getTagProps) =>
+                              //    value.map((option, index) => {
+                              //       const { key, ...tagProps } = getTagProps({ index });
+                              //       return <Chip variant="outlined" label={option} key={key} {...tagProps} />;
+                              //    })
+                              // }
                               disabled={disabled || loading}
                               error={isError ? isError : undefined}
                            />
+                           // <Autocomplete
+                           //    key={`select_${idName}`}
+                           //    multiple
+                           //    id="tags-outlined"
+                           //    options={dataOptions}
+                           //    size={size}
+                           //    // {...field}
+                           //    ref={inputRef}
+                           //    value={Number(formik.values[idName]) > 0 ? dataOptions.find((option) => option.id === formik.values[idName])?.label : labelValue}
+                           //    defaultValue={[dataOptions[0]]}
+                           //    filterSelectedOptions
+                           //    openOnFocus
+                           //    renderInput={(params) => <TextField {...params} label={label} placeholder={placeholder} />}
+                           //    onChange={(_, newValue) => {
+                           //       handleChangeValue(newValue, formik.setFieldValue);
+                           //    }}
+                           //    onBlur={formik.handleBlur}
+                           //    fullWidth={fullWidth || true}
+                           //    isOptionEqualToValue={isOptionEqualToValue}
+                           //    disabled={disabled || loading}
+                           //    error={isError ? isError : undefined}
+                           // />
                         )}
                      </Field>
                      {refreshSelect && (
@@ -871,6 +935,7 @@ export const RadioButtonComponent = ({
    marginBottom = 2,
    rowLayout = true, // Cambiar a false para poner en columnas
    focus,
+   color = "primary",
    ...props
 }) => {
    const { values, errors, touched, handleChange, handleBlur } = useFormikContext(); // Obtener valores, errores y funciones de Formik
@@ -942,10 +1007,10 @@ export const RadioButtonComponent = ({
                               sx={{
                                  color: "black",
                                  "&.Mui-checked": {
-                                    color: "#1E2126"
+                                    color: color == "dark" ? "#1E2126" : color
                                  },
                                  "&.MuiSvgIcon-root": {
-                                    fill: "#1E2126"
+                                    fill: color == "dark" ? "#1E2126" : color
                                  }
                               }}
                            />
@@ -959,11 +1024,13 @@ export const RadioButtonComponent = ({
                               color: "#c5c8cc" //"#1976d2"
                            },
                            "&.MuiFormControlLabel-label": {
-                              color: "#1E2126", //"#1976d2",
+                              // color: "#1E2126", //"#1976d2",
+                              color: color == "dark" ? "#1E2126" : color,
                               fontSize: "14px"
                            },
                            "&.Mui-checked": {
-                              color: "#1E2126" //"#1976d2"
+                              color: color == "dark" ? "#1E2126" : color
+                              // color: "#1E2126" //"#1976d2"
                            }
                         }}
                      />
@@ -1068,7 +1135,7 @@ export const CheckboxComponent = ({
 //#endregion IMPORTS
 
 // =================== COMPONENTE =======================
-export const DatePickerComponent = ({ loading = false, col, idName, label, format = "DD/MM/YYYY", disabled, hidden, marginBottom, ...props }) => {
+export const DatePickerComponent = ({ loading = false, col, idName, label, format = "DD/MM/YYYY", disabled, hidden, marginBottom, size = "medium", ...props }) => {
    const formik = useFormikContext();
    const { errors, touched } = formik;
    const error = formik.touched[idName] && formik.errors[idName] ? formik.errors[idName] : null;
@@ -1079,7 +1146,7 @@ export const DatePickerComponent = ({ loading = false, col, idName, label, forma
 
    return (
       <Grid xs={12} md={col} sx={{ display: hidden ? "none" : "flex", flexDirection: "column", alignItems: "center", mb: marginBottom ? `${marginBottom} 0` : 2 }}>
-         <FormControl fullWidth sx={{ margin: "1rem 0" }}>
+         <FormControl fullWidth sx={{ margin: size == "small" ? "0rem 0" : "1rem 0" }} size={size}>
             <Field name={idName} id={idName}>
                {({ field, form }) => (
                   <>
@@ -1165,8 +1232,9 @@ export const DatePickerComponent = ({ loading = false, col, idName, label, forma
 
 export const getCommunityById = async (community_id) => {
    const axiosMyCommunity = axios;
-   const { data } = await axiosMyCommunity.get(`${import.meta.env.VITE_API_CP}/cp/colonia/${community_id}`);
+   const { data } = await axiosMyCommunity.get(`${import.meta.env.VITE_API_CP}/gpd/cp/colonia/${community_id}`);
    // console.log(data.data);
+   if (data.data.result.length < 1) Toast.Info("el C.P. no corresponde a Gómez Palacio Durango");
    return data.data.result;
 };
 
@@ -1208,7 +1276,8 @@ export const getCommunity = async (
       formData.num_int !== "" && setFieldValue("num_int", formData.num_int);
       if (community_id) {
          const axiosMyCommunity = axios;
-         const { data } = await axiosMyCommunity.get(`${import.meta.env.VITE_API_CP}/cp/colonia/${community_id}`);
+         const { data } = await axiosMyCommunity.get(`${import.meta.env.VITE_API_CP}/gpd/cp/colonia/${community_id}`);
+         if (data.data.result.length < 1) Toast.Info("el C.P. no corresponde a Gómez Palacio Durango");
 
          if (data.data.status_code != 200) return Toast.Error(data.data.alert_text);
          formData.zip = data.data.result.CodigoPostal;
@@ -1223,7 +1292,9 @@ export const getCommunity = async (
       }
       if (zip.length > 1) {
          const axiosCommunities = axios;
-         const axiosRes = await axiosCommunities.get(`${import.meta.env.VITE_API_CP}/cp/${zip}`);
+         const axiosRes = await axiosCommunities.get(`${import.meta.env.VITE_API_CP}/gpd/cp/${zip}`);
+         if (axiosRes.data.data.result.length < 1) Toast.Info("el C.P. no corresponde a Gómez Palacio Durango");
+
          if (axiosRes.data.data.status_code != 200) return Toast.Error(axiosRes.data.data.alert_text);
          await axiosRes.data.data.result.map((d) => {
             states.push({ id: d.Estado, label: d.Estado });
@@ -1592,6 +1663,7 @@ export const setObjImg = (img, setImg) => {
 */
 //  ===================================== COMPONENTE =====================================
 const MB = 1048576; //2621440=2.5MB
+const mySwal = withReactContent(Swal);
 
 export const FileInputComponent = ({
    xsOffset = null,
@@ -1610,6 +1682,7 @@ export const FileInputComponent = ({
    multiple,
    maxImages = -1,
    accept = null,
+   fileSizeMax = 1, // en MB
    ...props
 }) => {
    const formik = useFormikContext();
@@ -1618,7 +1691,8 @@ export const FileInputComponent = ({
    const [uploadProgress, setUploadProgress] = useState(0);
    // const [filePreviews, setFilePreviews] = useState([]);
    const [ttShow, setTtShow] = useState("");
-   const [fileSizeExceeded, setFileSizeExceeded] = useState(false);
+   const [fileSizeExceeded, setFileSizeExceeded] = useState(fileSizeMax * MB);
+   const [confirmRemove, setConfirmRemove] = useState(false);
 
    const validationQuantityImages = () => {
       if (multiple) {
@@ -1638,31 +1712,59 @@ export const FileInputComponent = ({
       return true;
    };
 
-   const onDrop = useCallback((acceptedFiles) => {
-      setFilePreviews([]);
-      // if (multiple) if (!validationQuantityImages()) return
-      // Puedes manejar los archivos aceptados aquí y mostrar las vistas previas.
-      acceptedFiles.forEach((file) => {
-         const reader = new FileReader();
+   const onDrop = useCallback(
+      (acceptedFiles) => {
+         if (!confirmRemove) return; // Solo permite la carga de archivos si la eliminación fue confirmada
+         setConfirmRemove(false); // Resetear la confirmación después de la carga
+         // else setConfirmRemove(true);
 
-         if (file.size >= MB) return Toast.Info("el archivo es demasiado pesado, intenta con un archivo menor a 1MB");
+         setFilePreviews([]);
+         // if (multiple) if (!validationQuantityImages()) return
+         // Puedes manejar los archivos aceptados aquí y mostrar las vistas previas.
+         acceptedFiles.forEach((file) => {
+            handleSetFile(file);
+         });
+      },
+      [confirmRemove, setFilePreviews]
+   );
+   const handleSetFile = (file) => {
+      // console.log("🚀 ~ handleSetFile ~ file:", file);
+      const reader = new FileReader();
 
-         reader.onload = async (e) => {
-            const preview = {
-               file,
-               dataURL: reader.result
-            };
-            // if (multiple) if (!validationQuantityImages) return;
+      if (file.size >= fileSizeExceeded) {
+         if (filePreviews.length == 0) setConfirmRemove(true);
+         return Toast.Info("el archivo es demasiado pesado, intenta con un archivo menor a 1MB");
+      }
+      if (!file.type.includes("image")) {
+         if (filePreviews.length == 0) setConfirmRemove(true);
+         return Toast.Info("el tipo de archivo no es una imagen.");
+      }
 
-            // if (multiple) await setFilePreviews((prevPreviews) => [...prevPreviews, preview]);
-            // else
-            await setFilePreviews([preview]);
-            // console.log(filePreviews);
+      reader.onload = async (e) => {
+         const preview = {
+            file,
+            dataURL: reader.result
          };
+         // if (multiple) if (!validationQuantityImages) return;
 
-         reader.readAsDataURL(file);
-      });
-   }, []);
+         // if (multiple) await setFilePreviews((prevPreviews) => [...prevPreviews, preview]);
+         // else
+         await setFilePreviews([preview]);
+         // console.log(filePreviews);
+      };
+
+      reader.readAsDataURL(file);
+   };
+
+   const handleGetFileCamera = async (file) => {
+      await setFilePreviews([]);
+      setConfirmRemove(true);
+
+      // if (!confirmRemove) return; // Solo permite la carga de archivos si la eliminación fue confirmada
+      setConfirmRemove(false); // Resetear la confirmación después de la carga
+
+      handleSetFile(file);
+   };
 
    const simulateUpload = () => {
       // Simulamos la carga con un temporizador.
@@ -1684,7 +1786,12 @@ export const FileInputComponent = ({
       // Filtra la lista de vistas previas para eliminar el archivo seleccionado.
       // console.log(filePreviews);
       // setFilePreviews((prevPreviews) => prevPreviews.filter((preview) => preview.file !== fileToRemove));
-      await setFilePreviews([]);
+      mySwal.fire(QuestionAlertConfig(`¿Estas seguro de eliminar la imágen?`, "CONFIRMAR")).then(async (result) => {
+         if (result.isConfirmed) {
+            await setFilePreviews([]);
+            setConfirmRemove(true); // Establecer la confirmación para permitir la carga de nuevos archivos
+         }
+      });
       // console.log(filePreviews);
    };
 
@@ -1721,7 +1828,7 @@ export const FileInputComponent = ({
                      <>
                         <div className={"dropzone-container"}>
                            <div {...getRootProps({ className: color === "red" ? "dropzone-error" : "dropzone" })}>
-                              <input {...getInputProps()} multiple={multiple} accept={accept} disabled={disabled} />
+                              <input {...getInputProps()} type={confirmRemove ? "file" : "text"} multiple={multiple} accept={accept} disabled={disabled} />
                               <p style={{ display: filePreviews.length > 0 ? "none" : "block", fontStyle: "italic" }}>
                                  Arrastra y suelta archivos aquí, o haz clic para seleccionar archivos
                               </p>
@@ -1794,8 +1901,9 @@ export const FileInputComponent = ({
                                  ))}
                               </aside>
                            </div>
-                           <small style={{ marginTop: "-10px", fontStyle: "italic", fontSize: "11px" }}>
-                              Tamaño maximo del archivo soportado: <b>1MB MAX.</b>
+                           <small style={{ marginTop: "-10px", fontStyle: "italic", fontSize: "11px", textAlign: "center" }}>
+                              Tamaño maximo del archivo soportado: <b>{fileSizeMax}MB MAX.</b>
+                              <InputCameraComponent getFile={handleGetFileCamera} />
                            </small>
                         </div>
                         <Typography variant="body1" component="label" htmlFor={idName} ml={1}>
@@ -1806,253 +1914,6 @@ export const FileInputComponent = ({
                </Field>
             </FormControl>
          </Grid>
-      </>
-   );
-};
-
-export const FileInputComponentORIGINAL = ({ idName, label, inputProps, filePreviews, setFilePreviews, error, touched, multiple, maxImages = -1, accept = null }) => {
-   const [uploadProgress, setUploadProgress] = useState(0);
-   // const [filePreviews, setFilePreviews] = useState([]);
-   const [ttShow, setTtShow] = useState("");
-   const [fileSizeExceeded, setFileSizeExceeded] = useState(false);
-
-   const validationQuantityImages = () => {
-      if (multiple) {
-         if (maxImages != -1) {
-            if (filePreviews.length >= maxImages) {
-               console.log("maxImages", maxImages);
-               Toast.Info(`Solo se permiten cargar ${maxImages} imagenes.`);
-               return false;
-            }
-         }
-      } else {
-         if (filePreviews.length >= 1) {
-            Toast.Info(`Solo se permite cargar una imagen.`);
-            return false;
-         }
-      }
-      return true;
-   };
-
-   const onDrop = useCallback((acceptedFiles) => {
-      setFilePreviews([]);
-      // if (multiple) if (!validationQuantityImages()) return
-      // Puedes manejar los archivos aceptados aquí y mostrar las vistas previas.
-      acceptedFiles.forEach((file) => {
-         const reader = new FileReader();
-
-         if (file.size >= MB) return Toast.Info("el archivo es demasiado pesado, intenta con un archivo menor a 1MB");
-
-         reader.onload = async (e) => {
-            const preview = {
-               file,
-               dataURL: reader.result
-            };
-            // if (multiple) if (!validationQuantityImages) return;
-
-            // if (multiple) await setFilePreviews((prevPreviews) => [...prevPreviews, preview]);
-            // else
-            await setFilePreviews([preview]);
-            // console.log(filePreviews);
-         };
-
-         reader.readAsDataURL(file);
-      });
-   }, []);
-
-   const simulateUpload = () => {
-      // Simulamos la carga con un temporizador.
-      setTimeout(() => {
-         const progress = uploadProgress + 10;
-         setUploadProgress(progress);
-
-         if (progress < 100) {
-            // Si no se ha alcanzado el 100% de progreso, simulamos más carga.
-            simulateUpload();
-         } else {
-            // Cuando se completa la carga, restablecemos el progreso.
-            setUploadProgress(0);
-         }
-      }, 1000);
-   };
-   const handleRemoveImage = async (fileToRemove) => {
-      // Filtra la lista de vistas previas para eliminar el archivo seleccionado.
-      // console.log(filePreviews);
-      // setFilePreviews((prevPreviews) => prevPreviews.filter((preview) => preview.file !== fileToRemove));
-      await setFilePreviews([]);
-      // console.log(filePreviews);
-   };
-
-   const { getRootProps, getInputProps } = useDropzone({
-      onDrop
-   });
-
-   const handleMouseEnter = () => {
-      setTtShow("tt_show");
-   };
-   const handleMouseLeave = () => {
-      setTtShow("");
-   };
-
-   return (
-      <>
-         <FormControl fullWidth sx={{}}>
-            <Typography variant="p" mb={1} sx={{ fontWeight: "bolder" }} htmlFor={idName}>
-               {label}
-            </Typography>
-
-            <Field name={idName} id={idName}>
-               {({ field, form }) => (
-                  <>
-                     <div className="dropzone-container">
-                        <div {...getRootProps({ className: "dropzone" })}>
-                           <input {...getInputProps()} multiple={multiple} accept={accept} />
-                           <p style={{ display: filePreviews.length > 0 ? "none" : "block", fontStyle: "italic" }}>
-                              Arrastra y suelta archivos aquí, o haz clic para seleccionar archivos
-                           </p>
-
-                           {/* Vista previa de la imagen o PDF */}
-                           <aside className="file-preview">
-                              {filePreviews.map((preview) => (
-                                 <div key={preview.file.name} className="preview-item">
-                                    {preview.file.name.includes(".pdf") || preview.file.name.includes(".PDF") ? (
-                                       <>
-                                          <embed
-                                             className="preview-pdf"
-                                             src={preview.dataURL}
-                                             type="application/pdf"
-                                             width="100%"
-                                             height="500px"
-                                             onMouseEnter={handleMouseEnter}
-                                             onMouseLeave={handleMouseLeave}
-                                          />
-                                          {preview.file.name !== "undefined" && (
-                                             <embed
-                                                className={`tooltip_imagen ${ttShow}`}
-                                                src={preview.dataURL}
-                                                type="application/pdf"
-                                                width="50%"
-                                                height="80%"
-                                                onMouseEnter={handleMouseEnter}
-                                                onMouseLeave={handleMouseLeave}
-                                             />
-                                          )}
-                                          <div
-                                             className="remove-pdf-button"
-                                             onClick={(e) => {
-                                                e.preventDefault();
-                                                handleRemoveImage(preview.file);
-                                             }}
-                                          >
-                                             Eliminar
-                                          </div>
-                                       </>
-                                    ) : (
-                                       <>
-                                          <img className="preview-img" src={preview.dataURL} alt={preview.file.name} />
-                                          {preview.file.name !== "undefined" && (
-                                             <img
-                                                width={"50%"}
-                                                src={preview.dataURL}
-                                                alt={preview.file.name}
-                                                srcSet=""
-                                                className={`tooltip_imagen ${ttShow}`}
-                                                onMouseEnter={handleMouseEnter}
-                                                onMouseLeave={handleMouseLeave}
-                                             />
-                                          )}
-                                          <div
-                                             className="remove-button"
-                                             onClick={(e) => {
-                                                e.preventDefault();
-                                                handleRemoveImage(preview.file);
-                                             }}
-                                             onMouseEnter={handleMouseEnter}
-                                             onMouseLeave={handleMouseLeave}
-                                          >
-                                             Eliminar
-                                          </div>
-                                       </>
-                                    )}
-                                 </div>
-                              ))}
-                           </aside>
-                        </div>
-                        <small style={{ marginTop: "-10px", fontStyle: "italic", fontSize: "11px" }}>
-                           Tamaño maximo del archivo soportado: <b>1MB MAX.</b>
-                        </small>
-                     </div>
-                     {touched && error && (
-                        <FormHelperText error id={`ht-${idName}`}>
-                           {error}
-                        </FormHelperText>
-                     )}
-                  </>
-               )}
-            </Field>
-         </FormControl>
-      </>
-   );
-};
-
-const FileInputComponent1 = ({
-   idName,
-   label,
-   placeholder,
-   handleChange,
-   handleBlur,
-   inputProps,
-   setFieldValue,
-   setImgFile,
-   imagePreview,
-   setImagePreview,
-   error,
-   touched
-}) => {
-   const handleChangeImg = (event) => {
-      // if (event.target.files)
-      const file = event.target.files[0]; // Obtenemos el primer archivo del campo de entrada
-      setImgFile(file);
-
-      if (file) {
-         const reader = new FileReader();
-
-         reader.onload = (e) => {
-            setImagePreview(e.target.result);
-         };
-
-         reader.readAsDataURL(file);
-      }
-   };
-
-   return (
-      <>
-         <TextField
-            id={idName}
-            name={idName}
-            label={label}
-            type="file"
-            // value={value}
-            placeholder={placeholder}
-            onChange={(e) => {
-               handleChange(e);
-               handleChangeImg(e, setFieldValue);
-            }}
-            onBlur={handleBlur}
-            variant="standard"
-            inputProps={inputProps}
-            fullWidth
-            // disabled={values.id == 0 ? false : true}
-            // inputRef={(el) => (inputsRef.current[0] = el)}
-            // inputRef={inputRefVehicle}
-            error={error && touched}
-            helperText={error && touched && error}
-         />
-
-         {/* Vista previa de la imagen */}
-         <Box textAlign={"center"} sx={{ bgcolor: "#E9ECEF", borderRadius: "0  0 12px 12px" }}>
-            {imagePreview && <img alt="Vista previa de la imagen" src={imagePreview} style={{ maxWidth: 250, maxHeight: 250 }} />}
-         </Box>
       </>
    );
 };
@@ -2069,3 +1930,128 @@ FileInputComponent.propTypes = {
    maxImages: propTypes.number
 };
 //#endregion INPUT FILE (Drag&Drop)
+
+//#region INPUT CAMERA COMPONENT
+//#region IMPORTS
+// import { FormControl, FormHelperText, TextField, Typography, Box} from "@mui/material";
+// import { Box } from "@mui/system";
+// import propTypes from "prop-types";
+// import Toast from "../../utils/Toast";
+// import { Field } from "formik";
+// import { useDropzone } from "react-dropzone";
+// import React, { useRef, useState, useEffect } from 'react';
+//#endregion IMPORTS
+
+export const InputCameraComponent = ({ getFile }) => {
+   const videoRef = useRef(null);
+   const canvasRef = useRef(null);
+   const [hasCamera, setHasCamera] = useState(true);
+   const [cameraReady, setCameraReady] = useState(false);
+   const [openCamera, setOpenCamera] = useState(false);
+   const [photo, setPhoto] = useState(null);
+
+   useEffect(() => {
+      const detectCameraAndStartVideo = async () => {
+         try {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            videoRef.current.srcObject = stream;
+            setHasCamera(true);
+         } catch (error) {
+            console.error("Error accessing the camera:", error);
+            setHasCamera(false);
+         }
+      };
+
+      setPhoto(null);
+      detectCameraAndStartVideo();
+
+      return () => {
+         setCameraReady(false);
+         if (videoRef.current && videoRef.current.srcObject) {
+            setCameraReady(true);
+            videoRef.current.srcObject.getTracks().forEach((track) => track.stop());
+         }
+      };
+   }, [hasCamera]);
+
+   const dataURLtoFile = (dataurl, filename) => {
+      let arr = dataurl.split(","),
+         mime = arr[0].match(/:(.*?);/)[1],
+         bstr = atob(arr[1]),
+         n = bstr.length,
+         u8arr = new Uint8Array(n);
+
+      while (n--) {
+         u8arr[n] = bstr.charCodeAt(n);
+      }
+
+      return new File([u8arr], filename, { type: mime });
+   };
+
+   const takePhoto = () => {
+      const width = videoRef.current.videoWidth;
+      const height = videoRef.current.videoHeight;
+      const context = canvasRef.current.getContext("2d");
+      canvasRef.current.width = width;
+      canvasRef.current.height = height;
+      context.drawImage(videoRef.current, 0, 0, width, height);
+      const dataUrl = canvasRef.current.toDataURL("image/png");
+      setPhoto(dataUrl);
+      // if (getDataUrl) return photo;
+
+      // Convert the data URL to a file and pass it to the callback
+      const file = dataURLtoFile(dataUrl, "photo.png");
+      if (getFile) getFile(file);
+      setTimeout(() => {
+         setPhoto(null);
+         setOpenCamera(false);
+      }, 2000);
+   };
+
+   return (
+      <div>
+         {hasCamera ? (
+            <>
+               <Button variant="contained" size="small" onClick={() => setOpenCamera(true)}>
+                  <IconCameraUp /> &nbsp; Abrir camara
+               </Button>
+               <ModalComponent open={openCamera} setOpen={setOpenCamera} modalTitle={"CÁMARA"}>
+                  <video ref={videoRef} autoPlay style={{ width: "100%", maxHeight: "75vh", border: `5px ${colorPrimaryMain} solid`, borderRadius: "15px" }} />
+                  <Button variant="contained" size="large" fullWidth onClick={takePhoto} sx={{}}>
+                     <IconCamera />
+                     &nbsp; TOMAR FOTO
+                  </Button>
+                  <Box position={"static"}>
+                     <canvas ref={canvasRef} style={{ display: "none" }} />
+                     {photo && (
+                        <img
+                           src={photo}
+                           alt="Tomada con la cámara"
+                           style={{
+                              width: canvasRef.current.width + 260,
+                              maxHeight: canvasRef.current.height + 380,
+                              objectFit: "cover",
+                              position: "absolute",
+                              top: "450px",
+                              left: "50%",
+                              transform: "translate(-50%,-50%)"
+                           }}
+                        />
+                     )}
+                  </Box>
+               </ModalComponent>
+            </>
+         ) : (
+            <Typography textAlign={"center"} variant="caption">
+               No se detectó una cámara.
+               <Tooltip title={"Volver a detectar cámara, si no reconoce la cámara, recarge la página o a volver a conectar el dispositivo."}>
+                  <IconButton size="small" onClick={() => setHasCamera(true)}>
+                     <IconReload />
+                  </IconButton>
+               </Tooltip>
+            </Typography>
+         )}
+      </div>
+   );
+};
+//#region INPUT CAMERA COMPONENT

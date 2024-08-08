@@ -1,4 +1,3 @@
-import { Formik, useFormikContext } from "formik";
 import * as Yup from "yup";
 
 import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
@@ -7,37 +6,32 @@ import Select2Component from "../../../components/Form/Select2Component";
 import { useRoleContext } from "../../../context/RoleContext";
 import { useEffect } from "react";
 import { LoadingButton } from "@mui/lab";
-import { Button, ButtonGroup } from "@mui/material";
+import { Button } from "@mui/material";
 import Toast from "../../../utils/Toast";
 import { useGlobalContext } from "../../../context/GlobalContext";
 import { useAuthContext } from "../../../context/AuthContext";
 import { useMenuContext } from "../../../context/MenuContext";
 import { FormikComponent } from "../../../components/Form/FormikComponents";
+import { isArray } from "highcharts";
 
 const FormSelect = ({ setOpenDialogTable, setLoadPermissions }) => {
    const { auth } = useAuthContext();
-   const { openDialog, setOpenDialog, toggleDrawer, setLoadingAction } = useGlobalContext();
+   const { setOpenDialog, setLoadingAction } = useGlobalContext();
    const {
       singularName,
       rolesSelect,
-      createRole,
-      updateRole,
       formData,
-      setFormData,
-      showRole,
       textBtnSubmit,
       resetRoleSelect,
       setTextBtnSumbit,
-      formTitle,
       setFormTitle,
       roleSelect,
-      setRoleSelect,
       showRoleSelect,
       updatePermissions,
       getRolesSelectIndex,
       formikRef
    } = useRoleContext();
-   const { menus, checkMenus, setCheckMenus, checkMaster, setCheckMaster } = useMenuContext();
+   const { menus, checkMenus, setCheckMenus, setCheckMaster } = useMenuContext();
    // const formik = useFormikContext();
 
    const resetCheckMenus = () => {
@@ -50,7 +44,7 @@ const FormSelect = ({ setOpenDialogTable, setLoadPermissions }) => {
       setCheckMenus(resetCheck);
    };
 
-   const handleChangeRole = async (inputName, value2, setFieldValue) => {
+   const handleChangeRole = async (inputName, value2) => {
       try {
          // console.log("amanas", value2);
          setLoadPermissions(true);
@@ -58,7 +52,7 @@ const FormSelect = ({ setOpenDialogTable, setLoadPermissions }) => {
          // console.log("resetCheckMenus", resetCheckMenus);
          if (value2.id < 1) return setLoadPermissions(false); // checks se quedan reiniciados
          const axiosResponse = await showRoleSelect(value2.id);
-         // console.log(axiosResponse);
+         // console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~", axiosResponse);
          const permissions = {
             read: [],
             create: [],
@@ -102,7 +96,8 @@ const FormSelect = ({ setOpenDialogTable, setLoadPermissions }) => {
                if (permissions.delete.includes(check.id.toString()) || permissions.delete === "todas") check.permissions.delete = true;
                // console.log(`${permissions.more_permissions}includes(${check.id.toString()})`);
                check.permissions.more_permissions = [];
-               if (permissions.more_permissions === "todas") check.permissions.more_permissions = ["todas"];
+               // if (permissions.more_permissions === "todas") check.permissions.more_permissions = ["todas"];
+
                // else check.permissions.more_permissions = permissions.more_permissions;
                // else {
                //    permissions.more_permissions.map((mp) => {
@@ -113,16 +108,26 @@ const FormSelect = ({ setOpenDialogTable, setLoadPermissions }) => {
                return check;
             });
          }
-         permissions.more_permissions.map((mp) => {
-            // console.log("el mp", mp);
-            const id = mp.split("@")[0];
-            newCheckMenus.find((check) => check.id === Number(id) && check.permissions.more_permissions.push(mp));
-            // else check.permissions.more_permissions = permissions.more_permissions;
-         });
+         // console.log("🚀 ~ permissions.more_permissions.map ~ newCheckMenus:", newCheckMenus);
+         // console.log("🚀 ~ handleChangeRole ~ permissions.more_permissions:", typeof permissions.more_permissions, permissions.more_permissions);
+         if (isArray(permissions.more_permissions)) {
+            // console.log("es array", permissions.more_permissions);
+            permissions.more_permissions.map((mp) => {
+               // console.log("el mp", mp);
+               if (mp.includes("@")) {
+                  const id = mp.split("@")[0];
+                  newCheckMenus.find((check) => check.id === Number(id) && check.permissions.more_permissions.push(mp));
+               } else newCheckMenus.find((check) => check.others_permissions.includes(mp) && check.permissions.more_permissions.push(mp));
+               // else check.permissions.more_permissions = permissions.more_permissions;
+            });
+         } else if (permissions.more_permissions == "todas")
+            newCheckMenus.map((check) => check.others_permissions.length > 0 && check.permissions.more_permissions.push("todas"));
+         // console.log("🚀 ~ newCheckMenus=checkMenus.map ~ newCheckMenus:", newCheckMenus);
          setCheckMenus(newCheckMenus);
          setLoadPermissions(false);
          // console.log("FormSelect - checkMenus", checkMenus);
       } catch (error) {
+         setLoadPermissions(false);
          console.log(error);
          Toast.Error(error);
       }
@@ -136,18 +141,6 @@ const FormSelect = ({ setOpenDialogTable, setLoadPermissions }) => {
          Toast.Error(error);
       }
    };
-
-   // const handleModify = (setValues, setFieldValue) => {
-   //    try {
-   //       // fillCheckMenus()
-   //       if (roleSelect.description) roleSelect.description == null && (roleSelect.description = "");
-   //       setValues(roleSelect);
-   //       // console.log(roleSelect);
-   //    } catch (error) {
-   //       console.log(error);
-   //       Toast.Error(error);
-   //    }
-   // };
 
    const handleClickEdit = async () => {
       try {
@@ -191,6 +184,7 @@ const FormSelect = ({ setOpenDialogTable, setLoadPermissions }) => {
          // console.log("checkMenus", checkMenus);
          if (values.id < 1) return Toast.Info("Selecciona un Role");
          setLoadingAction(true);
+         // checkMenus = [];
          values.read = [];
          values.create = [];
          values.update = [];
@@ -206,6 +200,7 @@ const FormSelect = ({ setOpenDialogTable, setLoadPermissions }) => {
             if (check.permissions.delete) values.delete.push(check.id);
             if (check.permissions.more_permissions.length > 0) {
                check.permissions.more_permissions.map((permission) => {
+                  // console.log("🚀 ~ check.permissions.more_permissions.map ~ permission:", permission);
                   values.more_permissions.push(permission);
                });
             }
@@ -223,10 +218,11 @@ const FormSelect = ({ setOpenDialogTable, setLoadPermissions }) => {
          else values.delete = values.delete.join();
          // if (values.more_permissions.length > 0 && values.more_permissions.length == count_more_permissions) values.more_permissions = "todas";
          // else
-         // console.log(values.more_permissions);
          values.more_permissions = values.more_permissions.join();
+         // console.log("values.more_permissions FINAL", values.more_permissions);
          // console.log("valuesFinal", values);
-         // return;
+
+         // return setLoadingAction(false);
          const axiosResponse = await updatePermissions(values);
          if (axiosResponse.status_code === 200) {
             resetForm();
@@ -254,9 +250,6 @@ const FormSelect = ({ setOpenDialogTable, setLoadPermissions }) => {
 
    useEffect(() => {
       try {
-         // console.log(formikRef);
-         // const btnModify = document.getElementById("btnModify");
-         // if (btnModify != null && roleSelect.id > 0) btnModify.click();
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -302,7 +295,7 @@ const FormSelect = ({ setOpenDialogTable, setLoadPermissions }) => {
             refreshSelect={getRolesSelectIndex}
             handleChangeValueSuccess={handleChangeRole}
          />
-         {auth.permissions.more_permissions.includes(`6@Asignar Permisos`) && (
+         {(auth.permissions.more_permissions.includes(`Asignar Permisos`) || auth.permissions.more_permissions.includes(`todas`)) && (
             <Grid xs={12} sm={2} sx={{ mb: 1 }}>
                <LoadingButton
                   type="submit"

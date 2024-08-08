@@ -20,11 +20,11 @@ const App = () => {
          <CssBaseline />
          {/* <NavigationSroll> */}
          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 10000 }} open={load}>
+            {/* <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 10000 }} open={load}>
                <Typography variant="h1" sx={{ color: "#fff" }}>
                   CARGANDO... <CircularProgress color="inherit" />
                </Typography>
-            </Backdrop>
+            </Backdrop> */}
             <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 10000 }} open={loadAction}>
                <Typography variant="h1" sx={{ color: "#fff" }}>
                   CARGANDO... <CircularProgress color="inherit" />

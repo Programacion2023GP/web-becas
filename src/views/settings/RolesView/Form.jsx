@@ -1,6 +1,6 @@
 import * as Yup from "yup";
 
-import { Card, FormControlLabel, Switch, Typography } from "@mui/material";
+import { Card, FormControlLabel, Grid, Switch, Typography } from "@mui/material";
 import { SwipeableDrawer } from "@mui/material";
 import { useState } from "react";
 import { useRoleContext } from "../../../context/RoleContext";
@@ -111,34 +111,38 @@ const RoleForm = () => {
 
    return (
       <SwipeableDrawer anchor={"right"} open={openDialog} onClose={toggleDrawer(false)} onOpen={toggleDrawer(true)}>
-         <Card>
-            <Box role="presentation" p={3} pt={5} className="form">
-               <Typography variant="h2" mb={3} textAlign={"center"}>
-                  {formTitle}
+         {/* <Card> */}
+         <Box role="presentation" p={3} pt={5} className="form">
+            <Grid container mb={2}>
+               <Grid item xs={8} pr={3}>
+                  <Typography variant="h2">{formTitle}</Typography>
+               </Grid>
+               <Grid item xs={4}>
                   <FormControlLabel
                      sx={{ float: "right", color: colorLabelcheck }}
                      control={<Switch checked={checkAdd} onChange={(e) => handleChangeCheckAdd(e)} />}
                      label="Seguir Agregando"
                   />
-               </Typography>
+               </Grid>
+            </Grid>
 
-               <FormikComponent
-                  key={"formikComponent"}
-                  initialValues={formData}
-                  validationSchema={validationSchema}
-                  onSubmit={onSubmit}
-                  textBtnSubmit={textBtnSubmit}
-                  formikRef={formikRef}
-                  handleCancel={handleCancel}
-               >
-                  <InputComponent col={12} idName={"id"} label={"id"} hidden={true} />
-                  <InputComponent col={12} idName={"role"} label={"Nombre del Rol *"} placeholder={"Supervisor"} />
-                  <InputComponent col={12} idName={"description"} label={"Descripción"} placeholder={"Texto de ayuda"} />
-                  <Select2Component col={12} idName={"page_index"} label={"Página de Inicio *"} options={menusSelect} refreshSelect={getMenusSelectIndexToRoles} />
-                  <SwitchComponent col={12} idName={"active"} label={"¿Rol Activo?"} textEnable={"Activo"} textDisable={"Inactivo"} />
-               </FormikComponent>
-            </Box>
-         </Card>
+            <FormikComponent
+               key={"formikComponent"}
+               initialValues={formData}
+               validationSchema={validationSchema}
+               onSubmit={onSubmit}
+               textBtnSubmit={textBtnSubmit}
+               formikRef={formikRef}
+               handleCancel={handleCancel}
+            >
+               <InputComponent col={12} idName={"id"} label={"id"} hidden={true} />
+               <InputComponent col={12} idName={"role"} label={"Nombre del Rol *"} placeholder={"Supervisor"} />
+               <InputComponent col={12} idName={"description"} label={"Descripción"} placeholder={"Texto de ayuda"} />
+               <Select2Component col={12} idName={"page_index"} label={"Página de Inicio *"} options={menusSelect} refreshSelect={getMenusSelectIndexToRoles} />
+               <SwitchComponent col={12} idName={"active"} label={"¿Rol Activo?"} textEnable={"Activo"} textDisable={"Inactivo"} />
+            </FormikComponent>
+         </Box>
+         {/* </Card> */}
       </SwipeableDrawer>
    );
 };

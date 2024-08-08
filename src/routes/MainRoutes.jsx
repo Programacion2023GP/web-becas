@@ -3,34 +3,35 @@ import { lazy } from "react";
 // project imports
 import MainLayout from "../layout/MainLayout";
 import Loadable from "../ui-component/Loadable";
-import SchoolsView from "../views/catalogs/SchoolsView/Index";
-import LevelsView from "../views/catalogs/LevelsView/Index";
-import SchoolContextProvider from "../context/SchoolContext";
-import LevelContextProvider from "../context/LevelContext";
-import PerimetersView from "../views/catalogs/PerimetersView/Index";
-import PerimeterContextProvider from "../context/PerimeterContext";
-import RequestBecaView from "../views/RequestBecaView/RequestBecaView";
-import DisabilitiesView from "../views/catalogs/DisabilitiesView/Index";
-import DisabilityContextProvider from "../context/DisabilityContext";
-import RequestBecaContextProvider from "../context/RequestBecaContext";
-import StudentContextProvider from "../context/StudentContext";
-import UserContextProvider from "../context/UserContext";
-import UsersView from "../views/settings/UsersView/Index";
-import RelationshipContextProvider from "../context/RelationshipContext";
-import TutorContextProvider from "../context/TutorContext";
+const SchoolsView = Loadable(lazy(() => import("../views/catalogs/SchoolsView/Index")));
+const LevelsView = Loadable(lazy(() => import("../views/catalogs/LevelsView/Index")));
+const SchoolContextProvider = Loadable(lazy(() => import("../context/SchoolContext")));
+const LevelContextProvider = Loadable(lazy(() => import("../context/LevelContext")));
+const PerimetersView = Loadable(lazy(() => import("../views/catalogs/PerimetersView/Index")));
+const PerimeterContextProvider = Loadable(lazy(() => import("../context/PerimeterContext")));
+const RequestBecaView = Loadable(lazy(() => import("../views/RequestBecaView/RequestBecaView")));
+const DisabilitiesView = Loadable(lazy(() => import("../views/catalogs/DisabilitiesView/Index")));
+const DisabilityContextProvider = Loadable(lazy(() => import("../context/DisabilityContext")));
+const RequestBecaContextProvider = Loadable(lazy(() => import("../context/RequestBecaContext")));
+const StudentContextProvider = Loadable(lazy(() => import("../context/StudentContext")));
+const UserContextProvider = Loadable(lazy(() => import("../context/UserContext")));
+const UsersView = Loadable(lazy(() => import("../views/settings/UsersView/Index")));
+const RelationshipContextProvider = Loadable(lazy(() => import("../context/RelationshipContext")));
+const TutorContextProvider = Loadable(lazy(() => import("../context/TutorContext")));
 import { loaderIndexUsersView } from "../views/settings/UsersView/Index";
-import FamilyContextProvider from "../context/FamilyContext";
-import RequestListView from "../views/Request/RequestListView/Index";
-import CommunitiesView from "../views/catalogs/CommunitiesView/Index";
-import CommunityContextProvider from "../context/CommunityContext";
-import MenuContextProvider from "../context/MenuContext";
-import MenusView from "../views/settings/MenusView/Index";
-import RoleContextProvider from "../context/RoleContext";
-import RolesView from "../views/settings/RolesView/Index";
-import AnswerScoreContextProvider from "../context/AnswerScoreContext";
-import AnswersScoresView from "../views/settings/AnswersScoresView/Index";
-import BecaSettingsView from "../views/settings/BecaSettingsView/Index";
-import DashboardIndex from "../views/dashboard/DashboardView/Index";
+const FamilyContextProvider = Loadable(lazy(() => import("../context/FamilyContext")));
+const RequestListView = Loadable(lazy(() => import("../views/Request/RequestListView/Index")));
+const CommunitiesView = Loadable(lazy(() => import("../views/catalogs/CommunitiesView/Index")));
+const CommunityContextProvider = Loadable(lazy(() => import("../context/CommunityContext")));
+const MenuContextProvider = Loadable(lazy(() => import("../context/MenuContext")));
+const MenusView = Loadable(lazy(() => import("../views/settings/MenusView/Index")));
+const RoleContextProvider = Loadable(lazy(() => import("../context/RoleContext")));
+const RolesView = Loadable(lazy(() => import("../views/settings/RolesView/Index")));
+const AnswerScoreContextProvider = Loadable(lazy(() => import("../context/AnswerScoreContext")));
+const AnswersScoresView = Loadable(lazy(() => import("../views/settings/AnswersScoresView/Index")));
+const SettingsView = Loadable(lazy(() => import("../views/settings/SettingsView/Index")));
+const DashboardIndex = Loadable(lazy(() => import("../views/dashboard/DashboardView/Index")));
+const SettingContextProvider = Loadable(lazy(() => import("../context/SettingContext")));
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import("../views/dashboard/Default")));
@@ -58,7 +59,15 @@ const MainRoutes = {
       {
          index: true,
          //    path: "dashboard",
-         element: <DashboardIndex />
+         element: (
+            <UserContextProvider>
+               <CommunityContextProvider>
+                  <RequestBecaContextProvider>
+                     <DashboardIndex />
+                  </RequestBecaContextProvider>
+               </CommunityContextProvider>
+            </UserContextProvider>
+         )
       },
       // {
       //    path: "dashboard",
@@ -128,11 +137,11 @@ const MainRoutes = {
                // loader: loaderIndex
             },
             {
-               path: "becas",
+               path: "ajustes",
                element: (
-                  <AnswerScoreContextProvider>
-                     <BecaSettingsView />
-                  </AnswerScoreContextProvider>
+                  <SettingContextProvider>
+                     <SettingsView />
+                  </SettingContextProvider>
                )
                // loader: loaderIndex
             }
@@ -195,7 +204,9 @@ const MainRoutes = {
                element: (
                   <FamilyContextProvider>
                      <RequestBecaContextProvider>
-                        <RequestListView />
+                        <RelationshipContextProvider>
+                           <RequestListView />
+                        </RelationshipContextProvider>
                      </RequestBecaContextProvider>
                   </FamilyContextProvider>
                )
@@ -205,104 +216,28 @@ const MainRoutes = {
                element: (
                   <FamilyContextProvider>
                      <RequestBecaContextProvider>
-                        <RequestListView />
+                        <RelationshipContextProvider>
+                           <RequestListView />
+                        </RelationshipContextProvider>
+                     </RequestBecaContextProvider>
+                  </FamilyContextProvider>
+               )
+            },
+            {
+               path: "pagos/:pago?",
+               element: (
+                  <FamilyContextProvider>
+                     <RequestBecaContextProvider>
+                        <RelationshipContextProvider>
+                           <RequestListView />
+                        </RelationshipContextProvider>
                      </RequestBecaContextProvider>
                   </FamilyContextProvider>
                )
             }
-            // {
-            //    path: "en-revision",
-            //    element: (
-            //       <FamilyContextProvider>
-            //          <RequestBecaContextProvider>
-            //             <RequestListView status={"TERMINADA, EN REVISIÓN"} />
-            //          </RequestBecaContextProvider>
-            //       </FamilyContextProvider>
-            //    )
-            // },
-            // {
-            //    path: "en-evaluacion",
-            //    element: (
-            //       <FamilyContextProvider>
-            //          <RequestBecaContextProvider>
-            //             <RequestListView status={"EN EVALUACIÓN"} />
-            //          </RequestBecaContextProvider>
-            //       </FamilyContextProvider>
-            //    )
-            // },
-            // {
-            //    path: "aprobadas",
-            //    element: (
-            //       <FamilyContextProvider>
-            //          <RequestBecaContextProvider>
-            //             <RequestListView status={"APROBADA"} />
-            //          </RequestBecaContextProvider>
-            //       </FamilyContextProvider>
-            //    )
-            // },
-            // {
-            //    path: "pagadas",
-            //    element: (
-            //       <FamilyContextProvider>
-            //          <RequestBecaContextProvider>
-            //             <RequestListView status={"PAGADA"} />
-            //          </RequestBecaContextProvider>
-            //       </FamilyContextProvider>
-            //    )
-            // },
-            // {
-            //    path: "rechazadas",
-            //    element: (
-            //       <FamilyContextProvider>
-            //          <RequestBecaContextProvider>
-            //             <RequestListView status={"RECHAZADA"} />
-            //          </RequestBecaContextProvider>
-            //       </FamilyContextProvider>
-            //    )
-            // },
-            // {
-            //    path: "canceladas",
-            //    element: (
-            //       <FamilyContextProvider>
-            //          <RequestBecaContextProvider>
-            //             <RequestListView status={"CANCELADA"} />
-            //          </RequestBecaContextProvider>
-            //       </FamilyContextProvider>
-            //    )
-            // }
          ]
       },
 
-      {
-         path: "utils",
-         children: [
-            {
-               path: "util-typography",
-               element: <UtilsTypography />
-            },
-            {
-               path: "util-color",
-               element: <UtilsColor />
-            },
-            {
-               path: "util-shadow",
-               element: <UtilsShadow />
-            }
-         ]
-      },
-      {
-         path: "icons",
-         children: [
-            {
-               path: "tabler-icons",
-               element: <UtilsTablerIcons />
-            },
-            {
-               path: "material-icons",
-               element: <UtilsMaterialIcons />
-            }
-         ]
-      },
       {
          path: "sample-page",
          element: <SamplePage />

@@ -8,6 +8,11 @@ export const gpcDark100 = "#566173";
 export const gpcDarkContrast = "#E9ECEF";
 export const gpcBlue = "#1455CB";
 export const gpcText = "#1455CB";
+export const colorPrimaryMain = "#debb9a";
+export const colorPrimaryDark = "#a46c38";
+export const colorSecondaryMain = "#ad4432";
+export const colorSecondaryDark = "#923929";
+export const colorSecondaryLight = "#fdf3f1";
 
 export const ROLE_SUPER_ADMIN = 1;
 export const ROLE_ADMIN = 2;
@@ -22,6 +27,9 @@ const initialStateCounters = {
    requestInReview: 0,
    requestInEvaluate: 0,
    requestApproved: 0,
+   requestPayed1: 0,
+   requestPayed2: 0,
+   requestPayed3: 0,
    requestPayed: 0,
    requestDelivered: 0,
    requestRejected: 0,

@@ -16,13 +16,15 @@ import { Axios, useAuthContext } from "../../../context/AuthContext";
 import { IconCircleCheckFilled } from "@tabler/icons-react";
 import { IconCircleXFilled } from "@tabler/icons-react";
 import { Box } from "@mui/system";
-import { getCommunityById } from "../../../components/Form/InputsCommunityComponent";
+import { getCommunityById } from "../../../components/Form/FormikComponents";
 import { useFamilyContext } from "../../../context/FamilyContext";
 import html2pdf from "html2pdf.js";
 import RequestReportPDF from "./RequestReportPDF";
 import ModalReject from "./ModalReject";
 import IconDelete from "../../../components/icons/IconDelete";
 import * as XLSX from "xlsx";
+import ModalPayment from "./ModalPayment";
+import ModalApprove from "./ModalApprove";
 
 const RequestBecaDT = ({ status = null }) => {
    const { auth } = useAuthContext();
@@ -60,7 +62,6 @@ const RequestBecaDT = ({ status = null }) => {
    ];
    const { getIndexByFolio } = useFamilyContext();
    const [folio, setFolio] = useState(0);
-   const [openModalReject, setOpenModalReject] = useState(false);
 
    const [openDialogPreview, setOpenDialogPreview] = useState(false);
    const [fullScreenDialog, setFullScreenDialog] = useState(false);
@@ -84,6 +85,10 @@ const RequestBecaDT = ({ status = null }) => {
       }
       // pagebreak: { before: "#page2" } // Agrega paginación antes de un elemento con el ID 'page2'
    });
+
+   const [openModalApprove, setOpenModalApprove] = useState(false);
+   const [openModalReject, setOpenModalReject] = useState(false);
+   const [openModalPayment, setOpenModalPayment] = useState(false);
 
    const downloadPDF = async (elementID) => {
       setLoadingAction(true);
@@ -194,7 +199,7 @@ const RequestBecaDT = ({ status = null }) => {
       { field: "end_date", header: "Fecha de Termino", sortable: true, functionEdit: null, body: EndDateBodyTemplate },
       { field: "socioeconomic_study", header: "Estudio Socio-Económico", sortable: true, functionEdit: null, body: SocioeconomicStudyBodyTemplate }
    ];
-   auth.permissions.more_permissions.includes("16@Ver Puntaje") &&
+   (auth.permissions.more_permissions.includes("Ver Puntaje") || auth.permissions.more_permissions.includes(`todas`)) &&
       columns.push({ field: "score_total", header: "Puntaje", sortable: true, functionEdit: null, body: ScoreTotalBodyTemplate });
    auth.role_id === ROLE_SUPER_ADMIN &&
       columns.push(
@@ -239,8 +244,8 @@ const RequestBecaDT = ({ status = null }) => {
 
    const handleClickApprove = async (folio) => {
       try {
-         const axiosResponse = await updateStatusBeca(folio, "APROBADA", { user_id: auth.id }, status);
-         Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
+         setFolio(folio);
+         setOpenModalReject(true);
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -248,12 +253,8 @@ const RequestBecaDT = ({ status = null }) => {
    };
    const handleClickReject = async (folio) => {
       try {
-         mySwal.fire(QuestionAlertConfig(`Estas seguro de RECHAZAR la solicitud con folio #${folio}`, "RECHAZAR!", "NO CANCELAR")).then(async (result) => {
-            if (result.isConfirmed) {
-               setFolio(folio);
-               setOpenModalReject(true);
-            }
-         });
+         setFolio(folio);
+         setOpenModalReject(true);
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -261,10 +262,12 @@ const RequestBecaDT = ({ status = null }) => {
    };
    const handleClickPayed = async (folio) => {
       try {
-         mySwal.fire(QuestionAlertConfig(`Estas seguro de PAGAR y ENTREGAR la beca con folio #${folio}`, "PAGAR!", "CANCELAR")).then(async (result) => {
+         mySwal.fire(QuestionAlertConfig(`Realizar el pago 1 de la beca con folio #${folio}`, "CONFIRMAR", null, false)).then(async (result) => {
             if (result.isConfirmed) {
-               const axiosResponse = await updateStatusBeca(folio, "PAGADA", null, status);
-               Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
+               setFolio(folio);
+               setOpenModalPayment(true);
+               // const axiosResponse = await updateStatusBeca(folio, "PAGADA", null, status);
+               // Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
             }
          });
       } catch (error) {
@@ -315,10 +318,12 @@ const RequestBecaDT = ({ status = null }) => {
       try {
          mySwal.fire(QuestionAlertConfig(`Estas seguro de cancelar la solicitud con folio #${folio}`, "CANCELAR", "NO CANCELAR")).then(async (result) => {
             if (result.isConfirmed) {
-               setLoadingAction(true);
-               const axiosResponse = await updateStatusBeca(folio, "CANCELADA", null, status);
-               setLoadingAction(false);
-               Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
+               setFolio(folio);
+               setOpenModalReject(true);
+               // setLoadingAction(true);
+               // const axiosResponse = await updateStatusBeca(folio, "CANCELADA", null, status);
+               // setLoadingAction(false);
+               // Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
             }
          });
       } catch (error) {
@@ -341,6 +346,7 @@ const RequestBecaDT = ({ status = null }) => {
    // };
 
    const ButtonsAction = ({ id, name, current_page, obj }) => {
+      // console.log("🚀 ~ ButtonsAction ~ obj:", obj);
       if (["CANCELADA"].includes(obj.status)) return;
 
       return (
@@ -361,7 +367,7 @@ const RequestBecaDT = ({ status = null }) => {
                   </Button>
                </Tooltip>
             )}
-            {auth.permissions.more_permissions.includes(`16@Corregir Documentos`) &&
+            {(auth.permissions.more_permissions.includes(`Corregir Documentos`) || auth.permissions.more_permissions.includes(`todas`)) &&
                ["TERMINADA", "EN REVISIÓN", "EN EVALUACIÓN"].includes(obj.status) &&
                obj.correction_permission && (
                   <Tooltip title={`Corregir Documentos del Folio #${name}`} placement="top">
@@ -370,41 +376,46 @@ const RequestBecaDT = ({ status = null }) => {
                      </Button>
                   </Tooltip>
                )}
-            {auth.permissions.more_permissions.includes(`16@Validar Documentos`) && ["TERMINADA", "EN REVISIÓN"].includes(obj.status) && (
-               <Tooltip title={`Validar Documentos del Folio #${name}`} placement="top">
-                  <Button color="primary" onClick={() => handleClickValidateDocuments(obj.folio, obj.status, "revision")}>
-                     <IconChecklist />
-                  </Button>
-               </Tooltip>
-            )}
-            {auth.permissions.more_permissions.includes(`16@Evaluar`) && ["EN EVALUACIÓN"].includes(obj.status) && (
-               <Tooltip title={`Aprobar Folio #${name}`} placement="top">
-                  <Button color="primary" onClick={() => handleClickApprove(obj.folio)}>
-                     <IconThumbUpFilled />
-                  </Button>
-               </Tooltip>
-            )}
-            {auth.permissions.more_permissions.includes(`16@Evaluar`) && ["EN EVALUACIÓN"].includes(obj.status) && (
-               <Tooltip title={`Rechazar Folio #${name}`} placement="top">
-                  <Button color="error" onClick={() => handleClickReject(obj.folio)}>
-                     <IconThumbDown />
-                  </Button>
-               </Tooltip>
-            )}
-            {auth.permissions.more_permissions.includes(`16@Pagar`) && ["APROBADA"].includes(obj.status) && (
-               <Tooltip title={`Pagar y Entregar del Folio #${name}`} placement="top">
-                  <Button color="primary" onClick={() => handleClickPayed(obj.folio, obj.status)}>
-                     <IconCoin />
-                  </Button>
-               </Tooltip>
-            )}
-            {auth.permissions.more_permissions.includes(`16@Cancelar`) && !["APROBADA", "PAGADA", "RECHAZADA", "CANCELADA"].includes(obj.status) && (
-               <Tooltip title={`Cancelar Folio ${name}`} placement="top">
-                  <Button color="error" onClick={() => handleClickCancel(id, obj.folio, name)}>
-                     <IconBan />
-                  </Button>
-               </Tooltip>
-            )}
+            {(auth.permissions.more_permissions.includes(`Validar Documentos`) || auth.permissions.more_permissions.includes(`todas`)) &&
+               ["TERMINADA", "EN REVISIÓN"].includes(obj.status) && (
+                  <Tooltip title={`Validar Documentos del Folio #${name}`} placement="top">
+                     <Button color="primary" onClick={() => handleClickValidateDocuments(obj.folio, obj.status, "revision")}>
+                        <IconChecklist />
+                     </Button>
+                  </Tooltip>
+               )}
+            {(auth.permissions.more_permissions.includes(`Evaluar Solicitud`) || auth.permissions.more_permissions.includes(`todas`)) &&
+               ["EN EVALUACIÓN"].includes(obj.status) && (
+                  <Tooltip title={`Aprobar Folio #${name}`} placement="top">
+                     <Button color="primary" onClick={() => handleClickApprove(obj.folio)}>
+                        <IconThumbUpFilled />
+                     </Button>
+                  </Tooltip>
+               )}
+            {(auth.permissions.more_permissions.includes(`Evaluar Solicitud`) || auth.permissions.more_permissions.includes(`todas`)) &&
+               ["EN EVALUACIÓN"].includes(obj.status) && (
+                  <Tooltip title={`Rechazar Folio #${name}`} placement="top">
+                     <Button color="error" onClick={() => handleClickReject(obj.folio)}>
+                        <IconThumbDown />
+                     </Button>
+                  </Tooltip>
+               )}
+            {(auth.permissions.more_permissions.includes(`Pagar Solicitud`) || auth.permissions.more_permissions.includes(`todas`)) &&
+               ["APROBADA"].includes(obj.status) && (
+                  <Tooltip title={`Realizar Pago 1 de Folio #${name}`} placement="top">
+                     <Button color="primary" onClick={() => handleClickPayed(obj.folio, obj.status)}>
+                        <IconCoin />
+                     </Button>
+                  </Tooltip>
+               )}
+            {(auth.permissions.more_permissions.includes(`Cancelar Solicitud`) || auth.permissions.more_permissions.includes(`todas`)) &&
+               !["APROBADA", "PAGADA", "RECHAZADA", "CANCELADA"].includes(obj.status) && (
+                  <Tooltip title={`Cancelar Folio ${name}`} placement="top">
+                     <Button color="error" onClick={() => handleClickCancel(id, obj.folio, name)}>
+                        <IconBan />
+                     </Button>
+                  </Tooltip>
+               )}
             {/* <Tooltip title={`Editar ${singularName}`} placement="top">
                <Button color="info" onClick={() => handleClickEdit(id)}>
                   <IconEdit />
@@ -513,13 +524,13 @@ const RequestBecaDT = ({ status = null }) => {
    const toolbarContent = () => {
       return (
          <div className="flex flex-wrap gap-2">
-            {auth.permissions.more_permissions.includes(`16@Exportar Lista Pública`) && (
-               <Button variant="contained" color="success" startIcon={<IconFileSpreadsheet />} onClick={() => handleClickExportPublic(data)} sx={{ mx: 1 }}>
+            {(auth.permissions.more_permissions.includes(`Exportar Lista Pública`) || auth.permissions.more_permissions.includes(`todas`)) && (
+               <Button variant="contained" color="secondary" startIcon={<IconFileSpreadsheet />} onClick={() => handleClickExportPublic(data)} sx={{ mx: 1 }}>
                   Exprotar al público
                </Button>
             )}
-            {auth.permissions.more_permissions.includes(`16@Exportar Lista Contraloría`) && (
-               <Button variant="contained" color="success" startIcon={<IconFileSpreadsheet />} onClick={handleClickExportContraloria} sx={{ mx: 1 }}>
+            {(auth.permissions.more_permissions.includes(`Exportar Lista Contraloría`) || auth.permissions.more_permissions.includes(`todas`)) && (
+               <Button variant="contained" color="secondary" startIcon={<IconFileSpreadsheet />} onClick={handleClickExportContraloria} sx={{ mx: 1 }}>
                   Exprotar para contraloria
                </Button>
             )}
@@ -564,63 +575,78 @@ const RequestBecaDT = ({ status = null }) => {
             globalFilterFields={globalFilterFields}
             headerFilters={false}
             handleClickAdd={handleClickAdd}
+            btnAdd={auth.permissions.create}
             rowEdit={false}
             refreshTable={() => getRequestBecas(status)}
-            toolBar={auth.role_id <= ROLE_ADMIN && auth.more_permissions.includes("16@Exportar Lista Pública") && status == "aprobadas" ? true : false}
+            toolBar={auth.more_permissions.includes("Exportar Lista Pública") && status == "aprobadas" ? true : false}
             positionBtnsToolbar="center"
             toolbarContent={toolbarContent}
          />
+
          {/* <PDFTable /> */}
-         <Dialog fullWidth maxWidth={"lg"} fullScreen={fullScreenDialog} open={openDialogPreview} onClose={() => setOpenDialogPreview(false)}>
-            {/* <DialogTitle> */}
-            <Toolbar>
-               <Typography sx={{ ml: 2, flex: 1 }} variant="h3" component="div">
-                  {}
-               </Typography>
-               {/* {auth.permissions.update && (
+         {openDialogPreview && (
+            <Dialog fullWidth maxWidth={"lg"} fullScreen={fullScreenDialog} open={openDialogPreview} onClose={() => setOpenDialogPreview(false)}>
+               {/* <DialogTitle> */}
+               <Toolbar>
+                  <Typography sx={{ ml: 2, flex: 1 }} variant="h3" component="div">
+                     {}
+                  </Typography>
+                  {/* {auth.permissions.update && (
                   <Tooltip title={`Exportar Reporte a PDF`} placement="top">
                      <IconButton color="inherit" onClick={() => downloadPDF("reportPaper")}>
                         <IconFileTypePdf color="red" />
                      </IconButton>
                   </Tooltip>
                )} */}
-               <Tooltip title={`Imprimir Reporte`} placement="top">
-                  <IconButton color="inherit" onClick={() => printContent("reportPaper")}>
-                     <IconPrinter />
-                  </IconButton>
-               </Tooltip>
-               <Tooltip title={fullScreenDialog ? `Minimizar ventana` : `Maximizar ventana`} placement="top">
-                  <IconButton color="inherit" onClick={() => setFullScreenDialog(!fullScreenDialog)}>
-                     {fullScreenDialog ? <IconWindowMinimize /> : <IconWindowMaximize />}
-                  </IconButton>
-               </Tooltip>
-               <Tooltip title={`Cerrar ventana`} placement="top">
-                  <IconButton edge="end" color="inherit" onClick={() => setOpenDialogPreview(false)} aria-label="close">
-                     <IconX />
-                  </IconButton>
-               </Tooltip>
-            </Toolbar>
-            {/* </DialogTitle> */}
-            <DialogContent>
-               {/* <DialogContentText>You can set my maximum width and whether to adapt or not.</DialogContentText> */}
-               <Box
-                  noValidate
-                  component="form"
-                  sx={{
-                     display: "flex",
-                     flexDirection: "column",
-                     m: "auto",
-                     width: "95%"
-                  }}
-               >
-                  <RequestReportPDF obj={objReport} />
-               </Box>
-            </DialogContent>
-            {/* <DialogActions>
+                  <Tooltip title={`Imprimir Reporte`} placement="top">
+                     <IconButton color="inherit" onClick={() => printContent("reportPaper")}>
+                        <IconPrinter />
+                     </IconButton>
+                  </Tooltip>
+                  <Tooltip title={fullScreenDialog ? `Minimizar ventana` : `Maximizar ventana`} placement="top">
+                     <IconButton color="inherit" onClick={() => setFullScreenDialog(!fullScreenDialog)}>
+                        {fullScreenDialog ? <IconWindowMinimize /> : <IconWindowMaximize />}
+                     </IconButton>
+                  </Tooltip>
+                  <Tooltip title={`Cerrar ventana`} placement="top">
+                     <IconButton edge="end" color="inherit" onClick={() => setOpenDialogPreview(false)} aria-label="close">
+                        <IconX />
+                     </IconButton>
+                  </Tooltip>
+               </Toolbar>
+               {/* </DialogTitle> */}
+               <DialogContent>
+                  {/* <DialogContentText>You can set my maximum width and whether to adapt or not.</DialogContentText> */}
+                  <Box
+                     noValidate
+                     component="form"
+                     sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        m: "auto",
+                        width: "95%"
+                     }}
+                  >
+                     <RequestReportPDF obj={objReport} />
+                  </Box>
+               </DialogContent>
+               {/* <DialogActions>
                <Button onClick={() => Toast.Success("Guardado")}>Guardar</Button>
             </DialogActions> */}
-         </Dialog>
-         <ModalReject open={openModalReject} setOpen={setOpenModalReject} folio={folio} statusCurrent={status} />
+            </Dialog>
+         )}
+
+         {openModalApprove && (
+            <ModalApprove folio={folio} open={openModalApprove} setOpen={setOpenModalReject} statusCurrent={status} modalTitle="APROBAR SOLICITUD" maxWidth={"md"} />
+         )}
+
+         {openModalReject && (
+            <ModalReject folio={folio} open={openModalReject} setOpen={setOpenModalReject} statusCurrent={status} modalTitle="RECHAZAR SOLICITUD" maxWidth={"md"} />
+         )}
+
+         {openModalPayment && (
+            <ModalPayment folio={folio} open={openModalPayment} setOpen={setOpenModalPayment} statusCurrent={status} modalTitle="PRIMER PAGO" maxWidth={"md"} />
+         )}
       </>
    );
 };

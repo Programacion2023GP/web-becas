@@ -113,8 +113,9 @@ export default function MenuContextProvider({ children }) {
             const menus = axiosResponse.data.data.result;
             // console.log("menus", menus);
 
-            const HeaderMenus = menus.filter((menu) => menu.belongs_to == 0);
-            // console.log("HeaderMenus", HeaderMenus);
+            const HeaderMenus = menus.filter((menu) => menu.belongs_to == 0 && menu.type == "group");
+            // console.log("🚀 ~ showMyMenus ~ HeaderMenus:", HeaderMenus);
+            const collapses = [];
             const items = [];
             HeaderMenus.map((hm) => {
                const item = {
@@ -125,8 +126,11 @@ export default function MenuContextProvider({ children }) {
                   children: []
                };
 
+               const childrenCollapseMenus = menus.filter((chm) => chm.belongs_to == hm.id && chm.type == "collapse");
+
+               console.log("🚀 ~ HeaderMenus.map ~ childrenCollapseMenus:", childrenCollapseMenus);
                const childrenMenus = menus.filter((chm) => chm.belongs_to == hm.id);
-               // console.log("childrenMenus", childrenMenus);
+               console.log("🚀 ~ HeaderMenus.map ~ childrenMenus:", childrenMenus);
                childrenMenus.map((iCh) => {
                   const child = {
                      id: iCh.id,

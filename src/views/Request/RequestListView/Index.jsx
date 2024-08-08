@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { ROLE_CIUDADANO, useGlobalContext } from "../../../context/GlobalContext";
-import { Box } from "@mui/system";
-import { Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 
 import { useRequestBecaContext } from "../../../context/RequestBecaContext";
 
 import RequestBecaDT from "./RequestDT";
 import { useAuthContext } from "../../../context/AuthContext";
 import { useParams } from "react-router";
+import { useRelationshipContext } from "../../../context/RelationshipContext";
 
 const RequestListView = () => {
    const { status } = useParams();
@@ -17,25 +17,12 @@ const RequestListView = () => {
    const { getRequestBecas } = useRequestBecaContext();
    const [data, setData] = useState([]);
    const [dataUpload, setDataUpload] = useState(false);
-
-   // const rows = [];
-   // const createRow = async () => {
-   //    await requestBecas.map((obj) => {
-   //       const row = obj;
-   //       row.created_at = formatDatetime(obj.created_at, true);
-   //       row.actions = <ButtonsAction id={obj.id} folio={obj.folio} />;
-   //       rows.push(row);
-   //    });
-   //    setData(rows);
-   //    setDataUpload(true);
-   //    console.log("los rows", rows);
-   //    // return { id, folio, school, student, average };
-   // };
-   // createRow();
+   const { getRelationshipsSelectIndex } = useRelationshipContext();
 
    useEffect(() => {
       setLoading(true);
       getRequestBecas(status);
+      getRelationshipsSelectIndex();
       // console.log("useEffect - formData", requestBecas);
    }, [status]);
 

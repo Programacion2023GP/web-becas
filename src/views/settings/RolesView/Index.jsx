@@ -72,10 +72,10 @@ const RolesView = () => {
          </Typography>
          {/* </MainCard> */}
          <Grid container spacing={2}>
-            <Grid xs={12} md={12} sx={{ mb: 3 }}>
+            <Grid xs={12} md={12} sx={{ mb: 2 }}>
                <FormSelect setOpenDialogTable={setOpenDialogTable} setLoadPermissions={setLoadPermissions} />
             </Grid>
-            <Grid xs={12} md={12} sx={{ mb: 3 }}>
+            <Grid xs={12} md={12} sx={{ mb: 1 }}>
                <MenusCards key={"MenusCards"} loadPermissions={loadPermissions} />
             </Grid>
          </Grid>

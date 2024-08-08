@@ -20,6 +20,7 @@ const MenuList = () => {
    }, [auth]);
 
    const navItems = menuItems.items.map((item) => {
+      // console.log("🚀 ~ navItems ~ item:", item);
       switch (item.type) {
          case "group":
             return <NavGroup key={item.id} item={item} />;

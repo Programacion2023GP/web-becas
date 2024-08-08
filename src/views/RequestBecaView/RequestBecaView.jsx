@@ -64,6 +64,7 @@ const RequestBecaView = () => {
    const [pageInAnimation, setPageInAnimation] = useState([true, true, true, true, true, true, true, true, true, true]);
    const [animate, setAnimate] = useState(false);
    const pageActiveRef = useRef(null);
+   const [showModalRemember, setShowModalRemember] = useState(false);
 
    const inputRefSchoolId = useRef(null);
    const formik = useRef(null);
@@ -98,12 +99,12 @@ const RequestBecaView = () => {
       },
       {
          idName: "b7_img_second_ref",
-         label: "Foto INE del Representante (2da Opción)*",
+         label: "Foto INE del Familiar Autorizado (2da Opción) *",
          filePreviews: imgSecondRef,
          setFilePreviews: setImgSecondRef,
          fieldApproved: "b7_approved_second_ref",
          fieldComments: "b7_comments_second_ref",
-         name: "INE del Representante (2da Opción)",
+         name: "INE del Familiar Autorizado (2da Opción)",
          isTutor: false,
          haveSecondRef: haveSecondRef ? true : null,
          infoDivider: {
@@ -314,6 +315,10 @@ const RequestBecaView = () => {
       setPageInAnimation(pagesIA);
       setAnimate(true);
       navigate("pagina/1");
+      setShowModalRemember(true);
+      setTimeout(() => {
+         setShowModalRemember(false);
+      }, 500);
       // setPageInAnimation({ ...pageInAnimation, page0: true });
       // useNavigateTo("pagina/1");
       // location.hash = "pagina/1";
@@ -618,7 +623,7 @@ const RequestBecaView = () => {
          values.b7_img_academic_transcript = imgAcademicTranscript.length == 0 ? "" : imgAcademicTranscript[0].file;
 
          if (!validateImageRequired(values.b7_img_tutor_ine, "La foto de la INE es requerida")) return;
-         if (isTutor && !validateImageRequired(values.b7_img_tutor_power_letter, "La foto del Documento Extra por tutoria es requerida")) return;
+         if (isTutor && !validateImageRequired(values.b7_img_tutor_power_letter, "La foto del Documento Extra por tutoría es requerida")) return;
          if (haveSecondRef && !validateImageRequired(values.b7_img_second_ref, "La foto de la INE 2da Referencia es requerida")) return;
          if (!validateImageRequired(values.b7_img_proof_address, "La foto del Comprobante de Domicilio es requerida")) return;
          if (!validateImageRequired(values.b7_img_curp, "La foto de la CURP es requerida")) return;
@@ -758,41 +763,41 @@ const RequestBecaView = () => {
                // folio: Yup.number("solo números").required("Folio requerido"),
                // b7_img_tutor_ine: Yup.string().required("INE requerida"),
                b7_approved_tutor_ine:
-                  auth.permissions.more_permissions.includes("16@Validar Documentos") &&
+                  (auth.permissions.more_permissions.includes("Validar Documentos") || auth.permissions.more_permissions.includes(`todas`)) &&
                   ["TERMINADA", "EN REVISIÓN"].includes(formData.status) &&
                   Yup.bool().required("Aprueba o Desaprueba el documento."),
                // b7_comments_tutor_ine: "",
                // b7_img_tutor_power_letter: isTutor && Yup.string().required("Carta Poder requerida"),
                b7_approved_tutor_power_letter:
-                  auth.permissions.more_permissions.includes("16@Validar Documentos") &&
+                  (auth.permissions.more_permissions.includes("Validar Documentos") || auth.permissions.more_permissions.includes(`todas`)) &&
                   ["TERMINADA", "EN REVISIÓN"].includes(formData.status) &&
                   Yup.bool().required("Aprueba o Desaprueba el documento."),
                b7_approved_second_ref:
-                  auth.permissions.more_permissions.includes("16@Validar Documentos") &&
+                  (auth.permissions.more_permissions.includes("Validar Documentos") || auth.permissions.more_permissions.includes(`todas`)) &&
                   ["TERMINADA", "EN REVISIÓN"].includes(formData.status) &&
                   Yup.bool().required("Aprueba o Desaprueba el documento."),
                // b7_comments_tutor_power_letter: "",
                // b7_img_proof_address: Yup.string().required("Comprobante de Domicilio requerida"),
                b7_approved_proof_address:
-                  auth.permissions.more_permissions.includes("16@Validar Documentos") &&
+                  (auth.permissions.more_permissions.includes("Validar Documentos") || auth.permissions.more_permissions.includes(`todas`)) &&
                   ["TERMINADA", "EN REVISIÓN"].includes(formData.status) &&
                   Yup.bool().required("Aprueba o Desaprueba el documento."),
                // b7_comments_proof_address: "",
                // b7_img_curp: Yup.string().required("CURP requerida"),
                b7_approved_curp:
-                  auth.permissions.more_permissions.includes("16@Validar Documentos") &&
+                  (auth.permissions.more_permissions.includes("Validar Documentos") || auth.permissions.more_permissions.includes(`todas`)) &&
                   ["TERMINADA", "EN REVISIÓN"].includes(formData.status) &&
                   Yup.bool().required("Aprueba o Desaprueba el documento."),
                // b7_comments_curp: "",
                // b7_img_birth_certificate: Yup.string().required("Acta de Nacimiento requerida"),
                b7_approved_birth_certificate:
-                  auth.permissions.more_permissions.includes("16@Validar Documentos") &&
+                  (auth.permissions.more_permissions.includes("Validar Documentos") || auth.permissions.more_permissions.includes(`todas`)) &&
                   ["TERMINADA", "EN REVISIÓN"].includes(formData.status) &&
                   Yup.bool().required("Aprueba o Desaprueba el documento."),
                // b7_comments_birth_certificate: "",
                // b7_img_academic_transcript: Yup.string().required("Constancia Estudiantil con Calificaciones requerida"),
                b7_approved_academic_transcript:
-                  auth.permissions.more_permissions.includes("16@Validar Documentos") &&
+                  (auth.permissions.more_permissions.includes("Validar Documentos") || auth.permissions.more_permissions.includes(`todas`)) &&
                   ["TERMINADA", "EN REVISIÓN"].includes(formData.status) &&
                   Yup.bool().required("Aprueba o Desaprueba el documento.")
                // b7_comments_academic_transcript: ""
@@ -897,6 +902,11 @@ const RequestBecaView = () => {
       };
    }, [animate]);
 
+   useEffect(() => {
+      if (showModalRemember && pagina == 1) setShowModalRemember(true);
+      else setShowModalRemember(false);
+   }, [pagina]);
+
    return (
       <Box sx={{ width: "100%", height: "100%" }}>
          <Typography variant="h1" color={"#364152"} mb={2}>
@@ -985,27 +995,33 @@ const RequestBecaView = () => {
                      <Fragment>
                         <Box sx={{ mt: 2, height: "100%" }}>
                            {activeStep + 1 == 1 && (
-                              <FormikComponent
-                                 key={"formikComponent1"}
-                                 initialValues={formData}
-                                 validationSchema={validationSchemas(activeStep + 1)}
-                                 onSubmit={onSubmit1}
-                                 formikRef={formik}
-                                 activeStep={activeStep}
-                                 setStepFailed={setStepFailed}
-                                 showActionButtons={false}
-                                 // className={activeStep + 1 == 1 && `animate__animated ${pageInAnimation.page1 ? "animate__backInRight" : "animate__backOutLeft"} `}
-                              >
-                                 <InputsFormik1
-                                    folio={folio}
-                                    pagina={pagina}
+                              <>
+                                 <FormikComponent
+                                    key={"formikComponent1"}
+                                    initialValues={formData}
+                                    validationSchema={validationSchemas(activeStep + 1)}
+                                    onSubmit={onSubmit1}
+                                    formikRef={formik}
                                     activeStep={activeStep}
                                     setStepFailed={setStepFailed}
-                                    ButtonsBeforeOrNext={ButtonsBeforeOrNext}
-                                    isTutor={isTutor}
-                                    setIsTutor={setIsTutor}
-                                 />
-                              </FormikComponent>
+                                    showActionButtons={false}
+                                    // className={activeStep + 1 == 1 && `animate__animated ${pageInAnimation.page1 ? "animate__backInRight" : "animate__backOutLeft"} `}
+                                 >
+                                    <InputsFormik1
+                                       folio={folio}
+                                       pagina={pagina}
+                                       activeStep={activeStep}
+                                       setStepFailed={setStepFailed}
+                                       ButtonsBeforeOrNext={ButtonsBeforeOrNext}
+                                       isTutor={isTutor}
+                                       setIsTutor={setIsTutor}
+                                    />
+                                 </FormikComponent>
+                                 {showModalRemember &&
+                                    sAlert.Info(
+                                       "Recuerda que únicamente la persona que sea registrada como tutor podrá cobrar la beca en caso de salir seleccionada y un familiar si asi se ha autorizado en esta sección"
+                                    )}
+                              </>
                            )}
                            {activeStep + 1 == 2 && (
                               <FormikComponent

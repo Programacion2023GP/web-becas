@@ -78,7 +78,7 @@ const CommunityFormAssignPerimeter = ({ openDialog, setOpenDialog }) => {
          setOpen={setOpenDialog}
          maxWidth="sm"
          modalTitle="ASIGNACIÓN DE PERÍMETRO"
-         height={"42vh"}
+         height={"45vh"}
          dialogActions={false}
          formikRef={formikRefAssing}
          textBtnSubmit={textBtnSubmit}
@@ -91,7 +91,7 @@ const CommunityFormAssignPerimeter = ({ openDialog, setOpenDialog }) => {
             textBtnSubmit={textBtnSubmit}
             formikRef={formikRefAssing}
             handleCancel={handleCancel}
-            maxHeight={"31vh"}
+            maxHeight={"32vh"}
             // showActionButtons={false}
          >
             <InputComponent col={12} idName={"id"} label={"ID"} placeholder={"ID"} textStyleCase={true} hidden={true} />

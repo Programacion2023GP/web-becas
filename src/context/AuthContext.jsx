@@ -159,12 +159,13 @@ export default function AuthContextProvider({ children }) {
          // console.log("counterofMenus");
          const axiosData = await Axios.get(`counters/counterOfMenus`);
          res = await axiosData.data.data;
+         // console.log("🚀 ~ counterOfMenus ~ res:", res);
          const filterCounters = { ...counters };
          const newCounters = { ...counters };
 
          newCounters.requestAll = 0;
          filterCounters.requestAll = await res.result.filter((data) =>
-            ["ALTA", "TERMINADA", "EN REVISIÓN", "EN EVALUACIÓN", "RECHAZADA", "APROBADA", "PAGADA", "ENTREGADA", "CANCELADA"].includes(data.counter)
+            ["ALTA", "TERMINADA", "EN REVISIÓN", "EN EVALUACIÓN", "RECHAZADA", "APROBADA", "PAGANDO", "PAGADA", "ENTREGADA", "CANCELADA"].includes(data.counter)
          );
          await filterCounters.requestAll.map((data) => (newCounters.requestAll += data.total));
 
@@ -186,6 +187,18 @@ export default function AuthContextProvider({ children }) {
          newCounters.requestApproved = 0;
          filterCounters.requestApproved = await res.result.filter((data) => ["APROBADA"].includes(data.counter));
          await filterCounters.requestApproved.map((data) => (newCounters.requestApproved += data.total));
+
+         newCounters.requestPayed1 = 0;
+         filterCounters.requestPayed1 = await res.result.filter((data) => ["PAGO1"].includes(data.counter));
+         await filterCounters.requestPayed1.map((data) => (newCounters.requestPayed1 += data.total));
+
+         newCounters.requestPayed2 = 0;
+         filterCounters.requestPayed2 = await res.result.filter((data) => ["PAGO2"].includes(data.counter));
+         await filterCounters.requestPayed2.map((data) => (newCounters.requestPayed2 += data.total));
+
+         newCounters.requestPayed3 = 0;
+         filterCounters.requestPayed3 = await res.result.filter((data) => ["PAGO3"].includes(data.counter));
+         await filterCounters.requestPayed3.map((data) => (newCounters.requestPayed3 += data.total));
 
          newCounters.requestPayed = 0;
          filterCounters.requestPayed = await res.result.filter((data) => ["PAGADA"].includes(data.counter));

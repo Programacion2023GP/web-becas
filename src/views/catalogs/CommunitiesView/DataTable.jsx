@@ -77,18 +77,18 @@ const CommunityDT = () => {
    // #endregion BodysTemplate
 
    const columns = [
-      { field: "CodigoPostal", header: "C.P.", sortable: true, functionEdit: null, body: ZipBodyTemplate, filterField: null },
-      { field: "Perimetro", header: "Perímetro", sortable: true, functionEdit: null, body: PerimeterBodyTemplate, filterField: null },
-      { field: "Colonia", header: "Comunidad/Colonia", sortable: true, functionEdit: null, body: CommunityBodyTemplate, filterField: null },
-      { field: "Municipio", header: "Municipio", sortable: true, functionEdit: null, body: MunicipalityBodyTemplate, filterField: null },
-      { field: "Estado", header: "Estado", sortable: true, functionEdit: null, body: StateBodyTemplate, filterField: null },
-      { field: "Tipo", header: "Tipo", sortable: true, functionEdit: null, body: TypeBodyTemplate, filterField: null },
-      { field: "Zona", header: "Zona", sortable: true, functionEdit: null, body: ZoneBodyTemplate, filterField: null }
+      { field: "CodigoPostal", header: "C.P.", sortable: true, functionEdit: null, body: ZipBodyTemplate, filter: true, filterField: null },
+      { field: "Perimetro", header: "Perímetro", sortable: true, functionEdit: null, body: PerimeterBodyTemplate, filter: true, filterField: null },
+      { field: "Colonia", header: "Comunidad/Colonia", sortable: true, functionEdit: null, body: CommunityBodyTemplate, filter: true, filterField: null },
+      { field: "Municipio", header: "Municipio", sortable: true, functionEdit: null, body: MunicipalityBodyTemplate, filter: true, filterField: null },
+      { field: "Estado", header: "Estado", sortable: true, functionEdit: null, body: StateBodyTemplate, filter: true, filterField: null },
+      { field: "Tipo", header: "Tipo", sortable: true, functionEdit: null, body: TypeBodyTemplate, filter: true, filterField: null },
+      { field: "Zona", header: "Zona", sortable: true, functionEdit: null, body: ZoneBodyTemplate, filter: true, filterField: null }
    ];
    // auth.role_id === ROLE_SUPER_ADMIN &&
    //    columns.push(
-   //       { field: "active", header: "Activo", sortable: true, functionEdit: null, body: ActiveBodyTemplate, filterField: null },
-   //       { field: "created_at", header: "Fecha de registro", sortable: true, functionEdit: null, body: CreatedAtBodyTemplate, filterField: null }
+   //       { field: "active", header: "Activo", sortable: true, functionEdit: null, body: ActiveBodyTemplate,filter: false, filterField: null  },
+   //       { field: "created_at", header: "Fecha de registro", sortable: true, functionEdit: null, body: CreatedAtBodyTemplate,filter: false, filterField: null  }
    //    );
 
    const mySwal = withReactContent(Swal);
@@ -179,9 +179,9 @@ const CommunityDT = () => {
                </Button>
             </Tooltip> */}
             {/* {console.log(idPage)} */}
-            {auth.permissions.more_permissions.includes(`14@Asignar Perímetro`) && (
+            {(auth.permissions.more_permissions.includes(`Asignar Perímetro`) || auth.permissions.more_permissions.includes(`todas`)) && (
                <Tooltip title={`Asignar Perímetro a ${singularName}`} placement="top">
-                  <Button color="info" onClick={() => handleClickAssign(id, name, perimeterId)}>
+                  <Button color="secondary" onClick={() => handleClickAssign(id, name, perimeterId)}>
                      <IconCirclesRelation />
                   </Button>
                </Tooltip>
@@ -233,7 +233,7 @@ const CommunityDT = () => {
             columns={columns}
             data={data}
             globalFilterFields={globalFilterFields}
-            headerFilters={false}
+            headerFilters={true}
             btnAdd={auth.permissions.create}
             handleClickAdd={handleClickAdd}
             rowEdit={false}

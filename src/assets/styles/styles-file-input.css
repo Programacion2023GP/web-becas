@@ -8,7 +8,7 @@
 }
 
 .dropzone {
-   border: 5px dashed #1455cb;
+   border: 5px dashed #debb9a;/* #1455cb; */
    border-radius: 14px;
    padding: 0.5rem;
    text-align: center;
@@ -17,7 +17,7 @@
    transition: all 0.6s ease-in-out;
 }
 .dropzone:hover {
-   border: 5px solid #0d49b9;
+   border: 5px solid #a46c38;/* #0d49b9; */
    background-color: #e9ecefb9;
 }
 .dropzone-error {
@@ -35,7 +35,8 @@
 }
 
 .dropzone p {
-   font-size: 1rem;
+   /* font-size: clamp(0.75rem, 2.5vw, 2rem);  */
+   font-size: clamp(0.75rem, 1vw, 1.5rem); 
 }
 
 .file-preview {

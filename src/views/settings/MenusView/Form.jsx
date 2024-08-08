@@ -1,27 +1,14 @@
-import { Field, Formik } from "formik";
 import * as Yup from "yup";
 
-import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
-import { Button, Card, FormControlLabel, FormLabel, InputLabel, MenuItem, Radio, RadioGroup, Select, Switch, TextField, Tooltip, Typography } from "@mui/material";
-import { LoadingButton } from "@mui/lab";
-import { SwipeableDrawer } from "@mui/material";
-import { FormControl } from "@mui/material";
-import { FormHelperText } from "@mui/material";
-import { useLayoutEffect, useMemo, useState } from "react";
+import { Card, Grid, Typography } from "@mui/material";
+import { useState } from "react";
 import { useMenuContext } from "../../../context/MenuContext";
 import { Box } from "@mui/system";
 import { useEffect } from "react";
-import { ButtonGroup } from "@mui/material";
 import Toast from "../../../utils/Toast";
 import { useGlobalContext } from "../../../context/GlobalContext";
-import Select2Component from "../../../components/Form/Select2Component";
-import InputsCommunityComponent, { getCommunity } from "../../../components/Form/InputsCommunityComponent";
-import { handleInputFormik } from "../../../utils/Formats";
-import SwitchIOSComponent from "../../../components/SwitchIOSComponent";
-import { Label } from "@mui/icons-material";
 import { useAuthContext } from "../../../context/AuthContext";
-import { FormikComponent, InputComponent, RadioButtonComponent, SwitchComponent } from "../../../components/Form/FormikComponents";
-// import InputComponent from "../Form/InputComponent";
+import { FormikComponent, InputComponent, RadioButtonComponent, Select2Component, SwitchComponent } from "../../../components/Form/FormikComponents";
 
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
 const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
@@ -105,18 +92,6 @@ const MenuForm = () => {
       }
    };
 
-   const handleModify = (setValues, setFieldValue) => {
-      try {
-         handleChangeType(formData.type);
-         if (formData.description) formData.description == null && (formData.description = "");
-         setValues(formData);
-         // console.log(formData);
-      } catch (error) {
-         console.log(error);
-         Toast.Error(error);
-      }
-   };
-
    const handleCancel = (resetForm) => {
       try {
          resetForm();
@@ -149,7 +124,7 @@ const MenuForm = () => {
 
    useEffect(() => {
       try {
-         console.log("validationSchema", validationSchemas());
+         // console.log("validationSchema", validationSchemas());
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -160,14 +135,20 @@ const MenuForm = () => {
       // <SwipeableDrawer anchor={"right"} open={openDialog} onClose={toggleDrawer(false)} onOpen={toggleDrawer(true)}>
       <Card>
          <Box role="presentation" p={3} pt={5} className="form" sx={{ maxHeight: "77.2vh", overflowY: "auto" }}>
-            <Typography variant="h2" mb={3} textAlign={"center"}>
-               {formTitle}
-               {/* <FormControlLabel
-                  sx={{ float: "right", color: colorLabelcheck }}
-                  control={<Switch checked={checkAdd} onChange={(e) => handleChangeCheckAdd(e)} />}
-                  label="Seguir Agregando"
-               /> */}
-            </Typography>
+            <Grid container mb={2}>
+               <Grid item xs={12}>
+                  <Typography variant="h2" textAlign={"center"}>
+                     {formTitle}
+                  </Typography>
+               </Grid>
+               {/* <Grid item xs={4}>
+                  <FormControlLabel
+                     sx={{ float: "right", color: colorLabelcheck }}
+                     control={<Switch checked={checkAdd} onChange={(e) => handleChangeCheckAdd(e)} />}
+                     label="Seguir Agregando"
+                  />
+               </Grid> */}
+            </Grid>
             <FormikComponent
                key={"formikComponent"}
                initialValues={formData}
@@ -176,7 +157,7 @@ const MenuForm = () => {
                textBtnSubmit={textBtnSubmit}
                formikRef={formikRef}
                handleCancel={handleCancel}
-               maxHeight={"56vh"}
+               maxHeight={"54.3vh"}
             >
                <InputComponent col={12} idName={"id"} label={"ID"} placeholder={"ID"} textStyleCase={true} hidden={true} />
 
@@ -233,14 +214,14 @@ const MenuForm = () => {
                      {/* Otros Permisos */}
                      <InputComponent
                         col={12}
-                        idName={"other_permissions"}
+                        idName={"others_permissions"}
                         label={"Ingrese los permisos especiales"}
                         placeholder={"Otros Permisos"}
                         textStyleCase={null}
                         rows={5}
                         helperText={
                            <small style={{ fontStyle: "italic" }}>
-                              Los permisos serán separados por coma "<b>( , )</b>" y su estructura: "ID@Nombre Del Permiso"
+                              Los permisos serán separados por coma "<b>( , )</b>" y su estructura: "Nombre Del Permiso"
                            </small>
                         }
                      />

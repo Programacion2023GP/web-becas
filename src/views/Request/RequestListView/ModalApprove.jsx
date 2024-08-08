@@ -11,11 +11,11 @@ import { formatDatetimeToSQL } from "../../../utils/Formats";
 const initialValues = {
    id: 0,
    folio: 0,
-   rejected_feedback: "",
-   rejected_at: ""
+   approved_feedback: "",
+   approved_at: ""
 };
 
-function ModalReject({ folio, open, setOpen, statusCurrent, modalTitle, maxWidth }) {
+function ModalApprove({ folio, open, setOpen, statusCurrent, modalTitle, maxWidth }) {
    const { setLoadingAction } = useGlobalContext();
    const { updateStatusBeca } = useRequestBecaContext();
 
@@ -39,10 +39,10 @@ function ModalReject({ folio, open, setOpen, statusCurrent, modalTitle, maxWidth
    const onSubmit = async (values, { setSubmitting, setErrors, resetForm }) => {
       try {
          values.folio = folio;
-         values.rejected_at = formatDatetimeToSQL(new Date());
+         values.approved_at = formatDatetimeToSQL(new Date());
          // return console.log("values", values);
          setLoadingAction(true);
-         const axiosResponse = await updateStatusBeca(folio, "RECHAZADA", values, statusCurrent);
+         const axiosResponse = await updateStatusBeca(folio, "APROBADA", values, statusCurrent);
 
          if (axiosResponse.status_code === 200) {
             resetForm();
@@ -62,7 +62,7 @@ function ModalReject({ folio, open, setOpen, statusCurrent, modalTitle, maxWidth
    };
 
    const validationSchema = Yup.object().shape({
-      rejected_feedback: Yup.string().trim().required("Retroalimentación del Rechazo requerido")
+      // approved_feedback: Yup.string().trim().required("Retroalimentación del Rechazo requerido")
    });
 
    useEffect(() => {}, []);
@@ -74,7 +74,7 @@ function ModalReject({ folio, open, setOpen, statusCurrent, modalTitle, maxWidth
             initialValues={formData}
             validationSchema={validationSchema}
             onSubmit={onSubmit}
-            textBtnSubmit={"CANCELAR SOLICITUD"}
+            textBtnSubmit={"APROBAR"}
             formikRef={formikRef}
             handleCancel={handleCancel}
             maxHeight={"80%"}
@@ -83,8 +83,8 @@ function ModalReject({ folio, open, setOpen, statusCurrent, modalTitle, maxWidth
 
             <InputComponent
                col={12}
-               idName={"rejected_feedback"}
-               label={"Comentarios"}
+               idName={"approved_feedback"}
+               label={"Comentarios (opcional)"}
                placeholder={"Escriba comentarios u observaciones..."}
                textStyleCase={null}
                rows={5}
@@ -94,4 +94,4 @@ function ModalReject({ folio, open, setOpen, statusCurrent, modalTitle, maxWidth
    );
 }
 
-export default ModalReject;
+export default ModalApprove;

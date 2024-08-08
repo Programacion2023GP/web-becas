@@ -13,15 +13,21 @@
 
 /* Estilo del pulgar (la parte deslizante de la barra) */
 ::-webkit-scrollbar-thumb {
-   background: #1E5529; /* Cambia el color del pulgar */
+   background: #a46c38; /* #1E5529 Cambia el color del pulgar */
    border-radius: 10px; /* Redondea las esquinas del pulgar */
 }
 
 /* Estilo del pulgar al pasar el ratón por encima */
 ::-webkit-scrollbar-thumb:hover {
-   background: #237433; /* Cambia el color del pulgar al pasar el ratón por encima */
+   background: #e6b383; /* #237433 Cambia el color del pulgar al pasar el ratón por encima */
 }
 /* SCROLL */
+
+.MuiDialogTitle-root, .form.MuiBox-root {
+   & h1,h2,h3,h4{
+      font-size: clamp(1.2rem,1.5vw,2rem);
+   }
+}
 
 
 .bg-login {
@@ -62,6 +68,7 @@
 .form,
 .drawer-max-width {
    max-width: 35vw;
+   height: 88%;
 }
 
 .swal2-backdrop-show {
@@ -190,6 +197,37 @@ th.text-center .p-column-header-content {
 .page-break {
    page-break-before: always;
 }
+
+
+/* //IMAGENES */
+.containerImg {
+   text-align: center;
+   padding: 20px;
+   border: 1px #555 solid;
+   border-radius: 10px;
+   margin-bottom: 20px;
+
+   & img{
+      object-fit: cover;
+      max-width: 80%;
+      border-radius: 10px;
+   }
+
+   & .title {
+      font-size: 18px;
+      font-weight: bold;
+      color: #364152;
+   }
+
+   & .caption {
+      margin-top: -5px;
+      font-size: 14px;
+      color: #555;
+      font-style: italic;
+   }
+}
+
+/* //IMAGENES */
 
 @media (max-width: 1500px) {
    .form,

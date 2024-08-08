@@ -165,6 +165,7 @@ const AnswerScoreDT = () => {
          globalFilterFields={globalFilterFields}
          headerFilters={false}
          handleClickAdd={handleClickAdd}
+         btnAdd={auth.permissions.create}
          rowEdit={false}
          refreshTable={getAnswerScores}
       />

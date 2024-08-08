@@ -1,24 +1,14 @@
-import { Field, Formik } from "formik";
 import * as Yup from "yup";
 
-import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
-import { Button, FormControlLabel, FormLabel, InputLabel, MenuItem, Radio, RadioGroup, Select, Switch, TextField, Typography } from "@mui/material";
-import { LoadingButton } from "@mui/lab";
+import { FormControlLabel, Grid, Switch, Typography } from "@mui/material";
 import { SwipeableDrawer } from "@mui/material";
-import { FormControl } from "@mui/material";
-import { FormHelperText } from "@mui/material";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useDisabilityContext } from "../../../context/DisabilityContext";
 import { Box } from "@mui/system";
 import { useEffect } from "react";
-import { ButtonGroup } from "@mui/material";
 import Toast from "../../../utils/Toast";
 import { useGlobalContext } from "../../../context/GlobalContext";
-import Select2Component from "../../../components/Form/Select2Component";
-import InputsCommunityComponent, { getCommunity } from "../../../components/Form/InputsCommunityComponent";
-import { handleInputFormik } from "../../../utils/Formats";
 import { FormikComponent, InputComponent } from "../../../components/Form/FormikComponents";
-// import InputComponent from "../Form/InputComponent";
 
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
 const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
@@ -116,14 +106,18 @@ const DisabilityForm = () => {
    return (
       <SwipeableDrawer anchor={"right"} open={openDialog} onClose={toggleDrawer(false)} onOpen={toggleDrawer(true)}>
          <Box role="presentation" p={3} pt={5} className="form">
-            <Typography variant="h2" mb={3}>
-               {formTitle}
-               <FormControlLabel
-                  sx={{ float: "right", color: colorLabelcheck }}
-                  control={<Switch checked={checkAdd} onChange={(e) => handleChangeCheckAdd(e)} />}
-                  label="Seguir Agregando"
-               />
-            </Typography>
+            <Grid container mb={2}>
+               <Grid item xs={8} pr={3}>
+                  <Typography variant="h2">{formTitle}</Typography>
+               </Grid>
+               <Grid item xs={4}>
+                  <FormControlLabel
+                     sx={{ float: "right", color: colorLabelcheck }}
+                     control={<Switch checked={checkAdd} onChange={(e) => handleChangeCheckAdd(e)} />}
+                     label="Seguir Agregando"
+                  />
+               </Grid>
+            </Grid>
             <FormikComponent
                key={"formikComponent"}
                initialValues={formData}
