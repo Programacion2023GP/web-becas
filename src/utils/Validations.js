@@ -15,3 +15,5 @@ export const validateImageRequired = (valuesImg, msg = "Imagen requerida") => {
       return false;
    } else return true;
 };
+
+export const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);

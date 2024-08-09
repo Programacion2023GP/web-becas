@@ -360,3 +360,29 @@ export function setPropsOriginals(original, newArray) {
       return obj;
    }, {});
 }
+
+// export const RenderJsonComponent = ({ jsonData }) => {
+//    return (
+//       <div>
+//          <h3>Datos JSON</h3>
+//          <pre>{JSON.stringify(jsonData, null, 2)}</pre>
+//       </div>
+//    );
+// };
+
+// export const RenderFileComponent = ({ file }) => {
+//    return (
+//       <div>
+//          <h3>Detalles del Archivo</h3>
+//          <p>
+//             <strong>Nombre:</strong> {file.name}
+//          </p>
+//          <p>
+//             <strong>Tamaño:</strong> {(file.size / 1024).toFixed(2)} KB
+//          </p>
+//          <p>
+//             <strong>Tipo:</strong> {file.type}
+//          </p>
+//       </div>
+//    );
+// };

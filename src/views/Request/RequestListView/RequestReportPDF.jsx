@@ -525,7 +525,7 @@ export default function RequestReportPDF({ obj }) {
    };
 
    useEffect(() => {
-      console.log(obj);
+      // console.log(obj);
       getDocs();
    }, []);
 

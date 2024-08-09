@@ -26,6 +26,7 @@ import IconDelete from "./icons/IconDelete";
 import { Toolbar } from "primereact/toolbar";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import * as XLSX from "xlsx";
+import { isMobile } from "react-device-detect";
 
 /* COMO IMPROTAR
 *    columns={columns}
@@ -357,11 +358,11 @@ export default function DataTableComponent({
                   </IconButton>
                </Tooltip>
 
-               <Tooltip title="Exportar a PDF" placement="top">
+               {/* <Tooltip title="Exportar a PDF" placement="top">
                   <IconButton type="button" variant="text" color="error" sx={{ borderRadius: "12px", mr: 1 }} onClick={exportPdf}>
                      <PictureAsPdfIcon />
                   </IconButton>
-               </Tooltip>
+               </Tooltip> */}
             </>
          )}
 
@@ -378,13 +379,13 @@ export default function DataTableComponent({
             <Tooltip title={titleBtnAdd ? `AGREGAR ${titleBtnAdd}` : "AGREGAR"}>
                <Button
                   variant="contained"
-                  sx={{ width: 250 }}
+                  sx={!isMobile && { width: 250 }}
                   startIcon={<AddCircleOutlineOutlined sx={{ mr: 0.2 }} />}
                   size="large"
                   disabled={updating}
                   onClick={() => (rowEdit ? addRow() : handleClickAdd())}
                >
-                  {titleBtnAdd ? titleBtnAdd : "AGREGAR"}
+                  {!isMobile && titleBtnAdd ? titleBtnAdd : "AGREGAR"}
                </Button>
             </Tooltip>
          )}

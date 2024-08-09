@@ -188,6 +188,7 @@ const InputsFormik9 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
                                  multiple={false}
                                  accept={"image/*"}
                                  fileSizeMax={3}
+                                 showBtnCamera={true}
                                  disabled={
                                     auth.id == formik.values.user_id
                                        ? ["", "ALTA"].includes(formData.status)

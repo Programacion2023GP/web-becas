@@ -46,6 +46,8 @@ import withReactContent from "sweetalert2-react-content";
 import { QuestionAlertConfig } from "../../utils/sAlert";
 import { ModalComponent } from "../ModalComponent";
 import { IconCameraUp } from "@tabler/icons-react";
+import { isMobile } from "react-device-detect";
+import Webcam from "react-webcam";
 
 const OutlineInputStyle = styled(OutlinedInput, { shouldForwardProp })(({ theme }) => ({
    // width: 434,
@@ -1683,6 +1685,7 @@ export const FileInputComponent = ({
    maxImages = -1,
    accept = null,
    fileSizeMax = 1, // en MB
+   showBtnCamera = false,
    ...props
 }) => {
    const formik = useFormikContext();
@@ -1692,7 +1695,8 @@ export const FileInputComponent = ({
    // const [filePreviews, setFilePreviews] = useState([]);
    const [ttShow, setTtShow] = useState("");
    const [fileSizeExceeded, setFileSizeExceeded] = useState(fileSizeMax * MB);
-   const [confirmRemove, setConfirmRemove] = useState(false);
+   const [confirmRemove, setConfirmRemove] = useState(true);
+   const [fileInfo, setFileInfo] = useState(null);
 
    const validationQuantityImages = () => {
       if (multiple) {
@@ -1765,6 +1769,16 @@ export const FileInputComponent = ({
 
       handleSetFile(file);
    };
+   const handleOnChangeFileInput = (e) => {
+      // console.log("🚀 ~ handleOnChangeFileInput ~ e:", e);
+      const file = e.target.files.length > 0 ? e.target.files[0] : null;
+      console.log("🚀 ~ handleOnChangeFileInput ~ file:", file);
+      if (!file) return;
+      alert(file.name);
+      setFileInfo(file);
+      console.log("🚀 ~ handleOnChangeFileInput ~ fileInfo:", fileInfo);
+      handleGetFileCamera(file);
+   };
 
    const simulateUpload = () => {
       // Simulamos la carga con un temporizador.
@@ -1808,7 +1822,31 @@ export const FileInputComponent = ({
 
    useEffect(() => {
       // console.log("isError", isError);
+      if (filePreviews.length == 0) setConfirmRemove(true);
+      else setConfirmRemove(false);
    }, [idName, formik.values[idName]]);
+
+   const RenderFileComponent = ({ file }) => {
+      console.log("🚀 ~ RenderFileComponent ~ filePreviews:", filePreviews);
+      return (
+         <div>
+            <h3>Detalles del Archivo</h3>
+            <p>
+               <strong>Nombre:</strong> {file.name}
+            </p>
+            <p>
+               <strong>Tamaño:</strong> {(file.size / 1024).toFixed(2)} KB
+            </p>
+            <p>
+               <strong>Tipo:</strong> {file.type}
+            </p>
+            <br />
+            <h3>filePreviews</h3>
+            <strong>dataURL:</strong> {filePreviews[0].dataURL} <br />
+            <strong>file.name:</strong> {filePreviews[0].file.name}
+         </div>
+      );
+   };
 
    return (
       <>
@@ -1903,7 +1941,9 @@ export const FileInputComponent = ({
                            </div>
                            <small style={{ marginTop: "-10px", fontStyle: "italic", fontSize: "11px", textAlign: "center" }}>
                               Tamaño maximo del archivo soportado: <b>{fileSizeMax}MB MAX.</b>
-                              <InputCameraComponent getFile={handleGetFileCamera} />
+                              {showBtnCamera && <InputCameraComponent getFile={handleGetFileCamera} />}
+                              <input type="file" onChange={handleOnChangeFileInput} />
+                              {fileInfo && filePreviews.length > 0 && <RenderFileComponent file={fileInfo} />}
                            </small>
                         </div>
                         <Typography variant="body1" component="label" htmlFor={idName} ml={1}>
@@ -1942,18 +1982,242 @@ FileInputComponent.propTypes = {
 // import React, { useRef, useState, useEffect } from 'react';
 //#endregion IMPORTS
 
+// import { useState, useRef, useCallback } from "react";
+// import Webcam from "react-webcam";
+// import { isMobile } from "react-device-detect";
+// import {Box, Button, IconButton} from "@mui/material";
+import SwitchCameraIcon from "@mui/icons-material/Cameraswitch";
+import FlashOnIcon from "@mui/icons-material/FlashOn";
+import FlashOffIcon from "@mui/icons-material/FlashOff";
+import { json } from "react-router-dom";
+
+// export const InputCameraComponent = ({ getFile }) => {
+//    const videoRef = useRef(null);
+//    const canvasRef = useRef(null);
+//    const [hasCamera, setHasCamera] = useState(true);
+//    const [openCamera, setOpenCamera] = useState(false);
+//    const [facingMode, setFacingMode] = useState("environment"); // Controla la cámara usada (frontal o trasera)
+//    const [flash, setFlash] = useState(false); // Simula el flash
+//    const [photo, setPhoto] = useState(null);
+
+//    useEffect(() => {
+//       const detectCameraAndStartVideo = async () => {
+//          try {
+//             const stream = await navigator.mediaDevices.getUserMedia({
+//                video: { facingMode } // Cambia entre cámara frontal y trasera
+//             });
+//             videoRef.current.srcObject = stream;
+//             setHasCamera(true);
+//          } catch (error) {
+//             console.error("Error accessing the camera:", error);
+//             setHasCamera(false);
+//          }
+//       };
+
+//       detectCameraAndStartVideo();
+
+//       return () => {
+//          if (videoRef.current && videoRef.current.srcObject) {
+//             videoRef.current.srcObject.getTracks().forEach((track) => track.stop());
+//          }
+//       };
+//    }, [facingMode]);
+
+//    const dataURLtoFile = (dataurl, filename) => {
+//       let arr = dataurl.split(","),
+//          mime = arr[0].match(/:(.*?);/)[1],
+//          bstr = atob(arr[1]),
+//          n = bstr.length,
+//          u8arr = new Uint8Array(n);
+
+//       while (n--) {
+//          u8arr[n] = bstr.charCodeAt(n);
+//       }
+
+//       return new File([u8arr], filename, { type: mime });
+//    };
+
+//    const takePhoto = () => {
+//       const width = videoRef.current.videoWidth;
+//       const height = videoRef.current.videoHeight;
+//       const context = canvasRef.current.getContext("2d");
+//       canvasRef.current.width = width;
+//       canvasRef.current.height = height;
+
+//       if (flash) {
+//          // Simula un flash (se podría mejorar con efectos visuales)
+//          setTimeout(() => {
+//             context.drawImage(videoRef.current, 0, 0, width, height);
+//             const dataUrl = canvasRef.current.toDataURL("image/png");
+//             setPhoto(dataUrl);
+//             const file = dataURLtoFile(dataUrl, "photo.png");
+//             if (getFile) getFile(file);
+//          }, 100); // Breve retraso para simular el efecto del flash
+//       } else {
+//          context.drawImage(videoRef.current, 0, 0, width, height);
+//          const dataUrl = canvasRef.current.toDataURL("image/png");
+//          setPhoto(dataUrl);
+//          const file = dataURLtoFile(dataUrl, "photo.png");
+//          if (getFile) getFile(file);
+//       }
+
+//       setTimeout(() => {
+//          setPhoto(null);
+//          setOpenCamera(false);
+//       }, 2000);
+//    };
+
+//    const switchCamera = () => {
+//       setFacingMode((prevMode) => (prevMode === "user" ? "environment" : "user"));
+//    };
+
+//    const toggleFlash = () => {
+//       setFlash(!flash);
+//    };
+
+//    return (
+//       <div>
+//          {hasCamera ? (
+//             <>
+//                <Button variant="contained" size="small" onClick={() => setOpenCamera(true)}>
+//                   <SwitchCameraIcon /> &nbsp; Abrir cámara
+//                </Button>
+//                <ModalComponent open={openCamera} setOpen={setOpenCamera} modalTitle={"CÁMARA"}>
+//                   <video ref={videoRef} autoPlay style={{ width: "100%", maxHeight: "75vh", border: `5px ${colorPrimaryMain} solid`, borderRadius: "15px" }} />
+//                   <Box display="flex" justifyContent="space-around" mt={2}>
+//                      <IconButton color="primary" onClick={switchCamera}>
+//                         <SwitchCameraIcon />
+//                      </IconButton>
+//                      <Button variant="contained" size="large" onClick={takePhoto}>
+//                         TOMAR FOTO
+//                      </Button>
+//                      <IconButton color="primary" onClick={toggleFlash}>
+//                         {flash ? <FlashOnIcon /> : <FlashOffIcon />}
+//                      </IconButton>
+//                   </Box>
+//                   <canvas ref={canvasRef} style={{ display: "none" }} />
+//                   {photo && (
+//                      <img
+//                         src={photo}
+//                         alt="Tomada con la cámara"
+//                         style={{
+//                            width: "100%",
+//                            maxHeight: "100%",
+//                            objectFit: "cover",
+//                            marginTop: "20px"
+//                         }}
+//                      />
+//                   )}
+//                </ModalComponent>
+//             </>
+//          ) : (
+//             <Typography textAlign={"center"} variant="caption">
+//                No se detectó una cámara.
+//                <Tooltip title={"Volver a detectar cámara, si no reconoce la cámara, recargue la página o vuelva a conectar el dispositivo."}>
+//                   <IconButton size="small" onClick={() => setHasCamera(true)}>
+//                      <SwitchCameraIcon />
+//                   </IconButton>
+//                </Tooltip>
+//             </Typography>
+//          )}
+//       </div>
+//    );
+// };
+
+// export const InputCameraComponent = ({ getFile }) => {
+//    const webcamRef = useRef(null);
+//    const videoRef = useRef(null);
+//    const [facingMode, setFacingMode] = useState("user"); // Cambiar entre frontal y trasera
+//    const [flash, setFlash] = useState(false); // Simulación de flash
+
+//    const capture = useCallback(() => {
+//       const imageSrc = webcamRef.current.getScreenshot();
+//       getFile(imageSrc);
+//    }, [webcamRef, getFile]);
+
+//    const switchCamera = () => {
+//       setFacingMode((prevMode) => (prevMode === "user" ? "environment" : "user"));
+//    };
+
+//    const toggleFlash = () => {
+//       setFlash((prevFlash) => !prevFlash);
+//    };
+
+//    useEffect(
+//       () => {
+//          const detectCameraAndStartVideo = async () => {
+//             try {
+//                const stream = await navigator.mediaDevices.getUserMedia({
+//                   video: isMobile ? { facingMode: { exact: "environment" } } : true // Cambia a la cámara trasera
+//                });
+//                console.log("🚀 ~ detectCameraAndStartVideo ~ stream:", stream);
+//                webcamRef.current.srcObject = stream;
+//                // setHasCamera(true);
+//             } catch (error) {
+//                console.error("Error accessing the camera:", error);
+//                // setHasCamera(false);
+//             }
+//          };
+
+//          // setPhoto(null);
+//          detectCameraAndStartVideo();
+
+//          return () => {
+//             // setCameraReady(false);
+//             if (webcamRef.current && webcamRef.current.srcObject) {
+//                // setCameraReady(true);
+//                webcamRef.current.srcObject.getTracks().forEach((track) => track.stop());
+//             }
+//          };
+//       },
+//       [
+//          /* hasCamera */
+//       ]
+//    );
+
+//    return (
+//       <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center">
+//          <Webcam
+//             audio={false}
+//             ref={webcamRef}
+//             screenshotFormat="image/png"
+//             width="100%"
+//             autoPlay={true}
+//             videoConstraints={{ video: true }}
+//             // videoConstraints={{ facingMode }}
+//             style={{ filter: flash ? "brightness(1.2)" : "none" }} // Simula un aumento de brillo para el flash
+//          />
+//          <Box display="flex" justifyContent="space-around" width="100%" mt={2}>
+//             <IconButton color="primary" onClick={switchCamera}>
+//                <SwitchCameraIcon />
+//             </IconButton>
+//             <Button variant="contained" color="secondary" onClick={capture}>
+//                Tomar Foto
+//             </Button>
+//             <IconButton color="primary" onClick={toggleFlash}>
+//                {flash ? <FlashOnIcon /> : <FlashOffIcon />}
+//             </IconButton>
+//          </Box>
+//       </Box>
+//    );
+// };
+
 export const InputCameraComponent = ({ getFile }) => {
    const videoRef = useRef(null);
    const canvasRef = useRef(null);
    const [hasCamera, setHasCamera] = useState(true);
    const [cameraReady, setCameraReady] = useState(false);
    const [openCamera, setOpenCamera] = useState(false);
+   const [facingMode, setFacingMode] = useState("environment"); // Controla la cámara usada (frontal o trasera)
+   const [flash, setFlash] = useState(false);
    const [photo, setPhoto] = useState(null);
 
    useEffect(() => {
       const detectCameraAndStartVideo = async () => {
          try {
-            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            const stream = await navigator.mediaDevices.getUserMedia({
+               video: isMobile ? { facingMode: { exact: facingMode } } : true // Cambia a la cámara trasera
+            });
             videoRef.current.srcObject = stream;
             setHasCamera(true);
          } catch (error) {
@@ -1972,7 +2236,7 @@ export const InputCameraComponent = ({ getFile }) => {
             videoRef.current.srcObject.getTracks().forEach((track) => track.stop());
          }
       };
-   }, [hasCamera]);
+   }, [hasCamera, facingMode]);
 
    const dataURLtoFile = (dataurl, filename) => {
       let arr = dataurl.split(","),
@@ -1994,18 +2258,37 @@ export const InputCameraComponent = ({ getFile }) => {
       const context = canvasRef.current.getContext("2d");
       canvasRef.current.width = width;
       canvasRef.current.height = height;
-      context.drawImage(videoRef.current, 0, 0, width, height);
-      const dataUrl = canvasRef.current.toDataURL("image/png");
-      setPhoto(dataUrl);
-      // if (getDataUrl) return photo;
 
-      // Convert the data URL to a file and pass it to the callback
-      const file = dataURLtoFile(dataUrl, "photo.png");
-      if (getFile) getFile(file);
+      if (flash) {
+         // Simula un flash (se podría mejorar con efectos visuales)
+         setTimeout(() => {
+            context.drawImage(videoRef.current, 0, 0, width, height);
+            const dataUrl = canvasRef.current.toDataURL("image/png", 1.0);
+            setPhoto(dataUrl);
+            const file = dataURLtoFile(dataUrl, "photo.png");
+            if (getFile) getFile(file);
+         }, 100); // Breve retraso para simular el efecto del flash
+      } else {
+         context.drawImage(videoRef.current, 0, 0, width, height);
+         const dataUrl = canvasRef.current.toDataURL("image/png");
+         setPhoto(dataUrl);
+         // Convert the data URL to a file and pass it to the callback
+         const file = dataURLtoFile(dataUrl, "photo.png");
+         if (getFile) getFile(file);
+      }
+
       setTimeout(() => {
          setPhoto(null);
          setOpenCamera(false);
       }, 2000);
+   };
+
+   const switchCamera = () => {
+      setFacingMode((prevMode) => (prevMode === "user" ? "environment" : { exact: "user" }));
+   };
+
+   const toggleFlash = () => {
+      setFlash(!flash);
    };
 
    return (
@@ -2017,10 +2300,21 @@ export const InputCameraComponent = ({ getFile }) => {
                </Button>
                <ModalComponent open={openCamera} setOpen={setOpenCamera} modalTitle={"CÁMARA"}>
                   <video ref={videoRef} autoPlay style={{ width: "100%", maxHeight: "75vh", border: `5px ${colorPrimaryMain} solid`, borderRadius: "15px" }} />
-                  <Button variant="contained" size="large" fullWidth onClick={takePhoto} sx={{}}>
-                     <IconCamera />
-                     &nbsp; TOMAR FOTO
-                  </Button>
+                  <Box display="flex" justifyContent="space-around" mt={2}>
+                     <Tooltip title={"Cambiar de cámara"}>
+                        <IconButton color="primary" size="large" onClick={switchCamera}>
+                           <SwitchCameraIcon />
+                        </IconButton>
+                     </Tooltip>
+                     <Button variant="contained" size="large" fullWidth onClick={takePhoto}>
+                        TOMAR FOTO
+                     </Button>
+                     <Tooltip title={`${!flash ? "Activar" : "Desactivar"} Flash`}>
+                        <IconButton color="primary" size="large" onClick={toggleFlash}>
+                           {flash ? <FlashOnIcon /> : <FlashOffIcon />}
+                        </IconButton>
+                     </Tooltip>
+                  </Box>
                   <Box position={"static"}>
                      <canvas ref={canvasRef} style={{ display: "none" }} />
                      {photo && (
