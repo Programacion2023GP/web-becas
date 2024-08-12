@@ -2,7 +2,6 @@ import * as Yup from "yup";
 
 import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
 
-import Select2Component from "../../../components/Form/Select2Component";
 import { useRoleContext } from "../../../context/RoleContext";
 import { useEffect } from "react";
 import { LoadingButton } from "@mui/lab";
@@ -11,7 +10,7 @@ import Toast from "../../../utils/Toast";
 import { useGlobalContext } from "../../../context/GlobalContext";
 import { useAuthContext } from "../../../context/AuthContext";
 import { useMenuContext } from "../../../context/MenuContext";
-import { FormikComponent } from "../../../components/Form/FormikComponents";
+import { FormikComponent, Select2Component } from "../../../components/Form/FormikComponents";
 import { isArray } from "highcharts";
 
 const FormSelect = ({ setOpenDialogTable, setLoadPermissions }) => {

@@ -1,34 +1,18 @@
-import { Fragment, useEffect, useState } from "react";
-import { ThemeProvider } from "@mui/material/styles";
-import { createTheme } from "@mui/material/styles";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
-import { CacheProvider } from "@emotion/react";
-import createCache from "@emotion/cache";
-import { Button, ButtonGroup, Dialog, DialogActions, DialogContent, Grid, IconButton, Toolbar, Tooltip, Typography } from "@mui/material";
-import IconEdit from "../../../components/icons/IconEdit";
-import IconDelete from "../../../components/icons/IconDelete";
-import { IconX, IconWindowMaximize, IconWindowMinimize, IconFileTypePdf } from "@tabler/icons-react";
+import { useEffect, useState } from "react";
+import { Button, ButtonGroup, Tooltip, Typography } from "@mui/material";
 
 import { useCommunityContext } from "../../../context/CommunityContext";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import sAlert, { QuestionAlertConfig } from "../../../utils/sAlert";
+import { QuestionAlertConfig } from "../../../utils/sAlert";
 import Toast from "../../../utils/Toast";
-import { ROLE_SUPER_ADMIN, useGlobalContext } from "../../../context/GlobalContext";
+import { useGlobalContext } from "../../../context/GlobalContext";
 import DataTableComponent from "../../../components/DataTableComponent";
 import { IconCircleCheckFilled } from "@tabler/icons-react";
 import { IconCircleXFilled } from "@tabler/icons-react";
 import { formatDatetime } from "../../../utils/Formats";
-import { idPage, useAuthContext } from "../../../context/AuthContext";
-import SwitchIOSComponent from "../../../components/SwitchIOSComponent";
+import { useAuthContext } from "../../../context/AuthContext";
 import { IconCirclesRelation } from "@tabler/icons-react";
-import { Box } from "@mui/system";
-import Select2Component from "../../../components/Form/Select2Component";
-import { Field, Formik } from "formik";
-import * as Yup from "yup";
 import CommunityFormAssignPerimeter from "./FormAssignPerimeter";
 
 const CommunityDT = () => {

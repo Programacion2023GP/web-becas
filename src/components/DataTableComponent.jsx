@@ -11,7 +11,7 @@ import { InputNumber } from "primereact/inputnumber";
 import { Dropdown } from "primereact/dropdown";
 import { Tag } from "primereact/tag";
 import { Button, ButtonGroup, Card, IconButton, Tooltip } from "@mui/material";
-import { IconEdit, IconFile, IconFileSpreadsheet, IconSearch } from "@tabler/icons";
+import { IconEdit, IconFile, IconFileSpreadsheet, IconPlus, IconSearch } from "@tabler/icons";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import { FilterMatchMode, FilterOperator } from "primereact/api";
 import { Box } from "@mui/system";
@@ -377,16 +377,22 @@ export default function DataTableComponent({
          </span>
          {btnAdd && (
             <Tooltip title={titleBtnAdd ? `AGREGAR ${titleBtnAdd}` : "AGREGAR"}>
-               <Button
-                  variant="contained"
-                  sx={!isMobile && { width: 250 }}
-                  startIcon={<AddCircleOutlineOutlined sx={{ mr: 0.2 }} />}
-                  size="large"
-                  disabled={updating}
-                  onClick={() => (rowEdit ? addRow() : handleClickAdd())}
-               >
-                  {!isMobile && titleBtnAdd ? titleBtnAdd : "AGREGAR"}
-               </Button>
+               {isMobile ? (
+                  <IconButton color="secondary" sx={{ backgroundColor: colorPrimaryMain }} disabled={updating} onClick={() => (rowEdit ? addRow() : handleClickAdd())}>
+                     <IconPlus />
+                  </IconButton>
+               ) : (
+                  <Button
+                     variant="contained"
+                     sx={{ width: 250 }}
+                     startIcon={<AddCircleOutlineOutlined sx={{ mr: 0.2 }} />}
+                     size="large"
+                     disabled={updating}
+                     onClick={() => (rowEdit ? addRow() : handleClickAdd())}
+                  >
+                     {titleBtnAdd ? titleBtnAdd : "AGREGAR"}
+                  </Button>
+               )}
             </Tooltip>
          )}
       </Box>

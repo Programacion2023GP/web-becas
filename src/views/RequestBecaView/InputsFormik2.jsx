@@ -109,7 +109,7 @@ const InputsFormik2 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
                   disabled={formik.values.id == 0 ? false : true}
                   loading={loadingCURP}
                   focus={true}
-                  helperText="yyayaa"
+                  helperText=""
                   // inputRef={inputRefCurp}
                />
 

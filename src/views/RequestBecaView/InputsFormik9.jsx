@@ -63,7 +63,7 @@ const ButtonsApprovedDocument = ({ auth, formik, setFieldValue, fieldApproved, f
                )}
          </Grid>
          {/* Comentarios */}
-         <Grid xs={8} md={4} sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+         <Grid xs={8} md={4} sm={accion === "revision" ? 4 : 6} sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
             <InputComponent
                // col={4}
                idName={fieldComments}
@@ -153,7 +153,7 @@ const InputsFormik9 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
 
    return (
       <>
-         <Grid width={"100%"} xs={12} spacing={2} height={"66vh"} maxHeight={"66vh"} overflow={"auto"}>
+         <Grid width={"100%"} xs={12} spacing={2} height={"66vh"} maxHeight={"66vh"} overflow={"auto"} key={"key-Grid-f9"}>
             <Grid xs={12} container spacing={2} key={"key-key-key"}>
                {/* IMAGEN DE INE TUTOR */}
                {dataFileInputs.map((dataInput, index) => (
@@ -229,10 +229,6 @@ const InputsFormik9 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
             </Grid>
          </Grid>
 
-         {/* <Button type="button" color="info" id="btnModify" sx={{ mt: 1, display: "none" }} onClick={() => handleModify(formik.setValues)}>
-            setValues
-         </Button> */}
-
          {folio > 0 &&
             (["", "ALTA"].includes(formData.status) ||
                ((auth.permissions.more_permissions.includes("Corregir Documentos") || auth.permissions.more_permissions.includes(`todas`)) &&
@@ -240,7 +236,7 @@ const InputsFormik9 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
             [undefined, "correccion"].includes(accion) && <ButtonsBeforeOrNext isSubmitting={formik.isSubmitting} setValues={formik.setValues} />}
 
          {folio > 0 && ["TERMINADA", "EN REVISIÓN", "EN EVALUACIÓN"].includes(formData.status) && ["revision"].includes(accion) && (
-            <Grid container xs={12} sx={{ pt: 2, justifyContent: "end" }}>
+            <Grid container xs={12} sx={{ pt: 2, justifyContent: "end" }} key={"key-Grid-Buttons"}>
                <Button color="primary" variant="contained" onClick={() => handleClickFinishReview(formik.values)} sx={{ mr: 1 }}>
                   TERMINAR REVISIÓN
                </Button>
