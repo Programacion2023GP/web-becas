@@ -39,7 +39,7 @@ function ModalApprove({ folio, open, setOpen, statusCurrent, modalTitle, maxWidt
    const onSubmit = async (values, { setSubmitting, setErrors, resetForm }) => {
       try {
          values.folio = folio;
-         values.approved_at = formatDatetimeToSQL(new Date());
+         // values.approved_at = formatDatetimeToSQL(new Date());
          // return console.log("values", values);
          setLoadingAction(true);
          const axiosResponse = await updateStatusBeca(folio, "APROBADA", values, statusCurrent);

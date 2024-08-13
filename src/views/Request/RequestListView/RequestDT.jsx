@@ -9,8 +9,8 @@ import { QuestionAlertConfig } from "../../../utils/sAlert";
 import Toast from "../../../utils/Toast";
 import { ROLE_ADMIN, ROLE_SUPER_ADMIN, useGlobalContext } from "../../../context/GlobalContext";
 import DataTableComponent from "../../../components/DataTableComponent";
-import { IconBan, IconChecklist, IconEye, IconFileSpreadsheet, IconPrinter, IconThumbDown } from "@tabler/icons";
-import { formatDatetime } from "../../../utils/Formats";
+import { IconBan, IconChecklist, IconEye, IconFileSpreadsheet, IconPrinter, IconReplace, IconThumbDown } from "@tabler/icons";
+import { formatDatetime, includesInArray } from "../../../utils/Formats";
 import { Link } from "react-router-dom";
 import { Axios, useAuthContext } from "../../../context/AuthContext";
 import { IconCircleCheckFilled } from "@tabler/icons-react";
@@ -89,6 +89,7 @@ const RequestBecaDT = ({ status = null }) => {
    const [openModalApprove, setOpenModalApprove] = useState(false);
    const [openModalReject, setOpenModalReject] = useState(false);
    const [openModalPayment, setOpenModalPayment] = useState(false);
+   const [objRequest, setObjRequest] = useState(null);
 
    const downloadPDF = async (elementID) => {
       setLoadingAction(true);
@@ -260,11 +261,13 @@ const RequestBecaDT = ({ status = null }) => {
          Toast.Error(error);
       }
    };
-   const handleClickPayed = async (folio) => {
+   const handleClickPayed = async (objRequest, numPago) => {
+      console.log("🚀 ~ handleClickPayed ~ objRequest:", objRequest);
       try {
-         mySwal.fire(QuestionAlertConfig(`Realizar el pago 1 de la beca con folio #${folio}`, "CONFIRMAR", null, false)).then(async (result) => {
+         mySwal.fire(QuestionAlertConfig(`Realizar el pago ${numPago} de la beca con folio #${objRequest.folio}`, "CONFIRMAR", null, false)).then(async (result) => {
             if (result.isConfirmed) {
-               setFolio(folio);
+               setFolio(objRequest.folio);
+               setObjRequest(objRequest);
                setOpenModalPayment(true);
                // const axiosResponse = await updateStatusBeca(folio, "PAGADA", null, status);
                // Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
@@ -345,73 +348,76 @@ const RequestBecaDT = ({ status = null }) => {
    //    }
    // };
 
-   const ButtonsAction = ({ id, name, current_page, obj }) => {
+   const ButtonsAction = ({ id, folio, current_page, obj }) => {
       // console.log("🚀 ~ ButtonsAction ~ obj:", obj);
       if (["CANCELADA"].includes(obj.status)) return;
 
       return (
          <ButtonGroup variant="outlined">
             {obj.end_date == null && (
-               <Tooltip title={`Solicitud ${name}`} placement="top">
+               <Tooltip title={`Solicitud ${folio}`} placement="top">
                   <Button color="dark">
-                     <Link to={`/app/solicitud-beca/pagina/${current_page}/folio/${id}`} target="_blank" style={{ textDecoration: "none" }}>
+                     <Link to={`/app/solicitud-beca/pagina/${current_page}/folio/${folio}`} target="_blank" style={{ textDecoration: "none" }}>
                         Continuar
                      </Link>
                   </Button>
                </Tooltip>
             )}
             {!["ALTA"].includes(obj.status) && (
-               <Tooltip title={`Ver Solicitud ${name}`} placement="top">
+               <Tooltip title={`Ver Solicitud ${folio}`} placement="top">
                   <Button color="dark" onClick={() => handleClickView(obj)}>
                      <IconEye />
                   </Button>
                </Tooltip>
             )}
-            {(auth.permissions.more_permissions.includes(`Corregir Documentos`) || auth.permissions.more_permissions.includes(`todas`)) &&
+            {includesInArray(auth.permissions.more_permissions, [`Corregir Documentos`, `todas`]) &&
                ["TERMINADA", "EN REVISIÓN", "EN EVALUACIÓN"].includes(obj.status) &&
                obj.correction_permission && (
-                  <Tooltip title={`Corregir Documentos del Folio #${name}`} placement="top">
+                  <Tooltip title={`Corregir Documentos del Folio #${folio}`} placement="top">
                      <Button color="dark" onClick={() => handleClickValidateDocuments(obj.folio, obj.status, "correccion")}>
                         <IconChecklist />
                      </Button>
                   </Tooltip>
                )}
-            {(auth.permissions.more_permissions.includes(`Validar Documentos`) || auth.permissions.more_permissions.includes(`todas`)) &&
-               ["TERMINADA", "EN REVISIÓN"].includes(obj.status) && (
-                  <Tooltip title={`Validar Documentos del Folio #${name}`} placement="top">
-                     <Button color="primary" onClick={() => handleClickValidateDocuments(obj.folio, obj.status, "revision")}>
-                        <IconChecklist />
-                     </Button>
-                  </Tooltip>
-               )}
-            {(auth.permissions.more_permissions.includes(`Evaluar Solicitud`) || auth.permissions.more_permissions.includes(`todas`)) &&
-               ["EN EVALUACIÓN"].includes(obj.status) && (
-                  <Tooltip title={`Aprobar Folio #${name}`} placement="top">
-                     <Button color="primary" onClick={() => handleClickApprove(obj.folio)}>
-                        <IconThumbUpFilled />
-                     </Button>
-                  </Tooltip>
-               )}
-            {(auth.permissions.more_permissions.includes(`Evaluar Solicitud`) || auth.permissions.more_permissions.includes(`todas`)) &&
-               ["EN EVALUACIÓN"].includes(obj.status) && (
-                  <Tooltip title={`Rechazar Folio #${name}`} placement="top">
-                     <Button color="error" onClick={() => handleClickReject(obj.folio)}>
-                        <IconThumbDown />
-                     </Button>
-                  </Tooltip>
-               )}
-            {(auth.permissions.more_permissions.includes(`Pagar Solicitud`) || auth.permissions.more_permissions.includes(`todas`)) &&
-               ["APROBADA"].includes(obj.status) && (
-                  <Tooltip title={`Realizar Pago 1 de Folio #${name}`} placement="top">
-                     <Button color="primary" onClick={() => handleClickPayed(obj.folio, obj.status)}>
-                        <IconCoin />
-                     </Button>
-                  </Tooltip>
-               )}
-            {(auth.permissions.more_permissions.includes(`Cancelar Solicitud`) || auth.permissions.more_permissions.includes(`todas`)) &&
+            {includesInArray(auth.permissions.more_permissions, [`Validar Documentos`, `todas`]) && ["TERMINADA", "EN REVISIÓN"].includes(obj.status) && (
+               <Tooltip title={`Validar Documentos del Folio #${folio}`} placement="top">
+                  <Button color="primary" onClick={() => handleClickValidateDocuments(obj.folio, obj.status, "revision")}>
+                     <IconChecklist />
+                  </Button>
+               </Tooltip>
+            )}
+            {includesInArray(auth.permissions.more_permissions, [`Evaluar Solicitud`, `todas`]) && ["EN EVALUACIÓN"].includes(obj.status) && (
+               <Tooltip title={`Aprobar Folio #${folio}`} placement="top">
+                  <Button color="primary" onClick={() => handleClickApprove(obj.folio)}>
+                     <IconThumbUpFilled />
+                  </Button>
+               </Tooltip>
+            )}
+            {includesInArray(auth.permissions.more_permissions, [`Evaluar Solicitud`, `todas`]) && ["EN EVALUACIÓN"].includes(obj.status) && (
+               <Tooltip title={`Rechazar Folio #${folio}`} placement="top">
+                  <Button color="error" onClick={() => handleClickReject(obj.folio)}>
+                     <IconThumbDown />
+                  </Button>
+               </Tooltip>
+            )}
+            {includesInArray(auth.permissions.more_permissions, [`Pagar Solicitud`, `todas`]) && ["APROBADA"].includes(obj.status) && (
+               <Tooltip title={`Realizar Pago 1 de Folio #${folio}`} placement="top">
+                  <Button color="primary" onClick={() => handleClickPayed(obj, 1)}>
+                     <IconCoin />
+                  </Button>
+               </Tooltip>
+            )}
+            {includesInArray(auth.permissions.more_permissions, [`Reasignar Solicitud`, `todas`]) && ["APROBADA"].includes(obj.status) && (
+               <Tooltip title={`Reasignar Solicitud con Folio #${folio}`} placement="top">
+                  <Button color="primary" onClick={() => Toast.Info("AUN NO SE CONFIGURA")}>
+                     <IconReplace />
+                  </Button>
+               </Tooltip>
+            )}
+            {includesInArray(auth.permissions.more_permissions, [`Cancelar Solicitud`, `todas`]) &&
                !["APROBADA", "PAGADA", "RECHAZADA", "CANCELADA"].includes(obj.status) && (
-                  <Tooltip title={`Cancelar Folio ${name}`} placement="top">
-                     <Button color="error" onClick={() => handleClickCancel(id, obj.folio, name)}>
+                  <Tooltip title={`Cancelar Folio ${folio}`} placement="top">
+                     <Button color="error" onClick={() => handleClickCancel(id, obj.folio, folio)}>
                         <IconBan />
                      </Button>
                   </Tooltip>
@@ -423,14 +429,14 @@ const RequestBecaDT = ({ status = null }) => {
             </Tooltip> */}
             {auth.permissions.delete && !["APROBADA", "PAGADA", "RECHAZADA", "CANCELADA"].includes(obj.status) && (
                <Tooltip title={`Eliminar ${singularName}`} placement="top">
-                  <Button color="error" onClick={() => handleClickDelete(id, name)}>
+                  <Button color="error" onClick={() => handleClickDelete(id, folio)}>
                      <IconDelete />
                   </Button>
                </Tooltip>
             )}
             {/* {auth.role_id == ROLE_SUPER_ADMIN && (
                <Tooltip title={active ? "Desactivar" : "Reactivar"} placement="right">
-                  <Button color="dark" onClick={() => handleClickDisEnable(id, name, active)} sx={{}}>
+                  <Button color="dark" onClick={() => handleClickDisEnable(id, folio, active)} sx={{}}>
                      <SwitchIOSComponent checked={active} />
                   </Button>
                </Tooltip>
@@ -548,7 +554,7 @@ const RequestBecaDT = ({ status = null }) => {
             // console.log(obj);
             let register = obj;
             register.key = index + 1;
-            register.actions = <ButtonsAction id={obj.id} name={obj.folio} current_page={obj.current_page} obj={obj} />;
+            register.actions = <ButtonsAction id={obj.id} folio={obj.folio} current_page={obj.current_page} obj={obj} />;
             data.push(register);
          });
          // if (data.length > 0) setGlobalFilterFields(Object.keys(requestBecas[0]));
@@ -645,7 +651,7 @@ const RequestBecaDT = ({ status = null }) => {
          )}
 
          {openModalPayment && (
-            <ModalPayment folio={folio} open={openModalPayment} setOpen={setOpenModalPayment} statusCurrent={status} modalTitle="PRIMER PAGO" maxWidth={"md"} />
+            <ModalPayment obj={objRequest} open={openModalPayment} setOpen={setOpenModalPayment} statusCurrent={status} modalTitle="PRIMER PAGO" maxWidth={"md"} />
          )}
       </>
    );

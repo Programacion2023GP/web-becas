@@ -1760,13 +1760,13 @@ export const FileInputComponent = ({
             file,
             dataURL
          };
-         console.log("🚀 ~ handleSetFile ~ preview:", preview);
+         // console.log("🚀 ~ handleSetFile ~ preview:", preview);
          // alert(`handleSetFile() ~ preview: ${preview}`);
          // alert(`handleSetFile() ~ preview.file: ${preview.file}`);
          // alert(`handleSetFile() ~ preview.dataURL: ${preview.dataURL}`);
          setFilePreviews([preview]);
          filePreviews = [preview];
-         console.log(filePreviews);
+         // console.log(filePreviews);
          // alert(`handleSetFile() ~ filePreviews[0].dataURL: ${filePreviews[0].dataURL}`);
       } catch (error) {
          console.error("Error al leer el archivo:", error);
@@ -1808,10 +1808,10 @@ export const FileInputComponent = ({
    const handleOnChangeFileInput = (e) => {
       // console.log("🚀 ~ handleOnChangeFileInput ~ e:", e);
       const file = e.target.files.length > 0 ? e.target.files[0] : null;
-      console.log("🚀 ~ handleOnChangeFileInput ~ file:", file);
+      // console.log("🚀 ~ handleOnChangeFileInput ~ file:", file);
       if (!file) return;
       setFileInfo(file);
-      console.log("🚀 ~ handleOnChangeFileInput ~ fileInfo:", fileInfo);
+      // console.log("🚀 ~ handleOnChangeFileInput ~ fileInfo:", fileInfo);
       handleGetFileCamera(file);
    };
 
@@ -1984,8 +1984,8 @@ export const FileInputComponent = ({
                            <small style={{ marginTop: "-10px", fontStyle: "italic", fontSize: "11px", textAlign: "center" }}>
                               Tamaño maximo del archivo soportado: <b>{fileSizeMax}MB MAX.</b>
                               {showBtnCamera && <InputCameraComponent getFile={handleGetFileCamera} />}
-                              <input type="file" onChange={handleOnChangeFileInput} />
-                              {fileInfo && filePreviews.length > 0 && <RenderFileComponent file={fileInfo} />}
+                              {/* <input type="file" onChange={handleOnChangeFileInput} /> */}
+                              {/* {fileInfo && filePreviews.length > 0 && <RenderFileComponent file={fileInfo} />} */}
                            </small>
                         </div>
                         <Typography variant="body1" component="label" htmlFor={idName} ml={1}>
