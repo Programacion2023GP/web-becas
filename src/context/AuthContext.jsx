@@ -159,7 +159,7 @@ export default function AuthContextProvider({ children }) {
          // console.log("counterofMenus");
          const axiosData = await Axios.get(`counters/counterOfMenus`);
          res = await axiosData.data.data;
-         // console.log("🚀 ~ counterOfMenus ~ res:", res);
+         console.log("🚀 ~ counterOfMenus ~ res:", res);
          const filterCounters = { ...counters };
          const newCounters = { ...counters };
 
@@ -189,7 +189,7 @@ export default function AuthContextProvider({ children }) {
          await filterCounters.requestApproved.map((data) => (newCounters.requestApproved += data.total));
 
          newCounters.requestPayed1 = 0;
-         filterCounters.requestPayed1 = await res.result.filter((data) => ["PAGO1"].includes(data.counter));
+         filterCounters.requestPayed1 = await res.result.filter((data) => ["PAGANDO"].includes(data.counter));
          await filterCounters.requestPayed1.map((data) => (newCounters.requestPayed1 += data.total));
 
          newCounters.requestPayed2 = 0;

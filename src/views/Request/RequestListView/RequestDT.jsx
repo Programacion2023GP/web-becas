@@ -1,18 +1,18 @@
 import { useEffect, useState } from "react";
 import { Button, ButtonGroup, Dialog, DialogContent, IconButton, Toolbar, Tooltip, Typography } from "@mui/material";
-import { IconX, IconWindowMaximize, IconWindowMinimize, IconFileTypePdf, IconThumbUpFilled, IconCoin } from "@tabler/icons-react";
+import { IconX, IconWindowMaximize, IconWindowMinimize, IconThumbUpFilled, IconCoin } from "@tabler/icons-react";
 
 import { useRequestBecaContext } from "../../../context/RequestBecaContext";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { QuestionAlertConfig } from "../../../utils/sAlert";
 import Toast from "../../../utils/Toast";
-import { ROLE_ADMIN, ROLE_SUPER_ADMIN, useGlobalContext } from "../../../context/GlobalContext";
+import { ROLE_SUPER_ADMIN, useGlobalContext } from "../../../context/GlobalContext";
 import DataTableComponent from "../../../components/DataTableComponent";
 import { IconBan, IconChecklist, IconEye, IconFileSpreadsheet, IconPrinter, IconReplace, IconThumbDown } from "@tabler/icons";
-import { formatDatetime, includesInArray } from "../../../utils/Formats";
-import { Link } from "react-router-dom";
-import { Axios, useAuthContext } from "../../../context/AuthContext";
+import { formatCurrency, formatDatetime, includesInArray } from "../../../utils/Formats";
+import { Link, useParams } from "react-router-dom";
+import { useAuthContext } from "../../../context/AuthContext";
 import { IconCircleCheckFilled } from "@tabler/icons-react";
 import { IconCircleXFilled } from "@tabler/icons-react";
 import { Box } from "@mui/system";
@@ -27,6 +27,7 @@ import ModalPayment from "./ModalPayment";
 import ModalApprove from "./ModalApprove";
 
 const RequestBecaDT = ({ status = null }) => {
+   const { pago } = useParams();
    const { auth } = useAuthContext();
    const { setLoading, setLoadingAction, setOpenDialog } = useGlobalContext();
    const {
@@ -185,6 +186,16 @@ const RequestBecaDT = ({ status = null }) => {
          <b>{obj.score_total}</b>
       </Typography>
    );
+   const PaymentsBodyTemplate = (obj) => (
+      <>
+         <Typography textAlign={"center"} fontWeight={"bolder"}>
+            {formatCurrency(obj.total_amount ?? 0)}
+         </Typography>
+         <Typography textAlign={"center"} fontSize={11}>
+            {obj.payments ?? 0}/3
+         </Typography>
+      </>
+   );
    const RequestDateBodyTemplate = (obj) => <Typography textAlign={"center"}>{formatDatetime(obj.created_at)}</Typography>;
    const EndDateBodyTemplate = (obj) => <Typography textAlign={"center"}>{formatDatetime(obj.end_date)}</Typography>;
    //#endregion BODY TEMPLATES
@@ -194,14 +205,36 @@ const RequestBecaDT = ({ status = null }) => {
       { field: "school", header: "Escuela", sortable: true, functionEdit: null, body: SchoolBodyTemplate },
       { field: "student", header: "Alumno", sortable: true, functionEdit: null, body: StudentBodyTemplate },
       { field: "average", header: "Promedio", sortable: true, functionEdit: null, body: AverageBodyTemplate },
-      { field: "status", header: "Estatus", sortable: true, functionEdit: null, body: StatusBodyTemplate },
-      { field: "current_page", header: "Página", sortable: true, functionEdit: null, body: CurrentBodyTemplate, filterField: null },
-      { field: "created_at", header: "Fecha de Solicitud", sortable: true, functionEdit: null, body: RequestDateBodyTemplate },
-      { field: "end_date", header: "Fecha de Termino", sortable: true, functionEdit: null, body: EndDateBodyTemplate },
+      ["ALTA", "TERMINADA", "EN REVISIÓN", "EN EVALUACIÓN"].includes(status) &&
+         ({
+            field: "status",
+            header: "Estatus",
+            sortable: true,
+            functionEdit: null,
+            body: StatusBodyTemplate
+         },
+         {
+            field: "current_page",
+            header: "Página",
+            sortable: true,
+            functionEdit: null,
+            body: CurrentBodyTemplate,
+            filterField: null
+         },
+         { field: "created_at", header: "Fecha de Solicitud", sortable: true, functionEdit: null, body: RequestDateBodyTemplate },
+         { field: "end_date", header: "Fecha de Termino", sortable: true, functionEdit: null, body: EndDateBodyTemplate }),
       { field: "socioeconomic_study", header: "Estudio Socio-Económico", sortable: true, functionEdit: null, body: SocioeconomicStudyBodyTemplate }
    ];
    (auth.permissions.more_permissions.includes("Ver Puntaje") || auth.permissions.more_permissions.includes(`todas`)) &&
       columns.push({ field: "score_total", header: "Puntaje", sortable: true, functionEdit: null, body: ScoreTotalBodyTemplate });
+   pago &&
+      columns.push({
+         field: "total_amount",
+         header: "Pagos Realizados",
+         sortable: true,
+         functionEdit: null,
+         body: PaymentsBodyTemplate
+      });
    auth.role_id === ROLE_SUPER_ADMIN &&
       columns.push(
          { field: "active", header: "Activo", sortable: true, functionEdit: null, body: ActiveBodyTemplate, filterField: null },
@@ -381,14 +414,14 @@ const RequestBecaDT = ({ status = null }) => {
                )}
             {includesInArray(auth.permissions.more_permissions, [`Validar Documentos`, `todas`]) && ["TERMINADA", "EN REVISIÓN"].includes(obj.status) && (
                <Tooltip title={`Validar Documentos del Folio #${folio}`} placement="top">
-                  <Button color="primary" onClick={() => handleClickValidateDocuments(obj.folio, obj.status, "revision")}>
+                  <Button color="secondary" onClick={() => handleClickValidateDocuments(obj.folio, obj.status, "revision")}>
                      <IconChecklist />
                   </Button>
                </Tooltip>
             )}
             {includesInArray(auth.permissions.more_permissions, [`Evaluar Solicitud`, `todas`]) && ["EN EVALUACIÓN"].includes(obj.status) && (
                <Tooltip title={`Aprobar Folio #${folio}`} placement="top">
-                  <Button color="primary" onClick={() => handleClickApprove(obj.folio)}>
+                  <Button color="secondary" onClick={() => handleClickApprove(obj.folio)}>
                      <IconThumbUpFilled />
                   </Button>
                </Tooltip>
@@ -400,16 +433,19 @@ const RequestBecaDT = ({ status = null }) => {
                   </Button>
                </Tooltip>
             )}
-            {includesInArray(auth.permissions.more_permissions, [`Pagar Solicitud`, `todas`]) && ["APROBADA"].includes(obj.status) && (
-               <Tooltip title={`Realizar Pago 1 de Folio #${folio}`} placement="top">
-                  <Button color="primary" onClick={() => handleClickPayed(obj, 1)}>
-                     <IconCoin />
+            {includesInArray(auth.permissions.more_permissions, [`Pagar Solicitud`, `todas`]) && ["APROBADA", "PAGANDO"].includes(obj.status) && (
+               <Tooltip title={`Realizar Pago ${obj.payments + 1} de Folio #${folio}`} placement="top">
+                  <Button color="secondary" onClick={() => handleClickPayed(obj, obj.payments + 1)}>
+                     <IconCoin />{" "}
+                     <Typography fontWeight={"bolder"} fontSize={20} ml={0.5}>
+                        {obj.payments + 1}
+                     </Typography>
                   </Button>
                </Tooltip>
             )}
             {includesInArray(auth.permissions.more_permissions, [`Reasignar Solicitud`, `todas`]) && ["APROBADA"].includes(obj.status) && (
                <Tooltip title={`Reasignar Solicitud con Folio #${folio}`} placement="top">
-                  <Button color="primary" onClick={() => Toast.Info("AUN NO SE CONFIGURA")}>
+                  <Button color="secondary" onClick={() => Toast.Info("AUN NO SE CONFIGURA")}>
                      <IconReplace />
                   </Button>
                </Tooltip>

@@ -1725,9 +1725,16 @@ export const FileInputComponent = ({
          setFilePreviews([]);
          // if (multiple) if (!validationQuantityImages()) return
          // Puedes manejar los archivos aceptados aquí y mostrar las vistas previas.
-         acceptedFiles.forEach((file) => {
-            handleSetFile(file);
-         });
+
+         if (acceptedFiles && acceptedFiles.length > 0) {
+            acceptedFiles.forEach((file) => {
+               console.log("🚀 ~ acceptedFiles.forEach ~ file:", file);
+               handleSetFile(file);
+            });
+         } else {
+            console.log("No hay archivos en el acceptedFiles", acceptedFiles);
+            Toast.Error("No hay archivos en el acceptedFiles");
+         }
       },
       [confirmRemove, setFilePreviews]
    );
@@ -1742,7 +1749,6 @@ export const FileInputComponent = ({
    const handleSetFile = async (file) => {
       // alert("entre al handleSetFile()");
       // console.log("🚀 ~ handleSetFile ~ file:", file);
-      // const reader = new FileReader();
 
       if (file.size >= fileSizeExceeded) {
          if (filePreviews.length == 0) setConfirmRemove(true);
@@ -1761,12 +1767,9 @@ export const FileInputComponent = ({
             dataURL
          };
          // console.log("🚀 ~ handleSetFile ~ preview:", preview);
-         // alert(`handleSetFile() ~ preview: ${preview}`);
-         // alert(`handleSetFile() ~ preview.file: ${preview.file}`);
-         // alert(`handleSetFile() ~ preview.dataURL: ${preview.dataURL}`);
          setFilePreviews([preview]);
          filePreviews = [preview];
-         // console.log(filePreviews);
+         // console.log("🚀 ~ handleSetFile ~ filePreviews:", filePreviews);
          // alert(`handleSetFile() ~ filePreviews[0].dataURL: ${filePreviews[0].dataURL}`);
       } catch (error) {
          console.error("Error al leer el archivo:", error);
@@ -1806,11 +1809,11 @@ export const FileInputComponent = ({
       handleSetFile(file);
    };
    const handleOnChangeFileInput = (e) => {
-      // console.log("🚀 ~ handleOnChangeFileInput ~ e:", e);
+      // console.log("🚀 ~ handleOnChangeFileInput ~ e.target.files:", e.target.files);
       const file = e.target.files.length > 0 ? e.target.files[0] : null;
       // console.log("🚀 ~ handleOnChangeFileInput ~ file:", file);
       if (!file) return;
-      setFileInfo(file);
+      // setFileInfo(file);
       // console.log("🚀 ~ handleOnChangeFileInput ~ fileInfo:", fileInfo);
       handleGetFileCamera(file);
    };
@@ -1856,7 +1859,7 @@ export const FileInputComponent = ({
    };
 
    useEffect(() => {
-      // console.log("isError", isError);
+      // console.log("🚀 ~ useEffect ~ filePreviews:", filePreviews);
       if (filePreviews.length == 0) setConfirmRemove(true);
       else setConfirmRemove(false);
    }, [idName, formik.values[idName]]);

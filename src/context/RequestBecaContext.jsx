@@ -266,7 +266,11 @@ export default function RequestBecaContextProvider({ children }) {
    const updateStatusBeca = async (folio, status, beca = null, statusCurrent = null) => {
       try {
          let res = CorrectRes;
-         const axiosData = await Axios.post(`/becas/updateStatus/folio/${folio}/status/${status}`, beca);
+         const axiosData = await Axios.post(`/becas/updateStatus/folio/${folio}/status/${status}`, beca, {
+            headers: {
+               "Content-Type": "multipart/form-data" // Asegúrate de establecer el encabezado adecuado
+            }
+         });
          res = axiosData.data.data;
          // setRequestBecas(axiosData.data.data.result);
          // console.log("requestBecas", requestBecas);

@@ -11,7 +11,7 @@ import { useRelationshipContext } from "../../../context/RelationshipContext";
 import { MonetizationOn } from "@mui/icons-material";
 import { formatDatetimeToSQL, numberToText } from "../../../utils/Formats";
 
-function ModalPayment({ obj, open, setOpen, statusCurrent, modalTitle, maxWidth }) {
+function ModalPayment({ obj, open, setOpen, statusCurrent, modalTitle, maxWidth,  }) {
    const { setLoadingAction } = useGlobalContext();
    const { updateStatusBeca } = useRequestBecaContext();
    const { relationships, getRelationshipsSelectIndex } = useRelationshipContext();
@@ -49,6 +49,7 @@ function ModalPayment({ obj, open, setOpen, statusCurrent, modalTitle, maxWidth 
 
    const onSubmit = async (values, { setSubmitting, setErrors, resetForm }) => {
       try {
+         console.log("🚀 ~ onSubmit ~ imgEvidence:", imgEvidence);
          values.img_evidence = imgEvidence.length == 0 ? "" : imgEvidence[0].file;
          // values.paid_at = formatDatetimeToSQL(new Date());
          // return console.log("values", values);
@@ -80,7 +81,7 @@ function ModalPayment({ obj, open, setOpen, statusCurrent, modalTitle, maxWidth 
    };
 
    const validationSchema = Yup.object().shape({
-      relationship_id: Yup.string().trim().required("Parente del Rechazo requerido"),
+      relationship_id: Yup.string().trim().required("Parentesco requerido"),
       paid_to: Yup.string().trim().required("Nombre de quien recibe del Pago 1 requerido"),
       amount_paid: Yup.number().min(0, "Está cantidad no es aceptable. ").required("Monto requerido")
       // img_evidence: Yup.string().trim().required("Retroalimentación del Rechazo requerido"),
@@ -106,9 +107,9 @@ function ModalPayment({ obj, open, setOpen, statusCurrent, modalTitle, maxWidth 
             <Select2Component
                col={5}
                idName={"relationship_id"}
-               label={"Parentezco *"}
+               label={"parentesco *"}
                options={relationships}
-               pluralName={"Parentezcos"}
+               pluralName={"parentescos"}
                refreshSelect={getRelationshipsSelectIndex}
             />
             <InputComponent col={7} idName={"paid_to"} label={"Nombre de quien Recibio el pago *"} placeholder={"Nombre Completo"} textStyleCase={true} />
