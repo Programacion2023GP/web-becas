@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { Axios, useAuthContext } from "./AuthContext";
 import { CorrectRes, ErrorRes } from "../utils/Response";
 import { ROLE_ADMIN, useGlobalContext } from "./GlobalContext";
+import { useParams } from "react-router-dom";
 
 const RequestBecaContext = createContext();
 
@@ -133,6 +134,8 @@ const formDataInitialState = {
 // };
 
 export default function RequestBecaContextProvider({ children }) {
+   const params = useParams();
+
    const { auth, counterOfMenus } = useAuthContext();
    const { counters, setCounters } = useGlobalContext();
    // formDataInitialState.tutor_id = auth.id;
@@ -190,42 +193,50 @@ export default function RequestBecaContextProvider({ children }) {
       }
    };
 
-   const getRequestBecas = async (status = null) => {
+   const getRequestBecas = async (status = null, pago = null) => {
+      console.log("🚀 ~ getRequestBecas ~ status:", status);
+      console.log("🚀 ~ getRequestBecas ~ pago:", pago);
+      console.log("🚀 ~ updateStatusBeca ~ params:", params);
+      let paramCurrent = "";
+      if (Object.keys(params).length > 0) paramCurrent = Object.keys(params)[0];
+      console.log("🚀 ~ getRequestBecas ~ paramCurrent:", paramCurrent);
+      const param = params[paramCurrent];
+
       try {
          await setRequestBecas([]);
          let res = CorrectRes;
          let pathApi = `/becas`;
          // let counterName = "requestAll";
-         if (status != null) {
+         let filterStatus;
+         if (paramCurrent === "status") {
             // console.log("getRequestBecas()->status", status);
-            let filterStatus;
-            if (status == "en-revision") {
+            if (param == "en-revision") {
                // filterStatus = "TERMINADA,EN REVISIÓN";
                filterStatus = "EN REVISIÓN";
                // counterName = "requestInReview";
-            } else if (status == "en-evaluacion") {
+            } else if (param == "en-evaluacion") {
                filterStatus = "EN EVALUACIÓN";
                // counterName = "requestInEvaluation";
-            } else if (status == "aprobadas") {
+            } else if (param == "aprobadas") {
                filterStatus = "APROBADA";
                // counterName = "requestApproved";
-            } else if (status == "pagadas") {
+            } else if (param == "pagadas") {
                filterStatus = "PAGADA";
                // counterName = "requestPayed";
-            } else if (status == "entregadas") {
+            } else if (param == "entregadas") {
                filterStatus = "ENTREGADA";
                // counterName = "requestDelivered";
-            } else if (status == "rechazadas") {
+            } else if (param == "rechazadas") {
                filterStatus = "RECHAZADA";
                // counterName = "requestRejected";
-            } else if (status == "canceladas") {
+            } else if (param == "canceladas") {
                filterStatus = "CANCELADA";
                // counterName = "requestCanceled";
             }
-            pathApi = `/becas/status/${filterStatus}`;
-         }
+         } else if (paramCurrent === "pago") filterStatus = `PAGO ${param}`;
+         pathApi = `/becas/status/${filterStatus}`;
+         // console.log("🚀 ~ getRequestBecas ~ pathApi:", pathApi);
          const axiosData = await Axios.get(pathApi);
-
          // console.log("axiosData", axiosData);
          res = await axiosData.data.data;
          // if (status == "en-evaluacion") res.result = res.result.sort((a, b) => b.score_total - a.score_total);
@@ -263,7 +274,7 @@ export default function RequestBecaContextProvider({ children }) {
       }
    };
 
-   const updateStatusBeca = async (folio, status, beca = null, statusCurrent = null) => {
+   const updateStatusBeca = async (folio, status, beca = null, statusCurrent = null, pagoCurrent = null) => {
       try {
          let res = CorrectRes;
          const axiosData = await Axios.post(`/becas/updateStatus/folio/${folio}/status/${status}`, beca, {
@@ -274,7 +285,7 @@ export default function RequestBecaContextProvider({ children }) {
          res = axiosData.data.data;
          // setRequestBecas(axiosData.data.data.result);
          // console.log("requestBecas", requestBecas);
-         getRequestBecas(statusCurrent);
+         getRequestBecas(statusCurrent ? statusCurrent : pagoCurrent);
 
          return res;
       } catch (error) {

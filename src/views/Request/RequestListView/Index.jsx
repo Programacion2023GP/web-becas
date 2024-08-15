@@ -22,7 +22,7 @@ const RequestListView = () => {
 
    useEffect(() => {
       setLoading(true);
-      getRequestBecas(status);
+      getRequestBecas(status, pago);
       getRelationshipsSelectIndex();
       // console.log("useEffect - formData", requestBecas);
    }, [status, pago]);
@@ -35,7 +35,7 @@ const RequestListView = () => {
                <Typography>
                   {pago ? (
                      <>
-                        <b>REALIZAR PAGO: {pago} </b>
+                        <b>PAGOS RECIBIDOS: {pago} </b>
                      </>
                   ) : (
                      <>

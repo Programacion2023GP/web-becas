@@ -63,6 +63,7 @@ const RequestBecaDT = ({ status = null }) => {
    ];
    const { getIndexByFolio } = useFamilyContext();
    const [folio, setFolio] = useState(0);
+   const [numPago, setNumPago] = useState(0);
 
    const [openDialogPreview, setOpenDialogPreview] = useState(false);
    const [fullScreenDialog, setFullScreenDialog] = useState(false);
@@ -294,18 +295,20 @@ const RequestBecaDT = ({ status = null }) => {
          Toast.Error(error);
       }
    };
-   const handleClickPayed = async (objRequest, numPago) => {
-      console.log("🚀 ~ handleClickPayed ~ objRequest:", objRequest);
+   const handleClickPayed = async (objRequest, numPagoCurrent) => {
+      setNumPago(numPagoCurrent);
       try {
-         mySwal.fire(QuestionAlertConfig(`Realizar el pago ${numPago} de la beca con folio #${objRequest.folio}`, "CONFIRMAR", null, false)).then(async (result) => {
-            if (result.isConfirmed) {
-               setFolio(objRequest.folio);
-               setObjRequest(objRequest);
-               setOpenModalPayment(true);
-               // const axiosResponse = await updateStatusBeca(folio, "PAGADA", null, status);
-               // Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
-            }
-         });
+         mySwal
+            .fire(QuestionAlertConfig(`Realizar el pago ${numPagoCurrent} de la beca con folio #${objRequest.folio}`, "CONFIRMAR", null, false))
+            .then(async (result) => {
+               if (result.isConfirmed) {
+                  setFolio(objRequest.folio);
+                  setObjRequest(objRequest);
+                  setOpenModalPayment(true);
+                  // const axiosResponse = await updateStatusBeca(folio, "PAGADA", null, status);
+                  // Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
+               }
+            });
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -433,7 +436,7 @@ const RequestBecaDT = ({ status = null }) => {
                   </Button>
                </Tooltip>
             )}
-            {includesInArray(auth.permissions.more_permissions, [`Pagar Solicitud`, `todas`]) && ["APROBADA", "PAGANDO"].includes(obj.status) && (
+            {includesInArray(auth.permissions.more_permissions, [`Pagar Solicitud`, `todas`]) && ["APROBADA", "PAGO 1", "PAGO 2", "PAGO 3"].includes(obj.status) && (
                <Tooltip title={`Realizar Pago ${obj.payments + 1} de Folio #${folio}`} placement="top">
                   <Button color="secondary" onClick={() => handleClickPayed(obj, obj.payments + 1)}>
                      <IconCoin />{" "}
@@ -443,15 +446,16 @@ const RequestBecaDT = ({ status = null }) => {
                   </Button>
                </Tooltip>
             )}
-            {includesInArray(auth.permissions.more_permissions, [`Reasignar Solicitud`, `todas`]) && ["APROBADA"].includes(obj.status) && (
-               <Tooltip title={`Reasignar Solicitud con Folio #${folio}`} placement="top">
-                  <Button color="secondary" onClick={() => Toast.Info("AUN NO SE CONFIGURA")}>
-                     <IconReplace />
-                  </Button>
-               </Tooltip>
-            )}
+            {includesInArray(auth.permissions.more_permissions, [`Reasignar Solicitud`, `todas`]) &&
+               ["APROBADA", "PAGO 1", "PAGO 2", "PAGO 3"].includes(obj.status) && (
+                  <Tooltip title={`Reasignar Solicitud con Folio #${folio}`} placement="top">
+                     <Button color="secondary" onClick={() => Toast.Info("AUN NO SE CONFIGURA")}>
+                        <IconReplace />
+                     </Button>
+                  </Tooltip>
+               )}
             {includesInArray(auth.permissions.more_permissions, [`Cancelar Solicitud`, `todas`]) &&
-               !["APROBADA", "PAGADA", "RECHAZADA", "CANCELADA"].includes(obj.status) && (
+               !["APROBADA", "PAGADA", "PAGO 1", "PAGO 2", "PAGO 3", "RECHAZADA", "CANCELADA"].includes(obj.status) && (
                   <Tooltip title={`Cancelar Folio ${folio}`} placement="top">
                      <Button color="error" onClick={() => handleClickCancel(id, obj.folio, folio)}>
                         <IconBan />
@@ -619,7 +623,7 @@ const RequestBecaDT = ({ status = null }) => {
             handleClickAdd={handleClickAdd}
             btnAdd={auth.permissions.create}
             rowEdit={false}
-            refreshTable={() => getRequestBecas(status)}
+            refreshTable={() => getRequestBecas(status ? status : pago)}
             toolBar={auth.more_permissions.includes("Exportar Lista Pública") && status == "aprobadas" ? true : false}
             positionBtnsToolbar="center"
             toolbarContent={toolbarContent}
@@ -687,7 +691,15 @@ const RequestBecaDT = ({ status = null }) => {
          )}
 
          {openModalPayment && (
-            <ModalPayment obj={objRequest} open={openModalPayment} setOpen={setOpenModalPayment} statusCurrent={status} modalTitle="PRIMER PAGO" maxWidth={"md"} />
+            <ModalPayment
+               obj={objRequest}
+               open={openModalPayment}
+               setOpen={setOpenModalPayment}
+               statusCurrent={status}
+               modalTitle={numPago === 1 ? "PRIMER PAGO" : numPago === 2 ? "SEGUNDO PAGO" : numPago === 3 ? "TERCER PAGO" : ""}
+               numPago={numPago}
+               maxWidth={"md"}
+            />
          )}
       </>
    );

@@ -11,7 +11,7 @@ import { useRelationshipContext } from "../../../context/RelationshipContext";
 import { MonetizationOn } from "@mui/icons-material";
 import { formatDatetimeToSQL, numberToText } from "../../../utils/Formats";
 
-function ModalPayment({ obj, open, setOpen, statusCurrent, modalTitle, maxWidth,  }) {
+function ModalPayment({ obj, open, setOpen, statusCurrent, modalTitle, numPago, maxWidth }) {
    const { setLoadingAction } = useGlobalContext();
    const { updateStatusBeca } = useRequestBecaContext();
    const { relationships, getRelationshipsSelectIndex } = useRelationshipContext();
@@ -49,13 +49,13 @@ function ModalPayment({ obj, open, setOpen, statusCurrent, modalTitle, maxWidth,
 
    const onSubmit = async (values, { setSubmitting, setErrors, resetForm }) => {
       try {
-         console.log("🚀 ~ onSubmit ~ imgEvidence:", imgEvidence);
+         // console.log("🚀 ~ onSubmit ~ imgEvidence:", imgEvidence);
          values.img_evidence = imgEvidence.length == 0 ? "" : imgEvidence[0].file;
          // values.paid_at = formatDatetimeToSQL(new Date());
          // return console.log("values", values);
 
          setLoadingAction(true);
-         const axiosResponse = await updateStatusBeca(obj.folio, "PAGANDO", values, statusCurrent);
+         const axiosResponse = await updateStatusBeca(obj.folio, `PAGO ${numPago}`, values, null, numPago);
 
          if (axiosResponse.status_code === 200) {
             resetForm();
@@ -82,13 +82,13 @@ function ModalPayment({ obj, open, setOpen, statusCurrent, modalTitle, maxWidth,
 
    const validationSchema = Yup.object().shape({
       relationship_id: Yup.string().trim().required("Parentesco requerido"),
-      paid_to: Yup.string().trim().required("Nombre de quien recibe del Pago 1 requerido"),
+      paid_to: Yup.string().trim().required(`Nombre de quien recibe el Pago ${numPago} requerido`),
       amount_paid: Yup.number().min(0, "Está cantidad no es aceptable. ").required("Monto requerido")
       // img_evidence: Yup.string().trim().required("Retroalimentación del Rechazo requerido"),
    });
 
    useEffect(() => {
-      console.log("🚀 ~ useEffect ~ formData:", formData);
+      // console.log("🚀 ~ useEffect ~ formData:", formData);
    }, []);
 
    return (
