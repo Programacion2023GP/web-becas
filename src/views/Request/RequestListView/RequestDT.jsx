@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button, ButtonGroup, Dialog, DialogContent, IconButton, Toolbar, Tooltip, Typography } from "@mui/material";
 import { IconX, IconWindowMaximize, IconWindowMinimize, IconThumbUpFilled, IconCoin } from "@tabler/icons-react";
 
@@ -16,7 +16,7 @@ import { useAuthContext } from "../../../context/AuthContext";
 import { IconCircleCheckFilled } from "@tabler/icons-react";
 import { IconCircleXFilled } from "@tabler/icons-react";
 import { Box } from "@mui/system";
-import { getCommunityById } from "../../../components/Form/FormikComponents";
+import { DividerComponent, getCommunityById } from "../../../components/Form/FormikComponents";
 import { useFamilyContext } from "../../../context/FamilyContext";
 import html2pdf from "html2pdf.js";
 import RequestReportPDF from "./RequestReportPDF";
@@ -40,7 +40,8 @@ const RequestBecaDT = ({ status = null }) => {
       deleteRequestBeca,
       setTextBtnSumbit,
       setFormTitle,
-      updateStatusBeca
+      updateStatusBeca,
+      getPaymentsByBeca
    } = useRequestBecaContext();
    const globalFilterFields = [
       "folio",
@@ -92,6 +93,8 @@ const RequestBecaDT = ({ status = null }) => {
    const [openModalReject, setOpenModalReject] = useState(false);
    const [openModalPayment, setOpenModalPayment] = useState(false);
    const [objRequest, setObjRequest] = useState(null);
+
+   const [targetSection, setTargetSection] = useState(null);
 
    const downloadPDF = async (elementID) => {
       setLoadingAction(true);
@@ -247,13 +250,17 @@ const RequestBecaDT = ({ status = null }) => {
    const handleClickView = async (obj) => {
       try {
          setLoadingAction(true);
+         setTargetSection("sectionRequest");
          // return console.log(obj);
          const community = await getCommunityById(obj.community_id);
          const school_community = await getCommunityById(obj.school_community_id);
          const familyData = await getIndexByFolio(obj.folio);
+         const paymentsRequest = await getPaymentsByBeca(obj.beca_id);
+         const paymentDetails = paymentsRequest.result.paymentDetails;
          obj.community = community;
          obj.school_community = school_community;
          obj.families = familyData.result.families;
+         obj.paymentDetails = paymentDetails;
          setObjReport(obj);
          setOpenDialogPreview(true);
          setLoadingAction(false);
@@ -644,6 +651,18 @@ const RequestBecaDT = ({ status = null }) => {
                      </IconButton>
                   </Tooltip>
                )} */}
+                  <div style={{ width: "100%" }}>
+                     <Button color="secondary" sx={{ mr: 2 }} onClick={() => setTargetSection("sectionRequest")}>
+                        Ir a Solicitud
+                     </Button>
+                     <Button color="secondary" sx={{ mr: 2 }} onClick={() => setTargetSection("sectionDocs")}>
+                        Ir a Documentos
+                     </Button>
+                     <Button color="secondary" sx={{ mr: 2 }} onClick={() => setTargetSection("sectionPayments")}>
+                        Ir a Pagos
+                     </Button>
+                  </div>
+
                   <Tooltip title={`Imprimir Reporte`} placement="top">
                      <IconButton color="inherit" onClick={() => printContent("reportPaper")}>
                         <IconPrinter />
@@ -673,7 +692,7 @@ const RequestBecaDT = ({ status = null }) => {
                         width: "95%"
                      }}
                   >
-                     <RequestReportPDF obj={objReport} />
+                     <RequestReportPDF obj={objReport} targetSection={targetSection} />
                   </Box>
                </DialogContent>
                {/* <DialogActions>

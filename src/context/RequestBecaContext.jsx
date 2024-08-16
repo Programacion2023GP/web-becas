@@ -194,12 +194,12 @@ export default function RequestBecaContextProvider({ children }) {
    };
 
    const getRequestBecas = async (status = null, pago = null) => {
-      console.log("🚀 ~ getRequestBecas ~ status:", status);
-      console.log("🚀 ~ getRequestBecas ~ pago:", pago);
-      console.log("🚀 ~ updateStatusBeca ~ params:", params);
+      // console.log("🚀 ~ getRequestBecas ~ status:", status);
+      // console.log("🚀 ~ getRequestBecas ~ pago:", pago);
+      // console.log("🚀 ~ updateStatusBeca ~ params:", params);
       let paramCurrent = "";
       if (Object.keys(params).length > 0) paramCurrent = Object.keys(params)[0];
-      console.log("🚀 ~ getRequestBecas ~ paramCurrent:", paramCurrent);
+      // console.log("🚀 ~ getRequestBecas ~ paramCurrent:", paramCurrent);
       const param = params[paramCurrent];
 
       try {
@@ -304,6 +304,25 @@ export default function RequestBecaContextProvider({ children }) {
          // console.log("getRequestBecasByFolio()->res", res.result.requestBecas);
          setRequestBeca(res.result.requestBecas);
          setFormData(res.result.requestBecas);
+         // console.log("requestBecas", requestBecas);
+
+         return res;
+      } catch (error) {
+         const res = ErrorRes;
+         console.log(error);
+         res.message = error;
+         res.alert_text = error;
+      }
+   };
+
+   const getPaymentsByBeca = async (id) => {
+      try {
+         const res = CorrectRes;
+         const axiosData = await Axios.get(`/beca_payment_details/beca_id/${id}`);
+         res.result.paymentDetails = axiosData.data.data.result;
+         // console.log("getRequestBecasByFolio()->res", res.result.requestBecas);
+         // setRequestBeca(res.result.requestBecas);
+         // setFormData(res.result.requestBecas);
          // console.log("requestBecas", requestBecas);
 
          return res;
@@ -480,7 +499,8 @@ export default function RequestBecaContextProvider({ children }) {
             setRequestBecaApproved,
             requestBecasApproved,
             setRequestBecasApproved,
-            getRequestApproved
+            getRequestApproved,
+            getPaymentsByBeca
          }}
       >
          {children}
