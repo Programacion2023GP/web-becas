@@ -55,8 +55,10 @@ const RequestBecaView = () => {
    const [isTutor, setIsTutor] = useState(false); // es true cuando el tutor no es el padre ni la madre
    const [haveSecondRef, setHaveSecondRef] = useState(false); // es true cuando el tutor no es el padre ni la madre
    const [imgTutorIne, setImgTutorIne] = useState([]);
+   const [imgTutorIneBack, setImgTutorIneBack] = useState([]);
    const [imgTutorPowerLetter, setImgTutorPowerLetter] = useState([]);
    const [imgSecondRef, setImgSecondRef] = useState([]);
+   const [imgSecondRefBack, setImgSecondRefBack] = useState([]);
    const [imgProofAddress, setImgProofAddress] = useState([]);
    const [imgCurp, setImgCurp] = useState([]);
    const [imgBirthCertificate, setImgBirthCertificate] = useState([]);
@@ -71,12 +73,26 @@ const RequestBecaView = () => {
    const dataFileInputsFormik9 = [
       {
          idName: "b7_img_tutor_ine",
-         label: "Foto INE del Tutor *",
+         label: "Foto INE FRONTAL del Tutor *",
          filePreviews: imgTutorIne,
          setFilePreviews: setImgTutorIne,
          fieldApproved: "b7_approved_tutor_ine",
          fieldComments: "b7_comments_tutor_ine",
-         name: "INE del tutor",
+         name: "INE FRONTAL del tutor",
+         isTutor: false,
+         haveSecondRef: false,
+         infoDivider: {
+            title: "DOCUMENTOS DEL TUTOR"
+         }
+      },
+      {
+         idName: "b7_img_tutor_ine_back",
+         label: "Foto INE TRASERA del Tutor *",
+         filePreviews: imgTutorIneBack,
+         setFilePreviews: setImgTutorIneBack,
+         fieldApproved: "b7_approved_tutor_ine_back",
+         fieldComments: "b7_comments_tutor_ine_back",
+         name: "INE TRASERA del tutor",
          isTutor: false,
          haveSecondRef: false,
          infoDivider: {
@@ -99,12 +115,26 @@ const RequestBecaView = () => {
       },
       {
          idName: "b7_img_second_ref",
-         label: "Foto INE del Familiar Autorizado (2da Opción) *",
+         label: "Foto INE FRONTAL del Familiar Autorizado (2da Opción) *",
          filePreviews: imgSecondRef,
          setFilePreviews: setImgSecondRef,
          fieldApproved: "b7_approved_second_ref",
          fieldComments: "b7_comments_second_ref",
-         name: "INE del Familiar Autorizado (2da Opción)",
+         name: "INE FRONTAL del Familiar Autorizado (2da Opción)",
+         isTutor: false,
+         haveSecondRef: haveSecondRef ? true : null,
+         infoDivider: {
+            title: "DOCUMENTO DEL REPRESENTATE (2da Opción)"
+         }
+      },
+      {
+         idName: "b7_img_second_ref_back",
+         label: "Foto INE TRASERA del Familiar Autorizado (2da Opción) *",
+         filePreviews: imgSecondRefBack,
+         setFilePreviews: setImgSecondRefBack,
+         fieldApproved: "b7_approved_second_ref_back",
+         fieldComments: "b7_comments_second_ref_back",
+         name: "INE TRASERA del Familiar Autorizado (2da Opción)",
          isTutor: false,
          haveSecondRef: haveSecondRef ? true : null,
          infoDivider: {
@@ -615,16 +645,22 @@ const RequestBecaView = () => {
          // console.log("🚀 ~ onSubmit9 ~ formData:", formData);
 
          values.b7_img_tutor_ine = imgTutorIne.length == 0 ? "" : imgTutorIne[0].file;
+         values.b7_img_tutor_ine_back = imgTutorIneBack.length == 0 ? "" : imgTutorIneBack[0].file;
          if (isTutor) values.b7_img_tutor_power_letter = imgTutorPowerLetter.length == 0 ? "" : imgTutorPowerLetter[0].file;
-         if (haveSecondRef) values.b7_img_second_ref = imgSecondRef.length == 0 ? "" : imgSecondRef[0].file;
+         if (haveSecondRef) {
+            values.b7_img_second_ref = imgSecondRef.length == 0 ? "" : imgSecondRef[0].file;
+            values.b7_img_second_ref_back = imgSecondRefBack.length == 0 ? "" : imgSecondRefBack[0].file;
+         }
          values.b7_img_proof_address = imgProofAddress.length == 0 ? "" : imgProofAddress[0].file;
          values.b7_img_curp = imgCurp.length == 0 ? "" : imgCurp[0].file;
          values.b7_img_birth_certificate = imgBirthCertificate.length == 0 ? "" : imgBirthCertificate[0].file;
          values.b7_img_academic_transcript = imgAcademicTranscript.length == 0 ? "" : imgAcademicTranscript[0].file;
 
-         if (!validateImageRequired(values.b7_img_tutor_ine, "La foto de la INE es requerida")) return;
+         if (!validateImageRequired(values.b7_img_tutor_ine, "La foto de la INE FRONTAL es requerida")) return;
+         if (!validateImageRequired(values.b7_img_tutor_ine_back, "La foto de la INE TRASERA es requerida")) return;
          if (isTutor && !validateImageRequired(values.b7_img_tutor_power_letter, "La foto del Documento Extra por tutoría es requerida")) return;
-         if (haveSecondRef && !validateImageRequired(values.b7_img_second_ref, "La foto de la INE 2da Referencia es requerida")) return;
+         if (haveSecondRef && !validateImageRequired(values.b7_img_second_ref, "La foto de la INE FRONTAL 2da Referencia es requerida")) return;
+         if (haveSecondRef && !validateImageRequired(values.b7_img_second_ref_back, "La foto de la INE TRASERA 2da Referencia es requerida")) return;
          if (!validateImageRequired(values.b7_img_proof_address, "La foto del Comprobante de Domicilio es requerida")) return;
          if (!validateImageRequired(values.b7_img_curp, "La foto de la CURP es requerida")) return;
          if (!validateImageRequired(values.b7_img_birth_certificate, "La foto del Acta de Nacimiento es requerida")) return;
@@ -767,12 +803,21 @@ const RequestBecaView = () => {
                   ["TERMINADA", "EN REVISIÓN"].includes(formData.status) &&
                   Yup.bool().required("Aprueba o Desaprueba el documento."),
                // b7_comments_tutor_ine: "",
+               b7_approved_tutor_ine_back:
+                  (auth.permissions.more_permissions.includes("Validar Documentos") || auth.permissions.more_permissions.includes(`todas`)) &&
+                  ["TERMINADA", "EN REVISIÓN"].includes(formData.status) &&
+                  Yup.bool().required("Aprueba o Desaprueba el documento."),
+               // b7_comments_tutor_ine_back: "",
                // b7_img_tutor_power_letter: isTutor && Yup.string().required("Carta Poder requerida"),
                b7_approved_tutor_power_letter:
                   (auth.permissions.more_permissions.includes("Validar Documentos") || auth.permissions.more_permissions.includes(`todas`)) &&
                   ["TERMINADA", "EN REVISIÓN"].includes(formData.status) &&
                   Yup.bool().required("Aprueba o Desaprueba el documento."),
                b7_approved_second_ref:
+                  (auth.permissions.more_permissions.includes("Validar Documentos") || auth.permissions.more_permissions.includes(`todas`)) &&
+                  ["TERMINADA", "EN REVISIÓN"].includes(formData.status) &&
+                  Yup.bool().required("Aprueba o Desaprueba el documento."),
+               b7_approved_second_ref_back:
                   (auth.permissions.more_permissions.includes("Validar Documentos") || auth.permissions.more_permissions.includes(`todas`)) &&
                   ["TERMINADA", "EN REVISIÓN"].includes(formData.status) &&
                   Yup.bool().required("Aprueba o Desaprueba el documento."),
@@ -837,9 +882,13 @@ const RequestBecaView = () => {
             setHaveSecondRef(ajaxResponse.result.requestBecas.second_ref != "NULL" ? true : false);
             // console.log("holaa soy pagina9 - siTutor:", isTutor, ajaxResponse.result.requestBecas.tutor_relationship_id);
             setObjImg(ajaxResponse.result.requestBecas.b7_img_tutor_ine, setImgTutorIne);
+            setObjImg(ajaxResponse.result.requestBecas.b7_img_tutor_ine_back, setImgTutorIneBack);
             if (ajaxResponse.result.requestBecas.tutor_relationship_id > 2)
                setObjImg(ajaxResponse.result.requestBecas.b7_img_tutor_power_letter, setImgTutorPowerLetter);
-            if (ajaxResponse.result.requestBecas.second_ref != "NULL") setObjImg(ajaxResponse.result.requestBecas.b7_img_second_ref, setImgSecondRef);
+            if (ajaxResponse.result.requestBecas.second_ref != "NULL") {
+               setObjImg(ajaxResponse.result.requestBecas.b7_img_second_ref, setImgSecondRef);
+               setObjImg(ajaxResponse.result.requestBecas.b7_img_second_ref_back, setImgSecondRefBack);
+            }
             setObjImg(ajaxResponse.result.requestBecas.b7_img_proof_address, setImgProofAddress);
             setObjImg(ajaxResponse.result.requestBecas.b7_img_curp, setImgCurp);
             setObjImg(ajaxResponse.result.requestBecas.b7_img_birth_certificate, setImgBirthCertificate);
@@ -1019,7 +1068,7 @@ const RequestBecaView = () => {
                                  </FormikComponent>
                                  {showModalRemember &&
                                     sAlert.Info(
-                                       "Recuerda que únicamente la persona que sea registrada como tutor podrá cobrar la beca en caso de salir seleccionada y un familiar si asi se ha autorizado en esta sección"
+                                       "Recuerda que únicamente la persona que sea registrada como tutor podrá cobrar la beca en caso de salir seleccionada y un familiar si así se ha autorizado en esta sección"
                                     )}
                               </>
                            )}

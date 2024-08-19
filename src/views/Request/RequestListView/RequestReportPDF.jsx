@@ -449,7 +449,17 @@ export default function RequestReportPDF({ obj, targetSection = "sectionRequest"
       {
          idName: "b7_img_tutor_ine",
          url: obj.b7_img_tutor_ine,
-         name: "INE del tutor",
+         name: "INE FRONTAL del tutor",
+         isTutor: false,
+         haveSecondRef: false,
+         infoDivider: {
+            title: "DOCUMENTOS DEL TUTOR"
+         }
+      },
+      {
+         idName: "b7_img_tutor_ine_back",
+         url: obj.b7_img_tutor_ine_back,
+         name: "INE TRASERA del tutor",
          isTutor: false,
          haveSecondRef: false,
          infoDivider: {
@@ -469,9 +479,19 @@ export default function RequestReportPDF({ obj, targetSection = "sectionRequest"
       {
          idName: "b7_img_second_ref",
          url: obj.b7_img_second_ref,
-         name: "INE del Familiar Autorizado (2da Opción)",
+         name: "INE FRONTAL del Familiar Autorizado (2da Opción)",
          isTutor: false,
          haveSecondRef: obj.second_ref == "Familiar" ? true : null,
+         infoDivider: {
+            title: "DOCUMENTO DEL FAMILIAR AUTORIZADO (2da Opción)"
+         }
+      },
+      {
+         idName: "b7_img_second_ref_back",
+         url: obj.b7_img_second_ref_back,
+         name: "INE TRASERA del Familiar Autorizado (2da Opción)",
+         isTutor: false,
+         haveSecondRef: obj.second_ref_back == "Familiar" ? true : null,
          infoDivider: {
             title: "DOCUMENTO DEL FAMILIAR AUTORIZADO (2da Opción)"
          }

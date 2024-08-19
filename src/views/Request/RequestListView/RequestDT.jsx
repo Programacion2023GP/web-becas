@@ -248,6 +248,7 @@ const RequestBecaDT = ({ status = null }) => {
    const mySwal = withReactContent(Swal);
 
    const handleClickView = async (obj) => {
+      // console.log("🚀 ~ handleClickView ~ obj:", obj)
       try {
          setLoadingAction(true);
          setTargetSection("sectionRequest");
@@ -255,7 +256,7 @@ const RequestBecaDT = ({ status = null }) => {
          const community = await getCommunityById(obj.community_id);
          const school_community = await getCommunityById(obj.school_community_id);
          const familyData = await getIndexByFolio(obj.folio);
-         const paymentsRequest = await getPaymentsByBeca(obj.beca_id);
+         const paymentsRequest = await getPaymentsByBeca(obj.id);
          const paymentDetails = paymentsRequest.result.paymentDetails;
          obj.community = community;
          obj.school_community = school_community;
