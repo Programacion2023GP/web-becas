@@ -300,7 +300,7 @@ export default function RequestBecaContextProvider({ children }) {
          res.message = error;
          res.alert_text = error;
       }
-   };
+   }; 
 
    const getRequestBecasByFolio = async (folio) => {
       try {

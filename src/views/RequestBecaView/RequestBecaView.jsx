@@ -424,7 +424,7 @@ const RequestBecaView = () => {
             sAlert.Success(
                `Tu solicitud ha sido creada, termina de llenar el formulario para que se considere tu solicitud. Tu folio es: 
             <h1>${folio}</h1> 
-            <i>Puedes ver tus solicitudes guardadas y su estatus en la sección de "Mis Solicitudes" en tú menú lateral</i>`,
+            <i>Puedes ver tus solicitudes guardadas y su estatus en la sección de "Mis Solicitudes" en tu menú lateral</i>`,
                null
             );
             setStepFailed(-1);
@@ -1024,12 +1024,12 @@ const RequestBecaView = () => {
                         <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", p: 5 }}>
                            <IconSended />
                            <Typography sx={{ my: 5 }} variant={"h3"} textAlign={"center"}>
-                              Tú solicitud ha sido enviada, espera nuestra respuesta:
+                              Tu solicitud ha sido enviada, espera nuestra respuesta:
                               <Typography sx={{ mt: 2, mb: 5, fontWeight: "bolder" }} variant={"h1"} component={"p"} textAlign={"center"}>
                                  No. Folio: {folio}
                               </Typography>
                               <Typography sx={{ fontWeight: "bolder" }}>
-                                 recuerda, puedes ver el estatus de tus solicitudes yendo a "Mis Solicitudes" en tú menú lateral
+                                 recuerda, puedes ver el estatus de tus solicitudes yendo a "Mis Solicitudes" en tu menú lateral
                               </Typography>
                            </Typography>
                            <Button onClick={RedirectMyRequests} variant="contained" fullWidth>
