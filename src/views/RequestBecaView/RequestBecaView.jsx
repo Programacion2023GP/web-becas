@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useRef, useState } from "react";
-import { useGlobalContext } from "../../context/GlobalContext";
+import { colorPrimaryDark, useGlobalContext } from "../../context/GlobalContext";
 import { Box } from "@mui/system";
 import { Button, Step, StepLabel, Stepper, Typography } from "@mui/material";
 import * as Yup from "yup";
@@ -30,6 +30,7 @@ import InputsFormik6 from "./InputsFormik6";
 import InputsFormik7 from "./InputsFormik7";
 import InputsFormik8 from "./InputsFormik8";
 import InputsFormik9 from "./InputsFormik9";
+import { isMobile } from "react-device-detect";
 // import { useNavigateTo } from "../../../hooks/useRedirectTo";
 
 const RequestBecaView = () => {
@@ -67,6 +68,7 @@ const RequestBecaView = () => {
    const [animate, setAnimate] = useState(false);
    const pageActiveRef = useRef(null);
    const [showModalRemember, setShowModalRemember] = useState(false);
+   const [showModalRememberTakePhoto, setShowModalRememberTakePhoto] = useState(false);
 
    const inputRefSchoolId = useRef(null);
    const formik = useRef(null);
@@ -96,7 +98,7 @@ const RequestBecaView = () => {
          isTutor: false,
          haveSecondRef: false,
          infoDivider: {
-            title: "DOCUMENTOS DEL TUTOR"
+            title: ""
          }
       },
       {
@@ -422,8 +424,8 @@ const RequestBecaView = () => {
             // console.log("axiosResponse", axiosResponse);
             folio = axiosResponse.result.folio;
             sAlert.Success(
-               `Tu solicitud ha sido creada, termina de llenar el formulario para que se considere tu solicitud. Tu folio es: 
-            <h1>${folio}</h1> 
+               `Tu solicitud ha sido creada, termina de llenar el formulario para que se considere tu solicitud. Tu folio es:
+            <h1>${folio}</h1>
             <i>Puedes ver tus solicitudes guardadas y su estatus en la sección de "Mis Solicitudes" en tu menú lateral</i>`,
                null
             );
@@ -630,6 +632,12 @@ const RequestBecaView = () => {
          setIsTutor(values.tutor_relationship_id > 2 ? true : false);
          setHaveSecondRef(values.second_ref != "NULL" ? true : false);
          // if (!checkAdd) setOpenDialog(false);
+         // console.log("mostrar alerta take foto", showModalRememberTakePhoto);
+
+         setShowModalRememberTakePhoto(true);
+         setTimeout(() => {
+            setShowModalRememberTakePhoto(false);
+         }, 500);
       } catch (error) {
          console.error(error);
          setErrors({ submit: error.message });
@@ -644,6 +652,8 @@ const RequestBecaView = () => {
          // console.log("🚀 ~ onSubmit9 ~ values:", values);
          // console.log("🚀 ~ onSubmit9 ~ formData:", formData);
 
+         // console.log("🚀 ~ onSubmit9 ~ isMobile:", isMobile);
+         // if (!isMobile) {
          values.b7_img_tutor_ine = imgTutorIne.length == 0 ? "" : imgTutorIne[0].file;
          values.b7_img_tutor_ine_back = imgTutorIneBack.length == 0 ? "" : imgTutorIneBack[0].file;
          if (isTutor) values.b7_img_tutor_power_letter = imgTutorPowerLetter.length == 0 ? "" : imgTutorPowerLetter[0].file;
@@ -655,6 +665,7 @@ const RequestBecaView = () => {
          values.b7_img_curp = imgCurp.length == 0 ? "" : imgCurp[0].file;
          values.b7_img_birth_certificate = imgBirthCertificate.length == 0 ? "" : imgBirthCertificate[0].file;
          values.b7_img_academic_transcript = imgAcademicTranscript.length == 0 ? "" : imgAcademicTranscript[0].file;
+         // }
 
          if (!validateImageRequired(values.b7_img_tutor_ine, "La foto de la INE FRONTAL es requerida")) return;
          if (!validateImageRequired(values.b7_img_tutor_ine_back, "La foto de la INE TRASERA es requerida")) return;
@@ -954,6 +965,8 @@ const RequestBecaView = () => {
    useEffect(() => {
       if (showModalRemember && pagina == 1) setShowModalRemember(true);
       else setShowModalRemember(false);
+      if (showModalRememberTakePhoto && pagina == 9) setShowModalRememberTakePhoto(true);
+      // else setShowModalRememberTakePhoto(false);
    }, [pagina]);
 
    return (
@@ -1213,27 +1226,33 @@ const RequestBecaView = () => {
                               </FormikComponent>
                            )}
                            {activeStep + 1 == 9 && (
-                              <FormikComponent
-                                 key={"formikComponent9"}
-                                 initialValues={formData}
-                                 validationSchema={validationSchemas(activeStep + 1)}
-                                 onSubmit={onSubmit9}
-                                 formikRef={formik}
-                                 activeStep={activeStep}
-                                 setStepFailed={setStepFailed}
-                                 showActionButtons={false}
-                              >
-                                 <InputsFormik9
-                                    folio={folio}
-                                    pagina={pagina}
+                              <>
+                                 <FormikComponent
+                                    key={"formikComponent9"}
+                                    initialValues={formData}
+                                    validationSchema={validationSchemas(activeStep + 1)}
+                                    onSubmit={onSubmit9}
+                                    formikRef={formik}
                                     activeStep={activeStep}
                                     setStepFailed={setStepFailed}
-                                    ButtonsBeforeOrNext={ButtonsBeforeOrNext}
-                                    isTutor={isTutor}
-                                    haveSecondRef={haveSecondRef}
-                                    dataFileInputs={dataFileInputsFormik9}
-                                 />
-                              </FormikComponent>
+                                    showActionButtons={false}
+                                 >
+                                    <InputsFormik9
+                                       folio={folio}
+                                       pagina={pagina}
+                                       activeStep={activeStep}
+                                       setStepFailed={setStepFailed}
+                                       ButtonsBeforeOrNext={ButtonsBeforeOrNext}
+                                       isTutor={isTutor}
+                                       haveSecondRef={haveSecondRef}
+                                       dataFileInputs={dataFileInputsFormik9}
+                                    />
+                                 </FormikComponent>
+                                 {showModalRememberTakePhoto &&
+                                    sAlert.Info(
+                                       `Si deseas tomar fotos directamente de esta página, utilice el botón de <span style="color:${colorPrimaryDark}">ABRIR CÁMARA</span> , NO tomes foto desde la selección de archivos.`
+                                    )}
+                              </>
                            )}
                         </Box>
                      </Fragment>

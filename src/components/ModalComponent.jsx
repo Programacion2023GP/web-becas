@@ -13,14 +13,26 @@ import { useAuthContext } from "../context/AuthContext";
 import { gpcDark, gpcLight, useGlobalContext } from "../context/GlobalContext";
 import { height } from "@mui/system";
 import { LoadingButton } from "@mui/lab";
+import { isMobile } from "react-device-detect";
 
 const Transition = forwardRef(function Transition(props, ref) {
    return <Slide direction="down" ref={ref} {...props} />;
 });
-export const ModalComponent = ({ children, open, setOpen, modalTitle = "", maxWidth = "lg", height, dialogActions = null, formikRef, textBtnSubmit }) => {
+export const ModalComponent = ({
+   children,
+   open,
+   setOpen,
+   modalTitle = "",
+   maxWidth = "lg",
+   height,
+   dialogActions = null,
+   formikRef,
+   textBtnSubmit,
+   fullScreen = isMobile ? true : false
+}) => {
    const { auth } = useAuthContext();
    const mySwal = withReactContent(Swal);
-   const [fullScreenDialog, setFullScreenDialog] = useState(false);
+   const [fullScreenDialog, setFullScreenDialog] = useState(fullScreen);
    const { setLoadingAction } = useGlobalContext();
 
    const handleClose = () => {

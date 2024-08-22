@@ -9,6 +9,7 @@ import { useAuthContext } from "../../context/AuthContext";
 import { IconCircleCheck, IconCircleX } from "@tabler/icons";
 import Toast from "../../utils/Toast";
 import { useNavigate, useParams } from "react-router-dom";
+import { isMobile } from "react-device-detect";
 
 const ButtonsApprovedDocument = ({ auth, formik, setFieldValue, fieldApproved, fieldComments, name = "documento", approved = true, accion }) => {
    const iconSize = 65;
@@ -144,9 +145,24 @@ const InputsFormik9 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
       }
    };
 
+   // const handleOnChangeFileInputMobile = async (event, dataInput) => {
+   //    const file = event.target.files[0];
+   //    if (file.size >= fileSizeMax) {
+   //       if (filePreviews.length == 0) setConfirmRemove(true);
+   //       return Toast.Info(`el archivo es demasiado pesado, intenta con un archivo menor a ${fileSizeMax}MB`);
+   //    }
+   //    if (!file.type.includes("image")) {
+   //       if (filePreviews.length == 0) setConfirmRemove(true);
+   //       return Toast.Info("el tipo de archivo no es una imagen.");
+   //    }
+   //    await dataInput.setFilePreviews(file);
+   //    await formik.setFieldValue(dataInput.idName, file);
+   // };
+
    useEffect(() => {
       // console.log(formik.values.b6_finished);
       // console.log("dataFileInputs", dataFileInputs);
+      // console.log("formik.values", formik.values);
       // console.log("accion", accion);
       // console.log("[undefined, 'revision'].includes(accion)", ["revision"].includes(accion));
    }, []);
@@ -187,7 +203,7 @@ const InputsFormik9 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
                                  setFilePreviews={dataInput.setFilePreviews}
                                  multiple={false}
                                  accept={"image/*"}
-                                 fileSizeMax={3}
+                                 fileSizeMax={5}
                                  showBtnCamera={true}
                                  disabled={
                                     auth.id == formik.values.user_id
