@@ -46,6 +46,8 @@ import withReactContent from "sweetalert2-react-content";
 import { QuestionAlertConfig } from "../../utils/sAlert";
 import { ModalComponent } from "../ModalComponent";
 import { IconCameraUp } from "@tabler/icons-react";
+import { isMobile } from "react-device-detect";
+import Webcam from "react-webcam";
 
 const OutlineInputStyle = styled(OutlinedInput, { shouldForwardProp })(({ theme }) => ({
    // width: 434,
@@ -1644,7 +1646,7 @@ export const setObjImg = (img, setImg) => {
 
 /**
  * const [imgFile, setImgFile] = useState([]);
- * 
+ *
  * <FileInputComponent
       idName="img_path"
       label="Foto de la marca"
@@ -1683,16 +1685,18 @@ export const FileInputComponent = ({
    maxImages = -1,
    accept = null,
    fileSizeMax = 1, // en MB
+   showBtnCamera = false,
    ...props
 }) => {
    const formik = useFormikContext();
    const isError = formik.touched[idName] && formik.errors[idName];
-
+   const inputFileRefMobile = useRef(null);
    const [uploadProgress, setUploadProgress] = useState(0);
    // const [filePreviews, setFilePreviews] = useState([]);
    const [ttShow, setTtShow] = useState("");
    const [fileSizeExceeded, setFileSizeExceeded] = useState(fileSizeMax * MB);
-   const [confirmRemove, setConfirmRemove] = useState(false);
+   const [confirmRemove, setConfirmRemove] = useState(true);
+   const [fileInfo, setFileInfo] = useState(null);
 
    const validationQuantityImages = () => {
       if (multiple) {
@@ -1721,49 +1725,98 @@ export const FileInputComponent = ({
          setFilePreviews([]);
          // if (multiple) if (!validationQuantityImages()) return
          // Puedes manejar los archivos aceptados aquí y mostrar las vistas previas.
-         acceptedFiles.forEach((file) => {
-            handleSetFile(file);
-         });
+
+         if (acceptedFiles && acceptedFiles.length > 0) {
+            acceptedFiles.forEach((file) => {
+               // console.log("🚀 ~ acceptedFiles.forEach ~ file:", file);
+               handleSetFile(file);
+            });
+         } else {
+            console.log("No hay archivos en el acceptedFiles", acceptedFiles);
+            Toast.Error("No hay archivos en el acceptedFiles");
+         }
       },
       [confirmRemove, setFilePreviews]
    );
-   const handleSetFile = (file) => {
+   const readFileAsDataURL = (file) => {
+      return new Promise((resolve, reject) => {
+         const reader = new FileReader();
+         reader.onload = () => resolve(reader.result);
+         reader.onerror = (error) => reject(error);
+         reader.readAsDataURL(file);
+      });
+   };
+   const handleSetFile = async (file) => {
+      // alert("entre al handleSetFile()");
       // console.log("🚀 ~ handleSetFile ~ file:", file);
-      const reader = new FileReader();
 
       if (file.size >= fileSizeExceeded) {
+         alert("peso excedido");
          if (filePreviews.length == 0) setConfirmRemove(true);
-         return Toast.Info("el archivo es demasiado pesado, intenta con un archivo menor a 1MB");
+         return Toast.Info(`el archivo es demasiado pesado, intenta con un archivo menor a ${fileSizeMax}MB`);
       }
       if (!file.type.includes("image")) {
          if (filePreviews.length == 0) setConfirmRemove(true);
          return Toast.Info("el tipo de archivo no es una imagen.");
       }
+      // alert("handleSetFile() ~ pase los filtros");
 
-      reader.onload = async (e) => {
+      try {
+         const dataURL = await readFileAsDataURL(file);
          const preview = {
             file,
-            dataURL: reader.result
+            dataURL
          };
-         // if (multiple) if (!validationQuantityImages) return;
+         // console.log("🚀 ~ handleSetFile ~ preview:", preview);
+         setFilePreviews([preview]);
+         filePreviews = [preview];
+         // console.log("🚀 ~ handleSetFile ~ filePreviews:", filePreviews);
+         // alert(`handleSetFile() ~ filePreviews[0].dataURL: ${filePreviews[0].dataURL}`);
+      } catch (error) {
+         console.error("Error al leer el archivo:", error);
+         Toast.Error(`Error al leer el archivo: ${error}`);
+      }
+      // reader.onload = async (e) => {
+      //    const preview = {
+      //       file,
+      //       dataURL: reader.result
+      //    };
+      //    console.log("🚀 ~ reader.onload= ~ preview:", preview);
+      //    // if (multiple) if (!validationQuantityImages) return;
 
-         // if (multiple) await setFilePreviews((prevPreviews) => [...prevPreviews, preview]);
-         // else
-         await setFilePreviews([preview]);
-         // console.log(filePreviews);
-      };
+      //    // if (multiple) await setFilePreviews((prevPreviews) => [...prevPreviews, preview]);
+      //    // else
+      //    alert(`handleSetFile() ~ preview: ${preview}`);
+      //    // alert(`handleSetFile() ~ preview.file: ${preview.file}`);
+      //    alert(`handleSetFile() ~ preview.dataURL: ${preview.dataURL}`);
 
-      reader.readAsDataURL(file);
+      //    await setFilePreviews([preview]);
+      //    console.log(filePreviews);
+      //    alert(`handleSetFile() ~ filePreviews[0].dataURL: ${filePreviews[0].dataURL}`);
+      // };
+
+      // reader.readAsDataURL(file);
    };
 
    const handleGetFileCamera = async (file) => {
+      // alert("entre al handleGetFileCamera()");
       await setFilePreviews([]);
       setConfirmRemove(true);
 
       // if (!confirmRemove) return; // Solo permite la carga de archivos si la eliminación fue confirmada
       setConfirmRemove(false); // Resetear la confirmación después de la carga
 
+      // alert("voy al handleSetFile(file)");
       handleSetFile(file);
+   };
+   const handleOnChangeFileInput = (e) => {
+      // console.log("🚀 ~ handleOnChangeFileInput ~ e.target.files:", e.target.files);
+      const file = e.target.files.length > 0 ? e.target.files[0] : null;
+      // console.log("🚀 ~ handleOnChangeFileInput ~ file:", file);
+      if (!file) return;
+      // setFileInfo(file);
+      // console.log("🚀 ~ handleOnChangeFileInput ~ fileInfo:", fileInfo);
+      handleGetFileCamera(file);
    };
 
    const simulateUpload = () => {
@@ -1788,6 +1841,8 @@ export const FileInputComponent = ({
       // setFilePreviews((prevPreviews) => prevPreviews.filter((preview) => preview.file !== fileToRemove));
       mySwal.fire(QuestionAlertConfig(`¿Estas seguro de eliminar la imágen?`, "CONFIRMAR")).then(async (result) => {
          if (result.isConfirmed) {
+            // formik.setValues(idName, null);
+            // inputFileRefMobile.current.value = null;
             await setFilePreviews([]);
             setConfirmRemove(true); // Establecer la confirmación para permitir la carga de nuevos archivos
          }
@@ -1806,9 +1861,53 @@ export const FileInputComponent = ({
       setTtShow("");
    };
 
+   const handleOnChangeFileInputMobile = async (event) => {
+      const file = event.target.files[0];
+      if (file.size >= fileSizeExceeded) {
+         if (filePreviews.length == 0) setConfirmRemove(true);
+         return Toast.Info(`el archivo es demasiado pesado, intenta con un archivo menor a ${fileSizeMax}MB`);
+      }
+      if (!file.type.includes("image")) {
+         if (filePreviews.length == 0) setConfirmRemove(true);
+         return Toast.Info("el tipo de archivo no es una imagen.");
+      }
+      const dataURL = await readFileAsDataURL(file);
+      const preview = {
+         file,
+         dataURL
+      };
+      // console.log("🚀 ~ handleSetFile ~ preview:", preview);
+      await setFilePreviews([preview]);
+      await formik.setFieldValue(idName, file);
+   };
+
    useEffect(() => {
-      // console.log("isError", isError);
+      // console.log("🚀 ~ useEffect ~ filePreviews:", filePreviews);
+      if (filePreviews.length == 0) setConfirmRemove(true);
+      else setConfirmRemove(false);
    }, [idName, formik.values[idName]]);
+
+   const RenderFileComponent = ({ file }) => {
+      console.log("🚀 ~ RenderFileComponent ~ filePreviews:", filePreviews);
+      return (
+         <div>
+            <h3>Detalles del Archivo</h3>
+            <p>
+               <strong>Nombre:</strong> {file.name}
+            </p>
+            <p>
+               <strong>Tamaño:</strong> {(file.size / 1024).toFixed(2)} KB
+            </p>
+            <p>
+               <strong>Tipo:</strong> {file.type}
+            </p>
+            <br />
+            <h3>filePreviews</h3>
+            <strong>dataURL:</strong> {filePreviews[0].dataURL} <br />
+            <strong>file.name:</strong> {filePreviews[0].file.name}
+         </div>
+      );
+   };
 
    return (
       <>
@@ -1828,13 +1927,22 @@ export const FileInputComponent = ({
                      <>
                         <div className={"dropzone-container"}>
                            <div {...getRootProps({ className: color === "red" ? "dropzone-error" : "dropzone" })}>
-                              <input {...getInputProps()} type={confirmRemove ? "file" : "text"} multiple={multiple} accept={accept} disabled={disabled} />
+                              <input
+                                 {...getInputProps()}
+                                 onChange={confirmRemove ? handleOnChangeFileInput : undefined}
+                                 type={confirmRemove ? "file" : "text"}
+                                 // ref={inputFileRefMobile}
+                                 multiple={multiple}
+                                 accept={accept}
+                                 disabled={disabled}
+                              />
+
                               <p style={{ display: filePreviews.length > 0 ? "none" : "block", fontStyle: "italic" }}>
-                                 Arrastra y suelta archivos aquí, o haz clic para seleccionar archivos
+                                 Arrastra y suelta archivos aquí, o haz clic para seleccionar archivos"
                               </p>
 
                               {/* Vista previa de la imagen o PDF */}
-                              <aside className={`file-preview`}>
+                              <aside className={`file-preview`} style={{ paddingBlock: 5 }}>
                                  {filePreviews.map((preview) => (
                                     <div key={preview.file.name} className={"preview-item"}>
                                        {preview.file.name.includes(".pdf") || preview.file.name.includes(".PDF") ? (
@@ -1903,7 +2011,8 @@ export const FileInputComponent = ({
                            </div>
                            <small style={{ marginTop: "-10px", fontStyle: "italic", fontSize: "11px", textAlign: "center" }}>
                               Tamaño maximo del archivo soportado: <b>{fileSizeMax}MB MAX.</b>
-                              <InputCameraComponent getFile={handleGetFileCamera} />
+                              {!disabled && showBtnCamera && <InputCameraComponent getFile={handleGetFileCamera} />}
+                              {/* {fileInfo && filePreviews.length > 0 && <RenderFileComponent file={fileInfo} />} */}
                            </small>
                         </div>
                         <Typography variant="body1" component="label" htmlFor={idName} ml={1}>
@@ -1940,6 +2049,15 @@ FileInputComponent.propTypes = {
 // import { Field } from "formik";
 // import { useDropzone } from "react-dropzone";
 // import React, { useRef, useState, useEffect } from 'react';
+
+// import { useState, useRef, useCallback } from "react";
+// import Webcam from "react-webcam";
+// import { isMobile } from "react-device-detect";
+// import {Box, Button, IconButton} from "@mui/material";
+import SwitchCameraIcon from "@mui/icons-material/Cameraswitch";
+// import FlashOnIcon from "@mui/icons-material/FlashOn";
+// import FlashOffIcon from "@mui/icons-material/FlashOff";
+// import { json } from "react-router-dom";
 //#endregion IMPORTS
 
 export const InputCameraComponent = ({ getFile }) => {
@@ -1948,16 +2066,26 @@ export const InputCameraComponent = ({ getFile }) => {
    const [hasCamera, setHasCamera] = useState(true);
    const [cameraReady, setCameraReady] = useState(false);
    const [openCamera, setOpenCamera] = useState(false);
+   const [facingMode, setFacingMode] = useState("environment"); // Controla la cámara usada (frontal o trasera)
+   const [flash, setFlash] = useState(false);
    const [photo, setPhoto] = useState(null);
 
    useEffect(() => {
       const detectCameraAndStartVideo = async () => {
          try {
-            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            const stream = await navigator.mediaDevices.getUserMedia({
+               video: isMobile
+                  ? {
+                       facingMode: { exact: facingMode }, // Cambia a la cámara trasera
+                       width: { ideal: 1920 }, // Ajusta la resolución
+                       height: { ideal: 1080 }
+                    }
+                  : true
+            });
             videoRef.current.srcObject = stream;
             setHasCamera(true);
          } catch (error) {
-            console.error("Error accessing the camera:", error);
+            console.error("Error al acceder a la camara:", error);
             setHasCamera(false);
          }
       };
@@ -1972,7 +2100,7 @@ export const InputCameraComponent = ({ getFile }) => {
             videoRef.current.srcObject.getTracks().forEach((track) => track.stop());
          }
       };
-   }, [hasCamera]);
+   }, [hasCamera, facingMode]);
 
    const dataURLtoFile = (dataurl, filename) => {
       let arr = dataurl.split(","),
@@ -1994,18 +2122,37 @@ export const InputCameraComponent = ({ getFile }) => {
       const context = canvasRef.current.getContext("2d");
       canvasRef.current.width = width;
       canvasRef.current.height = height;
-      context.drawImage(videoRef.current, 0, 0, width, height);
-      const dataUrl = canvasRef.current.toDataURL("image/png");
-      setPhoto(dataUrl);
-      // if (getDataUrl) return photo;
 
-      // Convert the data URL to a file and pass it to the callback
-      const file = dataURLtoFile(dataUrl, "photo.png");
-      if (getFile) getFile(file);
+      if (flash) {
+         // Simula un flash (se podría mejorar con efectos visuales)
+         setTimeout(() => {
+            context.drawImage(videoRef.current, 0, 0, width, height);
+            const dataUrl = canvasRef.current.toDataURL("image/jpeg", 1.0);
+            setPhoto(dataUrl);
+            const file = dataURLtoFile(dataUrl, "photo.jpeg");
+            if (getFile) getFile(file);
+         }, 100); // Breve retraso para simular el efecto del flash
+      } else {
+         context.drawImage(videoRef.current, 0, 0, width, height);
+         const dataUrl = canvasRef.current.toDataURL("image/jpeg", 1.0);
+         setPhoto(dataUrl);
+         // Convert the data URL to a file and pass it to the callback
+         const file = dataURLtoFile(dataUrl, "photo.jpeg");
+         if (getFile) getFile(file);
+      }
+
       setTimeout(() => {
          setPhoto(null);
          setOpenCamera(false);
-      }, 2000);
+      }, 1500);
+   };
+
+   const switchCamera = () => {
+      setFacingMode((prevMode) => (prevMode === "user" ? "environment" : { exact: "user" }));
+   };
+
+   const toggleFlash = () => {
+      setFlash(!flash);
    };
 
    return (
@@ -2015,12 +2162,25 @@ export const InputCameraComponent = ({ getFile }) => {
                <Button variant="contained" size="small" onClick={() => setOpenCamera(true)}>
                   <IconCameraUp /> &nbsp; Abrir camara
                </Button>
-               <ModalComponent open={openCamera} setOpen={setOpenCamera} modalTitle={"CÁMARA"}>
+               <ModalComponent open={openCamera} setOpen={setOpenCamera} modalTitle={"CÁMARA"} fullScreen={true}>
                   <video ref={videoRef} autoPlay style={{ width: "100%", maxHeight: "75vh", border: `5px ${colorPrimaryMain} solid`, borderRadius: "15px" }} />
-                  <Button variant="contained" size="large" fullWidth onClick={takePhoto} sx={{}}>
-                     <IconCamera />
-                     &nbsp; TOMAR FOTO
-                  </Button>
+                  <Box display="flex" justifyContent="space-around" mt={2}>
+                     {isMobile && (
+                        <Tooltip title={"Cambiar de cámara"}>
+                           <IconButton color="primary" size="large" onClick={switchCamera}>
+                              <SwitchCameraIcon />
+                           </IconButton>
+                        </Tooltip>
+                     )}
+                     <Button variant="contained" size="large" fullWidth onClick={takePhoto}>
+                        TOMAR FOTO
+                     </Button>
+                     {/* <Tooltip title={`${!flash ? "Activar" : "Desactivar"} Flash`}>
+                        <IconButton color="primary" size="large" onClick={toggleFlash}>
+                           {flash ? <FlashOnIcon /> : <FlashOffIcon />}
+                        </IconButton>
+                     </Tooltip> */}
+                  </Box>
                   <Box position={"static"}>
                      <canvas ref={canvasRef} style={{ display: "none" }} />
                      {photo && (
@@ -2028,8 +2188,8 @@ export const InputCameraComponent = ({ getFile }) => {
                            src={photo}
                            alt="Tomada con la cámara"
                            style={{
-                              width: canvasRef.current.width + 260,
-                              maxHeight: canvasRef.current.height + 380,
+                              width: videoRef.current.width, //canvasRef.current.width + 260,
+                              maxHeight: videoRef.current.height, //canvasRef.current.height + 380,
                               objectFit: "cover",
                               position: "absolute",
                               top: "450px",
@@ -2044,7 +2204,7 @@ export const InputCameraComponent = ({ getFile }) => {
          ) : (
             <Typography textAlign={"center"} variant="caption">
                No se detectó una cámara.
-               <Tooltip title={"Volver a detectar cámara, si no reconoce la cámara, recarge la página o a volver a conectar el dispositivo."}>
+               <Tooltip title={"Volver a detectar cámara; si no reconoce la cámara, intente recargar la página o a volver a conectar el dispositivo."}>
                   <IconButton size="small" onClick={() => setHasCamera(true)}>
                      <IconReload />
                   </IconButton>
@@ -2054,4 +2214,4 @@ export const InputCameraComponent = ({ getFile }) => {
       </div>
    );
 };
-//#region INPUT CAMERA COMPONENT
+//#endregion INPUT CAMERA COMPONENT

@@ -39,7 +39,7 @@ function ModalReject({ folio, open, setOpen, statusCurrent, modalTitle, maxWidth
    const onSubmit = async (values, { setSubmitting, setErrors, resetForm }) => {
       try {
          values.folio = folio;
-         values.rejected_at = formatDatetimeToSQL(new Date());
+         // values.rejected_at = formatDatetimeToSQL(new Date());
          // return console.log("values", values);
          setLoadingAction(true);
          const axiosResponse = await updateStatusBeca(folio, "RECHAZADA", values, statusCurrent);

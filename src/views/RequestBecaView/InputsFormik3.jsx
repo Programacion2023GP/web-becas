@@ -46,6 +46,7 @@ const InputsFormik3 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
                   col={6}
                   idName={"average"}
                   label={"Promedio *"}
+                  type={"number"}
                   placeholder={"10.00"}
                   inputProps={{ step: 0.01, min: 0, max: 100 }}
                   disabled={formik.values.id == 0 ? false : true}

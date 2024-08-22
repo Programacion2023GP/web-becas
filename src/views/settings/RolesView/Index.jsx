@@ -13,7 +13,6 @@ import { Alert, AlertTitle, SwipeableDrawer, Typography } from "@mui/material";
 import sAlert from "../../../utils/sAlert";
 import Toast from "../../../utils/Toast";
 import { useGlobalContext } from "../../../context/GlobalContext";
-import Select2Component from "../../../components/Form/Select2Component";
 import FormSelect from "./FormSelect";
 import { Box } from "@mui/system";
 import { makeStyles } from "@mui/styles";

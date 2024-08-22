@@ -1,6 +1,6 @@
 import * as Yup from "yup";
 
-import { Typography } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { ModalComponent } from "../../../components/ModalComponent";
 import { useGlobalContext } from "../../../context/GlobalContext";
@@ -9,22 +9,24 @@ import Toast from "../../../utils/Toast";
 import { DatePickerComponent, FileInputComponent, FormikComponent, InputComponent, Select2Component } from "../../../components/Form/FormikComponents";
 import { useRelationshipContext } from "../../../context/RelationshipContext";
 import { MonetizationOn } from "@mui/icons-material";
+import { formatDatetimeToSQL, numberToText } from "../../../utils/Formats";
 
-const initialValues = {
-   id: 0,
-   folio: 0,
-   relationship_id: "",
-   amount_paid: "",
-   img_evidence: "",
-   paid_feedback: "",
-   paid_at: ""
-};
-function ModalPayment({ folio, open, setOpen, statusCurrent, modalTitle, maxWidth }) {
+function ModalPayment({ obj, open, setOpen, statusCurrent, modalTitle, numPago, maxWidth }) {
    const { setLoadingAction } = useGlobalContext();
    const { updateStatusBeca } = useRequestBecaContext();
    const { relationships, getRelationshipsSelectIndex } = useRelationshipContext();
 
    const formikRef = useRef();
+   const initialValues = {
+      id: 0,
+      beca_id: obj.id,
+      relationship_id: "",
+      paid_to: "",
+      amount_paid: "",
+      img_evidence: "",
+      paid_feedback: "",
+      paid_at: ""
+   };
    const [formData, setFormData] = useState(initialValues);
    const [imgEvidence, setImgEvidence] = useState([]);
 
@@ -47,13 +49,13 @@ function ModalPayment({ folio, open, setOpen, statusCurrent, modalTitle, maxWidt
 
    const onSubmit = async (values, { setSubmitting, setErrors, resetForm }) => {
       try {
+         // console.log("🚀 ~ onSubmit ~ imgEvidence:", imgEvidence);
          values.img_evidence = imgEvidence.length == 0 ? "" : imgEvidence[0].file;
-         values.folio = folio;
-         values.paid_at = formatDatetimeToSQL(new Date());
+         // values.paid_at = formatDatetimeToSQL(new Date());
          // return console.log("values", values);
 
          setLoadingAction(true);
-         const axiosResponse = await updateStatusBeca(folio, "PAGANDO", values, statusCurrent);
+         const axiosResponse = await updateStatusBeca(obj.folio, `PAGO ${numPago}`, values, null, numPago);
 
          if (axiosResponse.status_code === 200) {
             resetForm();
@@ -69,6 +71,7 @@ function ModalPayment({ folio, open, setOpen, statusCurrent, modalTitle, maxWidt
          setSubmitting(false);
       } finally {
          setSubmitting(false);
+         setLoadingAction(false);
       }
    };
 
@@ -78,16 +81,18 @@ function ModalPayment({ folio, open, setOpen, statusCurrent, modalTitle, maxWidt
    };
 
    const validationSchema = Yup.object().shape({
-      relationship_id: Yup.string().trim().required("Parente del Rechazo requerido"),
-      amount_paid: Yup.number().min(0, "Está cantidad no es aceptgable. ").required("Retroalimentación del Rechazo requerido"),
-      img_evidence: Yup.string().trim().required("Retroalimentación del Rechazo requerido")
-      // paid_feedback: Yup.string().trim().required("Retroalimentación del Rechazo requerido")
+      relationship_id: Yup.string().trim().required("Parentesco requerido"),
+      paid_to: Yup.string().trim().required(`Nombre de quien recibe el Pago ${numPago} requerido`),
+      amount_paid: Yup.number().min(0, "Está cantidad no es aceptable. ").required("Monto requerido")
+      // img_evidence: Yup.string().trim().required("Retroalimentación del Rechazo requerido"),
    });
 
-   useEffect(() => {}, []);
+   useEffect(() => {
+      // console.log("🚀 ~ useEffect ~ formData:", formData);
+   }, []);
 
    return (
-      <ModalComponent open={open} setOpen={setOpen} modalTitle={modalTitle} maxWidth={maxWidth} height={"65vh"}>
+      <ModalComponent open={open} setOpen={setOpen} modalTitle={`${modalTitle} A FOLIO #${obj.folio}`} maxWidth={maxWidth} height={"65vh"}>
          <FormikComponent
             key={"formikComponent"}
             initialValues={formData}
@@ -99,14 +104,12 @@ function ModalPayment({ folio, open, setOpen, statusCurrent, modalTitle, maxWidt
             maxHeight={"80%"}
          >
             <InputComponent col={12} idName={"id"} label={"ID"} placeholder={"ID"} textStyleCase={true} hidden={true} />
-            <InputComponent col={6} idName={"beca_id"} label={"# Folio"} placeholder={"0"} textStyleCase={true} disabled={true} />
-            <DatePickerComponent col={6} idName={"fec"} label={"Fecha y Hora de Pago"} format={"dddd d MMMM YYYY hh:mm a"} disabled={true} />
             <Select2Component
                col={5}
                idName={"relationship_id"}
-               label={"Parentezco *"}
+               label={"parentesco *"}
                options={relationships}
-               pluralName={"Parentezcos"}
+               pluralName={"parentescos"}
                refreshSelect={getRelationshipsSelectIndex}
             />
             <InputComponent col={7} idName={"paid_to"} label={"Nombre de quien Recibio el pago *"} placeholder={"Nombre Completo"} textStyleCase={true} />
@@ -119,25 +122,29 @@ function ModalPayment({ folio, open, setOpen, statusCurrent, modalTitle, maxWidt
                icon={<MonetizationOn />}
                handleChangeExtra={handleChangeAmountPaid}
             />
-            <Typography color={"GrayText"} sx={{ display: "flex", alignItems: "center", fontStyle: "italic", fontWeight: "bolder" }}>
-               {textValue}
-            </Typography>
+            <Grid container md={10}>
+               <Typography color={"GrayText"} sx={{ display: "flex", alignItems: "center", fontStyle: "italic", fontWeight: "bolder" }}>
+                  {textValue}
+               </Typography>
+            </Grid>
             <FileInputComponent
+               col={4}
                idName="img_evidence"
                label="Evidencia del pago *"
                filePreviews={imgEvidence}
                setFilePreviews={setImgEvidence}
                multiple={false}
                accept={"image/*"}
+               fileSizeMax={3}
             />
             {/* MODIFICAR (handleModify) ---> setObjImg(formData.img_evidence, setImgEvidence); */}
             <InputComponent
-               col={12}
+               col={8}
                idName={"paid_feedback"}
                label={"Comentarios (opcional)"}
                placeholder={"Escriba comentarios u observaciones si existen..."}
                textStyleCase={null}
-               rows={3}
+               rows={8}
             />
          </FormikComponent>
       </ModalComponent>

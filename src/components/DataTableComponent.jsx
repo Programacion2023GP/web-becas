@@ -11,7 +11,7 @@ import { InputNumber } from "primereact/inputnumber";
 import { Dropdown } from "primereact/dropdown";
 import { Tag } from "primereact/tag";
 import { Button, ButtonGroup, Card, IconButton, Tooltip } from "@mui/material";
-import { IconEdit, IconFile, IconFileSpreadsheet, IconSearch } from "@tabler/icons";
+import { IconEdit, IconFile, IconFileSpreadsheet, IconPlus, IconSearch } from "@tabler/icons";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import { FilterMatchMode, FilterOperator } from "primereact/api";
 import { Box } from "@mui/system";
@@ -26,6 +26,7 @@ import IconDelete from "./icons/IconDelete";
 import { Toolbar } from "primereact/toolbar";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import * as XLSX from "xlsx";
+import { isMobile } from "react-device-detect";
 
 /* COMO IMPROTAR
 *    columns={columns}
@@ -357,11 +358,11 @@ export default function DataTableComponent({
                   </IconButton>
                </Tooltip>
 
-               <Tooltip title="Exportar a PDF" placement="top">
+               {/* <Tooltip title="Exportar a PDF" placement="top">
                   <IconButton type="button" variant="text" color="error" sx={{ borderRadius: "12px", mr: 1 }} onClick={exportPdf}>
                      <PictureAsPdfIcon />
                   </IconButton>
-               </Tooltip>
+               </Tooltip> */}
             </>
          )}
 
@@ -376,16 +377,22 @@ export default function DataTableComponent({
          </span>
          {btnAdd && (
             <Tooltip title={titleBtnAdd ? `AGREGAR ${titleBtnAdd}` : "AGREGAR"}>
-               <Button
-                  variant="contained"
-                  sx={{ width: 250 }}
-                  startIcon={<AddCircleOutlineOutlined sx={{ mr: 0.2 }} />}
-                  size="large"
-                  disabled={updating}
-                  onClick={() => (rowEdit ? addRow() : handleClickAdd())}
-               >
-                  {titleBtnAdd ? titleBtnAdd : "AGREGAR"}
-               </Button>
+               {isMobile ? (
+                  <IconButton color="secondary" sx={{ backgroundColor: colorPrimaryMain }} disabled={updating} onClick={() => (rowEdit ? addRow() : handleClickAdd())}>
+                     <IconPlus />
+                  </IconButton>
+               ) : (
+                  <Button
+                     variant="contained"
+                     sx={{ width: 250 }}
+                     startIcon={<AddCircleOutlineOutlined sx={{ mr: 0.2 }} />}
+                     size="large"
+                     disabled={updating}
+                     onClick={() => (rowEdit ? addRow() : handleClickAdd())}
+                  >
+                     {titleBtnAdd ? titleBtnAdd : "AGREGAR"}
+                  </Button>
+               )}
             </Tooltip>
          )}
       </Box>

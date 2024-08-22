@@ -9,6 +9,7 @@ import { useAuthContext } from "../../context/AuthContext";
 import { IconCircleCheck, IconCircleX } from "@tabler/icons";
 import Toast from "../../utils/Toast";
 import { useNavigate, useParams } from "react-router-dom";
+import { isMobile } from "react-device-detect";
 
 const ButtonsApprovedDocument = ({ auth, formik, setFieldValue, fieldApproved, fieldComments, name = "documento", approved = true, accion }) => {
    const iconSize = 65;
@@ -63,7 +64,7 @@ const ButtonsApprovedDocument = ({ auth, formik, setFieldValue, fieldApproved, f
                )}
          </Grid>
          {/* Comentarios */}
-         <Grid xs={8} md={4} sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+         <Grid xs={8} md={4} sm={accion === "revision" ? 4 : 6} sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
             <InputComponent
                // col={4}
                idName={fieldComments}
@@ -144,16 +145,31 @@ const InputsFormik9 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
       }
    };
 
+   // const handleOnChangeFileInputMobile = async (event, dataInput) => {
+   //    const file = event.target.files[0];
+   //    if (file.size >= fileSizeMax) {
+   //       if (filePreviews.length == 0) setConfirmRemove(true);
+   //       return Toast.Info(`el archivo es demasiado pesado, intenta con un archivo menor a ${fileSizeMax}MB`);
+   //    }
+   //    if (!file.type.includes("image")) {
+   //       if (filePreviews.length == 0) setConfirmRemove(true);
+   //       return Toast.Info("el tipo de archivo no es una imagen.");
+   //    }
+   //    await dataInput.setFilePreviews(file);
+   //    await formik.setFieldValue(dataInput.idName, file);
+   // };
+
    useEffect(() => {
       // console.log(formik.values.b6_finished);
       // console.log("dataFileInputs", dataFileInputs);
+      // console.log("formik.values", formik.values);
       // console.log("accion", accion);
       // console.log("[undefined, 'revision'].includes(accion)", ["revision"].includes(accion));
    }, []);
 
    return (
       <>
-         <Grid width={"100%"} xs={12} spacing={2} height={"66vh"} maxHeight={"66vh"} overflow={"auto"}>
+         <Grid width={"100%"} xs={12} spacing={2} height={"66vh"} maxHeight={"66vh"} overflow={"auto"} key={"key-Grid-f9"}>
             <Grid xs={12} container spacing={2} key={"key-key-key"}>
                {/* IMAGEN DE INE TUTOR */}
                {dataFileInputs.map((dataInput, index) => (
@@ -187,7 +203,8 @@ const InputsFormik9 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
                                  setFilePreviews={dataInput.setFilePreviews}
                                  multiple={false}
                                  accept={"image/*"}
-                                 fileSizeMax={3}
+                                 fileSizeMax={5}
+                                 showBtnCamera={true}
                                  disabled={
                                     auth.id == formik.values.user_id
                                        ? ["", "ALTA"].includes(formData.status)
@@ -228,10 +245,6 @@ const InputsFormik9 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
             </Grid>
          </Grid>
 
-         {/* <Button type="button" color="info" id="btnModify" sx={{ mt: 1, display: "none" }} onClick={() => handleModify(formik.setValues)}>
-            setValues
-         </Button> */}
-
          {folio > 0 &&
             (["", "ALTA"].includes(formData.status) ||
                ((auth.permissions.more_permissions.includes("Corregir Documentos") || auth.permissions.more_permissions.includes(`todas`)) &&
@@ -239,7 +252,7 @@ const InputsFormik9 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
             [undefined, "correccion"].includes(accion) && <ButtonsBeforeOrNext isSubmitting={formik.isSubmitting} setValues={formik.setValues} />}
 
          {folio > 0 && ["TERMINADA", "EN REVISIÓN", "EN EVALUACIÓN"].includes(formData.status) && ["revision"].includes(accion) && (
-            <Grid container xs={12} sx={{ pt: 2, justifyContent: "end" }}>
+            <Grid container xs={12} sx={{ pt: 2, justifyContent: "end" }} key={"key-Grid-Buttons"}>
                <Button color="primary" variant="contained" onClick={() => handleClickFinishReview(formik.values)} sx={{ mr: 1 }}>
                   TERMINAR REVISIÓN
                </Button>

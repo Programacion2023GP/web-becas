@@ -10,7 +10,8 @@ import { useParams } from "react-router";
 import { useRelationshipContext } from "../../../context/RelationshipContext";
 
 const RequestListView = () => {
-   const { status } = useParams();
+   const { status, pago } = useParams();
+   const params = useParams();
    const { auth } = useAuthContext();
    const { setLoading } = useGlobalContext();
 
@@ -21,33 +22,41 @@ const RequestListView = () => {
 
    useEffect(() => {
       setLoading(true);
-      getRequestBecas(status);
+      getRequestBecas(status, pago);
       getRelationshipsSelectIndex();
       // console.log("useEffect - formData", requestBecas);
-   }, [status]);
+   }, [status, pago]);
 
    return (
       <Box sx={{ width: "100%", height: "100%" }}>
          <Typography variant="h1" color={"#364152"} mb={2} textAlign={"center"}>
             {auth.role_id === ROLE_CIUDADANO ? "MIS SOLICITUDES".toUpperCase() : "LISTADO DE SOLICITUDES".toUpperCase()} <br />
-            {status != null && (
+            {(status != null || pago != undefined) && (
                <Typography>
-                  <b>STATUS: </b>
-                  {status == "en-revision"
-                     ? "TERMINADA O EN REVISIÓN"
-                     : status == "en-evaluacion"
-                     ? "EN EVALUACIÓN"
-                     : status == "aprobadas"
-                     ? "APROBADA"
-                     : status == "pagadas"
-                     ? "PAGADA"
-                     : status == "entregadas"
-                     ? "ENTREGADA"
-                     : status == "rechazadas"
-                     ? "RECHAZADA"
-                     : status == "canceladas"
-                     ? "CANCELADA"
-                     : ""}
+                  {pago ? (
+                     <>
+                        <b>PAGOS RECIBIDOS: {pago} </b>
+                     </>
+                  ) : (
+                     <>
+                        <b>STATUS: </b>
+                        {status == "en-revision"
+                           ? "TERMINADA O EN REVISIÓN"
+                           : status == "en-evaluacion"
+                           ? "EN EVALUACIÓN"
+                           : status == "aprobadas"
+                           ? "APROBADA"
+                           : status == "pagadas"
+                           ? "PAGADA"
+                           : status == "entregadas"
+                           ? "ENTREGADA"
+                           : status == "rechazadas"
+                           ? "RECHAZADA"
+                           : status == "canceladas"
+                           ? "CANCELADA"
+                           : ""}
+                     </>
+                  )}
                </Typography>
             )}
          </Typography>

@@ -131,7 +131,7 @@ const FamilyDT = ({ becaId, setFieldValue, values }) => {
       { field: "relationship", header: "Parentesco", sortable: true, functionEdit: textMayusEditor, body: RelationshipBodyTemplate, filterField: null },
       { field: "age", header: "Edad (años)", sortable: true, functionEdit: numberEditor, body: AgeBodyTemplate, filterField: null },
       { field: "occupation", header: "Ocupación", sortable: true, functionEdit: textMayusEditor, body: OccupationBodyTemplate, filterField: null },
-      { field: "monthly_income", header: "Ingresos Mensuales", sortable: true, functionEdit: priceEditor, body: MonthlyIcomeBodyTemplate, filterField: null }
+      { field: "monthly_income", header: "Ingresos Mensuales", sortable: true, functionEdit: numberEditor, body: MonthlyIcomeBodyTemplate, filterField: null }
    ];
 
    const mySwal = withReactContent(Swal);

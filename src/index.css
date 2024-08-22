@@ -30,6 +30,7 @@
 }
 
 
+
 .bg-login {
    position: absolute;
    top: 0;
@@ -246,4 +247,8 @@ th.text-center .p-column-header-content {
    .drawer-max-width {
       max-width: 95vw;
    }
+}
+
+.MuiTypography-h4, h4 {
+   font-size: clamp(0.8rem,1.5vw,2rem);
 }

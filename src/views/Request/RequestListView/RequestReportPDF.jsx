@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -20,7 +20,11 @@ import CheckIcon from "@mui/icons-material/Check";
 // import { Document, Page } from "@react-pdf/renderer";
 // import {} from "html-pdf-client";
 
-export default function RequestReportPDF({ obj }) {
+export default function RequestReportPDF({ obj, targetSection = "sectionRequest" }) {
+   const sectionRequestRef = useRef(null);
+   const sectionDocsRef = useRef(null);
+   const sectionPaymentsRef = useRef(null);
+
    const checkCross = (value, size = 24) => {
       try {
          return value ? (
@@ -445,7 +449,17 @@ export default function RequestReportPDF({ obj }) {
       {
          idName: "b7_img_tutor_ine",
          url: obj.b7_img_tutor_ine,
-         name: "INE del tutor",
+         name: "INE FRONTAL del tutor",
+         isTutor: false,
+         haveSecondRef: false,
+         infoDivider: {
+            title: "DOCUMENTOS DEL TUTOR"
+         }
+      },
+      {
+         idName: "b7_img_tutor_ine_back",
+         url: obj.b7_img_tutor_ine_back,
+         name: "INE TRASERA del tutor",
          isTutor: false,
          haveSecondRef: false,
          infoDivider: {
@@ -465,9 +479,19 @@ export default function RequestReportPDF({ obj }) {
       {
          idName: "b7_img_second_ref",
          url: obj.b7_img_second_ref,
-         name: "INE del Familiar Autorizado (2da Opción)",
+         name: "INE FRONTAL del Familiar Autorizado (2da Opción)",
          isTutor: false,
          haveSecondRef: obj.second_ref == "Familiar" ? true : null,
+         infoDivider: {
+            title: "DOCUMENTO DEL FAMILIAR AUTORIZADO (2da Opción)"
+         }
+      },
+      {
+         idName: "b7_img_second_ref_back",
+         url: obj.b7_img_second_ref_back,
+         name: "INE TRASERA del Familiar Autorizado (2da Opción)",
+         isTutor: false,
+         haveSecondRef: obj.second_ref_back == "Familiar" ? true : null,
          infoDivider: {
             title: "DOCUMENTO DEL FAMILIAR AUTORIZADO (2da Opción)"
          }
@@ -513,6 +537,7 @@ export default function RequestReportPDF({ obj }) {
          }
       }
    ];
+
    const [propDocs, setPropDocs] = useState([]);
 
    const getDocs = () => {
@@ -525,47 +550,25 @@ export default function RequestReportPDF({ obj }) {
    };
 
    useEffect(() => {
-      console.log(obj);
+      // console.log(obj);
+      const scrollToSection = () => {
+         if (targetSection === "sectionRequest") sectionRequestRef.current.scrollIntoView({ behavior: "smooth" });
+         if (targetSection === "sectionDocs") sectionDocsRef.current.scrollIntoView({ behavior: "smooth" });
+         if (targetSection === "sectionPayments") {
+            if (!obj.paymentDetails) return Toast.Info("no hay registros de pagos");
+            sectionPaymentsRef.current.scrollIntoView({ behavior: "smooth" });
+         }
+      };
+
+      scrollToSection();
       getDocs();
-   }, []);
+   }, [targetSection]);
 
    return (
       <Paper id="reportPaper" sx={{ width: "100%", overflow: "hidden" }}>
          <table style={{ border: "none", borderSpacing: "0", fontFamily: "Roboto" }}>
-            {/* ENCABEZADO */}
-            {/* <thead>
-               <tr style={{ border: "none" }}>
-                  <td align="left">
-                     <img src={logo_gpd} style={{ width: "150px" }} />
-                  </td>
-                  <td align="center" colSpan={3}>
-                     <img src={logo_gpd} style={{ width: "150px" }} />
-                  </td>
-                  <td align="right">
-                     <img src={logo_gpd} style={{ width: "150px" }} />
-                  </td>
-               </tr>
-               <tr style={{ border: "none" }}>
-                  <td colSpan={5} align="center">
-                     <h1 style={{ fontWeight: "bolder", fontSize: "35px" }}>DIRECCIÓN DE EDUCACIÓN</h1>
-                     <h3>
-                        PROGRAMA DE BECAS MUNICIPALES <br />
-                        <span style={{ fontWeight: "500" }}>ESTUDIO-SOCIOECONOMICO</span>
-                     </h3>
-                  </td>
-               </tr>
-               <tr>
-                  <td colSpan={5} align="center" style={{ marginBottom: "25px" }}>
-                     <p align="justify" style={{ fontWeight: "normal", maxWidth: "100%" }}>
-                        El presente cuestionario tiene por objetivo conocer el perfil de los aspirantes a obtener una beca del
-                        <b> R. Ayuntamiento de Gómez Palacio</b>. La información proporcionada aquí debe ser completamente verdadera, por ello, lee con atención cada
-                        pregunta y contesta adecuadamente.
-                     </p>
-                  </td>
-               </tr>
-            </thead> */}
-
             <tbody>
+               {/* ENCABEZADO */}
                <tr style={{ border: "none" }}>
                   <td align="left">
                      <img src={logo_gpd} style={{ width: "150px" }} />
@@ -577,7 +580,7 @@ export default function RequestReportPDF({ obj }) {
                      <img src={logo_gpd} style={{ width: "150px" }} />
                   </td>
                </tr>
-               <tr style={{ border: "none" }}>
+               <tr style={{ border: "none" }} ref={sectionRequestRef}>
                   <td colSpan={5} align="center">
                      <h1 style={{ fontWeight: "bolder", fontSize: "35px" }}>DIRECCIÓN DE EDUCACIÓN</h1>
                      <h3>
@@ -658,9 +661,12 @@ export default function RequestReportPDF({ obj }) {
                      <p style={{ textAlign: "center", fontWeight: "bolder" }}>NOMBRE Y FIRMA DEL PADRE, MADRE O TUTOR.</p>
                   </td>
                </tr> */}
-               <tr style={{ border: "none", pageBreakBefore: "always" }}>
+               {/* DOCUMENTOS */}
+               <tr style={{ border: "none", pageBreakBefore: "always" }} ref={sectionDocsRef}>
                   <td colSpan={5} align="center">
-                     <h2 style={{ fontWeight: "bolder", fontSize: "30px" }}>DOCUMENTOS ADJUNTOS</h2>
+                     <h2 style={{ fontWeight: "bolder", fontSize: "30px" }} id="section-docs">
+                        DOCUMENTOS ADJUNTOS
+                     </h2>
                   </td>
                </tr>
                {dataDocs &&
@@ -688,6 +694,83 @@ export default function RequestReportPDF({ obj }) {
                         </td>
                      </tr>
                   ))}
+               {/* REGISTROS DE PAGOS */}
+               {obj.paymentDetails && (
+                  <>
+                     <tr style={{ border: "none", pageBreakBefore: "always" }} ref={sectionPaymentsRef}>
+                        <td colSpan={5} align="center">
+                           <h2 style={{ fontWeight: "bolder", fontSize: "30px" }}>REGISTROS DE PAGOS</h2>
+                        </td>
+                     </tr>
+                     {obj.paymentDetails.map((item, indexPay) => (
+                        <tr style={indexPay > 0 ? { border: "none", pageBreakBefore: "always" } : { border: "none" }}>
+                           <td key={`tc1_${indexPay}`} colSpan={5}>
+                              <table key={`table1_${indexPay}`} style={{ borderSpacing: "0", width: "100%", marginBottom: "35px" }}>
+                                 <thead key={`th1_${indexPay}`}>
+                                    <tr>
+                                       <th colSpan={5} align="center" style={titleStyle}>
+                                          PAGO {item.payment_number}
+                                       </th>
+                                    </tr>
+                                    <tr>
+                                       <th colSpan={0} align="center" style={subtitleStyle}>
+                                          Parentesco
+                                       </th>
+                                       <th colSpan={0} align="center" style={subtitleStyle}>
+                                          Nombre de Quien Recibio el Pago
+                                       </th>
+                                       <th colSpan={0} align="center" style={subtitleStyle}>
+                                          Monto
+                                       </th>
+                                       <th colSpan={0} align="center" style={subtitleStyle}>
+                                          Fecha de Entrega
+                                       </th>
+                                    </tr>
+                                 </thead>
+                                 <tbody key={`tb_${indexPay}`}>
+                                    <tr role="checkbox" tabIndex={-1}>
+                                       <td colSpan={0} align="center" style={valueStyle}>
+                                          {item.relationship_id}
+                                       </td>
+                                       <td colSpan={0} align="center" style={valueStyle}>
+                                          {item.paid_to}
+                                       </td>
+                                       <td colSpan={0} align="center" style={valueStyle}>
+                                          {formatCurrency(item.amount_paid)}
+                                       </td>
+                                       <td colSpan={0} align="center" style={valueStyle}>
+                                          {formatDatetime(item.created_at)}
+                                       </td>
+                                    </tr>
+                                    <tr>
+                                       <th colSpan={4} align="center" style={subtitleStyle}>
+                                          Comentarios
+                                       </th>
+                                    </tr>
+                                    <tr role="checkbox" tabIndex={-1}>
+                                       <td colSpan={4} align="center" style={valueStyle}>
+                                          {item.paid_feedback}
+                                       </td>
+                                    </tr>
+                                    <tr>
+                                       <th colSpan={4} align="center" style={subtitleStyle}>
+                                          Evidencia
+                                       </th>
+                                    </tr>
+                                    <tr role="checkbox" tabIndex={-1}>
+                                       <td colSpan={4} align="center" style={valueStyle}>
+                                          <div className="containerImg" style={{ border: "none" }}>
+                                             <img src={`${import.meta.env.VITE_HOST}/${item.img_evidence}`} style={{ maxWidth: "90%" }} />
+                                          </div>
+                                       </td>
+                                    </tr>
+                                 </tbody>
+                              </table>
+                           </td>
+                        </tr>
+                     ))}
+                  </>
+               )}
             </tbody>
          </table>
       </Paper>

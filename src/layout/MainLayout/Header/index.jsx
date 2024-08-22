@@ -13,6 +13,7 @@ import NotificationSection from "./NotificationSection";
 // assets
 import { IconMenu2 } from "@tabler/icons";
 import ClockComponent from "../../../components/ClockComponent";
+import { isMobile } from "react-device-detect";
 
 // ==============================|| MAIN NAVBAR / HEADER ||============================== //
 
@@ -67,7 +68,7 @@ const Header = ({ handleLeftDrawerToggle }) => {
          {/* <SearchSection /> */}
          <Box sx={{ flexGrow: 1 }} />
          <Box sx={{ flexGrow: 1 }} />
-         <ClockComponent stylesBox={{ mr: 2 }} />
+         <ClockComponent stylesBox={isMobile ? { px: 1 } : { mr: 2 }} />
 
          {/* notification & profile */}
          {/* <NotificationSection /> */}

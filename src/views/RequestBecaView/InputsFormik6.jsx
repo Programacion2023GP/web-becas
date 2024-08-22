@@ -60,7 +60,7 @@ const InputsFormik6 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
                         alignItems="start"
                         title={
                            <Typography variant="h4" component={"p"}>
-                              <li>La casa donde vives es:</li>
+                              <li>Material del piso de la vivienda (si está hecho de más de un material, marca el que predomine):</li>
                            </Typography>
                         }
                         options={[
