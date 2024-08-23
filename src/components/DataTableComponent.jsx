@@ -112,6 +112,7 @@ export default function DataTableComponent({
    const { setLoadingAction, setOpenDialog } = useGlobalContext();
    const [selectedData, setSelectedData] = useState(null);
    const [updating, setUpdating] = useState(false);
+   const [selectedProduct, setSelectedProduct] = useState(null);
 
    const dt = useRef(null);
    // columns.unshift({ id: 0, label: "Selecciona una opción..." });
@@ -448,11 +449,13 @@ export default function DataTableComponent({
                paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                emptyMessage="No se encontraron registros."
                currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} registros"
+               selectionMode="single"
                selection={selectedData}
                onSelectionChange={(e) => setSelectedData(e.value)}
                onRowEditComplete={onRowEditComplete}
                onRowEditInit={handleOnRowEditIinit}
                onRowEditCancel={handleOnRowEditCancel}
+               metaKeySelection={true}
             >
                {btnDeleteMultiple && <Column selectionMode="multiple" exportable={false}></Column>}
                {columns.map((col, index) => (

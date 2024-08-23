@@ -765,67 +765,47 @@ export const Select2Component = ({
                <FormControl fullWidth>
                   <Box display={"flex"}>
                      <Field id={idName} name={idName}>
-                        {({ field }) => (
-                           <Autocomplete
-                              key={`select_${idName}`}
-                              // filterSelectedOptions
-                              disablePortal
-                              openOnFocus
-                              label={label}
-                              placeholder={placeholder}
-                              options={dataOptions}
-                              size={size}
-                              // getOptionLabel={(option) => option.label}
-                              // isOptionEqualToValue={(option, value) => option && value && option.id === value.id}
-                              {...field}
-                              ref={inputRef}
-                              value={Number(formik.values[idName]) > 0 ? dataOptions.find((option) => option.id === formik.values[idName])?.label : labelValue}
-                              defaultValue={
-                                 Number(multiple ? [dataOptions[0]] : formik.values[idName]) > 0
-                                    ? dataOptions.find((option) => option.id === formik.values[idName])?.label
-                                    : labelValue
-                              }
-                              // defaultValue={[["Selecciona una opción..."]]}
-                              // defaultValue={labelValue || "Selecciona una opción..."}
-                              onChange={(_, newValue) => {
-                                 handleChangeValue(newValue, formik.setFieldValue);
-                              }}
-                              onBlur={formik.handleBlur}
-                              fullWidth={fullWidth || true}
-                              isOptionEqualToValue={isOptionEqualToValue}
-                              renderInput={(params) => <TextField {...params} label={label} error={isError} />}
-                              // renderTags={(value, getTagProps) =>
-                              //    value.map((option, index) => {
-                              //       const { key, ...tagProps } = getTagProps({ index });
-                              //       return <Chip variant="outlined" label={option} key={key} {...tagProps} />;
-                              //    })
-                              // }
-                              disabled={disabled || loading}
-                              error={isError ? isError : undefined}
-                           />
-                           // <Autocomplete
-                           //    key={`select_${idName}`}
-                           //    multiple
-                           //    id="tags-outlined"
-                           //    options={dataOptions}
-                           //    size={size}
-                           //    // {...field}
-                           //    ref={inputRef}
-                           //    value={Number(formik.values[idName]) > 0 ? dataOptions.find((option) => option.id === formik.values[idName])?.label : labelValue}
-                           //    defaultValue={[dataOptions[0]]}
-                           //    filterSelectedOptions
-                           //    openOnFocus
-                           //    renderInput={(params) => <TextField {...params} label={label} placeholder={placeholder} />}
-                           //    onChange={(_, newValue) => {
-                           //       handleChangeValue(newValue, formik.setFieldValue);
-                           //    }}
-                           //    onBlur={formik.handleBlur}
-                           //    fullWidth={fullWidth || true}
-                           //    isOptionEqualToValue={isOptionEqualToValue}
-                           //    disabled={disabled || loading}
-                           //    error={isError ? isError : undefined}
-                           // />
-                        )}
+                        {({ field }) => {
+                           return (
+                              <Autocomplete
+                                 key={`select_${idName}`}
+                                 // filterSelectedOptions
+                                 disablePortal
+                                 openOnFocus
+                                 label={label}
+                                 placeholder={placeholder}
+                                 options={dataOptions}
+                                 size={size}
+                                 // getOptionLabel={(option) => option.label}
+                                 // isOptionEqualToValue={(option, value) => option && value && option.id === value.id}
+                                 {...field}
+                                 ref={inputRef}
+                                 value={Number(formik.values[idName]) > 0 ? dataOptions.find((option) => option.id === formik.values[idName])?.label : labelValue}
+                                 defaultValue={
+                                    Number(multiple ? [dataOptions[0]] : formik.values[idName]) > 0
+                                       ? dataOptions.find((option) => option.id === formik.values[idName])?.label
+                                       : labelValue
+                                 }
+                                 // defaultValue={[["Selecciona una opción..."]]}
+                                 // defaultValue={labelValue || "Selecciona una opción..."}
+                                 onChange={(_, newValue) => {
+                                    handleChangeValue(newValue, formik.setFieldValue);
+                                 }}
+                                 onBlur={formik.handleBlur}
+                                 fullWidth={fullWidth || true}
+                                 isOptionEqualToValue={isOptionEqualToValue}
+                                 renderInput={(params) => <TextField {...params} label={label} error={isError} />}
+                                 // renderTags={(value, getTagProps) =>
+                                 //    value.map((option, index) => {
+                                 //       const { key, ...tagProps } = getTagProps({ index });
+                                 //       return <Chip variant="outlined" label={option} key={key} {...tagProps} />;
+                                 //    })
+                                 // }
+                                 disabled={disabled || loading}
+                                 error={isError ? isError : undefined}
+                              />
+                           );
+                        }}
                      </Field>
                      {refreshSelect && (
                         <Tooltip title={`Actualizar ${pluralName}`} placement="top">

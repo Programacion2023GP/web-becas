@@ -27,19 +27,7 @@ const linkSX = {
 
 // ==============================|| BREADCRUMBS ||============================== //
 
-const Breadcrumbs = ({
-   card,
-   divider,
-   icon,
-   icons,
-   maxItems,
-   navigation,
-   rightAlign,
-   separator,
-   title,
-   titleBottom,
-   ...others
-}) => {
+const Breadcrumbs = ({ card, divider, icon, icons, maxItems, navigation, rightAlign, separator, title, titleBottom, ...others }) => {
    const theme = useTheme();
 
    const iconStyle = {
@@ -60,10 +48,7 @@ const Breadcrumbs = ({
             if (collapse.type && collapse.type === "collapse") {
                getCollapse(collapse);
             } else if (collapse.type && collapse.type === "item") {
-               if (
-                  document.location.pathname ===
-                  config.basename + collapse.url
-               ) {
+               if (document.location.pathname === config.basename + collapse.url) {
                   setMain(menu);
                   setItem(collapse);
                }
@@ -74,6 +59,8 @@ const Breadcrumbs = ({
    };
 
    useEffect(() => {
+      // console.log("estoy en el Breadcrumbs");
+
       navigation?.items?.map((menu) => {
          if (menu.type && menu.type === "group") {
             getCollapse(menu);
@@ -138,10 +125,7 @@ const Breadcrumbs = ({
                   marginBottom: card === false ? 0 : theme.spacing(gridSpacing),
                   border: card === false ? "none" : "1px solid",
                   borderColor: theme.palette.primary[200] + 75,
-                  background:
-                     card === false
-                        ? "transparent"
-                        : theme.palette.background.default
+                  background: card === false ? "transparent" : theme.palette.background.default
                }}
                {...others}
             >
@@ -149,9 +133,7 @@ const Breadcrumbs = ({
                   <Grid
                      container
                      direction={rightAlign ? "row" : "column"}
-                     justifyContent={
-                        rightAlign ? "space-between" : "flex-start"
-                     }
+                     justifyContent={rightAlign ? "space-between" : "flex-start"}
                      alignItems={rightAlign ? "center" : "flex-start"}
                      spacing={1}
                   >
@@ -175,17 +157,9 @@ const Breadcrumbs = ({
                            maxItems={maxItems || 8}
                            separator={separatorIcon}
                         >
-                           <Typography
-                              component={Link}
-                              to="/"
-                              color="inherit"
-                              variant="subtitle1"
-                              sx={linkSX}
-                           >
+                           <Typography component={Link} to="/" color="inherit" variant="subtitle1" sx={linkSX}>
                               {icons && <HomeTwoToneIcon sx={iconStyle} />}
-                              {icon && (
-                                 <HomeIcon sx={{ ...iconStyle, mr: 0 }} />
-                              )}
+                              {icon && <HomeIcon sx={{ ...iconStyle, mr: 0 }} />}
                               {!icon && "Dashboard"}
                            </Typography>
                            {mainContent}

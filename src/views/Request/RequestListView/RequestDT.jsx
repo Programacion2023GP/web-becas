@@ -301,7 +301,7 @@ const RequestBecaDT = ({ status = null }) => {
    const handleClickApprove = async (folio) => {
       try {
          setFolio(folio);
-         setOpenModalReject(true);
+         setOpenModalApprove(true);
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -716,7 +716,7 @@ const RequestBecaDT = ({ status = null }) => {
          )}
 
          {openModalApprove && (
-            <ModalApprove folio={folio} open={openModalApprove} setOpen={setOpenModalReject} statusCurrent={status} modalTitle="APROBAR SOLICITUD" maxWidth={"md"} />
+            <ModalApprove folio={folio} open={openModalApprove} setOpen={setOpenModalApprove} statusCurrent={status} modalTitle="APROBAR SOLICITUD" maxWidth={"md"} />
          )}
 
          {openModalReject && (

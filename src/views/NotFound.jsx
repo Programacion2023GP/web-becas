@@ -11,8 +11,19 @@ const NotFound = () => {
    const error = useRouteError();
 
    console.log(error);
+   // alert(error);
    let errorText = "",
+      errorDetail = "",
+      errorStack = "",
       srcImg = "";
+   if (error) {
+      errorDetail = error.data;
+      errorStack = error.statusText;
+      if (error.error) {
+         errorDetail = error.error.message;
+         errorStack = error.error.stack;
+      }
+   }
 
    switch (error.status) {
       case 404:
@@ -37,8 +48,12 @@ const NotFound = () => {
          <Typography variant="h1" mt={3} sx={{ fontWeight: "900" }} textTransform={"uppercase"}>
             Algo está mal
          </Typography>
-         <Typography variant="body1" sx={{ width: "35%", textAlign: "center", mx: "auto", my: 3 }}>
+         <Typography variant="body1" sx={{ width: "35%", textAlign: "center", mx: "auto", mt: 3, mb: 1 }}>
             {errorText}
+         </Typography>
+         <Typography variant="h6" sx={{ width: "75%", textAlign: "center", mx: "auto", mb: 3 }}>
+            {errorDetail} <br />
+            {errorStack}
          </Typography>
          <Button variant="contained" component={Link} to="/" startIcon={<HomeTwoTone />}>
             Regresar al inicio

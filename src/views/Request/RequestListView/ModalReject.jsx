@@ -74,7 +74,7 @@ function ModalReject({ folio, open, setOpen, statusCurrent, modalTitle, maxWidth
             initialValues={formData}
             validationSchema={validationSchema}
             onSubmit={onSubmit}
-            textBtnSubmit={"CANCELAR SOLICITUD"}
+            textBtnSubmit={"RECHAZAR"}
             formikRef={formikRef}
             handleCancel={handleCancel}
             maxHeight={"80%"}

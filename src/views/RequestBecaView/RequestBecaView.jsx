@@ -914,7 +914,7 @@ const RequestBecaView = () => {
    };
 
    useEffect(() => {
-      // console.log("🚀 ~ useEffect ~ formData:", formData);
+      console.log("🚀 ~ useEffect ~ formData:", formData);
       // console.log("🚀 ~ useEffect ~ formik.current.values:", formik.current?.values);
       if (formData.id < 1) {
          // console.log("folio de params?", folio);

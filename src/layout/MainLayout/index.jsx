@@ -113,7 +113,7 @@ const MainLayout = () => {
                      {/* main content */}
                      <Main theme={theme} open={leftDrawerOpened} className={cursorLoading && "cursor-loading"}>
                         {/* breadcrumb */}
-                        <Breadcrumbs separator={IconChevronRight} navigation={navigation} icon title rightAlign />
+                        {/* <Breadcrumbs separator={IconChevronRight} navigation={navigation} icon title rightAlign /> */}
                         <Outlet />
                      </Main>
                      <Customization />
