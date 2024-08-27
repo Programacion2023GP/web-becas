@@ -242,7 +242,27 @@ export default function DataTableComponent({
       });
    };
 
-   const exportExcel = () => {
+   const exportExcel = (e) => {
+      console.log("🚀 ~ onGlobalFilterChange ~ globalFilterFields:", globalFilterFields);
+      console.log("🚀 ~ onGlobalFilterChange ~ filtersColumns:", filtersColumns);
+      console.log("🚀 ~ onGlobalFilterChange ~ filters:", filters);
+      // Obtener los datos filtrados aplicando los filtros actuales
+      const filteredData = data.filter((rowData) => {
+         return Object.keys(filters).every((key) => {
+            const filterValue = filters[key].value;
+            if (!filterValue) return true;
+
+            const rowValue = rowData[key];
+            return rowValue?.toString().toLowerCase().includes(filterValue.toLowerCase());
+         });
+      });
+      console.log("🚀 ~ filteredData ~ filteredData:", filteredData);
+
+      if (filteredData.length === 0) {
+         Toast.Info("No hay datos filtrados para exportar.");
+         return;
+      }
+
       if (data.length === 0) {
          Toast.Info("No hay datos para exportar.");
          return;
@@ -262,20 +282,6 @@ export default function DataTableComponent({
 
       //    saveAsExcelFile(excelBuffer, "data");
       // });
-   };
-
-   const saveAsExcelFile = (buffer, fileName) => {
-      import("file-saver").then((module) => {
-         if (module && module.default) {
-            let EXCEL_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
-            let EXCEL_EXTENSION = ".xlsx";
-            const data = new Blob([buffer], {
-               type: EXCEL_TYPE
-            });
-
-            module.default.saveAs(data, fileName + "_export_" + new Date().getTime() + EXCEL_EXTENSION);
-         }
-      });
    };
    //#endregion EXPORTAR
 
@@ -468,6 +474,7 @@ export default function DataTableComponent({
                      filter={col.filter && headerFilters}
                      filterField={col.filterField}
                      filterHeaderStyle={{ backgroundColor: colorPrimaryMain, color: "#364152" }}
+                     filterHeaderClassName="custom-filter-header"
                      editor={(options) => col.functionEdit(options)}
                      sortable={col.sortable}
                      body={col.body}

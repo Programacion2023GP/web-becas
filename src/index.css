@@ -28,6 +28,45 @@
       font-size: clamp(1.2rem,1.5vw,2rem);
    }
 }
+/* 
+.p-filter-column{
+   height: fit-content;
+} */
+
+thead > tr:nth-child(2) {
+   /* background-color: #f0f0f0;
+   color: #333; */
+
+   > th.custom-filter-header.p-filter-column {
+      background-color: #f0f0f0;
+      max-height: min-content;
+
+      input.p-inputtext.p-component.p-column-filter {
+         font-size:12px;
+         padding-block: 5px;
+      }
+      button {
+         height: 20px;
+         width: 20px;
+         display: none;
+
+         svg {
+            height: 12px;
+         }
+      }
+   }
+}
+
+
+.custom-filter-header {
+   height: 10px !important;
+   padding: 5px;
+   font-size: 12px;
+   /* border-radius: 4px; */
+   /* Agrega más estilos según sea necesario */
+
+ }
+ 
 
 
 
