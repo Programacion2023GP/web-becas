@@ -243,25 +243,25 @@ export default function DataTableComponent({
    };
 
    const exportExcel = (e) => {
-      console.log("🚀 ~ onGlobalFilterChange ~ globalFilterFields:", globalFilterFields);
-      console.log("🚀 ~ onGlobalFilterChange ~ filtersColumns:", filtersColumns);
-      console.log("🚀 ~ onGlobalFilterChange ~ filters:", filters);
-      // Obtener los datos filtrados aplicando los filtros actuales
-      const filteredData = data.filter((rowData) => {
-         return Object.keys(filters).every((key) => {
-            const filterValue = filters[key].value;
-            if (!filterValue) return true;
+      // console.log("🚀 ~ onGlobalFilterChange ~ globalFilterFields:", globalFilterFields);
+      // console.log("🚀 ~ onGlobalFilterChange ~ filtersColumns:", filtersColumns);
+      // console.log("🚀 ~ onGlobalFilterChange ~ filters:", filters);
+      // // Obtener los datos filtrados aplicando los filtros actuales
+      // const filteredData = data.filter((rowData) => {
+      //    return Object.keys(filters).every((key) => {
+      //       const filterValue = filters[key].value;
+      //       if (!filterValue) return true;
 
-            const rowValue = rowData[key];
-            return rowValue?.toString().toLowerCase().includes(filterValue.toLowerCase());
-         });
-      });
-      console.log("🚀 ~ filteredData ~ filteredData:", filteredData);
+      //       const rowValue = rowData[key];
+      //       return rowValue?.toString().toLowerCase().includes(filterValue.toLowerCase());
+      //    });
+      // });
+      // console.log("🚀 ~ filteredData ~ filteredData:", filteredData);
 
-      if (filteredData.length === 0) {
-         Toast.Info("No hay datos filtrados para exportar.");
-         return;
-      }
+      // if (filteredData.length === 0) {
+      //    Toast.Info("No hay datos filtrados para exportar.");
+      //    return;
+      // }
 
       if (data.length === 0) {
          Toast.Info("No hay datos para exportar.");
