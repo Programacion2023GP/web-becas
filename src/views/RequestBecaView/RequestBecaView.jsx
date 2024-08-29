@@ -821,14 +821,17 @@ const RequestBecaView = () => {
                // b7_comments_tutor_ine_back: "",
                // b7_img_tutor_power_letter: isTutor && Yup.string().required("Carta Poder requerida"),
                b7_approved_tutor_power_letter:
+                  isTutor &&
                   (auth.permissions.more_permissions.includes("Validar Documentos") || auth.permissions.more_permissions.includes(`todas`)) &&
                   ["TERMINADA", "EN REVISIÓN"].includes(formData.status) &&
                   Yup.bool().required("Aprueba o Desaprueba el documento."),
                b7_approved_second_ref:
+                  haveSecondRef &&
                   (auth.permissions.more_permissions.includes("Validar Documentos") || auth.permissions.more_permissions.includes(`todas`)) &&
                   ["TERMINADA", "EN REVISIÓN"].includes(formData.status) &&
                   Yup.bool().required("Aprueba o Desaprueba el documento."),
                b7_approved_second_ref_back:
+                  haveSecondRef &&
                   (auth.permissions.more_permissions.includes("Validar Documentos") || auth.permissions.more_permissions.includes(`todas`)) &&
                   ["TERMINADA", "EN REVISIÓN"].includes(formData.status) &&
                   Yup.bool().required("Aprueba o Desaprueba el documento."),
@@ -965,8 +968,12 @@ const RequestBecaView = () => {
    useEffect(() => {
       if (showModalRemember && pagina == 1) setShowModalRemember(true);
       else setShowModalRemember(false);
-      if (showModalRememberTakePhoto && pagina == 9) setShowModalRememberTakePhoto(true);
-      // else setShowModalRememberTakePhoto(false);
+      if (pagina == 9 && accion != "revision") {
+         setShowModalRememberTakePhoto(true);
+         setTimeout(() => {
+            setShowModalRememberTakePhoto(false);
+         }, 500);
+      } else setShowModalRememberTakePhoto(false);
    }, [pagina]);
 
    return (

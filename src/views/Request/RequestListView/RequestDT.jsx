@@ -204,13 +204,17 @@ const RequestBecaDT = ({ status = null }) => {
    const EndDateBodyTemplate = (obj) => <Typography textAlign={"center"}>{formatDatetime(obj.end_date)}</Typography>;
    //#endregion BODY TEMPLATES
 
+   console.log(["alta", "en-revision", "en-evaluacion"].includes(status));
+
    const columns = [
       { field: "folio", header: "Folio", sortable: true, functionEdit: null, body: FolioBodyTemplate, filter: true, filterField: null },
       { field: "school", header: "Escuela", sortable: true, functionEdit: null, body: SchoolBodyTemplate, filter: false, filterField: null },
       { field: "student", header: "Alumno", sortable: true, functionEdit: null, body: StudentBodyTemplate, filter: false, filterField: null },
-      { field: "average", header: "Promedio", sortable: true, functionEdit: null, body: AverageBodyTemplate, filter: false, filterField: null },
-      ["ALTA", "TERMINADA", "EN REVISIÓN", "EN EVALUACIÓN"].includes(status) &&
-         ({
+      { field: "average", header: "Promedio", sortable: true, functionEdit: null, body: AverageBodyTemplate, filter: false, filterField: null }
+   ];
+   ["alta", "en-revision"].includes(status) &&
+      columns.push(
+         {
             field: "status",
             header: "Estatus",
             sortable: true,
@@ -227,10 +231,13 @@ const RequestBecaDT = ({ status = null }) => {
             body: CurrentBodyTemplate,
             filter: false,
             filterField: null
-         },
-         { field: "created_at", header: "Fecha de Solicitud", sortable: true, functionEdit: null, body: RequestDateBodyTemplate, filter: false, filterField: null },
-         { field: "end_date", header: "Fecha de Termino", sortable: true, functionEdit: null, body: EndDateBodyTemplate, filter: false, filterField: null }),
-      {
+         }
+      );
+   columns.push(
+      { field: "created_at", header: "Fecha de Solicitud", sortable: true, functionEdit: null, body: RequestDateBodyTemplate, filter: false, filterField: null },
+      { field: "end_date", header: "Fecha de Termino", sortable: true, functionEdit: null, body: EndDateBodyTemplate, filter: false, filterField: null }
+   ),
+      columns.push({
          field: "socioeconomic_study",
          header: "Estudio Socio-Económico",
          sortable: true,
@@ -238,8 +245,7 @@ const RequestBecaDT = ({ status = null }) => {
          body: SocioeconomicStudyBodyTemplate,
          filter: true,
          filterField: null
-      }
-   ];
+      });
    (auth.permissions.more_permissions.includes("Ver Puntaje") || auth.permissions.more_permissions.includes(`todas`)) &&
       columns.push({ field: "score_total", header: "Puntaje", sortable: true, functionEdit: null, body: ScoreTotalBodyTemplate, filter: false, filterField: null });
    pago &&
