@@ -204,8 +204,6 @@ const RequestBecaDT = ({ status = null }) => {
    const EndDateBodyTemplate = (obj) => <Typography textAlign={"center"}>{formatDatetime(obj.end_date)}</Typography>;
    //#endregion BODY TEMPLATES
 
-   console.log(["alta", "en-revision", "en-evaluacion"].includes(status));
-
    const columns = [
       { field: "folio", header: "Folio", sortable: true, functionEdit: null, body: FolioBodyTemplate, filter: true, filterField: null },
       { field: "school", header: "Escuela", sortable: true, functionEdit: null, body: SchoolBodyTemplate, filter: false, filterField: null },

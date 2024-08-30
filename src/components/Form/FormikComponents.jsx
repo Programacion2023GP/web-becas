@@ -48,6 +48,7 @@ import { ModalComponent } from "../ModalComponent";
 import { IconCameraUp } from "@tabler/icons-react";
 import { isMobile } from "react-device-detect";
 import Webcam from "react-webcam";
+import Compressor from "compressorjs";
 
 const OutlineInputStyle = styled(OutlinedInput, { shouldForwardProp })(({ theme }) => ({
    // width: 434,
@@ -1726,12 +1727,35 @@ export const FileInputComponent = ({
          reader.readAsDataURL(file);
       });
    };
+
+   const imageCompress = async (file) => {
+      return new Promise((resolve, reject) => {
+         new Compressor(file, {
+            quality: 0.6,
+            convertSize: 2.5 * MB, // 3MB
+            maxWidth: 1920,
+            maxHeight: 1080,
+            success(result) {
+               // Convertir el Blob a un File
+               const compressedFile = new File([result], file.name, {
+                  type: result.type,
+                  lastModified: Date.now()
+               });
+
+               resolve(compressedFile); // Resolver la promesa con el archivo comprimido
+            },
+            error(err) {
+               reject(err); // Rechazar la promesa si ocurre un error
+            }
+         });
+      });
+   };
+
    const handleSetFile = async (file) => {
       // alert("entre al handleSetFile()");
       // console.log("🚀 ~ handleSetFile ~ file:", file);
 
       if (file.size >= fileSizeExceeded) {
-         alert("peso excedido");
          if (filePreviews.length == 0) setConfirmRemove(true);
          return Toast.Info(`el archivo es demasiado pesado, intenta con un archivo menor a ${fileSizeMax}MB`);
       }
@@ -1742,40 +1766,28 @@ export const FileInputComponent = ({
       // alert("handleSetFile() ~ pase los filtros");
 
       try {
-         const dataURL = await readFileAsDataURL(file);
+         console.log("🚀 ~ handleSetFile ~ file:", file);
+         let newFile = file;
+         if (file.size > MB * 3) {
+            console.log("a comprimir");
+            const fileCompressed = await imageCompress(file);
+            console.log("🚀 ~ handleSetFile ~ fileCompressed:", fileCompressed);
+            newFile = fileCompressed;
+         }
+
+         console.log("🚀 ~ handleSetFile ~ newFile:", newFile);
+         const dataURL = await readFileAsDataURL(newFile);
          const preview = {
-            file,
+            file: newFile,
             dataURL
          };
          // console.log("🚀 ~ handleSetFile ~ preview:", preview);
          setFilePreviews([preview]);
          filePreviews = [preview];
-         // console.log("🚀 ~ handleSetFile ~ filePreviews:", filePreviews);
-         // alert(`handleSetFile() ~ filePreviews[0].dataURL: ${filePreviews[0].dataURL}`);
       } catch (error) {
          console.error("Error al leer el archivo:", error);
          Toast.Error(`Error al leer el archivo: ${error}`);
       }
-      // reader.onload = async (e) => {
-      //    const preview = {
-      //       file,
-      //       dataURL: reader.result
-      //    };
-      //    console.log("🚀 ~ reader.onload= ~ preview:", preview);
-      //    // if (multiple) if (!validationQuantityImages) return;
-
-      //    // if (multiple) await setFilePreviews((prevPreviews) => [...prevPreviews, preview]);
-      //    // else
-      //    alert(`handleSetFile() ~ preview: ${preview}`);
-      //    // alert(`handleSetFile() ~ preview.file: ${preview.file}`);
-      //    alert(`handleSetFile() ~ preview.dataURL: ${preview.dataURL}`);
-
-      //    await setFilePreviews([preview]);
-      //    console.log(filePreviews);
-      //    alert(`handleSetFile() ~ filePreviews[0].dataURL: ${filePreviews[0].dataURL}`);
-      // };
-
-      // reader.readAsDataURL(file);
    };
 
    const handleGetFileCamera = async (file) => {
