@@ -680,11 +680,19 @@ const RequestBecaView = () => {
          values.b7_finished = true;
          values.end_date = formatDatetimeToSQL(new Date());
          // return console.log("values", values);
-         await setFormData({ ...formData, ...values });
+         const cleanedObj = Object.keys(values).reduce((acc, key) => {
+            if (!key.startsWith("b7_img_")) {
+               acc[key] = values[key];
+            }
+            return acc;
+         }, {});
+         // console.log("🚀 ~ cleanedObj ~ cleanedObj:", cleanedObj);
+         // return console.log("🚀 ~ onSubmit9 ~ values:", values);
+         await setFormData({ ...formData, ...cleanedObj });
          // console.log("formData en submit3", formData);
 
          setLoadingAction(true);
-         const axiosResponse = await saveBeca(folio, pagina, values);
+         const axiosResponse = await saveBeca(folio, pagina, cleanedObj);
          setSubmitting(false);
          setLoadingAction(false);
 
