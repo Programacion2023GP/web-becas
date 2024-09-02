@@ -1,18 +1,19 @@
 // import AnswerScoreForm from "./Form";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useAnswerScoreContext } from "../../../context/AnswerScoreContext";
 import { Typography } from "@mui/material";
 import Toast from "../../../utils/Toast";
 import { useGlobalContext } from "../../../context/GlobalContext";
 import { useSettingContext } from "../../../context/SettingContext";
 import MainCard from "../../../ui-component/cards/MainCard";
-import { DividerComponent } from "../../../components/Form/FormikComponents";
+import { DatePickerComponent, DividerComponent, FormikComponent, InputComponent } from "../../../components/Form/FormikComponents";
 
 const SettingsView = () => {
    // const { result } = useLoaderData();
    const { setLoading } = useGlobalContext();
    const { pluralName } = useSettingContext();
+   const formikRef = useRef(null);
    // const { answerScore, getAnswerScores, getAnswerScoreActive } = useAnswerScoreContext();
 
    useEffect(() => {
@@ -50,18 +51,33 @@ const SettingsView = () => {
          </MainCard>
          <DividerComponent title={"SECCIÓN BECAS"} mt={4} mb={1} />
          <MainCard>
-            <ul>
-               <DividerComponent title={"Configuración en la solicitud de beca"} fontWeight={"bold"} textAlign="left" mb={1} />
-               <li>Inicio del periodo para solicitar becas</li>
-               <li>Fin del periodo para solicitar becas</li>
-               <li>Monto mínimo para no mostrar alerta en Ingresos Mensuales</li>
-               <li>Monto mínimo para no mostrar alerta en Egresos Mensuales</li>
-               <DividerComponent title={"Ajustes de beca"} fontWeight={"bold"} textAlign="left" mt={2} mb={1} />
-               <li>Fecha límite para reasignar becas</li>
-               <li>Cantidad de pagos para beca</li>
-               <li>Presupuesto asignado</li>
-               <li>Presupuesto por beca</li>
-            </ul>
+            <FormikComponent
+               key={"formikComponent"}
+               initialValues={{}}
+               validationSchema={{}}
+               onSubmit={null}
+               textBtnSubmit={"textBtnSubmit"}
+               formikRef={formikRef}
+               handleCancel={null}
+            >
+               <ul>
+                  <DividerComponent title={"Configuración en la solicitud de beca"} fontWeight={"bold"} textAlign="left" mb={1} />
+                  <li>Inicio del periodo para solicitar becas</li>
+                  <DatePickerComponent col={12} idName={"start_date_request"} label={"Fehca de Inicio para solicitar becas"} format={"DD/MM/YYYY"} />
+                  <li>Fin del periodo para solicitar becas</li>
+                  <DatePickerComponent col={12} idName={"closing_date_request"} label={"Fehca de Cierre para solicitar becas"} format={"DD/MM/YYYY"} />
+                  <li>Monto mínimo para no mostrar alerta en Ingresos Mensuales</li>
+                  {/* <NumericComponent col={12} idName={"monthly_income_min"} label={"Monto Minimo"} /> */}
+                  <InputComponent col={12} idName={"monthly_income_min"} label={"Monto mínimo"} placeholder={"999"} type={"number"} />
+                  <li>Monto mínimo para no mostrar alerta en Egresos Mensuales</li>
+                  <InputComponent col={12} idName={"total_expenses_min"} label={"Monto mínimo"} placeholder={"999"} type={"number"} />
+                  <DividerComponent title={"Ajustes de beca"} fontWeight={"bold"} textAlign="left" mt={2} mb={1} />
+                  <li>Fecha límite para reasignar becas</li>
+                  <li>Cantidad de pagos para beca</li>
+                  <li>Presupuesto asignado</li>
+                  <li>Presupuesto por beca</li>
+               </ul>
+            </FormikComponent>
          </MainCard>
       </>
    );

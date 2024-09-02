@@ -160,6 +160,26 @@ export default function RequestBecaContextProvider({ children }) {
    const [requestBecasApproved, setRequestBecasApproved] = useState([]);
    const [requestBecaApproved, setRequestBecaApproved] = useState(null);
 
+   const uploadDocument = async (folio, data) => {
+      try {
+         let res = CorrectRes;
+         const axiosData = await Axios.post(`/documents/folio/${folio}`, data, {
+            headers: {
+               "Content-Type": "multipart/form-data" // Asegúrate de establecer el encabezado adecuado
+            }
+         });
+         res = axiosData.data.data;
+         // console.log("🚀 ~ uploadDocument ~ res:", res);
+
+         return res;
+      } catch (error) {
+         const res = ErrorRes;
+         console.log(error);
+         res.message = error;
+         res.alert_text = error;
+      }
+   };
+
    const saveOrFinishReview = async (folio, page, beca) => {
       try {
          let res = CorrectRes;
@@ -300,7 +320,7 @@ export default function RequestBecaContextProvider({ children }) {
          res.message = error;
          res.alert_text = error;
       }
-   }; 
+   };
 
    const getRequestBecasByFolio = async (folio) => {
       try {
@@ -501,6 +521,7 @@ export default function RequestBecaContextProvider({ children }) {
             getReportRequestByFolio,
             updateStatusBeca,
             saveOrFinishReview,
+            uploadDocument,
             requestBecaApproved,
             setRequestBecaApproved,
             requestBecasApproved,

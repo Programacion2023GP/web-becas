@@ -1667,6 +1667,7 @@ export const FileInputComponent = ({
    accept = null,
    fileSizeMax = 1, // en MB
    showBtnCamera = false,
+   handleUploadingFile = null,
    ...props
 }) => {
    const formik = useFormikContext();
@@ -1766,24 +1767,24 @@ export const FileInputComponent = ({
       // alert("handleSetFile() ~ pase los filtros");
 
       try {
-         console.log("🚀 ~ handleSetFile ~ file:", file);
+         // console.log("🚀 ~ handleSetFile ~ file:", file);
          let newFile = file;
          if (file.size > MB * 3) {
-            console.log("a comprimir");
             const fileCompressed = await imageCompress(file);
-            console.log("🚀 ~ handleSetFile ~ fileCompressed:", fileCompressed);
+            // console.log("🚀 ~ handleSetFile ~ fileCompressed:", fileCompressed);
             newFile = fileCompressed;
          }
 
-         console.log("🚀 ~ handleSetFile ~ newFile:", newFile);
+         // console.log("🚀 ~ handleSetFile ~ newFile:", newFile);
          const dataURL = await readFileAsDataURL(newFile);
          const preview = {
             file: newFile,
             dataURL
          };
          // console.log("🚀 ~ handleSetFile ~ preview:", preview);
-         setFilePreviews([preview]);
+         await setFilePreviews([preview]);
          filePreviews = [preview];
+         if (handleUploadingFile) handleUploadingFile(filePreviews);
       } catch (error) {
          console.error("Error al leer el archivo:", error);
          Toast.Error(`Error al leer el archivo: ${error}`);
@@ -2061,6 +2062,7 @@ export const InputCameraComponent = ({ getFile }) => {
    const [facingMode, setFacingMode] = useState("environment"); // Controla la cámara usada (frontal o trasera)
    const [flash, setFlash] = useState(false);
    const [photo, setPhoto] = useState(null);
+   const [fullScreenDialog, useFullScreenDialog] = useState(true);
 
    useEffect(() => {
       const detectCameraAndStartVideo = async () => {
@@ -2154,16 +2156,20 @@ export const InputCameraComponent = ({ getFile }) => {
                <Button variant="contained" size="small" onClick={() => setOpenCamera(true)}>
                   <IconCameraUp /> &nbsp; Abrir camara
                </Button>
-               <ModalComponent open={openCamera} setOpen={setOpenCamera} modalTitle={"CÁMARA"} fullScreen={true}>
-                  <video ref={videoRef} autoPlay style={{ width: "100%", maxHeight: "75vh", border: `5px ${colorPrimaryMain} solid`, borderRadius: "15px" }} />
-                  <Box display="flex" justifyContent="space-around" mt={2}>
-                     {isMobile && (
+               <ModalComponent open={openCamera} setOpen={setOpenCamera} modalTitle={"CÁMARA"} fullScreen={fullScreenDialog}>
+                  <video
+                     ref={videoRef}
+                     autoPlay
+                     style={{ width: "100%", maxHeight: fullScreenDialog ? "95%" : "90%", border: `5px ${colorPrimaryMain} solid`, borderRadius: "15px" }}
+                  />
+                  <Box display="flex" justifyContent="space-around" mt={1}>
+                     {/* {isMobile && (
                         <Tooltip title={"Cambiar de cámara"}>
                            <IconButton color="primary" size="large" onClick={switchCamera}>
                               <SwitchCameraIcon />
                            </IconButton>
                         </Tooltip>
-                     )}
+                     )} */}
                      <Button variant="contained" size="large" fullWidth onClick={takePhoto}>
                         TOMAR FOTO
                      </Button>

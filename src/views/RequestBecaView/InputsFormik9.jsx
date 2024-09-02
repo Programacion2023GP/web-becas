@@ -10,6 +10,7 @@ import { IconCircleCheck, IconCircleX } from "@tabler/icons";
 import Toast from "../../utils/Toast";
 import { useNavigate, useParams } from "react-router-dom";
 import { isMobile } from "react-device-detect";
+import { name } from "dayjs/locale/es";
 
 const ButtonsApprovedDocument = ({ auth, formik, setFieldValue, fieldApproved, fieldComments, name = "documento", approved = true, accion }) => {
    const iconSize = 65;
@@ -82,7 +83,7 @@ const ButtonsApprovedDocument = ({ auth, formik, setFieldValue, fieldApproved, f
 const InputsFormik9 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBeforeOrNext, isTutor, haveSecondRef, dataFileInputs = [] }) => {
    const { auth } = useAuthContext();
    const { setLoading, setLoadingAction } = useGlobalContext();
-   const { formData, setFormData, saveOrFinishReview } = useRequestBecaContext();
+   const { formData, setFormData, saveOrFinishReview, uploadDocument } = useRequestBecaContext();
    const formik = useFormikContext();
    const { accion } = useParams();
    const navigate = useNavigate();
@@ -145,19 +146,20 @@ const InputsFormik9 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
       }
    };
 
-   // const handleOnChangeFileInputMobile = async (event, dataInput) => {
-   //    const file = event.target.files[0];
-   //    if (file.size >= fileSizeMax) {
-   //       if (filePreviews.length == 0) setConfirmRemove(true);
-   //       return Toast.Info(`el archivo es demasiado pesado, intenta con un archivo menor a ${fileSizeMax}MB`);
-   //    }
-   //    if (!file.type.includes("image")) {
-   //       if (filePreviews.length == 0) setConfirmRemove(true);
-   //       return Toast.Info("el tipo de archivo no es una imagen.");
-   //    }
-   //    await dataInput.setFilePreviews(file);
-   //    await formik.setFieldValue(dataInput.idName, file);
-   // };
+   const handleUploadingFile = async (dataFile, dataInput) => {
+      // console.log("🚀 ~ handleUploadingFile ~ dataFile:", dataFile);
+      try {
+         const data = {
+            [dataInput.idName]: dataFile.lengt == 0 ? "" : dataFile[0].file,
+            name: dataInput.name
+         };
+         const axiosResponse = await uploadDocument(folio, data);
+         Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon, "center");
+      } catch (error) {
+         console.log("🚀 ~ handleUploadingFile ~ error:", error);
+         Toast.Error(error);
+      }
+   };
 
    useEffect(() => {
       // console.log(formik.values.b6_finished);
@@ -205,6 +207,7 @@ const InputsFormik9 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
                                  accept={"image/*"}
                                  fileSizeMax={5}
                                  showBtnCamera={true}
+                                 handleUploadingFile={(dataFile) => handleUploadingFile(dataFile, dataInput)}
                                  disabled={
                                     auth.id == formik.values.user_id
                                        ? ["", "ALTA"].includes(formData.status)
