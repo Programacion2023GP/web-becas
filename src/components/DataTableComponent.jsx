@@ -112,6 +112,7 @@ export default function DataTableComponent({
    const { setLoadingAction, setOpenDialog } = useGlobalContext();
    const [selectedData, setSelectedData] = useState(null);
    const [updating, setUpdating] = useState(false);
+   const [selectedProduct, setSelectedProduct] = useState(null);
 
    const dt = useRef(null);
    // columns.unshift({ id: 0, label: "Selecciona una opción..." });
@@ -241,7 +242,27 @@ export default function DataTableComponent({
       });
    };
 
-   const exportExcel = () => {
+   const exportExcel = (e) => {
+      // console.log("🚀 ~ onGlobalFilterChange ~ globalFilterFields:", globalFilterFields);
+      // console.log("🚀 ~ onGlobalFilterChange ~ filtersColumns:", filtersColumns);
+      // console.log("🚀 ~ onGlobalFilterChange ~ filters:", filters);
+      // // Obtener los datos filtrados aplicando los filtros actuales
+      // const filteredData = data.filter((rowData) => {
+      //    return Object.keys(filters).every((key) => {
+      //       const filterValue = filters[key].value;
+      //       if (!filterValue) return true;
+
+      //       const rowValue = rowData[key];
+      //       return rowValue?.toString().toLowerCase().includes(filterValue.toLowerCase());
+      //    });
+      // });
+      // console.log("🚀 ~ filteredData ~ filteredData:", filteredData);
+
+      // if (filteredData.length === 0) {
+      //    Toast.Info("No hay datos filtrados para exportar.");
+      //    return;
+      // }
+
       if (data.length === 0) {
          Toast.Info("No hay datos para exportar.");
          return;
@@ -261,20 +282,6 @@ export default function DataTableComponent({
 
       //    saveAsExcelFile(excelBuffer, "data");
       // });
-   };
-
-   const saveAsExcelFile = (buffer, fileName) => {
-      import("file-saver").then((module) => {
-         if (module && module.default) {
-            let EXCEL_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8";
-            let EXCEL_EXTENSION = ".xlsx";
-            const data = new Blob([buffer], {
-               type: EXCEL_TYPE
-            });
-
-            module.default.saveAs(data, fileName + "_export_" + new Date().getTime() + EXCEL_EXTENSION);
-         }
-      });
    };
    //#endregion EXPORTAR
 
@@ -448,11 +455,13 @@ export default function DataTableComponent({
                paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                emptyMessage="No se encontraron registros."
                currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} registros"
+               selectionMode="single"
                selection={selectedData}
                onSelectionChange={(e) => setSelectedData(e.value)}
                onRowEditComplete={onRowEditComplete}
                onRowEditInit={handleOnRowEditIinit}
                onRowEditCancel={handleOnRowEditCancel}
+               metaKeySelection={true}
             >
                {btnDeleteMultiple && <Column selectionMode="multiple" exportable={false}></Column>}
                {columns.map((col, index) => (
@@ -465,6 +474,7 @@ export default function DataTableComponent({
                      filter={col.filter && headerFilters}
                      filterField={col.filterField}
                      filterHeaderStyle={{ backgroundColor: colorPrimaryMain, color: "#364152" }}
+                     filterHeaderClassName="custom-filter-header"
                      editor={(options) => col.functionEdit(options)}
                      sortable={col.sortable}
                      body={col.body}

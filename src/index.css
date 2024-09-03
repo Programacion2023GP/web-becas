@@ -1,4 +1,5 @@
 @import url(./assets/styles/styles-file-input.css);
+@import url(./assets/styles/styles-dt-headers-filters.css);
 
 /* SCROLL */
 /* Anchura y color del riel */
@@ -28,7 +29,6 @@
       font-size: clamp(1.2rem,1.5vw,2rem);
    }
 }
-
 
 
 .bg-login {

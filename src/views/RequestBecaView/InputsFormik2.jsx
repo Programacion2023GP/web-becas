@@ -7,12 +7,13 @@ import {
    InputsCommunityComponent,
    RadioButtonComponent,
    Select2Component,
-   getCommunity
+   getCommunity,
+   getCommunityById
 } from "../../components/Form/FormikComponents";
 import Toast from "../../utils/Toast";
 import { useRequestBecaContext } from "../../context/RequestBecaContext";
 import sAlert from "../../utils/sAlert";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useStudentContext } from "../../context/StudentContext";
 import { useDisabilityContext } from "../../context/DisabilityContext";
 import { useGlobalContext } from "../../context/GlobalContext";
@@ -30,6 +31,8 @@ const InputsFormik2 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
 
    const handleChangeCURP = async (e, values, setFieldValue) => {
       try {
+         console.log("cambio de curp");
+
          let curp = e.target.value.toUpperCase();
          // if (curp.length < 1) return Toast.Info("El campo CURP esta vacío");
          if (curp.length < 18) return;
@@ -65,6 +68,8 @@ const InputsFormik2 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
          await setFormData({ ...formData, ...values });
 
          if (formData.community_id > 0) {
+            console.log("amos a pedir el community", formData.community_id);
+
             getCommunity(
                formData.zip,
                setFieldValue,
@@ -89,7 +94,17 @@ const InputsFormik2 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
       }
    };
 
-   // useEffect(() => {});
+   useEffect(() => {
+      const init = async () => {
+         if (formData.community_id > 0) {
+            console.log("🚀 ~ init ~ formData:", formData)
+            console.log("amos a pedir el community", formData.community_id);
+            const CommunityStudent = await getCommunityById(formData.community_id);
+            console.log("🚀 ~ useEffect ~ CommunityStudent:", CommunityStudent);
+         }
+      };
+      init();
+   });
 
    return (
       <>

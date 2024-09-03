@@ -680,11 +680,19 @@ const RequestBecaView = () => {
          values.b7_finished = true;
          values.end_date = formatDatetimeToSQL(new Date());
          // return console.log("values", values);
-         await setFormData({ ...formData, ...values });
+         const cleanedObj = Object.keys(values).reduce((acc, key) => {
+            if (!key.startsWith("b7_img_")) {
+               acc[key] = values[key];
+            }
+            return acc;
+         }, {});
+         // console.log("🚀 ~ cleanedObj ~ cleanedObj:", cleanedObj);
+         // return console.log("🚀 ~ onSubmit9 ~ values:", values);
+         await setFormData({ ...formData, ...cleanedObj });
          // console.log("formData en submit3", formData);
 
          setLoadingAction(true);
-         const axiosResponse = await saveBeca(folio, pagina, values);
+         const axiosResponse = await saveBeca(folio, pagina, cleanedObj);
          setSubmitting(false);
          setLoadingAction(false);
 
@@ -821,14 +829,17 @@ const RequestBecaView = () => {
                // b7_comments_tutor_ine_back: "",
                // b7_img_tutor_power_letter: isTutor && Yup.string().required("Carta Poder requerida"),
                b7_approved_tutor_power_letter:
+                  isTutor &&
                   (auth.permissions.more_permissions.includes("Validar Documentos") || auth.permissions.more_permissions.includes(`todas`)) &&
                   ["TERMINADA", "EN REVISIÓN"].includes(formData.status) &&
                   Yup.bool().required("Aprueba o Desaprueba el documento."),
                b7_approved_second_ref:
+                  haveSecondRef &&
                   (auth.permissions.more_permissions.includes("Validar Documentos") || auth.permissions.more_permissions.includes(`todas`)) &&
                   ["TERMINADA", "EN REVISIÓN"].includes(formData.status) &&
                   Yup.bool().required("Aprueba o Desaprueba el documento."),
                b7_approved_second_ref_back:
+                  haveSecondRef &&
                   (auth.permissions.more_permissions.includes("Validar Documentos") || auth.permissions.more_permissions.includes(`todas`)) &&
                   ["TERMINADA", "EN REVISIÓN"].includes(formData.status) &&
                   Yup.bool().required("Aprueba o Desaprueba el documento."),
@@ -965,8 +976,12 @@ const RequestBecaView = () => {
    useEffect(() => {
       if (showModalRemember && pagina == 1) setShowModalRemember(true);
       else setShowModalRemember(false);
-      if (showModalRememberTakePhoto && pagina == 9) setShowModalRememberTakePhoto(true);
-      // else setShowModalRememberTakePhoto(false);
+      if (pagina == 9 && accion != "revision") {
+         setShowModalRememberTakePhoto(true);
+         setTimeout(() => {
+            setShowModalRememberTakePhoto(false);
+         }, 500);
+      } else setShowModalRememberTakePhoto(false);
    }, [pagina]);
 
    return (
@@ -975,39 +990,42 @@ const RequestBecaView = () => {
             Solicitud de Beca
          </Typography>
          {pagina == 0 ? (
-            <Box
-               sx={{
-                  height: "85%",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  position: "relative"
-               }}
-               p={2}
-               ref={pageActiveRef}
-               // className={
-               //    pagina == 0
-               //       ? `animate__animated ${pageInAnimation[pagina] ? "animate__fadeIn" : "animate__backOutLeft"}`
-               //       : setPageInAnimation({ ...pageInAnimation, [pagina]: true })
-               // }
-            >
-               <img src={LogoGPD} className="bg-request-index" />
-               <Typography variant="h2" mb={2} sx={{ position: "relative" }}>
-                  DIRECCION DE EDUCACIÓN
-               </Typography>
-               <Typography variant="h3" align="justify" mb={2} sx={{ fontWeight: "normal", lineHeight: 2, maxWidth: "70%", position: "relative" }}>
-                  El presente cuestionario tiene por objetivo conocer el perfil de los aspirantes a obtener una beca del <b>R. Ayuntamiento de Gómez Palacio</b>. La
-                  información proporcionada de aqui debe ser completamente verdadera, por ello, lee con atención cada pregunta y contesta adecuadamente.
-               </Typography>
-               {/* {auth.permissions.create && ( */}
-               {/* <Link to={"pagina/1"}> */}
-               <Button onClick={handleClickInitRequest} variant="contained" size="large">
-                  COMENZAR SOLICITUD
-               </Button>
-               {/* </Link> */}
-               {/* )} */}
-            </Box>
+            <>
+               <Box
+                  sx={{
+                     height: "85%",
+                     display: "flex",
+                     flexDirection: "column",
+                     alignItems: "center",
+                     justifyContent: "center",
+                     position: "relative"
+                  }}
+                  p={2}
+                  ref={pageActiveRef}
+                  // className={
+                  //    pagina == 0
+                  //       ? `animate__animated ${pageInAnimation[pagina] ? "animate__fadeIn" : "animate__backOutLeft"}`
+                  //       : setPageInAnimation({ ...pageInAnimation, [pagina]: true })
+                  // }
+               >
+                  <img src={LogoGPD} className="bg-request-index" />
+                  <Typography variant="h2" mb={2} sx={{ position: "relative" }}>
+                     DIRECCION DE EDUCACIÓN
+                  </Typography>
+                  <Typography variant="h3" align="justify" mb={2} sx={{ fontWeight: "normal", lineHeight: 2, maxWidth: "70%", position: "relative" }}>
+                     El presente cuestionario tiene por objetivo conocer el perfil de los aspirantes a obtener una beca del <b>R. Ayuntamiento de Gómez Palacio</b>. La
+                     información proporcionada de aqui debe ser completamente verdadera, por ello, lee con atención cada pregunta y contesta adecuadamente.
+                  </Typography>
+                  {/* {auth.permissions.create && ( */}
+                  {/* <Link to={"pagina/1"}> */}
+                  <Button onClick={handleClickInitRequest} variant="contained" size="large">
+                     COMENZAR SOLICITUD
+                  </Button>
+                  {/* </Link> */}
+                  {/* )} */}
+               </Box>
+               {/* {sAlert.Info(`En la carga de documentos, es necesario tenerlos guardados en tú <span style="color:${colorPrimaryDark}">GALERIA DE FOTOS</span>.`)} */}
+            </>
          ) : (
             <>
                <Stepper nonLinear activeStep={activeStep} sx={{ overflowX: "auto" }}>
@@ -1249,8 +1267,13 @@ const RequestBecaView = () => {
                                     />
                                  </FormikComponent>
                                  {showModalRememberTakePhoto &&
+                                    !isMobile &&
                                     sAlert.Info(
-                                       `Si deseas tomar fotos directamente de esta página, utilice el botón de <span style="color:${colorPrimaryDark}">ABRIR CÁMARA</span> , NO tomes foto desde la selección de archivos.`
+                                       `Recuerda que los archivos sólo dében ser seleccionados desde la <span style="color:${colorPrimaryDark}; font-weight:bolder">GALERIA DE FOTOS</span>.
+                                       <br/>
+                                       <br/>
+                                      NOTA: Fotos que sean capturadas desde ésta aplicación no serán consideradas.`
+                                       // `Si deseas tomar fotos directamente de esta página, utilice el botón de <span style="color:${colorPrimaryDark}">ABRIR CÁMARA</span> , NO tomes foto desde la selección de archivos.`
                                     )}
                               </>
                            )}

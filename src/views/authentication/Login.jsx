@@ -22,32 +22,32 @@ import { useGlobalContext } from "../../context/GlobalContext";
 const Login = () => {
    const { auth } = useAuthContext();
    const { setLoading } = useGlobalContext();
-   const [animateIn, setAnimationIn] = useState(true);
+   // const [animateIn, setAnimationIn] = useState(true);
    const authCardRef = useRef(null);
 
-   const handleClickRegister = () => setAnimationIn(!animateIn);
+   // const handleClickRegister = () => setAnimationIn(!animateIn);
+
+   // useEffect(() => {
+   //    console.log("el animeteIn2", animateIn);
+   //    const authCard = document.querySelector("#authCard");
+   //    const handleAnimationEnd = (e) => {
+   //       if (e.animationName == "flipOutY") window.location.hash = "#/register";
+   //    };
+
+   //    if (authCard) {
+   //       authCard.addEventListener("animationend", handleAnimationEnd);
+   //    }
+
+   //    // Cleanup event listener
+   //    return () => {
+   //       if (authCard) {
+   //          authCard.removeEventListener("animationend", handleAnimationEnd);
+   //       }
+   //    };
+   // }, [animateIn]);
 
    useEffect(() => {
-      console.log("el animeteIn2", animateIn);
-      const authCard = document.querySelector("#authCard");
-      const handleAnimationEnd = (e) => {
-         if (e.animationName == "flipOutY") window.location.hash = "#/register";
-      };
-
-      if (authCard) {
-         authCard.addEventListener("animationend", handleAnimationEnd);
-      }
-
-      // Cleanup event listener
-      return () => {
-         if (authCard) {
-            authCard.removeEventListener("animationend", handleAnimationEnd);
-         }
-      };
-   }, [animateIn]);
-
-   useEffect(() => {
-      console.log("el animeteIn", animateIn);
+      // console.log("el animeteIn", animateIn);
       setLoading(false);
       setTimeout(() => {
          setLoading(false);
