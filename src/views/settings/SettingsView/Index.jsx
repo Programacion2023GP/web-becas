@@ -8,7 +8,7 @@ import Toast from "../../../utils/Toast";
 import { useGlobalContext } from "../../../context/GlobalContext";
 import { useSettingContext } from "../../../context/SettingContext";
 import MainCard from "../../../ui-component/cards/MainCard";
-import { DatePickerComponent, DividerComponent, FormikComponent, InputComponent } from "../../../components/Form/FormikComponents";
+import { DatePickerComponent, DividerComponent, FormikComponent, InputComponent, Select2Component } from "../../../components/Form/FormikComponents";
 
 const SettingsView = () => {
    // const { result } = useLoaderData();
@@ -63,29 +63,77 @@ const SettingsView = () => {
             >
                <Grid container xs={12} spacing={2}>
                   <Grid xs={12} md={6}>
-                     <DividerComponent title={"Configuración en la solicitud de beca"} fontWeight={"bold"} textAlign="left" mb={1} />
+                     <DividerComponent
+                        title={<Typography variant="h3">Configuración en la solicitud de beca</Typography>}
+                        fontWeight={"bold"}
+                        textAlign="center"
+                        mb={1}
+                     />
                      <ul>
-                        <li>Inicio del periodo para solicitar becas</li>
-                        <DatePickerComponent col={12} idName={"start_date_request"} label={"Fehca de Inicio para solicitar becas"} format={"DD/MM/YYYY"} />
-                        <li>Fin del periodo para solicitar becas</li>
-                        <DatePickerComponent col={12} idName={"closing_date_request"} label={"Fehca de Cierre para solicitar becas"} format={"DD/MM/YYYY"} />
-                        <li>Monto mínimo para no mostrar alerta en Ingresos Mensuales</li>
-                        {/* <NumericComponent col={12} idName={"monthly_income_min"} label={"Monto Minimo"} /> */}
-                        <InputComponent col={12} idName={"monthly_income_min"} label={"Monto mínimo"} placeholder={"999"} type={"number"} />
-                        <li>Monto mínimo para no mostrar alerta en Egresos Mensuales</li>
-                        <InputComponent col={12} idName={"total_expenses_min"} label={"Monto mínimo"} placeholder={"999"} type={"number"} />
+                        <li>
+                           <Typography variant="h4" mb={1}>
+                              Periodo para solicitar becas
+                           </Typography>
+                           <Grid container spacing={2}>
+                              <DatePickerComponent col={6} idName={"start_date_request"} label={"Fehca de Inicio "} format={"DD/MM/YYYY"} />
+                              <DatePickerComponent col={6} idName={"closing_date_request"} label={"Fehca de Cierre "} format={"DD/MM/YYYY"} />
+                           </Grid>
+                        </li>
+                        <li>
+                           <Typography variant="h4" mb={1}>
+                              Oportunidades por usuario para solicitar becas
+                           </Typography>
+                           <InputComponent col={6} idName={"opportunities"} label={"Cantidad"} placeholder={"0"} type={"number"} />
+                        </li>
+                        <li>
+                           <Typography variant="h4" mb={2}>
+                              Montos mínimos para mostrar alerta en Ingresos y Egresos Mensuales
+                           </Typography>
+                           <Grid container spacing={2}>
+                              <InputComponent col={6} idName={"monthly_income_min"} label={"Monto en Ingresos"} placeholder={"0"} type={"number"} />
+                              <InputComponent col={6} idName={"total_expenses_min"} label={"Monto en Engresos"} placeholder={"0"} type={"number"} />
+                           </Grid>
+                        </li>
                      </ul>
                   </Grid>
                   <Grid xs={12} md={6}>
-                     <DividerComponent title={"Ajustes de beca"} fontWeight={"bold"} textAlign="left" mt={0} mb={1} />
+                     <DividerComponent title={<Typography variant="h3">Datos de beca</Typography>} fontWeight={"bold"} textAlign="center" mb={1} />
                      <ul>
-                        {/* <li>Fecha límite para reasignar becas</li> */}
-                        <li>Cantidad de pagos para beca</li>
-                        <InputComponent col={12} idName={"total_payments"} label={"Cantidad"} placeholder={"0"} type={"number"} />
-                        <li>Presupuesto asignado</li>
-                        <InputComponent col={12} idName={"budget"} label={"Monto"} placeholder={"999,999"} type={"number"} />
-                        <li>Presupuesto por beca</li>
-                        <InputComponent col={12} idName={"total_payments"} label={"Cantidad"} placeholder={"0"} type={"number"} />
+                        <li>
+                           <Typography variant="h4" mb={2}>
+                              Presupuesto asignado
+                           </Typography>
+                           <Grid container spacing={2}>
+                              <InputComponent col={6} idName={"budget"} label={"Monto"} placeholder={"0"} type={"number"} />
+                           </Grid>
+                        </li>
+                        <li>
+                           <Typography variant="h4" mb={2}>
+                              Cantidad de pagos para beca
+                           </Typography>
+                           <Grid container spacing={2}>
+                              <InputComponent col={6} idName={"total_payments"} label={"Cantidad"} placeholder={"0"} type={"number"} />
+                              <Select2Component
+                                 col={6}
+                                 idName={"payment_frequency"}
+                                 label={"Periodicidad de pago"}
+                                 options={[
+                                    { id: "1 month", label: "1 Mes" },
+                                    { id: "2 months", label: "2 Meses" }
+                                 ]}
+                                 pluralName={""}
+                                 refreshSelect={null}
+                              />
+                           </Grid>
+                        </li>
+                        <li>
+                           <Typography variant="h4" mb={2}>
+                              Becas Aprobadas
+                           </Typography>
+                           <Grid container spacing={2}>
+                              <InputComponent col={6} idName={"max_approved"} label={"Cantidad Máxima"} placeholder={"0"} type={"number"} />
+                           </Grid>
+                        </li>
                      </ul>
                   </Grid>
                </Grid>
