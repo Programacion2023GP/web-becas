@@ -990,39 +990,42 @@ const RequestBecaView = () => {
             Solicitud de Beca
          </Typography>
          {pagina == 0 ? (
-            <Box
-               sx={{
-                  height: "85%",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  position: "relative"
-               }}
-               p={2}
-               ref={pageActiveRef}
-               // className={
-               //    pagina == 0
-               //       ? `animate__animated ${pageInAnimation[pagina] ? "animate__fadeIn" : "animate__backOutLeft"}`
-               //       : setPageInAnimation({ ...pageInAnimation, [pagina]: true })
-               // }
-            >
-               <img src={LogoGPD} className="bg-request-index" />
-               <Typography variant="h2" mb={2} sx={{ position: "relative" }}>
-                  DIRECCION DE EDUCACIÓN
-               </Typography>
-               <Typography variant="h3" align="justify" mb={2} sx={{ fontWeight: "normal", lineHeight: 2, maxWidth: "70%", position: "relative" }}>
-                  El presente cuestionario tiene por objetivo conocer el perfil de los aspirantes a obtener una beca del <b>R. Ayuntamiento de Gómez Palacio</b>. La
-                  información proporcionada de aqui debe ser completamente verdadera, por ello, lee con atención cada pregunta y contesta adecuadamente.
-               </Typography>
-               {/* {auth.permissions.create && ( */}
-               {/* <Link to={"pagina/1"}> */}
-               <Button onClick={handleClickInitRequest} variant="contained" size="large">
-                  COMENZAR SOLICITUD
-               </Button>
-               {/* </Link> */}
-               {/* )} */}
-            </Box>
+            <>
+               <Box
+                  sx={{
+                     height: "85%",
+                     display: "flex",
+                     flexDirection: "column",
+                     alignItems: "center",
+                     justifyContent: "center",
+                     position: "relative"
+                  }}
+                  p={2}
+                  ref={pageActiveRef}
+                  // className={
+                  //    pagina == 0
+                  //       ? `animate__animated ${pageInAnimation[pagina] ? "animate__fadeIn" : "animate__backOutLeft"}`
+                  //       : setPageInAnimation({ ...pageInAnimation, [pagina]: true })
+                  // }
+               >
+                  <img src={LogoGPD} className="bg-request-index" />
+                  <Typography variant="h2" mb={2} sx={{ position: "relative" }}>
+                     DIRECCION DE EDUCACIÓN
+                  </Typography>
+                  <Typography variant="h3" align="justify" mb={2} sx={{ fontWeight: "normal", lineHeight: 2, maxWidth: "70%", position: "relative" }}>
+                     El presente cuestionario tiene por objetivo conocer el perfil de los aspirantes a obtener una beca del <b>R. Ayuntamiento de Gómez Palacio</b>. La
+                     información proporcionada de aqui debe ser completamente verdadera, por ello, lee con atención cada pregunta y contesta adecuadamente.
+                  </Typography>
+                  {/* {auth.permissions.create && ( */}
+                  {/* <Link to={"pagina/1"}> */}
+                  <Button onClick={handleClickInitRequest} variant="contained" size="large">
+                     COMENZAR SOLICITUD
+                  </Button>
+                  {/* </Link> */}
+                  {/* )} */}
+               </Box>
+               {/* {sAlert.Info(`En la carga de documentos, es necesario tenerlos guardados en tú <span style="color:${colorPrimaryDark}">GALERIA DE FOTOS</span>.`)} */}
+            </>
          ) : (
             <>
                <Stepper nonLinear activeStep={activeStep} sx={{ overflowX: "auto" }}>
@@ -1264,8 +1267,13 @@ const RequestBecaView = () => {
                                     />
                                  </FormikComponent>
                                  {showModalRememberTakePhoto &&
+                                    !isMobile &&
                                     sAlert.Info(
-                                       `Si deseas tomar fotos directamente de esta página, utilice el botón de <span style="color:${colorPrimaryDark}">ABRIR CÁMARA</span> , NO tomes foto desde la selección de archivos.`
+                                       `Recuerda que los archivos sólo dében ser seleccionados desde la <span style="color:${colorPrimaryDark}; font-weight:bolder">GALERIA DE FOTOS</span>.
+                                       <br/>
+                                       <br/>
+                                      NOTA: Fotos que sean capturadas desde ésta aplicación no serán consideradas.`
+                                       // `Si deseas tomar fotos directamente de esta página, utilice el botón de <span style="color:${colorPrimaryDark}">ABRIR CÁMARA</span> , NO tomes foto desde la selección de archivos.`
                                     )}
                               </>
                            )}

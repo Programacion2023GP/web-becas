@@ -21,16 +21,20 @@ import {
    Radio,
    Checkbox,
    Divider,
-   Chip
+   Chip,
+   Dialog,
+   DialogTitle,
+   DialogContent,
+   DialogActions
 } from "@mui/material";
 import { Formik, Field, useFormikContext } from "formik";
 import InputMask from "react-input-mask";
 import propTypes from "prop-types";
 import { handleInputFormik } from "../../utils/Formats";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { NavigateNext, Visibility, VisibilityOff } from "@mui/icons-material";
 import { strengthColor, strengthIndicator } from "../../utils/password-strength";
 import Toast from "../../utils/Toast";
-import { IconCamera, IconReload } from "@tabler/icons";
+import { IconBan, IconCamera, IconPhotoSearch, IconReload } from "@tabler/icons";
 import SwitchIOSComponent from "../SwitchIOSComponent";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
@@ -1648,6 +1652,27 @@ export const setObjImg = (img, setImg) => {
 const MB = 1048576; //2621440=2.5MB
 const mySwal = withReactContent(Swal);
 
+export const SimpleDialogComponent = ({ open, onClose, onSelectFile, onSelectPhoto }) => {
+   return (
+      <Dialog open={open} onClose={onClose}>
+         <DialogTitle sx={{ textAlign: "center", pt: 1, pb: 0 }} variant="h5">
+            Selecciona una opción
+         </DialogTitle>
+         <DialogActions>
+            <Button onClick={onSelectFile} color="secondary" sx={{ flexDirection: "column", textAlign: "center", justifyContent: "center" }}>
+               <IconPhotoSearch /> Subir Archivo
+            </Button>
+            <Button onClick={onSelectPhoto} color="secondary" sx={{ flexDirection: "column", textAlign: "center", justifyContent: "center" }}>
+               <IconCameraUp /> Tomar Foto
+            </Button>
+            <Button onClick={onClose} color="inherit" sx={{ flexDirection: "column", textAlign: "center", justifyContent: "center" }}>
+               <IconBan /> Cancelar
+            </Button>
+         </DialogActions>
+      </Dialog>
+   );
+};
+
 export const FileInputComponent = ({
    xsOffset = null,
    // loading = false,
@@ -1668,17 +1693,21 @@ export const FileInputComponent = ({
    fileSizeMax = 1, // en MB
    showBtnCamera = false,
    handleUploadingFile = null,
+   showDialogFileOrPhoto = false,
    ...props
 }) => {
    const formik = useFormikContext();
    const isError = formik.touched[idName] && formik.errors[idName];
-   const inputFileRefMobile = useRef(null);
    const [uploadProgress, setUploadProgress] = useState(0);
    // const [filePreviews, setFilePreviews] = useState([]);
    const [ttShow, setTtShow] = useState("");
    const [fileSizeExceeded, setFileSizeExceeded] = useState(fileSizeMax * MB);
    const [confirmRemove, setConfirmRemove] = useState(true);
    const [fileInfo, setFileInfo] = useState(null);
+
+   const inputFileRefMobile = useRef(null);
+   const [openCameraFile, setOpenCameraFile] = useState(false);
+   const [openDialog, setOpenDialog] = useState(false);
 
    const validationQuantityImages = () => {
       if (multiple) {
@@ -1854,24 +1883,24 @@ export const FileInputComponent = ({
       setTtShow("");
    };
 
-   const handleOnChangeFileInputMobile = async (event) => {
-      const file = event.target.files[0];
-      if (file.size >= fileSizeExceeded) {
-         if (filePreviews.length == 0) setConfirmRemove(true);
-         return Toast.Info(`el archivo es demasiado pesado, intenta con un archivo menor a ${fileSizeMax}MB`);
-      }
-      if (!file.type.includes("image")) {
-         if (filePreviews.length == 0) setConfirmRemove(true);
-         return Toast.Info("el tipo de archivo no es una imagen.");
-      }
-      const dataURL = await readFileAsDataURL(file);
-      const preview = {
-         file,
-         dataURL
-      };
-      // console.log("🚀 ~ handleSetFile ~ preview:", preview);
-      await setFilePreviews([preview]);
-      await formik.setFieldValue(idName, file);
+   const handleOpenDialog = () => {
+      confirmRemove && setOpenDialog(true);
+   };
+
+   const handleCloseDialog = () => {
+      setOpenDialog(false);
+   };
+
+   const handleSelectFile = async () => {
+      await setOpenCameraFile(false);
+      setOpenDialog(false);
+      inputFileRefMobile.current.click();
+   };
+
+   const handleSelectPhoto = async () => {
+      await setOpenCameraFile(true);
+      setOpenDialog(false);
+      inputFileRefMobile.current.click();
    };
 
    useEffect(() => {
@@ -1918,20 +1947,33 @@ export const FileInputComponent = ({
                <Field name={idName} id={idName}>
                   {({ field, form }) => (
                      <>
-                        <div className={"dropzone-container"}>
+                        <div className={"dropzone-container"} onClick={isMobile && showDialogFileOrPhoto ? handleOpenDialog : undefined}>
                            <div {...getRootProps({ className: color === "red" ? "dropzone-error" : "dropzone" })}>
-                              <input
-                                 {...getInputProps()}
-                                 onChange={confirmRemove ? handleOnChangeFileInput : undefined}
-                                 type={confirmRemove ? "file" : "text"}
-                                 // ref={inputFileRefMobile}
-                                 multiple={multiple}
-                                 accept={accept}
-                                 disabled={disabled}
-                              />
+                              {isMobile && showDialogFileOrPhoto ? (
+                                 <input
+                                    {...getInputProps()}
+                                    onChange={confirmRemove ? handleOnChangeFileInput : undefined}
+                                    type={confirmRemove ? "file" : "text"}
+                                    ref={inputFileRefMobile}
+                                    multiple={multiple}
+                                    accept={accept}
+                                    disabled={disabled}
+                                    capture={openCameraFile && "environment"}
+                                 />
+                              ) : (
+                                 <input
+                                    {...getInputProps()}
+                                    onChange={confirmRemove ? handleOnChangeFileInput : undefined}
+                                    type={confirmRemove ? "file" : "text"}
+                                    // ref={isMobile && showDialogFileOrPhoto ? inputFileRefMobile : null}
+                                    multiple={multiple}
+                                    accept={accept}
+                                    disabled={disabled}
+                                 />
+                              )}
 
                               <p style={{ display: filePreviews.length > 0 ? "none" : "block", fontStyle: "italic" }}>
-                                 Arrastra y suelta archivos aquí, o haz clic para seleccionar archivos"
+                                 "Arrastra y suelta archivos aquí, o haz clic para seleccionar archivos"
                               </p>
 
                               {/* Vista previa de la imagen o PDF */}
@@ -2016,6 +2058,10 @@ export const FileInputComponent = ({
                </Field>
             </FormControl>
          </Grid>
+
+         {isMobile && showDialogFileOrPhoto && (
+            <SimpleDialogComponent open={openDialog} onClose={handleCloseDialog} onSelectFile={handleSelectFile} onSelectPhoto={handleSelectPhoto} />
+         )}
       </>
    );
 };
@@ -2048,6 +2094,7 @@ FileInputComponent.propTypes = {
 // import { isMobile } from "react-device-detect";
 // import {Box, Button, IconButton} from "@mui/material";
 import SwitchCameraIcon from "@mui/icons-material/Cameraswitch";
+import { IconCameraShare } from "@tabler/icons-react";
 // import FlashOnIcon from "@mui/icons-material/FlashOn";
 // import FlashOffIcon from "@mui/icons-material/FlashOff";
 // import { json } from "react-router-dom";
@@ -2157,11 +2204,28 @@ export const InputCameraComponent = ({ getFile }) => {
                   <IconCameraUp /> &nbsp; Abrir camara
                </Button>
                <ModalComponent open={openCamera} setOpen={setOpenCamera} modalTitle={"CÁMARA"} fullScreen={fullScreenDialog}>
-                  <video
-                     ref={videoRef}
-                     autoPlay
-                     style={{ width: "100%", maxHeight: fullScreenDialog ? "95%" : "90%", border: `5px ${colorPrimaryMain} solid`, borderRadius: "15px" }}
-                  />
+                  <Box
+                     sx={{
+                        backgroundColor: "black",
+                        display: "flex",
+                        justifyContent: "center",
+                        width: fullScreenDialog ? "100%" : "75%",
+                        maxHeight: fullScreenDialog ? "100%" : "90%",
+                        border: `5px ${colorPrimaryMain} solid`,
+                        borderRadius: "15px"
+                     }}
+                  >
+                     <video
+                        ref={videoRef}
+                        autoPlay
+                        style={{
+                           width: "75%",
+                           // maxHeight: fullScreenDialog ? "95%" : "90%",
+                           // border: `5px ${colorPrimaryMain} solid`,
+                           borderRadius: "15px"
+                        }}
+                     />
+                  </Box>
                   <Box display="flex" justifyContent="space-around" mt={1}>
                      {/* {isMobile && (
                         <Tooltip title={"Cambiar de cámara"}>
@@ -2171,7 +2235,7 @@ export const InputCameraComponent = ({ getFile }) => {
                         </Tooltip>
                      )} */}
                      <Button variant="contained" size="large" fullWidth onClick={takePhoto}>
-                        TOMAR FOTO
+                        <IconCamera /> &nbsp; TOMAR FOTO
                      </Button>
                      {/* <Tooltip title={`${!flash ? "Activar" : "Desactivar"} Flash`}>
                         <IconButton color="primary" size="large" onClick={toggleFlash}>
