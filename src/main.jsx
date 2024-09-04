@@ -16,15 +16,21 @@ import { store } from "./config/store/index.js";
 import { SnackbarProvider } from "notistack";
 import { GlobalContextProvider } from "./context/GlobalContext.jsx";
 import AuthContextProvider from "./context/AuthContext.jsx";
+import CycleContextProvider from "./context/CycleContext.jsx";
+import SettingContextProvider from "./context/SettingContext.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
    <React.StrictMode>
       <Provider store={store}>
          <SnackbarProvider maxSnack={5} anchorOrigin={{ horizontal: "right", vertical: "bottom" }}>
             <GlobalContextProvider>
-               <AuthContextProvider>
-                  <App />
-               </AuthContextProvider>
+               <CycleContextProvider>
+                  <AuthContextProvider>
+                     <SettingContextProvider>
+                        <App />
+                     </SettingContextProvider>
+                  </AuthContextProvider>
+               </CycleContextProvider>
             </GlobalContextProvider>
          </SnackbarProvider>
       </Provider>

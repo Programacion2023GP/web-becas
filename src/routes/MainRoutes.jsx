@@ -31,7 +31,6 @@ const AnswerScoreContextProvider = Loadable(lazy(() => import("../context/Answer
 const AnswersScoresView = Loadable(lazy(() => import("../views/settings/AnswersScoresView/Index")));
 const SettingsView = Loadable(lazy(() => import("../views/settings/SettingsView/Index")));
 const DashboardIndex = Loadable(lazy(() => import("../views/dashboard/DashboardView/Index")));
-const SettingContextProvider = Loadable(lazy(() => import("../context/SettingContext")));
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import("../views/dashboard/Default")));
@@ -138,11 +137,7 @@ const MainRoutes = {
             },
             {
                path: "ajustes",
-               element: (
-                  <SettingContextProvider>
-                     <SettingsView />
-                  </SettingContextProvider>
-               )
+               element: <SettingsView />
                // loader: loaderIndex
             }
          ]

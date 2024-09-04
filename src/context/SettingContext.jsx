@@ -7,7 +7,19 @@ const SettingContext = createContext();
 
 const formDataInitialState = {
    id: 0,
-   filtered_state_ids: ""
+   description: "",
+   monthly_income_min: "",
+   total_expenses_min: "",
+   budget: "",
+   total_payments: "",
+   payment_frequency: "",
+   max_approved: "",
+   opportunities: "",
+   request_enabled: "",
+   start_date_request: "",
+   closing_date_request: "",
+   cycle_id: "",
+   active: ""
 };
 
 export default function SettingContextProvider({ children }) {
@@ -78,7 +90,7 @@ export default function SettingContextProvider({ children }) {
    const showSetting = async (id) => {
       try {
          let res = CorrectRes;
-         const axiosData = await Axios.get(`/settings/${id}`);
+         const axiosData = await Axios.get(`/settings/id/${id}`);
          res = axiosData.data.data;
          setSetting(res.result);
          setFormData(res.result);
@@ -96,7 +108,7 @@ export default function SettingContextProvider({ children }) {
    const createSetting = async (setting) => {
       let res = CorrectRes;
       try {
-         const axiosData = await Axios.post("/settings", setting);
+         const axiosData = await Axios.post(`/settings/create/${setting.id}`, setting);
          res = axiosData.data.data;
 
          // socket.send("getSettings()");
@@ -114,7 +126,7 @@ export default function SettingContextProvider({ children }) {
    const updateSetting = async (setting) => {
       let res = CorrectRes;
       try {
-         const axiosData = await Axios.put("/settings", setting);
+         const axiosData = await Axios.put(`/settings/update/${setting.id}`, setting);
          res = axiosData.data.data;
          getSettings();
          // return res;
@@ -130,7 +142,7 @@ export default function SettingContextProvider({ children }) {
    const deleteSetting = async (id) => {
       try {
          let res = CorrectRes;
-         const axiosData = await Axios.delete(`/settings/${id}`);
+         const axiosData = await Axios.delete(`/settings/id/${id}`);
          // console.log("deleteSetting() axiosData", axiosData.data);
          getSettings();
          res = axiosData.data.data;

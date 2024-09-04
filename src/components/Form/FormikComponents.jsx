@@ -1133,7 +1133,7 @@ export const DatePickerComponent = ({ loading = false, col, idName, label, forma
 
    return (
       <Grid xs={12} md={col} sx={{ display: hidden ? "none" : "flex", flexDirection: "column", alignItems: "center", mb: marginBottom ? `${marginBottom} 0` : 2 }}>
-         <FormControl fullWidth sx={{ margin: size == "small" ? "0rem 0" : "1rem 0" }} size={size}>
+         <FormControl fullWidth sx={{ margin: size == "small" ? "0rem 0" : "0rem 0" }} size={size}>
             <Field name={idName} id={idName}>
                {({ field, form }) => (
                   <>
