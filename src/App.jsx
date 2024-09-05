@@ -10,6 +10,10 @@ import { Backdrop } from "@mui/material";
 import { useGlobalContext } from "./context/GlobalContext";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import isBetween from "dayjs/plugin/isBetween";
+import dayjs from "dayjs";
+// var isBetween = require("dayjs/plugin/isBetween");
+dayjs.extend(isBetween);
 
 const App = () => {
    const customization = useSelector((state) => state.customization);

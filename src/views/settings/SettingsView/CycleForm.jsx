@@ -1,13 +1,17 @@
 import * as Yup from "yup";
 
 import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
-import { Typography } from "@mui/material";
+import { Button, FormControlLabel, SwipeableDrawer, Switch, Tooltip, Typography } from "@mui/material";
 import { useState } from "react";
 import { useCycleContext } from "../../../context/CycleContext";
 import { useEffect } from "react";
 import Toast from "../../../utils/Toast";
 import { useGlobalContext } from "../../../context/GlobalContext";
 import { DatePickerComponent, DividerComponent, FormikComponent, InputComponent } from "../../../components/Form/FormikComponents";
+import { formatDatetime } from "../../../utils/Formats";
+import { Box } from "@mui/system";
+import { IconCalendarTime } from "@tabler/icons";
+import { IconCalendarX } from "@tabler/icons-react";
 
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
 const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
@@ -101,10 +105,6 @@ const CycleForm = () => {
 
    useEffect(() => {
       try {
-         if (currentCycle.id) {
-            console.log("hay current", currentCycle);
-            setFormData(currentCycle);
-         }
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -112,24 +112,66 @@ const CycleForm = () => {
    }, [formData]);
 
    return (
-      <FormikComponent
-         key={"formikComponentCycle"}
-         initialValues={formData}
-         validationSchema={validationSchema}
-         onSubmit={onSubmit}
-         textBtnSubmit={"GUARDAR"}
-         formikRef={formikRef}
-         handleCancel={handleCancel}
-      >
-         {JSON.stringify(formData)}
-         <Grid container xs={12} spacing={2}>
-            <DividerComponent title={<Typography variant="h3">DATOS DEL CICLO ACTUAL</Typography>} fontWeight={"bold"} textAlign="center" mb={1} />
-
-            <InputComponent col={4} idName={"cycle_name"} label={"Nombre del Ciclo"} placeholder={"Ciclo Enero - Junio 2024"} />
-            <DatePickerComponent col={4} idName={"start_date"} label={"Fehca de Inicio "} format={"DD/MM/YYYY"} />
-            <DatePickerComponent col={4} idName={"closing_date"} label={"Fehca de Cierre "} format={"DD/MM/YYYY"} />
+      <>
+         <Grid container xs={12} spacing={2} justifyContent={"space-between"} alignItems={"center"}>
+            {currentCycle ? (
+               <>
+                  <Typography variant="h4">CICLO ACTUAL VIGENTE:</Typography>
+                  <Tooltip title="Nombre del ciclo">
+                     <Typography variant="h4">{currentCycle.cycle_name}</Typography>
+                  </Tooltip>
+                  <Tooltip title="Fecha de Inicio">
+                     <Typography variant="h4" display={"flex"} alignItems={"end"}>
+                        <IconCalendarTime />
+                        &nbsp; {currentCycle.start_date}
+                     </Typography>
+                  </Tooltip>
+                  <Tooltip title="Fecha de Termino">
+                     <Typography variant="h4" display={"flex"} alignItems={"end"}>
+                        <IconCalendarX />
+                        &nbsp; {currentCycle.closing_date}
+                     </Typography>
+                  </Tooltip>
+               </>
+            ) : (
+               <Typography variant="h4">NO HAY CICLO ACTIVO</Typography>
+            )}
+            <Button color="secondary" sx={{ fontWeight: "bolder" }} onClick={() => setOpenDialog(true)}>
+               NUEVO CICLO
+            </Button>
          </Grid>
-      </FormikComponent>
+         <SwipeableDrawer anchor={"top"} open={openDialog} onClose={toggleDrawer(false)} onOpen={toggleDrawer(true)}>
+            <Box role="presentation" p={3} pt={5} className="">
+               <Grid container mb={2}>
+                  <Grid item xs={8} pr={3}>
+                     <Typography variant="h2">{formTitle}</Typography>
+                  </Grid>
+                  {/* <Grid item xs={4}>
+                     <FormControlLabel
+                        sx={{ float: "right", color: colorLabelcheck }}
+                        control={<Switch checked={checkAdd} onChange={(e) => handleChangeCheckAdd(e)} />}
+                        label="Seguir Agregando"
+                     />
+                  </Grid> */}
+               </Grid>
+               <FormikComponent
+                  key={"formikComponentCycle"}
+                  initialValues={formData}
+                  validationSchema={validationSchema}
+                  onSubmit={onSubmit}
+                  textBtnSubmit={"GUARDAR"}
+                  formikRef={formikRef}
+                  handleCancel={handleCancel}
+               >
+                  <Grid container xs={12} spacing={2}>
+                     <InputComponent col={4} idName={"cycle_name"} label={"Nombre del Ciclo"} placeholder={"Ciclo Enero - Junio 2024"} />
+                     <DatePickerComponent col={4} idName={"start_date"} label={"Fehca de Inicio "} format={"DD/MM/YYYY"} />
+                     <DatePickerComponent col={4} idName={"closing_date"} label={"Fehca de Cierre "} format={"DD/MM/YYYY"} />
+                  </Grid>
+               </FormikComponent>
+            </Box>
+         </SwipeableDrawer>
+      </>
    );
 };
 export default CycleForm;

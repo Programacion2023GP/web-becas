@@ -49,7 +49,7 @@ export default function CycleContextProvider({ children }) {
          // console.log("🚀 ~ getCurrentCycle ~ res:", res);
          if (!res.status) return;
          const current_cycle = res.result;
-         console.log("🚀 ~ getCurrentCycle ~ current_cycle:", current_cycle);
+         // console.log("🚀 ~ getCurrentCycle ~ current_cycle:", current_cycle);
          localStorage.setItem("currentCycle", JSON.stringify(current_cycle));
          setCurrentCycle(current_cycle);
          setFormData(current_cycle);

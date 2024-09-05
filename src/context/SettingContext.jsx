@@ -6,20 +6,20 @@ import { CorrectRes, ErrorRes } from "../utils/Response";
 const SettingContext = createContext();
 
 const formDataInitialState = {
-   id: 0,
+   id: null,
    description: "",
-   monthly_income_min: "",
-   total_expenses_min: "",
-   budget: "",
-   total_payments: "",
+   monthly_income_min: null,
+   total_expenses_min: null,
+   budget: null,
+   total_payments: null,
    payment_frequency: "",
-   max_approved: "",
-   opportunities: "",
-   request_enabled: "",
+   max_approved: null,
+   opportunities: 1,
+   request_enabled: false,
    start_date_request: "",
    closing_date_request: "",
-   cycle_id: "",
-   active: ""
+   cycle_id: null,
+   active: true
 };
 
 export default function SettingContextProvider({ children }) {
@@ -32,6 +32,7 @@ export default function SettingContextProvider({ children }) {
 
    const [settings, setSettings] = useState([]);
    const [setting, setSetting] = useState(null);
+   const [currentSetting, setCurrentSetting] = useState(JSON.parse(localStorage.getItem("currentSetting")) || formDataInitialState);
    const [formData, setFormData] = useState(formDataInitialState);
 
    const resetFormData = () => {
@@ -47,6 +48,28 @@ export default function SettingContextProvider({ children }) {
          setSetting(formDataInitialState);
       } catch (error) {
          console.log("Error en resetSetting:", error);
+      }
+   };
+
+   const getCurrentSetting = async () => {
+      try {
+         let res = CorrectRes;
+         const axiosData = await Axios.get(`/settings/current`);
+         res = axiosData.data.data;
+         // console.log("🚀 ~ getCurrentSetting ~ res:", res);
+         if (!res.status) return;
+         const current_setting = res.result;
+         // console.log("🚀 ~ getCurrentSetting ~ current_setting:", current_setting);
+         localStorage.setItem("currentSetting", JSON.stringify(current_setting));
+         setCurrentSetting(current_setting);
+         setFormData(current_setting);
+
+         return res;
+      } catch (error) {
+         const res = ErrorRes;
+         console.log(error);
+         res.message = error;
+         res.alert_text = error;
       }
    };
 
@@ -72,7 +95,7 @@ export default function SettingContextProvider({ children }) {
       try {
          const res = CorrectRes;
          const axiosData = await Axios.get(`/settings/selectIndex`);
-         // console.log("el selectedDeSettings", axiosData);
+         // console.log("el selectedDeSettingss", axiosData);
          res.result.settings = axiosData.data.data.result;
          // res.result.settings.unshift({ id: 0, label: "Selecciona una opción..." });
          setSettings(axiosData.data.data.result);
@@ -108,7 +131,7 @@ export default function SettingContextProvider({ children }) {
    const createSetting = async (setting) => {
       let res = CorrectRes;
       try {
-         const axiosData = await Axios.post(`/settings/create/${setting.id}`, setting);
+         const axiosData = await Axios.post("/settings/create", setting);
          res = axiosData.data.data;
 
          // socket.send("getSettings()");
@@ -142,7 +165,7 @@ export default function SettingContextProvider({ children }) {
    const deleteSetting = async (id) => {
       try {
          let res = CorrectRes;
-         const axiosData = await Axios.delete(`/settings/id/${id}`);
+         const axiosData = await Axios.delete(`/settings/delete/${id}`);
          // console.log("deleteSetting() axiosData", axiosData.data);
          getSettings();
          res = axiosData.data.data;
@@ -167,6 +190,7 @@ export default function SettingContextProvider({ children }) {
             settings,
             setting,
             formData,
+            setFormData,
             resetFormData,
             getSettings,
             getSettingsSelectIndex,
@@ -180,7 +204,10 @@ export default function SettingContextProvider({ children }) {
             setFormTitle,
             singularName,
             pluralName,
-            formikRef
+            formikRef,
+            getCurrentSetting,
+            currentSetting,
+            setCurrentSetting
          }}
       >
          {children}
