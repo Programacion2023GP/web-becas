@@ -8,7 +8,7 @@ import { useEffect } from "react";
 import Toast from "../../../utils/Toast";
 import { colorPrimaryDark, gpcLight, useGlobalContext } from "../../../context/GlobalContext";
 import { DatePickerComponent, DividerComponent, FormikComponent, InputComponent, Select2Component } from "../../../components/Form/FormikComponents";
-import { formatDatetime } from "../../../utils/Formats";
+import { formatCurrency, formatDatetime } from "../../../utils/Formats";
 import { Box } from "@mui/system";
 import { IconCalendarTime } from "@tabler/icons";
 import { IconCalendarX } from "@tabler/icons-react";
@@ -33,7 +33,7 @@ const SettingForm = () => {
       formTitle,
       setFormTitle,
       formikRef,
-      currentSetting
+      currentSettings
    } = useSettingContext();
    const { currentCycle } = useCycleContext();
    const [checkAdd, setCheckAdd] = useState(checkAddInitialState);
@@ -123,6 +123,12 @@ const SettingForm = () => {
 
    useEffect(() => {
       try {
+         (async () => {
+            if (currentSettings) {
+               // console.log("🚀 ~ useEffect ~ currentSettings:", currentSettings);
+               await setFormData(currentSettings);
+            }
+         })();
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -133,13 +139,15 @@ const SettingForm = () => {
       <>
          <FormikComponent
             key={"formikComponent"}
-            initialValues={formData}
+            initialValues={currentSettings ? currentSettings : formData}
             validationSchema={validationSchema}
             onSubmit={onSubmit}
-            textBtnSubmit={"GUARDAR"}
+            textBtnSubmit={"GUARDAR CONFIGURACIÓN"}
             formikRef={formikRef}
             handleCancel={handleCancel}
          >
+            <InputComponent col={12} idName={"id"} label={"ID"} placeholder={"0"} type={"number"} hidden={true} />
+
             <InputComponent col={12} idName={"description"} label={"Descripción de la configuración"} placeholder={"..."} disabled={!currentCycle} />
             <Grid container xs={12} spacing={2}>
                <Grid xs={12} md={6}>
@@ -238,7 +246,12 @@ const SettingForm = () => {
                         </Typography>
                         <Grid container spacing={2} mx={0.5}>
                            <Grid xs={12}>
-                              <Typography variant="h5">Monto por Beca: ${formData.budget} </Typography>
+                              <Typography variant="h5" mb={2}>
+                                 Monto por Beca: {formatCurrency(currentSettings?.budget / currentSettings?.max_approved)}
+                              </Typography>
+                              <Typography variant="h5" mb={2}>
+                                 Monto por Pago : {formatCurrency(currentSettings?.budget / currentSettings?.max_approved / currentSettings?.total_payments)}
+                              </Typography>
                            </Grid>
                         </Grid>
                      </li>

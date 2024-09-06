@@ -1,4 +1,8 @@
+import dayjs from "dayjs";
+import sAlert from "./sAlert";
 import Toast from "./Toast";
+import { colorPrimaryDark } from "../context/GlobalContext";
+import { formatDatetime } from "./Formats";
 
 export const validateImageRequired = (valuesImg, msg = "Imagen requerida") => {
    if (
@@ -48,3 +52,30 @@ export function validateCURP(curp) {
 
    return true; //Validado
 }
+
+export const validatePermissionToRequestBeca = async (currentSettings) => {
+   // VERIFICAR QUE HAYA CONFIGURACIÓN
+   if (!currentSettings) {
+      sAlert.Info("Por el momento no se pueden realizar solcitudes, comuniquese con el departamento de Eduación");
+      return false;
+   }
+   const today = dayjs();
+   const start_date_request = dayjs(currentSettings.start_date_request);
+   const closing_date_request = dayjs(currentSettings.closing_date_request);
+   // VERIFICAR QUE ESTE EN FECHA DE SOLICITUDES
+   if (!today.isBetween(start_date_request, closing_date_request, "day", "[]")) {
+      sAlert.Info(
+         `NO ES POSIBLE SOLICITAR BECAS EN ESTE MOMENTO 
+         <br/>
+         <br/>
+         el tiempo de solicitar becas es del <span style="color:${colorPrimaryDark}; font-weight:bolder">${formatDatetime(
+            start_date_request,
+            null,
+            "LL"
+         )}</span> al <span style="color:${colorPrimaryDark}; font-weight:bolder">${formatDatetime(closing_date_request, null, "LL")}</span>`
+      );
+      return false;
+   }
+   // VERIFICAR QUE EL USUARIO NO HAYA PEDIDO BECA ANTERIORMENTE EN ESTE CICLO
+   return true;
+};

@@ -10,7 +10,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { useAuthContext } from "../../context/AuthContext";
 import sAlert from "../../utils/sAlert";
 import IconSended from "../../components/icons/IconSended";
-import { formatDatetimeToSQL } from "../../utils/Formats";
+import { formatDatetime, formatDatetimeToSQL } from "../../utils/Formats";
 
 import { useDisabilityContext } from "../../context/DisabilityContext";
 import { useSchoolContext } from "../../context/SchoolContext";
@@ -18,7 +18,7 @@ import { useRelationshipContext } from "../../context/RelationshipContext";
 import { setObjImg } from "../../components/Form/InputFileComponent";
 import { useTutorContext } from "../../context/TutorContext";
 import { useFamilyContext } from "../../context/FamilyContext";
-import { validateImageRequired } from "../../utils/Validations";
+import { validateImageRequired, validatePermissionToRequestBeca } from "../../utils/Validations";
 import LogoGPD from "../../assets/images/icon.png";
 import { FormikComponent } from "../../components/Form/FormikComponents";
 import InputsFormik1 from "./InputsFormik1";
@@ -31,6 +31,8 @@ import InputsFormik7 from "./InputsFormik7";
 import InputsFormik8 from "./InputsFormik8";
 import InputsFormik9 from "./InputsFormik9";
 import { isMobile } from "react-device-detect";
+import { useSettingContext } from "../../context/SettingContext";
+import dayjs from "dayjs";
 // import { useNavigateTo } from "../../../hooks/useRedirectTo";
 
 const RequestBecaView = () => {
@@ -43,6 +45,7 @@ const RequestBecaView = () => {
    // const [folio, setFolio] = useState(null);
 
    const { setLoading, setLoadingAction } = useGlobalContext();
+   const { currentSettings, getCurrentSettings } = useSettingContext();
 
    const { families } = useFamilyContext();
 
@@ -69,6 +72,9 @@ const RequestBecaView = () => {
    const pageActiveRef = useRef(null);
    const [showModalRemember, setShowModalRemember] = useState(false);
    const [showModalRememberTakePhoto, setShowModalRememberTakePhoto] = useState(false);
+
+   const [notifiactedIncome, setNotifiactedIncome] = useState(false);
+   const [notifiactedExpenses, setNotifiactedExpenses] = useState(false);
 
    const inputRefSchoolId = useRef(null);
    const formik = useRef(null);
@@ -338,9 +344,12 @@ const RequestBecaView = () => {
       </Box>
    );
 
-   const handleClickInitRequest = () => {
+   const handleClickInitRequest = async () => {
       // console.log("clickk");
       handleReset();
+
+      if (!(await validatePermissionToRequestBeca(currentSettings))) return;
+
       const pagesIA = pageInAnimation;
       // console.log("🚀 ~ handleClickInitRequest ~ pagesIA:", pagesIA);
       pagesIA[pagina] = false;
@@ -452,7 +461,20 @@ const RequestBecaView = () => {
 
    const onSubmit4 = async (values, { setSubmitting, setErrors }) => {
       try {
-         // console.log("formData en submit3", formData);
+         // return console.log("formData en submit3", formData);
+         let notifiacted_income = true;
+         if (!notifiactedIncome) {
+            notifiacted_income = false;
+            if (values.monthly_income < currentSettings.monthly_income_min) {
+               sAlert.Info(`¿Tus cantidades son correctas? <br/>
+               <br/>
+               Recuerda que los gastos son <span style="color:${colorPrimaryDark}; font-weight:bolder">MENSUALES</span>`);
+               notifiacted_income = true;
+            }
+         }
+         setNotifiactedIncome(notifiacted_income);
+         if (!notifiactedIncome && values.monthly_income < currentSettings.monthly_income_min) return;
+
          values.finished = true;
          await setFormData({ ...formData, ...values });
          // await setFormData(values);
@@ -483,6 +505,20 @@ const RequestBecaView = () => {
    const onSubmit5 = async (values, { setSubmitting, setErrors }) => {
       try {
          // console.log("formData en submit3", formData);
+
+         let notifiacted_expenses = true;
+         if (!notifiactedExpenses) {
+            notifiacted_expenses = false;
+            if (values.total_expenses < currentSettings.total_expenses_min) {
+               sAlert.Info(`¿Tus cantidades son correctas? <br/>
+               <br/>
+               Recuerda que los gastos son <span style="color:${colorPrimaryDark}; font-weight:bolder">MENSUALES</span>`);
+               notifiacted_expenses = true;
+            }
+         }
+         setNotifiactedExpenses(notifiacted_expenses);
+         if (!notifiactedExpenses && values.total_expenses < currentSettings.total_expenses_min) return;
+
          values.b3_finished = true;
          await setFormData({ ...formData, ...values });
          // await setFormData(values);
@@ -974,19 +1010,25 @@ const RequestBecaView = () => {
    }, [animate]);
 
    useEffect(() => {
-      if (showModalRemember && pagina == 1) setShowModalRemember(true);
-      else setShowModalRemember(false);
-      if (pagina == 9 && accion != "revision") {
-         setShowModalRememberTakePhoto(true);
-         setTimeout(() => {
-            setShowModalRememberTakePhoto(false);
-         }, 500);
-      } else setShowModalRememberTakePhoto(false);
+      (async () => {
+         console.log("obtenrer settings");
+         setNotifiactedIncome(false);
+         setNotifiactedExpenses(false);
+         await getCurrentSettings();
+         if (showModalRemember && pagina == 1) setShowModalRemember(true);
+         else setShowModalRemember(false);
+         if (pagina == 9 && accion != "revision") {
+            setShowModalRememberTakePhoto(true);
+            setTimeout(() => {
+               setShowModalRememberTakePhoto(false);
+            }, 500);
+         } else setShowModalRememberTakePhoto(false);
+      })();
    }, [pagina]);
 
    return (
       <Box sx={{ width: "100%", height: "100%" }}>
-         <Typography variant="h1" color={"#364152"} mb={2}>
+         <Typography variant="h1" color={"#364152"} mb={1}>
             Solicitud de Beca
          </Typography>
          {pagina == 0 ? (
@@ -1033,8 +1075,8 @@ const RequestBecaView = () => {
                      const labelProps = {};
                      if (stepFailed === index) {
                         labelProps.optional = (
-                           <Typography variant="caption" color="error">
-                              Hay un campo invalido en esta sección.
+                           <Typography variant="caption" fontSize={11} color="error">
+                              Campo invalido en la sección.
                            </Typography>
                         );
 
@@ -1267,7 +1309,7 @@ const RequestBecaView = () => {
                                     />
                                  </FormikComponent>
                                  {showModalRememberTakePhoto &&
-                                    !isMobile &&
+                                    isMobile &&
                                     sAlert.Info(
                                        `Recuerda que los archivos sólo dében ser seleccionados desde la <span style="color:${colorPrimaryDark}; font-weight:bolder">GALERIA DE FOTOS</span>.
                                        <br/>

@@ -10,15 +10,18 @@ const InputsFormik5 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
    const formik = useFormikContext();
 
    const handleChangeTotal = (e, values, setFieldValue) => {
+      // console.log("🚀 ~ handleChangeTotal ~ values:", values);
+      console.log("a cambiar valores");
       // console.log("value", e.target.name);
       const name = e.target.name;
       const value = Number(e.target.value) || 0;
+      console.log("🚀 ~ handleChangeTotal ~ value:", value);
       const b3_food = name == "b3_food" ? value : values.b3_food,
          b3_transport = name == "b3_transport" ? value : values.b3_transport,
          b3_living_place = name == "b3_living_place" ? value : values.b3_living_place,
          b3_services = name == "b3_services" ? value : values.b3_services,
          b3_automobile = name == "b3_automobile" ? value : values.b3_automobile;
-      const total_expenses = b3_food + b3_transport + b3_living_place + b3_services + b3_automobile;
+      const total_expenses = Number(b3_food) + Number(b3_transport) + Number(b3_living_place) + Number(b3_services) + Number(b3_automobile);
       setFieldValue("total_expenses", total_expenses);
    };
 

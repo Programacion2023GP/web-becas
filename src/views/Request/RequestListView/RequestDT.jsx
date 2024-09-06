@@ -25,11 +25,14 @@ import IconDelete from "../../../components/icons/IconDelete";
 import * as XLSX from "xlsx";
 import ModalPayment from "./ModalPayment";
 import ModalApprove from "./ModalApprove";
+import { validatePermissionToRequestBeca } from "../../../utils/Validations";
+import { useSettingContext } from "../../../context/SettingContext";
 
 const RequestBecaDT = ({ status = null }) => {
    const { pago } = useParams();
    const { auth } = useAuthContext();
    const { setLoading, setLoadingAction, setOpenDialog } = useGlobalContext();
+   const { currentSettings } = useSettingContext();
    const {
       singularName,
       pluralName,
@@ -210,7 +213,7 @@ const RequestBecaDT = ({ status = null }) => {
       { field: "student", header: "Alumno", sortable: true, functionEdit: null, body: StudentBodyTemplate, filter: false, filterField: null },
       { field: "average", header: "Promedio", sortable: true, functionEdit: null, body: AverageBodyTemplate, filter: false, filterField: null }
    ];
-   ["alta", "en-revision"].includes(status) &&
+   [undefined, null, "", "alta", "en-revision"].includes(status) &&
       columns.push(
          {
             field: "status",
@@ -233,9 +236,8 @@ const RequestBecaDT = ({ status = null }) => {
       );
    columns.push(
       { field: "created_at", header: "Fecha de Solicitud", sortable: true, functionEdit: null, body: RequestDateBodyTemplate, filter: false, filterField: null },
-      { field: "end_date", header: "Fecha de Termino", sortable: true, functionEdit: null, body: EndDateBodyTemplate, filter: false, filterField: null }
-   ),
-      columns.push({
+      { field: "end_date", header: "Fecha de Termino", sortable: true, functionEdit: null, body: EndDateBodyTemplate, filter: false, filterField: null },
+      {
          field: "socioeconomic_study",
          header: "Estudio Socio-Económico",
          sortable: true,
@@ -243,7 +245,8 @@ const RequestBecaDT = ({ status = null }) => {
          body: SocioeconomicStudyBodyTemplate,
          filter: true,
          filterField: null
-      });
+      }
+   );
    (auth.permissions.more_permissions.includes("Ver Puntaje") || auth.permissions.more_permissions.includes(`todas`)) &&
       columns.push({ field: "score_total", header: "Puntaje", sortable: true, functionEdit: null, body: ScoreTotalBodyTemplate, filter: false, filterField: null });
    pago &&
@@ -263,6 +266,17 @@ const RequestBecaDT = ({ status = null }) => {
       );
 
    const mySwal = withReactContent(Swal);
+
+   const handleClickContinue = async (current_page, folio) => {
+      try {
+         if (!(await validatePermissionToRequestBeca(currentSettings))) return;
+
+         window.open(`#/app/solicitud-beca/pagina/${current_page}/folio/${folio}`, "_blank");
+      } catch (error) {
+         console.log(error);
+         Toast.Error(error);
+      }
+   };
 
    const handleClickView = async (obj) => {
       // console.log("🚀 ~ handleClickView ~ obj:", obj)
@@ -340,8 +354,10 @@ const RequestBecaDT = ({ status = null }) => {
       }
    };
 
-   const handleClickAdd = () => {
+   const handleClickAdd = async () => {
       try {
+         if (!(await validatePermissionToRequestBeca(currentSettings))) return;
+
          location.hash = "/app/solicitud-beca";
       } catch (error) {
          console.log(error);
@@ -417,10 +433,8 @@ const RequestBecaDT = ({ status = null }) => {
          <ButtonGroup variant="outlined">
             {obj.end_date == null && (
                <Tooltip title={`Solicitud ${folio}`} placement="top">
-                  <Button color="dark">
-                     <Link to={`/app/solicitud-beca/pagina/${current_page}/folio/${folio}`} target="_blank" style={{ textDecoration: "none" }}>
-                        Continuar
-                     </Link>
+                  <Button color="dark" onClick={() => handleClickContinue(current_page, obj.folio)}>
+                     Continuar
                   </Button>
                </Tooltip>
             )}

@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useRef, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { Axios } from "./AuthContext";
 import { CorrectRes, ErrorRes } from "../utils/Response";
 // import { socket } from "./GlobalContext";
@@ -32,7 +32,7 @@ export default function SettingContextProvider({ children }) {
 
    const [settings, setSettings] = useState([]);
    const [setting, setSetting] = useState(null);
-   const [currentSetting, setCurrentSetting] = useState(JSON.parse(localStorage.getItem("currentSetting")) || formDataInitialState);
+   const [currentSettings, setCurrentSettings] = useState(JSON.parse(localStorage.getItem("currentSettings")) || formDataInitialState);
    const [formData, setFormData] = useState(formDataInitialState);
 
    const resetFormData = () => {
@@ -51,18 +51,18 @@ export default function SettingContextProvider({ children }) {
       }
    };
 
-   const getCurrentSetting = async () => {
+   const getCurrentSettings = async () => {
       try {
          let res = CorrectRes;
          const axiosData = await Axios.get(`/settings/current`);
          res = axiosData.data.data;
-         // console.log("🚀 ~ getCurrentSetting ~ res:", res);
+         // console.log("🚀 ~ getCurrentSettings ~ res:", res);
          if (!res.status) return;
-         const current_setting = res.result;
-         // console.log("🚀 ~ getCurrentSetting ~ current_setting:", current_setting);
-         localStorage.setItem("currentSetting", JSON.stringify(current_setting));
-         setCurrentSetting(current_setting);
-         setFormData(current_setting);
+         const current_settings = res.result;
+         // console.log("🚀 ~ getCurrentSettings ~ current_settings:", current_settings);
+         localStorage.setItem("currentSettings", JSON.stringify(current_settings));
+         setCurrentSettings(current_settings);
+         setFormData(current_settings);
 
          return res;
       } catch (error) {
@@ -81,6 +81,7 @@ export default function SettingContextProvider({ children }) {
          res.result.settings = axiosData.data.data.result;
          setSettings(axiosData.data.data.result);
          // console.log("settings", settings);
+         await getCurrentSettings();
 
          return res;
       } catch (error) {
@@ -135,6 +136,7 @@ export default function SettingContextProvider({ children }) {
          res = axiosData.data.data;
 
          // socket.send("getSettings()");
+         await getCurrentSettings();
 
          getSettings();
       } catch (error) {
@@ -151,7 +153,8 @@ export default function SettingContextProvider({ children }) {
       try {
          const axiosData = await Axios.put(`/settings/update/${setting.id}`, setting);
          res = axiosData.data.data;
-         getSettings();
+         await getSettings();
+         await getCurrentSettings();
          // return res;
       } catch (error) {
          res = ErrorRes;
@@ -167,8 +170,9 @@ export default function SettingContextProvider({ children }) {
          let res = CorrectRes;
          const axiosData = await Axios.delete(`/settings/delete/${id}`);
          // console.log("deleteSetting() axiosData", axiosData.data);
-         getSettings();
+         await getSettings();
          res = axiosData.data.data;
+         await getCurrentSettings();
          // console.log("res", res);
          return res;
       } catch (error) {
@@ -183,6 +187,12 @@ export default function SettingContextProvider({ children }) {
    //    console.log("el useEffect de SettingContext");
    //    getSettings();
    // });
+
+   // useMemo(async () => {
+   //    console.log("soy un memo");
+   //    const { result } = await getCurrentSettings();
+   //    setCurrentSettings(result);
+   // }, []);
 
    return (
       <SettingContext.Provider
@@ -205,9 +215,9 @@ export default function SettingContextProvider({ children }) {
             singularName,
             pluralName,
             formikRef,
-            getCurrentSetting,
-            currentSetting,
-            setCurrentSetting
+            getCurrentSettings,
+            currentSettings,
+            setCurrentSettings
          }}
       >
          {children}

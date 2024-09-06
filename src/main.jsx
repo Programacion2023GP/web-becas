@@ -25,11 +25,13 @@ ReactDOM.createRoot(document.getElementById("root")).render(
          <SnackbarProvider maxSnack={5} anchorOrigin={{ horizontal: "right", vertical: "bottom" }}>
             <GlobalContextProvider>
                <CycleContextProvider>
-                  <AuthContextProvider>
-                     <SettingContextProvider>
-                        <App />
-                     </SettingContextProvider>
-                  </AuthContextProvider>
+                  <SettingContextProvider>
+                     <AuthContextProvider>
+                        <SettingContextProvider>
+                           <App />
+                        </SettingContextProvider>
+                     </AuthContextProvider>
+                  </SettingContextProvider>
                </CycleContextProvider>
             </GlobalContextProvider>
          </SnackbarProvider>

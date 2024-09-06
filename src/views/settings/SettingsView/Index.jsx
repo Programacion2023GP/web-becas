@@ -18,15 +18,14 @@ const SettingsView = () => {
    // const { result } = useLoaderData();
    const { setLoading } = useGlobalContext();
    const { currentCycle, getCurrentCycle } = useCycleContext();
-   const { pluralName } = useSettingContext();
-   const formikRefSettings = useRef(null);
-   // const { answerScore, getAnswerScores, getAnswerScoreActive } = useAnswerScoreContext();
+   const { pluralName, getCurrentSettings } = useSettingContext();
 
    useEffect(() => {
       try {
          (async () => {
             setLoading(true);
             await getCurrentCycle();
+            await getCurrentSettings();
             setLoading(false);
          })();
       } catch (error) {
@@ -60,11 +59,11 @@ const SettingsView = () => {
    );
 };
 
-// export const loaderIndexAnswerScoresView = async () => {
+// export const loaderIndexSettingsView = async () => {
 //    try {
 //       const res = CorrectRes;
-//       const axiosAnswerScores = await Axios.get("/answerScores/selectIndex");
-//       res.result.answerScores = axiosAnswerScores.data.data.result;
+//       const axiosSettings = await Axios.get("/answerScores/selectIndex");
+//       res.result.answerScores = axiosSettings.data.data.result;
 //       res.result.answerScores.unshift({ id: 0, label: "Selecciona una opción..." });
 //       // // console.log(res);
 
