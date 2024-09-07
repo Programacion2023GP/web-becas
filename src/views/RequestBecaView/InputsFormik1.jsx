@@ -22,7 +22,7 @@ const InputsFormik1 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
          // console.log(axiosReponse);
 
          if (axiosReponse.result == null)
-            return sAlert.Info("El CURP ingresado no está registrado, veritifíca que este correcto para guardarse al finalizar esta solicitud.");
+            return sAlert.Info("El CURP ingresado no está registrado, verifica que este correcto para guardarse al finalizar esta solicitud.");
 
          // console.log("CURP - axiosReponse.result", axiosReponse.result);
          await setFieldValue("tutor_data_id", axiosReponse.result.id);

@@ -37,22 +37,8 @@ const initialStateCounters = {
 };
 
 export const GlobalContextProvider = ({ children }) => {
-   // // const [loading, setLoading] = useState(true);
-   // // const [loadingAction, setLoadingAction] = useState(false);
-   // const [cursorLoading, setCursorLoading] = useState(false);
-   // // const [openDialog, setOpenDialog] = useState(false);
-   // const [bgImage, setBgImage] = useState("none");
-
-   // const [loadLogo, setLoadLogo] = useState(true);
-   // const [load, setLoad] = useState(true);
-   // const [loadAction, setLoadAction] = useState(false);
-   // const [openDialog, setOpenDialog] = useState(false);
-
-   // const [loadLogo, setLoadLogo] = useState(true);
    const [load, setLoad] = useState(true);
    const [loadAction, setLoadAction] = useState(false);
-   // const [loading, setLoading] = useState(true);
-   // const [loadingAction, setLoadingAction] = useState(false);
    const [cursorLoading, setCursorLoading] = useState(false);
    const [openDialog, setOpenDialog] = useState(false);
    const [counters, setCounters] = useState(initialStateCounters);

@@ -5,7 +5,7 @@ import { IconX, IconWindowMaximize, IconWindowMinimize, IconThumbUpFilled, IconC
 import { useRequestBecaContext } from "../../../context/RequestBecaContext";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import { QuestionAlertConfig } from "../../../utils/sAlert";
+import sAlert, { QuestionAlertConfig } from "../../../utils/sAlert";
 import Toast from "../../../utils/Toast";
 import { ROLE_SUPER_ADMIN, useGlobalContext } from "../../../context/GlobalContext";
 import DataTableComponent from "../../../components/DataTableComponent";
@@ -31,7 +31,7 @@ import { useSettingContext } from "../../../context/SettingContext";
 const RequestBecaDT = ({ status = null }) => {
    const { pago } = useParams();
    const { auth } = useAuthContext();
-   const { setLoading, setLoadingAction, setOpenDialog } = useGlobalContext();
+   const { setLoading, setLoadingAction, setOpenDialog, counters } = useGlobalContext();
    const { currentSettings } = useSettingContext();
    const {
       singularName,
@@ -318,6 +318,8 @@ const RequestBecaDT = ({ status = null }) => {
 
    const handleClickApprove = async (folio) => {
       try {
+         if (counters.requestApproved >= currentSettings.max_approved) return sAlert.Info("Ya se alcanzó el límite de becas aprobadas");
+
          setFolio(folio);
          setOpenModalApprove(true);
       } catch (error) {
@@ -463,7 +465,14 @@ const RequestBecaDT = ({ status = null }) => {
             )}
             {includesInArray(auth.permissions.more_permissions, [`Evaluar Solicitud`, `todas`]) && ["EN EVALUACIÓN"].includes(obj.status) && (
                <Tooltip title={`Aprobar Folio #${folio}`} placement="top">
-                  <Button color="secondary" onClick={() => handleClickApprove(obj.folio)}>
+                  <Button
+                     color="secondary"
+                     onClick={() => handleClickApprove(obj.folio)}
+                     sx={{
+                        color: counters.requestApproved >= currentSettings.max_approved && "#E1E0E3",
+                        border: counters.requestApproved >= currentSettings.max_approved && "1px solid #E1E0E3"
+                     }}
+                  >
                      <IconThumbUpFilled />
                   </Button>
                </Tooltip>
@@ -606,18 +615,32 @@ const RequestBecaDT = ({ status = null }) => {
       XLSX.writeFile(workbook, "Becas.xlsx");
    };
 
-   const toolbarContent = () => {
+   const toolbarContentCenter = () => {
       return (
          <div className="flex flex-wrap gap-2">
-            {(auth.permissions.more_permissions.includes(`Exportar Lista Pública`) || auth.permissions.more_permissions.includes(`todas`)) && (
+            {includesInArray(auth.permissions.more_permissions, [`Exportar Lista Pública`, `todas`]) && (
                <Button variant="contained" color="secondary" startIcon={<IconFileSpreadsheet />} onClick={() => handleClickExportPublic(data)} sx={{ mx: 1 }}>
                   Exprotar al público
                </Button>
             )}
-            {(auth.permissions.more_permissions.includes(`Exportar Lista Contraloría`) || auth.permissions.more_permissions.includes(`todas`)) && (
+            {includesInArray(auth.permissions.more_permissions, [`Exportar Lista Contraloría`, `todas`]) && (
                <Button variant="contained" color="secondary" startIcon={<IconFileSpreadsheet />} onClick={handleClickExportContraloria} sx={{ mx: 1 }}>
                   Exprotar para contraloria
                </Button>
+            )}
+         </div>
+      );
+   };
+   const toolbarContentEnd = () => {
+      return (
+         <div className="flex flex-wrap gap-2">
+            {status.includes(`aprobadas`) && (
+               <Typography variant="h4">
+                  BECAS APROBADAS:{" "}
+                  <span>
+                     {counters.requestApproved} de {currentSettings.max_approved}
+                  </span>
+               </Typography>
             )}
          </div>
       );
@@ -665,7 +688,8 @@ const RequestBecaDT = ({ status = null }) => {
             refreshTable={() => getRequestBecas(status ? status : pago)}
             toolBar={auth.more_permissions.includes("Exportar Lista Pública") && status == "aprobadas" ? true : false}
             positionBtnsToolbar="center"
-            toolbarContent={toolbarContent}
+            toolbarContentCenter={toolbarContentCenter}
+            toolbarContentEnd={toolbarContentEnd}
          />
 
          {/* <PDFTable /> */}

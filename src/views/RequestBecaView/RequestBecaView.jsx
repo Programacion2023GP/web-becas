@@ -18,7 +18,7 @@ import { useRelationshipContext } from "../../context/RelationshipContext";
 import { setObjImg } from "../../components/Form/InputFileComponent";
 import { useTutorContext } from "../../context/TutorContext";
 import { useFamilyContext } from "../../context/FamilyContext";
-import { validateImageRequired, validatePermissionToRequestBeca } from "../../utils/Validations";
+import { validateCURP, validateImageRequired, validatePermissionToRequestBeca } from "../../utils/Validations";
 import LogoGPD from "../../assets/images/icon.png";
 import { FormikComponent } from "../../components/Form/FormikComponents";
 import InputsFormik1 from "./InputsFormik1";
@@ -760,6 +760,7 @@ const RequestBecaView = () => {
                tutor_relationship_id: Yup.number().min(1, "Esta opción no es valida").required("Parentesco del tutor requerido"),
                tutor_curp: Yup.string()
                   .matches(/^[A-Z]{4}[0-9]{6}[HM][A-Z]{2}[A-Z0-9]{4}[0-9]{1}$/, "Formato de CURP invalido")
+                  .test("validateCURP", "La CURP no existe", (value) => validateCURP(value))
                   .required("CURP del tutor requerido"),
                tutor_name: Yup.string().required("Nombre del tutor requerido"),
                tutor_paternal_last_name: Yup.string().required("Apellido Paterno requerido"),
@@ -774,6 +775,7 @@ const RequestBecaView = () => {
                // student_data_id: 0,
                curp: Yup.string()
                   .matches(/^[A-Z]{4}[0-9]{6}[HM][A-Z]{2}[A-Z0-9]{4}[0-9]{1}$/, "Formato de CURP invalido")
+                  .test("validateCURP", "La CURP no existe", (value) => validateCURP(value))
                   .required("CURP del alumno requerido"),
                name: Yup.string().required("Nombre(s) del alumno requerido(s)"),
                paternal_last_name: Yup.string().required("Apellido Paterno requerido"),
@@ -1011,7 +1013,6 @@ const RequestBecaView = () => {
 
    useEffect(() => {
       (async () => {
-         console.log("obtenrer settings");
          setNotifiactedIncome(false);
          setNotifiactedExpenses(false);
          await getCurrentSettings();

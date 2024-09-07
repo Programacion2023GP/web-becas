@@ -247,10 +247,11 @@ const SettingForm = () => {
                         <Grid container spacing={2} mx={0.5}>
                            <Grid xs={12}>
                               <Typography variant="h5" mb={2}>
-                                 Monto por Beca: {formatCurrency(currentSettings?.budget / currentSettings?.max_approved)}
+                                 Monto por Beca: {formatCurrency(!currentSettings ? 0 : currentSettings?.budget / currentSettings?.max_approved)}
                               </Typography>
                               <Typography variant="h5" mb={2}>
-                                 Monto por Pago : {formatCurrency(currentSettings?.budget / currentSettings?.max_approved / currentSettings?.total_payments)}
+                                 Monto por Pago :
+                                 {formatCurrency(!currentSettings ? 0 : currentSettings?.budget / currentSettings?.max_approved / currentSettings?.total_payments)}
                               </Typography>
                            </Grid>
                         </Grid>

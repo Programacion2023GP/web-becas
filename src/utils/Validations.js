@@ -37,16 +37,16 @@ export function validateCURP(curp) {
       return false;
 
    //Validar que coincida el dígito verificador
-   function checkDigit(curp17) {
+   const checkDigit = (curp17) => {
       //Fuente https://consultas.curp.gob.mx/CurpSP/
-      const diccionario = "0123456789ABCDEFGHIJKLMNÑOPQRSTUVWXYZ",
+      let diccionario = "0123456789ABCDEFGHIJKLMNÑOPQRSTUVWXYZ",
          lngSuma = 0.0,
          lngDigito = 0.0;
       for (var i = 0; i < 17; i++) lngSuma = lngSuma + diccionario.indexOf(curp17.charAt(i)) * (18 - i);
       lngDigito = 10 - (lngSuma % 10);
       if (lngDigito == 10) return 0;
       return lngDigito;
-   }
+   };
 
    if (validated[2] != checkDigit(validated[1])) return false;
 
