@@ -7,7 +7,10 @@ const SettingContext = createContext();
 
 const formDataInitialState = {
    id: null,
-   description: "",
+   cycle_name: "",
+   cycle_start: "",
+   cycle_end: "",
+
    monthly_income_min: null,
    total_expenses_min: null,
    budget: null,
@@ -18,7 +21,6 @@ const formDataInitialState = {
    request_enabled: false,
    start_date_request: "",
    closing_date_request: "",
-   cycle_id: null,
    active: true
 };
 
@@ -51,6 +53,24 @@ export default function SettingContextProvider({ children }) {
       }
    };
 
+   const createOrUpdateCycle = async (cycle) => {
+      let res = CorrectRes;
+      try {
+         const url = cycle.id > 0 ? `/settings/update/cycle/${cycle.id}` : `/settings/create/cycle`;
+
+         const axiosData = await Axios.post(url, cycle);
+         res = axiosData.data.data;
+
+         await getSettings();
+      } catch (error) {
+         res = ErrorRes;
+         console.log(error);
+         res.message = error;
+         res.alert_text = error;
+      }
+      return res;
+   };
+
    const getCurrentSettings = async () => {
       try {
          let res = CorrectRes;
@@ -80,6 +100,7 @@ export default function SettingContextProvider({ children }) {
          const axiosData = await Axios.get(`/settings`);
          res.result.settings = axiosData.data.data.result;
          setSettings(axiosData.data.data.result);
+         setFormData(axiosData.data.data.result);
          // console.log("settings", settings);
          await getCurrentSettings();
 
@@ -217,7 +238,8 @@ export default function SettingContextProvider({ children }) {
             formikRef,
             getCurrentSettings,
             currentSettings,
-            setCurrentSettings
+            setCurrentSettings,
+            createOrUpdateCycle
          }}
       >
          {children}

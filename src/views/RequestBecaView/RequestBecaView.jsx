@@ -416,6 +416,8 @@ const RequestBecaView = () => {
          if (!folio) {
             // console.log("formData en submit3", formData);
             // console.log("values", values);
+            values.cycle_id = currentSettings.id;
+
             await setFormData({ ...formData, ...values });
             // await setValues(formData);
             // console.log("formData-3", formData);

@@ -54,14 +54,19 @@ export function validateCURP(curp) {
 }
 
 export const validatePermissionToRequestBeca = async (currentSettings) => {
+   console.log("🚀 ~ validatePermissionToRequestBeca ~ currentSettings:", currentSettings);
    // VERIFICAR QUE HAYA CONFIGURACIÓN
-   if (!currentSettings) {
+   if (!currentSettings || currentSettings.start_date_request == null || currentSettings.closing_date_request == null) {
       sAlert.Info("Por el momento no se pueden realizar solcitudes, comuniquese con el departamento de Eduación");
       return false;
    }
    const today = dayjs();
    const start_date_request = dayjs(currentSettings.start_date_request);
    const closing_date_request = dayjs(currentSettings.closing_date_request);
+   console.log(
+      "🚀 ~ validatePermissionToRequestBeca ~ today.isBetween(start_date_request, closing_date_request, 'day', '[]'):",
+      today.isBetween(start_date_request, closing_date_request, "day", "[]")
+   );
    // VERIFICAR QUE ESTE EN FECHA DE SOLICITUDES
    if (!today.isBetween(start_date_request, closing_date_request, "day", "[]")) {
       sAlert.Info(
@@ -77,5 +82,12 @@ export const validatePermissionToRequestBeca = async (currentSettings) => {
       return false;
    }
    // VERIFICAR QUE EL USUARIO NO HAYA PEDIDO BECA ANTERIORMENTE EN ESTE CICLO
+   if (false) {
+      sAlert.Info(`YA HAS REALIZADO LOS INTENTOS MÁXIMOS PERMITIDOS PARA SOLICITAR BECA. ESPERE AL SIGUIENTE CICLO.
+         <br/>
+         <br/>
+         GRACIAS`);
+      return false;
+   }
    return true;
 };

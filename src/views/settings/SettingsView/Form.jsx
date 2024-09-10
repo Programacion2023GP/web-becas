@@ -35,7 +35,7 @@ const SettingForm = () => {
       formikRef,
       currentSettings
    } = useSettingContext();
-   const { currentCycle } = useCycleContext();
+   // const { currentCycle } = useCycleContext();
    const [checkAdd, setCheckAdd] = useState(checkAddInitialState);
    const [colorLabelcheck, setColorLabelcheck] = useState(colorLabelcheckInitialState);
 
@@ -58,7 +58,7 @@ const SettingForm = () => {
          const start_date = dayjs(values.start_date_request);
          const closing_date = dayjs(values.closing_date_request);
          values.request_enabled = today.isBetween(start_date, closing_date, "day", "[]");
-         values.cycle_id = currentCycle.id;
+         // values.cycle_id = currentCycle.id;
 
          // return console.log("values", values);
          setLoadingAction(true);
@@ -148,7 +148,7 @@ const SettingForm = () => {
          >
             <InputComponent col={12} idName={"id"} label={"ID"} placeholder={"0"} type={"number"} hidden={true} />
 
-            <InputComponent col={12} idName={"description"} label={"Descripción de la configuración"} placeholder={"..."} disabled={!currentCycle} />
+            {/* <InputComponent col={12} idName={"description"} label={"Descripción de la configuración"} placeholder={"..."} disabled={!currentSettings?.cycle_name} /> */}
             <Grid container xs={12} spacing={2}>
                <Grid xs={12} md={6}>
                   <DividerComponent
@@ -163,15 +163,34 @@ const SettingForm = () => {
                            Periodo para solicitar becas
                         </Typography>
                         <Grid container spacing={2} mx={0.5} py={1.6}>
-                           <DatePickerComponent col={6} idName={"start_date_request"} label={"Fehca de Inicio "} format={"DD/MM/YYYY"} disabled={!currentCycle} />
-                           <DatePickerComponent col={6} idName={"closing_date_request"} label={"Fehca de Cierre "} format={"DD/MM/YYYY"} disabled={!currentCycle} />
+                           <DatePickerComponent
+                              col={6}
+                              idName={"start_date_request"}
+                              label={"Fehca de Inicio "}
+                              format={"DD/MM/YYYY"}
+                              disabled={!currentSettings?.cycle_name}
+                           />
+                           <DatePickerComponent
+                              col={6}
+                              idName={"closing_date_request"}
+                              label={"Fehca de Cierre "}
+                              format={"DD/MM/YYYY"}
+                              disabled={!currentSettings?.cycle_name}
+                           />
                         </Grid>
                      </li>
                      <li style={{ border: `solid 2px ${colorPrimaryDark}`, borderRadius: "10px", marginBottom: "1rem" }}>
                         <Typography variant="h4" mb={1} sx={{ p: 0.5, backgroundColor: colorPrimaryDark, borderRadius: 1, color: gpcLight }}>
                            Oportunidades por usuario para solicitar becas
                         </Typography>
-                        <InputComponent col={6} idName={"opportunities"} label={"Cantidad"} placeholder={"0"} type={"number"} disabled={!currentCycle} />
+                        <InputComponent
+                           col={6}
+                           idName={"opportunities"}
+                           label={"Cantidad"}
+                           placeholder={"0"}
+                           type={"number"}
+                           disabled={!currentSettings?.cycle_name}
+                        />
                      </li>
                      <li style={{ border: `solid 2px ${colorPrimaryDark}`, borderRadius: "10px", marginBottom: "1rem" }}>
                         <Typography variant="h4" mb={2} sx={{ p: 0.5, backgroundColor: colorPrimaryDark, borderRadius: 1, color: gpcLight }}>
@@ -184,7 +203,7 @@ const SettingForm = () => {
                               label={"Monto en Ingresos"}
                               placeholder={"0"}
                               type={"number"}
-                              disabled={!currentCycle}
+                              disabled={!currentSettings?.cycle_name}
                            />
                            <InputComponent
                               col={6}
@@ -192,7 +211,7 @@ const SettingForm = () => {
                               label={"Monto en Engresos"}
                               placeholder={"0"}
                               type={"number"}
-                              disabled={!currentCycle}
+                              disabled={!currentSettings?.cycle_name}
                            />
                         </Grid>
                      </li>
@@ -207,7 +226,7 @@ const SettingForm = () => {
                               <Typography variant="h4" mb={2} sx={{ p: 0.5, backgroundColor: colorPrimaryDark, borderRadius: 1, color: gpcLight }}>
                                  Presupuesto asignado
                               </Typography>
-                              <InputComponent col={12} idName={"budget"} label={"Monto"} placeholder={"0"} type={"number"} disabled={!currentCycle} />
+                              <InputComponent col={12} idName={"budget"} label={"Monto"} placeholder={"0"} type={"number"} disabled={!currentSettings?.cycle_name} />
                            </li>
                         </Grid>
                         <Grid xs={12} md={6}>
@@ -215,7 +234,14 @@ const SettingForm = () => {
                               <Typography variant="h4" mb={2} sx={{ p: 0.5, backgroundColor: colorPrimaryDark, borderRadius: 1, color: gpcLight }}>
                                  Becas Aprobadas
                               </Typography>
-                              <InputComponent col={12} idName={"max_approved"} label={"Cantidad Máxima"} placeholder={"0"} type={"number"} disabled={!currentCycle} />
+                              <InputComponent
+                                 col={12}
+                                 idName={"max_approved"}
+                                 label={"Cantidad Máxima"}
+                                 placeholder={"0"}
+                                 type={"number"}
+                                 disabled={!currentSettings?.cycle_name}
+                              />
                            </li>
                         </Grid>
                      </Grid>
@@ -224,7 +250,14 @@ const SettingForm = () => {
                            Entrega de Becas
                         </Typography>
                         <Grid container spacing={2} mx={0.5}>
-                           <InputComponent col={6} idName={"total_payments"} label={"Cantidad de pagos"} placeholder={"0"} type={"number"} disabled={!currentCycle} />
+                           <InputComponent
+                              col={6}
+                              idName={"total_payments"}
+                              label={"Cantidad de pagos"}
+                              placeholder={"0"}
+                              type={"number"}
+                              disabled={!currentSettings?.cycle_name}
+                           />
                            <Select2Component
                               col={6}
                               idName={"payment_frequency"}
@@ -236,7 +269,7 @@ const SettingForm = () => {
                               ]}
                               pluralName={""}
                               refreshSelect={null}
-                              disabled={!currentCycle}
+                              disabled={!currentSettings?.cycle_name}
                            />
                         </Grid>
                      </li>

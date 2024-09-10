@@ -12,6 +12,7 @@ import { formatDatetime } from "../../../utils/Formats";
 import { Box } from "@mui/system";
 import { IconCalendarTime } from "@tabler/icons";
 import { IconCalendarX } from "@tabler/icons-react";
+import { useSettingContext } from "../../../context/SettingContext";
 
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
 const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
@@ -20,9 +21,8 @@ const CycleForm = () => {
    const { openDialog, setOpenDialog, toggleDrawer, setLoadingAction } = useGlobalContext();
    const {
       singularName,
-      cycles,
-      createCycle,
-      updateCycle,
+      settings,
+      createOrUpdateCycle,
       formData,
       setFormData,
       textBtnSubmit,
@@ -31,8 +31,8 @@ const CycleForm = () => {
       formTitle,
       setFormTitle,
       formikRef,
-      currentCycle
-   } = useCycleContext();
+      currentSettings
+   } = useSettingContext();
    const [checkAdd, setCheckAdd] = useState(checkAddInitialState);
    const [colorLabelcheck, setColorLabelcheck] = useState(colorLabelcheckInitialState);
 
@@ -53,9 +53,7 @@ const CycleForm = () => {
       try {
          // return console.log("values", values);
          setLoadingAction(true);
-         let axiosResponse;
-         if (values.id == 0) axiosResponse = await createCycle(values);
-         else axiosResponse = await updateCycle(values);
+         let axiosResponse = await createOrUpdateCycle(values);
          if (axiosResponse.status === 200) {
             resetForm();
             resetFormData();
@@ -99,8 +97,8 @@ const CycleForm = () => {
 
    const validationSchema = Yup.object().shape({
       cycle_name: Yup.string().trim().required("Nombre del Ciclo requerido"),
-      start_date: Yup.date("Fecha inválida").required("Fecha de Inicio requerida"),
-      closing_date: Yup.date("Fecha inválida").required("Fecha de Cierre requerida")
+      cycle_start: Yup.date("Fecha inválida").required("Fecha de Inicio requerida"),
+      cycle_end: Yup.date("Fecha inválida").required("Fecha de Cierre requerida")
    });
 
    useEffect(() => {
@@ -114,22 +112,22 @@ const CycleForm = () => {
    return (
       <>
          <Grid container xs={12} spacing={2} justifyContent={"space-between"} alignItems={"center"}>
-            {currentCycle ? (
+            {currentSettings ? (
                <>
                   <Typography variant="h4">CICLO ACTUAL VIGENTE:</Typography>
                   <Tooltip title="Nombre del ciclo">
-                     <Typography variant="h4">{currentCycle.cycle_name}</Typography>
+                     <Typography variant="h4">{currentSettings.cycle_name}</Typography>
                   </Tooltip>
                   <Tooltip title="Fecha de Inicio">
                      <Typography variant="h4" display={"flex"} alignItems={"end"}>
                         <IconCalendarTime />
-                        &nbsp; {currentCycle.start_date}
+                        &nbsp; {currentSettings.cycle_start}
                      </Typography>
                   </Tooltip>
                   <Tooltip title="Fecha de Termino">
                      <Typography variant="h4" display={"flex"} alignItems={"end"}>
                         <IconCalendarX />
-                        &nbsp; {currentCycle.closing_date}
+                        &nbsp; {currentSettings.cycle_end}
                      </Typography>
                   </Tooltip>
                </>
@@ -143,8 +141,8 @@ const CycleForm = () => {
          <SwipeableDrawer anchor={"top"} open={openDialog} onClose={toggleDrawer(false)} onOpen={toggleDrawer(true)}>
             <Box role="presentation" p={3} pt={5} className="">
                <Grid container mb={2}>
-                  <Grid item xs={8} pr={3}>
-                     <Typography variant="h2">{formTitle}</Typography>
+                  <Grid item xs={12}>
+                     <Typography variant="h2" textAlign={"center"}>{`${formTitle.split(" ")[0]} CICLO`}</Typography>
                   </Grid>
                   {/* <Grid item xs={4}>
                      <FormControlLabel
@@ -165,8 +163,8 @@ const CycleForm = () => {
                >
                   <Grid container xs={12} spacing={2}>
                      <InputComponent col={4} idName={"cycle_name"} label={"Nombre del Ciclo"} placeholder={"Ciclo Enero - Junio 2024"} />
-                     <DatePickerComponent col={4} idName={"start_date"} label={"Fehca de Inicio "} format={"DD/MM/YYYY"} />
-                     <DatePickerComponent col={4} idName={"closing_date"} label={"Fehca de Cierre "} format={"DD/MM/YYYY"} />
+                     <DatePickerComponent col={4} idName={"cycle_start"} label={"Fehca de Inicio "} format={"DD/MM/YYYY"} />
+                     <DatePickerComponent col={4} idName={"cycle_end"} label={"Fehca de Cierre "} format={"DD/MM/YYYY"} />
                   </Grid>
                </FormikComponent>
             </Box>

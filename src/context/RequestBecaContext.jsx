@@ -105,7 +105,8 @@ const formDataInitialState = {
 
    second_ref: "NULL",
    correction_permission: false,
-   correction_completed: false
+   correction_completed: false,
+   cycle_id: null
 };
 
 // const formDataInitialState = {
@@ -144,6 +145,7 @@ export default function RequestBecaContextProvider({ children }) {
 
    const { auth, counterOfMenus } = useAuthContext();
    const { counters, setCounters } = useGlobalContext();
+
    // formDataInitialState.tutor_id = auth.id;
    formDataInitialState.user_id = auth.id;
    const singularName = "Beca"; //Escribirlo siempre letra Capital

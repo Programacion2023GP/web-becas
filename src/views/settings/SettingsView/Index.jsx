@@ -17,15 +17,15 @@ import SettingForm from "./Form";
 const SettingsView = () => {
    // const { result } = useLoaderData();
    const { setLoading } = useGlobalContext();
-   const { currentCycle, getCurrentCycle } = useCycleContext();
-   const { pluralName, getCurrentSettings } = useSettingContext();
+   // const { currentCycle, getCurrentCycle } = useCycleContext();
+   const { pluralName, getSettings, currentSettings } = useSettingContext();
 
    useEffect(() => {
       try {
          (async () => {
             setLoading(true);
-            await getCurrentCycle();
-            await getCurrentSettings();
+            // await getCurrentCycle();
+            await getSettings();
             setLoading(false);
          })();
       } catch (error) {
@@ -45,7 +45,7 @@ const SettingsView = () => {
          </MainCard>
 
          <DividerComponent title={""} mt={4} />
-         {!currentCycle && (
+         {!currentSettings?.cycle_name && (
             <Alert severity="info" sx={{ mb: 1 }}>
                <AlertTitle>SIN CICLO NO HAY CONFIGURACIÓN</AlertTitle>
                Si no hay un ciclo vigente, no puede haber una configuración ni realizar solicitudes de becas.
