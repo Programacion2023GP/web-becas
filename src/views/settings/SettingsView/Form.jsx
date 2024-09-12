@@ -109,16 +109,16 @@ const SettingForm = () => {
    };
 
    const validationSchema = Yup.object().shape({
-      description: Yup.string().trim().required("Descripción de la configuración requerido"),
+      // description: Yup.string().trim().required("Descripción de la configuración requerido"),
+      start_date_request: Yup.date("Fecha inválida").required("Fecha de Inicio requerida"),
+      closing_date_request: Yup.date("Fecha inválida").required("Fecha de Cierre requerida"),
+      opportunities: Yup.number().required("Oportunidades requerido"),
       monthly_income_min: Yup.number().required("Monto de ingresos mínimo requerido"),
       total_expenses_min: Yup.number().required("Monto de egresos mínimo requerido"),
       budget: Yup.number().required("Monto de presupuesto requerido"),
-      total_payments: Yup.number().required("Cantidad de pagos requerido"),
-      payment_frequency: Yup.string().trim().required("Periodisidad de pago requerido"),
       max_approved: Yup.number().required("Cantidad de solicitudes a aprobar requerido"),
-      opportunities: Yup.number().required("Oportunidades requerido"),
-      start_date_request: Yup.date("Fecha inválida").required("Fecha de Inicio requerida"),
-      closing_date_request: Yup.date("Fecha inválida").required("Fecha de Cierre requerida")
+      total_payments: Yup.number().required("Cantidad de pagos requerido"),
+      payment_frequency: Yup.string().trim().required("Periodisidad de pago requerido")
    });
 
    useEffect(() => {
@@ -256,6 +256,7 @@ const SettingForm = () => {
                               label={"Cantidad de pagos"}
                               placeholder={"0"}
                               type={"number"}
+                              inputProps={{ maxLength: 1, min: 1, max: 3 }}
                               disabled={!currentSettings?.cycle_name}
                            />
                            <Select2Component

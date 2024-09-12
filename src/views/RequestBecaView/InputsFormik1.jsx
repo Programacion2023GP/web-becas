@@ -8,7 +8,7 @@ import { useRequestBecaContext } from "../../context/RequestBecaContext";
 import sAlert from "../../utils/sAlert";
 import { useEffect } from "react";
 
-const InputsFormik1 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBeforeOrNext, isTutor, setIsTutor }) => {
+const InputsFormik1 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBeforeOrNext, isTutor, setIsTutor, haveSecondRef, setHaveSecondRef }) => {
    const { formData, setFormData } = useRequestBecaContext();
    const { relationships, getRelationshipsSelectIndex } = useRelationshipContext();
    const { getTutorByCURP } = useTutorContext();
@@ -43,6 +43,8 @@ const InputsFormik1 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
       }
    };
    const handleChangeRelationships = (inputName, relationship, setFieldValue) => setIsTutor(relationship.id > 2 ? true : false);
+
+   const handleChangeSecondRef = (idName, value) => setHaveSecondRef(value === "Familiar" ? true : false);
 
    useEffect(() => {});
 
@@ -130,7 +132,31 @@ const InputsFormik1 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
                      // { value: "Tutor", label: "Tutor" },
                      // { value: "Representante legal", label: "Representante legal" }
                   ]}
+                  handleGetValue={handleChangeSecondRef}
                />
+               {haveSecondRef && (
+                  <>
+                     {/* Parentesco 2da Referencia*/}
+                     <Select2Component
+                        col={6}
+                        idName={"second_ref_relationship_id"}
+                        label={"Parentesco con el alumno *"}
+                        options={relationships}
+                        disabled={formik.values.id == 0 ? false : true}
+                        pluralName={"Parentescos"}
+                        refreshSelect={getRelationshipsSelectIndex}
+                     />
+                     {/* Nombre Completo 2da Referencia */}
+                     <InputComponent
+                        col={6}
+                        idName={"second_ref_fullname"}
+                        label={"Nombre del familiar *"}
+                        placeholder={"Escribir nombre completo del familiar delegado"}
+                        textStyleCase={true}
+                        disabled={formik.values.id == 0 ? false : true}
+                     />
+                  </>
+               )}
             </Grid>
          </Grid>
 

@@ -109,10 +109,12 @@ export default function MenuContextProvider({ children }) {
          if (auth !== null) {
             const pages_read = auth.read;
             const axiosResponse = await Axios.get(`/menus/MenusByRole/${pages_read}`);
+            const axiosCurrentSettings = await Axios.get(`/settings/current`);
+            const resCurrentSettings = axiosCurrentSettings.data.data.result;
+            const total_payments = resCurrentSettings.total_payments;
             // console.log("axiosResponse", axiosResponse);
-            const menus = axiosResponse.data.data.result;
-            // console.log("menus", menus);
-
+            let menus = axiosResponse.data.data.result;
+            if (total_payments > 0 && total_payments < 3) menus = await removePagePayments(menus, total_payments);
             const HeaderMenus = menus.filter((menu) => menu.belongs_to == 0);
             // console.log("HeaderMenus", HeaderMenus);
             const items = [];
@@ -146,7 +148,13 @@ export default function MenuContextProvider({ children }) {
             setMenuItems({ items: items });
             // setAuth({ ...auth, menus: "cambiados" });
          }
+
+         async function removePagePayments(values, total_payments) {
+            const cleanedObj = values.filter((item) => (total_payments == 1 ? !["Pago 1", "Pago 2"].includes(item.menu) : item.menu != "Pago 2"));
+            return cleanedObj;
+         }
       } catch (error) {
+         console.log("🚀 ~ showMyMenus ~ error:", error);
          if (error.response.status === 401) {
             // console.log("no AUUUUTH!");
             localStorage.removeItem("token");

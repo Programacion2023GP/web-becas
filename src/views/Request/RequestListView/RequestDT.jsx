@@ -199,7 +199,7 @@ const RequestBecaDT = ({ status = null }) => {
             {formatCurrency(obj.total_amount ?? 0)}
          </Typography>
          <Typography textAlign={"center"} fontSize={11}>
-            {obj.payments ?? 0}/3
+            {obj.payments ?? 0}/{currentSettings.total_payments ?? 0}
          </Typography>
       </>
    );
@@ -494,14 +494,14 @@ const RequestBecaDT = ({ status = null }) => {
                   </Button>
                </Tooltip>
             )}
-            {includesInArray(auth.permissions.more_permissions, [`Reasignar Solicitud`, `todas`]) &&
+            {/* {includesInArray(auth.permissions.more_permissions, [`Reasignar Solicitud`, `todas`]) &&
                ["APROBADA", "PAGO 1", "PAGO 2", "PAGO 3"].includes(obj.status) && (
                   <Tooltip title={`Reasignar Solicitud con Folio #${folio}`} placement="top">
                      <Button color="secondary" onClick={() => Toast.Info("AUN NO SE CONFIGURA")}>
                         <IconReplace />
                      </Button>
                   </Tooltip>
-               )}
+               )} */}
             {includesInArray(auth.permissions.more_permissions, [`Cancelar Solicitud`, `todas`]) &&
                !["APROBADA", "PAGADA", "PAGO 1", "PAGO 2", "PAGO 3", "RECHAZADA", "CANCELADA"].includes(obj.status) && (
                   <Tooltip title={`Cancelar Folio ${folio}`} placement="top">

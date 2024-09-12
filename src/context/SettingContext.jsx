@@ -81,8 +81,8 @@ export default function SettingContextProvider({ children }) {
          const current_settings = res.result;
          // console.log("🚀 ~ getCurrentSettings ~ current_settings:", current_settings);
          localStorage.setItem("currentSettings", JSON.stringify(current_settings));
-         await setCurrentSettings(current_settings);
-         // setFormData(current_settings);
+         setCurrentSettings(current_settings);
+         setFormData(current_settings);
 
          return res;
       } catch (error) {

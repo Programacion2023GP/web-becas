@@ -416,6 +416,8 @@ const RequestBecaView = () => {
          if (!folio) {
             // console.log("formData en submit3", formData);
             // console.log("values", values);
+            if (!(await validatePermissionToRequestBeca(currentSettings))) return navigate("/app/solicitudes/mis-solicitudes");
+
             values.cycle_id = currentSettings.id;
 
             await setFormData({ ...formData, ...values });
@@ -767,8 +769,10 @@ const RequestBecaView = () => {
                tutor_name: Yup.string().required("Nombre del tutor requerido"),
                tutor_paternal_last_name: Yup.string().required("Apellido Paterno requerido"),
                tutor_maternal_last_name: Yup.string().required("Apellido Materno requerido"),
-               tutor_phone: Yup.string().min(10, "El número telefónico debe ser a 10 digitos").required("Número telefonico del tutor requerido")
+               tutor_phone: Yup.string().min(10, "El número telefónico debe ser a 10 digitos").required("Número telefonico del tutor requerido"),
                // second_ref: formik.current.values.second_ref != "NULL" && Yup.string().required("Represnetante")
+               second_ref_relationship_id: haveSecondRef && Yup.number().min(1, "Esta opción no es valida").required("Parentesco del familiar requerido"),
+               second_ref_fullname: haveSecondRef && Yup.string().required("Nombre completo del familiar requerido")
             });
             break;
          case 2: // PAGINA DATOS DEL ALUMNO
@@ -1017,7 +1021,9 @@ const RequestBecaView = () => {
       (async () => {
          setNotifiactedIncome(false);
          setNotifiactedExpenses(false);
-         await getCurrentSettings();
+         const resCurrentSettings = await getCurrentSettings();
+         if (!(await validatePermissionToRequestBeca(resCurrentSettings.result))) return navigate("/app/");
+
          if (showModalRemember && pagina == 1) setShowModalRemember(true);
          else setShowModalRemember(false);
          if (pagina == 9 && accion != "revision") {
@@ -1140,6 +1146,8 @@ const RequestBecaView = () => {
                                        ButtonsBeforeOrNext={ButtonsBeforeOrNext}
                                        isTutor={isTutor}
                                        setIsTutor={setIsTutor}
+                                       haveSecondRef={haveSecondRef}
+                                       setHaveSecondRef={setHaveSecondRef}
                                     />
                                  </FormikComponent>
                                  {showModalRemember &&

@@ -54,7 +54,7 @@ export function validateCURP(curp) {
 }
 
 export const validatePermissionToRequestBeca = async (currentSettings) => {
-   console.log("🚀 ~ validatePermissionToRequestBeca ~ currentSettings:", currentSettings);
+   // console.log("🚀 ~ validatePermissionToRequestBeca ~ currentSettings:", currentSettings);
    // VERIFICAR QUE HAYA CONFIGURACIÓN
    if (!currentSettings || currentSettings.start_date_request == null || currentSettings.closing_date_request == null) {
       sAlert.Info("Por el momento no se pueden realizar solcitudes, comuniquese con el departamento de Eduación");
@@ -63,10 +63,6 @@ export const validatePermissionToRequestBeca = async (currentSettings) => {
    const today = dayjs();
    const start_date_request = dayjs(currentSettings.start_date_request);
    const closing_date_request = dayjs(currentSettings.closing_date_request);
-   console.log(
-      "🚀 ~ validatePermissionToRequestBeca ~ today.isBetween(start_date_request, closing_date_request, 'day', '[]'):",
-      today.isBetween(start_date_request, closing_date_request, "day", "[]")
-   );
    // VERIFICAR QUE ESTE EN FECHA DE SOLICITUDES
    if (!today.isBetween(start_date_request, closing_date_request, "day", "[]")) {
       sAlert.Info(
