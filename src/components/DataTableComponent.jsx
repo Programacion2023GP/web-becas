@@ -96,8 +96,9 @@ export default function DataTableComponent({
    createData,
    onRowEditCompleteContinue = null,
    toolBar = false,
-   positionBtnsToolbar = "start",
-   toolbarContent,
+   toolbarContentStart,
+   toolbarContentCenter,
+   toolbarContentEnd,
    updateData,
    refreshTable,
    btnAdd = true,
@@ -420,9 +421,9 @@ export default function DataTableComponent({
             {toolBar && (
                <Toolbar
                   className="mb-4"
-                  start={positionBtnsToolbar == "start" && toolbarContent}
-                  center={positionBtnsToolbar == "center" && toolbarContent}
-                  end={positionBtnsToolbar == "end" && toolbarContent}
+                  start={toolbarContentStart}
+                  center={toolbarContentCenter}
+                  end={toolbarContentEnd}
                   style={{ marginBottom: "1px", paddingBlock: "10px" }}
                ></Toolbar>
             )}

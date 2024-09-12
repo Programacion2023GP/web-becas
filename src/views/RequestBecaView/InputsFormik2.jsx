@@ -43,7 +43,7 @@ const InputsFormik2 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
 
          if (axiosReponse.result == null) {
             setLoadingCURP(false);
-            return sAlert.Info("El CURP ingresado no está registrado, veritifíca que este correcto para guardarse al finalizar esta solicitud.");
+            return sAlert.Info("El CURP ingresado no está registrado, verifica que este correcto para guardarse al finalizar esta solicitud.");
          }
          // debugger;
 
@@ -97,7 +97,7 @@ const InputsFormik2 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
    useEffect(() => {
       const init = async () => {
          if (formData.community_id > 0) {
-            console.log("🚀 ~ init ~ formData:", formData)
+            console.log("🚀 ~ init ~ formData:", formData);
             console.log("amos a pedir el community", formData.community_id);
             const CommunityStudent = await getCommunityById(formData.community_id);
             console.log("🚀 ~ useEffect ~ CommunityStudent:", CommunityStudent);

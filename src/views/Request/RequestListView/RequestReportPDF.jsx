@@ -470,7 +470,7 @@ export default function RequestReportPDF({ obj, targetSection = "sectionRequest"
          idName: "b7_img_tutor_power_letter",
          url: obj.b7_img_tutor_power_letter,
          name: "Documento Extra por Tutoria",
-         isTutor: obj.tutor_relationship > 2 ? true : null,
+         isTutor: obj.tutor_relationship_id > 2 ? true : null,
          haveSecondRef: false,
          infoDivider: {
             title: "DOCUMENTO EXTRA EN CASO DE NO SER PADRE O MADRE"

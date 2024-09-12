@@ -5,6 +5,8 @@ import { CorrectRes } from "../utils/Response";
 import { ROLE_CIUDADANO, useGlobalContext } from "./GlobalContext";
 import { useEffect } from "react";
 import Toast from "../utils/Toast";
+import { useCycleContext } from "./CycleContext";
+import { useSettingContext } from "./SettingContext";
 
 export const AuthContext = createContext();
 
@@ -44,6 +46,9 @@ const AuthinitialStatate = {
 
 export default function AuthContextProvider({ children }) {
    const { counters, setCounters, resetCounters } = useGlobalContext();
+
+   const { getCurrentCycle } = useCycleContext();
+   const { getCurrentSettings } = useSettingContext();
    const [auth, setAuth] = useState(JSON.parse(localStorage.getItem("auth")) || AuthinitialStatate);
    const [permissionRead, setPermissionRead] = useState(false);
    // const [idPage, setIdPage] = useState(0);
@@ -96,6 +101,7 @@ export default function AuthContextProvider({ children }) {
          setAuth(JSON.parse(localStorage.getItem("auth")));
          const token = localStorage.getItem("token") || null;
          Axios.defaults.headers.common.Authorization = `Bearer ${token}`;
+
          return data.data;
       } catch (error) {
          console.log(error);

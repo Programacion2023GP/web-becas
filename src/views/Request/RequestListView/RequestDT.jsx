@@ -5,7 +5,7 @@ import { IconX, IconWindowMaximize, IconWindowMinimize, IconThumbUpFilled, IconC
 import { useRequestBecaContext } from "../../../context/RequestBecaContext";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import { QuestionAlertConfig } from "../../../utils/sAlert";
+import sAlert, { QuestionAlertConfig } from "../../../utils/sAlert";
 import Toast from "../../../utils/Toast";
 import { ROLE_SUPER_ADMIN, useGlobalContext } from "../../../context/GlobalContext";
 import DataTableComponent from "../../../components/DataTableComponent";
@@ -25,11 +25,14 @@ import IconDelete from "../../../components/icons/IconDelete";
 import * as XLSX from "xlsx";
 import ModalPayment from "./ModalPayment";
 import ModalApprove from "./ModalApprove";
+import { validatePermissionToRequestBeca } from "../../../utils/Validations";
+import { useSettingContext } from "../../../context/SettingContext";
 
 const RequestBecaDT = ({ status = null }) => {
    const { pago } = useParams();
    const { auth } = useAuthContext();
-   const { setLoading, setLoadingAction, setOpenDialog } = useGlobalContext();
+   const { setLoading, setLoadingAction, setOpenDialog, counters } = useGlobalContext();
+   const { currentSettings } = useSettingContext();
    const {
       singularName,
       pluralName,
@@ -196,7 +199,7 @@ const RequestBecaDT = ({ status = null }) => {
             {formatCurrency(obj.total_amount ?? 0)}
          </Typography>
          <Typography textAlign={"center"} fontSize={11}>
-            {obj.payments ?? 0}/3
+            {obj.payments ?? 0}/{currentSettings.total_payments ?? 0}
          </Typography>
       </>
    );
@@ -210,7 +213,7 @@ const RequestBecaDT = ({ status = null }) => {
       { field: "student", header: "Alumno", sortable: true, functionEdit: null, body: StudentBodyTemplate, filter: false, filterField: null },
       { field: "average", header: "Promedio", sortable: true, functionEdit: null, body: AverageBodyTemplate, filter: false, filterField: null }
    ];
-   ["alta", "en-revision"].includes(status) &&
+   [undefined, null, "", "alta", "en-revision"].includes(status) &&
       columns.push(
          {
             field: "status",
@@ -233,9 +236,8 @@ const RequestBecaDT = ({ status = null }) => {
       );
    columns.push(
       { field: "created_at", header: "Fecha de Solicitud", sortable: true, functionEdit: null, body: RequestDateBodyTemplate, filter: false, filterField: null },
-      { field: "end_date", header: "Fecha de Termino", sortable: true, functionEdit: null, body: EndDateBodyTemplate, filter: false, filterField: null }
-   ),
-      columns.push({
+      { field: "end_date", header: "Fecha de Termino", sortable: true, functionEdit: null, body: EndDateBodyTemplate, filter: false, filterField: null },
+      {
          field: "socioeconomic_study",
          header: "Estudio Socio-Económico",
          sortable: true,
@@ -243,7 +245,8 @@ const RequestBecaDT = ({ status = null }) => {
          body: SocioeconomicStudyBodyTemplate,
          filter: true,
          filterField: null
-      });
+      }
+   );
    (auth.permissions.more_permissions.includes("Ver Puntaje") || auth.permissions.more_permissions.includes(`todas`)) &&
       columns.push({ field: "score_total", header: "Puntaje", sortable: true, functionEdit: null, body: ScoreTotalBodyTemplate, filter: false, filterField: null });
    pago &&
@@ -263,6 +266,17 @@ const RequestBecaDT = ({ status = null }) => {
       );
 
    const mySwal = withReactContent(Swal);
+
+   const handleClickContinue = async (current_page, folio) => {
+      try {
+         if (!(await validatePermissionToRequestBeca(currentSettings))) return;
+
+         window.open(`#/app/solicitud-beca/pagina/${current_page}/folio/${folio}`, "_blank");
+      } catch (error) {
+         console.log(error);
+         Toast.Error(error);
+      }
+   };
 
    const handleClickView = async (obj) => {
       // console.log("🚀 ~ handleClickView ~ obj:", obj)
@@ -304,6 +318,8 @@ const RequestBecaDT = ({ status = null }) => {
 
    const handleClickApprove = async (folio) => {
       try {
+         if (counters.requestApproved >= currentSettings.max_approved) return sAlert.Info("Ya se alcanzó el límite de becas aprobadas");
+
          setFolio(folio);
          setOpenModalApprove(true);
       } catch (error) {
@@ -340,8 +356,10 @@ const RequestBecaDT = ({ status = null }) => {
       }
    };
 
-   const handleClickAdd = () => {
+   const handleClickAdd = async () => {
       try {
+         if (!(await validatePermissionToRequestBeca(currentSettings))) return;
+
          location.hash = "/app/solicitud-beca";
       } catch (error) {
          console.log(error);
@@ -417,10 +435,8 @@ const RequestBecaDT = ({ status = null }) => {
          <ButtonGroup variant="outlined">
             {obj.end_date == null && (
                <Tooltip title={`Solicitud ${folio}`} placement="top">
-                  <Button color="dark">
-                     <Link to={`/app/solicitud-beca/pagina/${current_page}/folio/${folio}`} target="_blank" style={{ textDecoration: "none" }}>
-                        Continuar
-                     </Link>
+                  <Button color="dark" onClick={() => handleClickContinue(current_page, obj.folio)}>
+                     Continuar
                   </Button>
                </Tooltip>
             )}
@@ -449,7 +465,14 @@ const RequestBecaDT = ({ status = null }) => {
             )}
             {includesInArray(auth.permissions.more_permissions, [`Evaluar Solicitud`, `todas`]) && ["EN EVALUACIÓN"].includes(obj.status) && (
                <Tooltip title={`Aprobar Folio #${folio}`} placement="top">
-                  <Button color="secondary" onClick={() => handleClickApprove(obj.folio)}>
+                  <Button
+                     color="secondary"
+                     onClick={() => handleClickApprove(obj.folio)}
+                     sx={{
+                        color: counters.requestApproved >= currentSettings.max_approved && "#E1E0E3",
+                        border: counters.requestApproved >= currentSettings.max_approved && "1px solid #E1E0E3"
+                     }}
+                  >
                      <IconThumbUpFilled />
                   </Button>
                </Tooltip>
@@ -471,14 +494,14 @@ const RequestBecaDT = ({ status = null }) => {
                   </Button>
                </Tooltip>
             )}
-            {includesInArray(auth.permissions.more_permissions, [`Reasignar Solicitud`, `todas`]) &&
+            {/* {includesInArray(auth.permissions.more_permissions, [`Reasignar Solicitud`, `todas`]) &&
                ["APROBADA", "PAGO 1", "PAGO 2", "PAGO 3"].includes(obj.status) && (
                   <Tooltip title={`Reasignar Solicitud con Folio #${folio}`} placement="top">
                      <Button color="secondary" onClick={() => Toast.Info("AUN NO SE CONFIGURA")}>
                         <IconReplace />
                      </Button>
                   </Tooltip>
-               )}
+               )} */}
             {includesInArray(auth.permissions.more_permissions, [`Cancelar Solicitud`, `todas`]) &&
                !["APROBADA", "PAGADA", "PAGO 1", "PAGO 2", "PAGO 3", "RECHAZADA", "CANCELADA"].includes(obj.status) && (
                   <Tooltip title={`Cancelar Folio ${folio}`} placement="top">
@@ -592,18 +615,32 @@ const RequestBecaDT = ({ status = null }) => {
       XLSX.writeFile(workbook, "Becas.xlsx");
    };
 
-   const toolbarContent = () => {
+   const toolbarContentCenter = () => {
       return (
          <div className="flex flex-wrap gap-2">
-            {(auth.permissions.more_permissions.includes(`Exportar Lista Pública`) || auth.permissions.more_permissions.includes(`todas`)) && (
+            {includesInArray(auth.permissions.more_permissions, [`Exportar Lista Pública`, `todas`]) && (
                <Button variant="contained" color="secondary" startIcon={<IconFileSpreadsheet />} onClick={() => handleClickExportPublic(data)} sx={{ mx: 1 }}>
                   Exprotar al público
                </Button>
             )}
-            {(auth.permissions.more_permissions.includes(`Exportar Lista Contraloría`) || auth.permissions.more_permissions.includes(`todas`)) && (
+            {includesInArray(auth.permissions.more_permissions, [`Exportar Lista Contraloría`, `todas`]) && (
                <Button variant="contained" color="secondary" startIcon={<IconFileSpreadsheet />} onClick={handleClickExportContraloria} sx={{ mx: 1 }}>
                   Exprotar para contraloria
                </Button>
+            )}
+         </div>
+      );
+   };
+   const toolbarContentEnd = () => {
+      return (
+         <div className="flex flex-wrap gap-2">
+            {status.includes(`aprobadas`) && (
+               <Typography variant="h4">
+                  BECAS APROBADAS:{" "}
+                  <span>
+                     {counters.requestApproved} de {currentSettings.max_approved}
+                  </span>
+               </Typography>
             )}
          </div>
       );
@@ -651,7 +688,8 @@ const RequestBecaDT = ({ status = null }) => {
             refreshTable={() => getRequestBecas(status ? status : pago)}
             toolBar={auth.more_permissions.includes("Exportar Lista Pública") && status == "aprobadas" ? true : false}
             positionBtnsToolbar="center"
-            toolbarContent={toolbarContent}
+            toolbarContentCenter={toolbarContentCenter}
+            toolbarContentEnd={toolbarContentEnd}
          />
 
          {/* <PDFTable /> */}

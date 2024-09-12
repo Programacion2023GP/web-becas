@@ -53,6 +53,8 @@ const formDataInitialState = {
    under_protest: "",
 
    socioeconomic_study: "",
+   score_total: 0,
+   current_page: 0,
    status: "",
    end_date: "",
    finished: false, //al concluir la pagina 4 que son los Familiares Tabla B2
@@ -103,9 +105,27 @@ const formDataInitialState = {
    b7_comments_academic_transcript: "",
    b7_finished: "",
 
+   approved: "",
+   approved_by: "",
+   approved_feedback: "",
+   approved_at: "",
+   rejected_by: "",
+   rejected_feedback: "",
+   rejected_at: "",
+   paid: "",
+   payments: "",
+   total_amount: "",
+   paid_at: "",
+   canceled_by: "",
+   canceled_feedback: "",
+   canceled_at: "",
+
    second_ref: "NULL",
+   second_ref_relationship_id: 0,
+   second_ref_fullname: "",
    correction_permission: false,
-   correction_completed: false
+   correction_completed: false,
+   cycle_id: null
 };
 
 // const formDataInitialState = {
@@ -144,6 +164,7 @@ export default function RequestBecaContextProvider({ children }) {
 
    const { auth, counterOfMenus } = useAuthContext();
    const { counters, setCounters } = useGlobalContext();
+
    // formDataInitialState.tutor_id = auth.id;
    formDataInitialState.user_id = auth.id;
    const singularName = "Beca"; //Escribirlo siempre letra Capital

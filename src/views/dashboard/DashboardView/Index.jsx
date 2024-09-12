@@ -10,9 +10,10 @@ import TotalIncomeLightCard from "../Default/TotalIncomeLightCard";
 import TotalIncomeDarkCard from "../Default/TotalIncomeDarkCard";
 import { ChartComponent } from "../../../components/Charts/ChartComponent";
 import { useRequestBecaContext } from "../../../context/RequestBecaContext";
-import { groupBy, unifyBy } from "../../../utils/Formats";
+import { formatCurrency, groupBy, unifyBy } from "../../../utils/Formats";
 import { useCommunityContext } from "../../../context/CommunityContext";
 import { useUserContext } from "../../../context/UserContext";
+import { useSettingContext } from "../../../context/SettingContext";
 
 const objDataGraphs = {
    chart: ["bar", "pie"],
@@ -27,6 +28,7 @@ const objDataGraphs = {
 const DashboardIndex = () => {
    // const { result } = useLoaderData();
    const { loading, setLoading } = useGlobalContext();
+   const { currentSettings } = useSettingContext();
    const { getCommunities } = useCommunityContext();
    const { getRequestBecas, getRequestApproved } = useRequestBecaContext();
    const { getUsers } = useUserContext();
@@ -198,7 +200,7 @@ const DashboardIndex = () => {
                         title={"Presupuesto"}
                         caption={"cantidad del recurso asignado a becas"}
                         icon={"IconBusinessplan"}
-                        quantity={"$500,000"}
+                        quantity={formatCurrency(currentSettings ? currentSettings.budget : 0)}
                      />
                   </Grid>
                </Grid>
@@ -208,27 +210,25 @@ const DashboardIndex = () => {
                <DividerComponent title={"Gráficas"} />
             </Grid>
 
-            {dataGraphs.map((graph) => (
-               <>
-                  <Grid item xs={12}>
-                     <Grid container spacing={2}>
-                        {graph.chart.map((chart, i) => (
-                           <Grid item md={6} xs={12}>
-                              <ChartComponent
-                                 key={`key-${graph.name}-${chart}`}
-                                 chart={chart}
-                                 name={graph.name}
-                                 titles={graph.titles}
-                                 values={graph.values}
-                                 inCard={graph.inCard}
-                                 width={graph.width}
-                                 enable3D={graph.enable3D[i]}
-                              />
-                           </Grid>
-                        ))}
-                     </Grid>
+            {dataGraphs.map((graph, index) => (
+               <Grid item xs={12} key={`key-grid-${index}`}>
+                  <Grid container spacing={2} key={`key-grid2-${index}`}>
+                     {graph.chart.map((chart, i) => (
+                        <Grid item md={6} xs={12} key={`key-grid3-${index}-${i}`}>
+                           <ChartComponent
+                              key={`key-${graph.name}-${chart}`}
+                              chart={chart}
+                              name={graph.name}
+                              titles={graph.titles}
+                              values={graph.values}
+                              inCard={graph.inCard}
+                              width={graph.width}
+                              enable3D={graph.enable3D[i]}
+                           />
+                        </Grid>
+                     ))}
                   </Grid>
-               </>
+               </Grid>
             ))}
          </Grid>
       </>
