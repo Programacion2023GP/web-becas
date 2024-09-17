@@ -109,7 +109,21 @@ export default function RequestReportPDF({ obj, targetSection = "sectionRequest"
             },
             {
                tHeadRows: [[{ colSpan: 5, style: subtitleStyle, title: "Se autoriza a una familiar recoger el apoyo?" }]],
-               tBodyCells: [{ colSpan: 5, style: valueStyle, value: obj.second_ref == "Familiar" ? `SÍ` : "NO" }]
+               tBodyCells:
+                  obj.second_ref !== "Familiar"
+                     ? [{ colSpan: 5, style: valueStyle, value: obj.second_ref == "Familiar" ? `SÍ` : "NO" }]
+                     : [
+                          {
+                             colSpan: 2,
+                             style: valueStyle,
+                             value: `PARENTESCO: ${obj.second_ref_relationship}`
+                          },
+                          {
+                             colSpan: 3,
+                             style: valueStyle,
+                             value: `NOMBRE COMPLETO: ${obj.second_ref_fullname}`
+                          }
+                       ]
             }
          ]
       },
@@ -607,7 +621,7 @@ export default function RequestReportPDF({ obj, targetSection = "sectionRequest"
                               <>
                                  <thead key={`th1_${tIndex}`}>
                                     {t.tHeadRows.map((thr, thrIndex) => {
-                                       if (thr[0].title === null) return null;
+                                       if (thr[0]?.title === null) return null;
                                        return (
                                           <tr key={`thr_tr_${thrIndex}`}>
                                              {thr.map((tcTitle, innerIndex) => (

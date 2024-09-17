@@ -111,7 +111,7 @@ export default function MenuContextProvider({ children }) {
             const axiosResponse = await Axios.get(`/menus/MenusByRole/${pages_read}`);
             const axiosCurrentSettings = await Axios.get(`/settings/current`);
             const resCurrentSettings = axiosCurrentSettings.data.data.result;
-            const total_payments = resCurrentSettings.total_payments;
+            const total_payments = resCurrentSettings?.total_payments ?? 0;
             // console.log("axiosResponse", axiosResponse);
             let menus = axiosResponse.data.data.result;
             if (total_payments > 0 && total_payments < 3) menus = await removePagePayments(menus, total_payments);

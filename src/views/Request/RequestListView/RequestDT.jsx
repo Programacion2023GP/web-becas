@@ -318,7 +318,7 @@ const RequestBecaDT = ({ status = null }) => {
 
    const handleClickApprove = async (folio) => {
       try {
-         if (counters.requestApproved >= currentSettings.max_approved) return sAlert.Info("Ya se alcanzó el límite de becas aprobadas");
+         if (counters.requestApproved >= currentSettings?.max_approved ?? 0) return sAlert.Info("Ya se alcanzó el límite de becas aprobadas");
 
          setFolio(folio);
          setOpenModalApprove(true);
@@ -469,8 +469,8 @@ const RequestBecaDT = ({ status = null }) => {
                      color="secondary"
                      onClick={() => handleClickApprove(obj.folio)}
                      sx={{
-                        color: counters.requestApproved >= currentSettings.max_approved && "#E1E0E3",
-                        border: counters.requestApproved >= currentSettings.max_approved && "1px solid #E1E0E3"
+                        color: counters.requestApproved >= (currentSettings?.max_approved ?? 0) && "#E1E0E3",
+                        border: counters.requestApproved >= (currentSettings?.max_approved ?? 0) && "1px solid #E1E0E3"
                      }}
                   >
                      <IconThumbUpFilled />
@@ -638,7 +638,7 @@ const RequestBecaDT = ({ status = null }) => {
                <Typography variant="h4">
                   BECAS APROBADAS:{" "}
                   <span>
-                     {counters.requestApproved} de {currentSettings.max_approved}
+                     {counters.requestApproved} de {currentSettings?.max_approved ?? 0}
                   </span>
                </Typography>
             )}
