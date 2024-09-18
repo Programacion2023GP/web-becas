@@ -122,6 +122,7 @@ const formDataInitialState = {
 
    second_ref: "NULL",
    second_ref_relationship_id: 0,
+   second_ref_relationship: "",
    second_ref_fullname: "",
    correction_permission: false,
    correction_completed: false,

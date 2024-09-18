@@ -976,7 +976,7 @@ export const RadioButtonComponent = ({
             value={values[idName]} // Usar el valor del formulario
             onChange={handleChange} // Usar la función de cambio de Formik
             onBlur={handleBlur} // Usar la función de desenfoque de Formik
-            sx={{ flexDirection: rowLayout ? "row" : "column" }} // Ajustar la dirección del grupo de radio
+            sx={{ flexDirection: rowLayout ? "row" : "column", justifyItems: "stretch" }} // Ajustar la dirección del grupo de radio
             ref={inputRef}
          >
             {options.length > 0 && (

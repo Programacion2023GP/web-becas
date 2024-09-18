@@ -108,7 +108,16 @@ export default function RequestReportPDF({ obj, targetSection = "sectionRequest"
                ]
             },
             {
-               tHeadRows: [[{ colSpan: 5, style: subtitleStyle, title: "Se autoriza a una familiar recoger el apoyo?" }]],
+               tHeadRows:
+                  obj.second_ref !== "Familiar"
+                     ? [[{ colSpan: 5, style: subtitleStyle, title: "¿Se autoriza a una familiar recoger el apoyo?" }]]
+                     : [
+                          [{ colSpan: 5, style: subtitleStyle, title: `¿Se autoriza a una familiar recoger el apoyo? - SÍ` }],
+                          [
+                             { colSpan: 2, style: subtitleStyle, title: "Parentesco" },
+                             { colSpan: 3, style: subtitleStyle, title: "Nombre del familiar" }
+                          ]
+                       ],
                tBodyCells:
                   obj.second_ref !== "Familiar"
                      ? [{ colSpan: 5, style: valueStyle, value: obj.second_ref == "Familiar" ? `SÍ` : "NO" }]
@@ -116,12 +125,12 @@ export default function RequestReportPDF({ obj, targetSection = "sectionRequest"
                           {
                              colSpan: 2,
                              style: valueStyle,
-                             value: `PARENTESCO: ${obj.second_ref_relationship}`
+                             value: obj.second_ref_relationship
                           },
                           {
                              colSpan: 3,
                              style: valueStyle,
-                             value: `NOMBRE COMPLETO: ${obj.second_ref_fullname}`
+                             value: obj.second_ref_fullname
                           }
                        ]
             }
@@ -505,9 +514,9 @@ export default function RequestReportPDF({ obj, targetSection = "sectionRequest"
          url: obj.b7_img_second_ref_back,
          name: "INE TRASERA del Familiar Autorizado (2da Opción)",
          isTutor: false,
-         haveSecondRef: obj.second_ref_back == "Familiar" ? true : null,
+         haveSecondRef: obj.second_ref == "Familiar" ? true : null,
          infoDivider: {
-            title: "DOCUMENTO DEL FAMILIAR AUTORIZADO (2da Opción)"
+            title: ""
          }
       },
       {
@@ -693,7 +702,7 @@ export default function RequestReportPDF({ obj, targetSection = "sectionRequest"
                                  <small>Carta de dependencia económica del DIF &nbsp;|&nbsp; Hoja custodia &nbsp;|&nbsp; Acta de defunción del padre o madre</small>
                               </h5>
                            )}
-                           {item.haveSecondRef === true && (
+                           {item.haveSecondRef === true && item.infoDivider.title != "" && (
                               <>
                                  <h5 style={{ display: "block", width: "100%", mb: 1 }}>Se eligio un Familiar como 2da opción para recoger el apoyo</h5>
                               </>

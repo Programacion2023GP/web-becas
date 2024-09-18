@@ -773,7 +773,7 @@ const RequestBecaDT = ({ status = null }) => {
                statusCurrent={status}
                modalTitle={numPago === 1 ? "PRIMER PAGO" : numPago === 2 ? "SEGUNDO PAGO" : numPago === 3 ? "TERCER PAGO" : ""}
                numPago={numPago}
-               maxWidth={"md"}
+               maxWidth={"xl"}
             />
          )}
       </>
