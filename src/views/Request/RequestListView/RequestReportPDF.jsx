@@ -21,6 +21,7 @@ import CheckIcon from "@mui/icons-material/Check";
 // import {} from "html-pdf-client";
 
 export default function RequestReportPDF({ obj, targetSection = "sectionRequest" }) {
+   console.log("🚀 ~ RequestReportPDF ~ obj:", obj);
    const sectionRequestRef = useRef(null);
    const sectionDocsRef = useRef(null);
    const sectionPaymentsRef = useRef(null);

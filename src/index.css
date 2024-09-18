@@ -228,6 +228,17 @@ th.text-center .p-column-header-content {
    }
 }
 
+img.img-zoom {
+   cursor: pointer;
+   opacity: 0.75;
+   transform: scale(0.95);
+   transition: all 0.2s ease-in-out;
+}
+img.img-zoom:hover {
+   transform: scale(1);
+   opacity: 1;
+}
+
 /* //IMAGENES */
 
 @media (max-width: 1500px) {

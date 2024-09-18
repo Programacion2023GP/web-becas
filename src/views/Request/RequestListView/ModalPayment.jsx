@@ -18,6 +18,7 @@ import { useRelationshipContext } from "../../../context/RelationshipContext";
 import { MonetizationOn } from "@mui/icons-material";
 import { formatDatetimeToSQL, numberToText } from "../../../utils/Formats";
 import { validateImageRequired } from "../../../utils/Validations";
+import ImageZoomComponent from "../../../components/ImageZoomComponent";
 
 function ModalPayment({ obj, open, setOpen, statusCurrent, modalTitle, numPago, maxWidth }) {
    const { setLoadingAction } = useGlobalContext();
@@ -135,10 +136,14 @@ function ModalPayment({ obj, open, setOpen, statusCurrent, modalTitle, numPago, 
                      col={12}
                      idName={"paid_to_tutor"}
                      title={"¿Quien recibio el apoyo?"}
-                     options={[
-                        { value: true, label: `${obj.tutor_name} ${obj.tutor_paternal_last_name} ${obj.tutor_maternal_last_name}` },
-                        { value: false, label: `${obj.second_ref_relationship} - ${obj.second_ref_fullname}` }
-                     ]}
+                     options={
+                        obj.second_ref === "Familia"
+                           ? [
+                                { value: true, label: `${obj.tutor_name} ${obj.tutor_paternal_last_name} ${obj.tutor_maternal_last_name}` },
+                                { value: false, label: `${obj.second_ref_relationship} - ${obj.second_ref_fullname}` }
+                             ]
+                           : [{ value: true, label: `${obj.tutor_name} ${obj.tutor_paternal_last_name} ${obj.tutor_maternal_last_name}` }]
+                     }
                      handleGetValue={handleChangePaidTo}
                      alignItems="start"
                   />
@@ -177,8 +182,11 @@ function ModalPayment({ obj, open, setOpen, statusCurrent, modalTitle, numPago, 
                   />
                </Grid>
                <Grid md={5} sx={{ overflowY: "auto", height: "64vh" }}>
-                  <img src={`${import.meta.env.VITE_HOST}/${imgIneShown}`} style={{ width: "100%", borderRadius: 15 }} alt={"INE FRONTAL"} />
-                  <img src={`${import.meta.env.VITE_HOST}/${imgIneBackShown}`} style={{ width: "100%", borderRadius: 15 }} alt={"INE TRASERA"} />
+                  <Typography textAlign={"center"} fontWeight={"bolder"} variant="h4" mb={2}>
+                     INE DE LA PERSONA SELECCIONADA A RECOGER EL APOYO
+                  </Typography>
+                  <ImageZoomComponent imgUrl={imgIneShown} imgName={"INE Frontal"} left={"10%"} />
+                  <ImageZoomComponent imgUrl={imgIneBackShown} imgName={"INE Trasera"} left={"10%"} />
                </Grid>
             </Grid>
          </FormikComponent>
