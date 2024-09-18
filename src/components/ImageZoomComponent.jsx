@@ -1,3 +1,4 @@
+import { Typography } from "@mui/material";
 import { useState } from "react";
 
 const ImageZoomComponent = ({ imgUrl, imgName, left = null }) => {
@@ -14,12 +15,15 @@ const ImageZoomComponent = ({ imgUrl, imgName, left = null }) => {
       <aside className={`file-preview`} style={{ paddingBlock: 2, marginBottom: 10 }}>
          <div /* key={imgName} */ className={"preview-item"}>
             {/* {imgName.includes(".pdf") || imgName.includes(".PDF") ? ( */}
+            <Typography textAlign={"center"} fontWeight={"bolder"} variant="h5">
+               {imgName}
+            </Typography>
             <>
                <img
                   className="img-zoom"
                   src={`${import.meta.env.VITE_HOST}/${imgUrl}`}
-                  style={{ width: "100%", borderRadius: 15 }}
-                  alt={"INE FRONTAL"}
+                  style={{ width: "50%", borderRadius: 15 }}
+                  alt={imgName}
                   onMouseEnter={handleMouseEnter}
                   onMouseLeave={handleMouseLeave}
                />

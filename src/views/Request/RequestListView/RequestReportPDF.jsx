@@ -754,10 +754,13 @@ export default function RequestReportPDF({ obj, targetSection = "sectionRequest"
                                  <tbody key={`tb_${indexPay}`}>
                                     <tr role="checkbox" tabIndex={-1}>
                                        <td colSpan={0} align="center" style={valueStyle}>
-                                          {item.relationship_id}
+                                          {item.paid_to_tutor ? "TUTOR" : obj.second_ref_relationship}
                                        </td>
                                        <td colSpan={0} align="center" style={valueStyle}>
-                                          {item.paid_to}
+                                          {item.paid_to_tutor
+                                             ? `${obj.tutor_name} ${obj.tutor_paternal_last_name} ${obj.tutor_maternal_last_name}`
+                                             : obj.second_ref_fullname}
+                                          {item.second_ref_fullname}
                                        </td>
                                        <td colSpan={0} align="center" style={valueStyle}>
                                           {formatCurrency(item.amount_paid)}

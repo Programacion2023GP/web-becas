@@ -131,7 +131,7 @@ function ModalPayment({ obj, open, setOpen, statusCurrent, modalTitle, numPago, 
             <InputComponent col={12} idName={"id"} label={"ID"} placeholder={"ID"} textStyleCase={true} hidden={true} />
 
             <Grid container>
-               <Grid md={7}>
+               <Grid md={8}>
                   <RadioButtonComponent
                      col={12}
                      idName={"paid_to_tutor"}
@@ -139,10 +139,10 @@ function ModalPayment({ obj, open, setOpen, statusCurrent, modalTitle, numPago, 
                      options={
                         obj.second_ref === "Familia"
                            ? [
-                                { value: true, label: `${obj.tutor_name} ${obj.tutor_paternal_last_name} ${obj.tutor_maternal_last_name}` },
+                                { value: true, label: `TUTOR - ${obj.tutor_name} ${obj.tutor_paternal_last_name} ${obj.tutor_maternal_last_name}` },
                                 { value: false, label: `${obj.second_ref_relationship} - ${obj.second_ref_fullname}` }
                              ]
-                           : [{ value: true, label: `${obj.tutor_name} ${obj.tutor_paternal_last_name} ${obj.tutor_maternal_last_name}` }]
+                           : [{ value: true, label: `TUTOR - ${obj.tutor_name} ${obj.tutor_paternal_last_name} ${obj.tutor_maternal_last_name}` }]
                      }
                      handleGetValue={handleChangePaidTo}
                      alignItems="start"
@@ -169,7 +169,7 @@ function ModalPayment({ obj, open, setOpen, statusCurrent, modalTitle, numPago, 
                      setFilePreviews={setImgEvidence}
                      multiple={false}
                      accept={"image/*"}
-                     fileSizeMax={3}
+                     fileSizeMax={5}
                   />
                   {/* MODIFICAR (handleModify) ---> setObjImg(formData.img_evidence, setImgEvidence); */}
                   <InputComponent
@@ -181,12 +181,12 @@ function ModalPayment({ obj, open, setOpen, statusCurrent, modalTitle, numPago, 
                      rows={5}
                   />
                </Grid>
-               <Grid md={5} sx={{ overflowY: "auto", height: "64vh" }}>
+               <Grid md={4} sx={{ overflowY: "auto", height: "64vh" }}>
                   <Typography textAlign={"center"} fontWeight={"bolder"} variant="h4" mb={2}>
                      INE DE LA PERSONA SELECCIONADA A RECOGER EL APOYO
                   </Typography>
-                  <ImageZoomComponent imgUrl={imgIneShown} imgName={"INE Frontal"} left={"10%"} />
-                  <ImageZoomComponent imgUrl={imgIneBackShown} imgName={"INE Trasera"} left={"10%"} />
+                  <ImageZoomComponent imgUrl={imgIneShown} imgName={"INE Frontal"} left={"13%"} />
+                  <ImageZoomComponent imgUrl={imgIneBackShown} imgName={"INE Trasera"} left={"13%"} />
                </Grid>
             </Grid>
          </FormikComponent>

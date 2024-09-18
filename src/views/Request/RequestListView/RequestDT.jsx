@@ -279,7 +279,6 @@ const RequestBecaDT = ({ status = null }) => {
    };
 
    const handleClickView = async (obj) => {
-      // console.log("🚀 ~ handleClickView ~ obj:", obj)
       try {
          setLoadingAction(true);
          setTargetSection("sectionRequest");
@@ -287,7 +286,7 @@ const RequestBecaDT = ({ status = null }) => {
          const community = await getCommunityById(obj.community_id);
          const school_community = await getCommunityById(obj.school_community_id);
          const familyData = await getIndexByFolio(obj.folio);
-         const paymentsRequest = await getPaymentsByBeca(obj.id);
+         const paymentsRequest = await getPaymentsByBeca(obj.beca_id ? obj.beca_id : obj.id);
          const paymentDetails = paymentsRequest.result.paymentDetails;
          obj.community = community;
          obj.school_community = school_community;
@@ -707,7 +706,7 @@ const RequestBecaDT = ({ status = null }) => {
                      </IconButton>
                   </Tooltip>
                )} */}
-                  <div style={{ width: "100%" }}>
+                  <div style={{ width: "100%", display: "flex" }}>
                      <Button color="secondary" sx={{ mr: 2 }} onClick={() => setTargetSection("sectionRequest")}>
                         Ir a Solicitud
                      </Button>
@@ -717,6 +716,9 @@ const RequestBecaDT = ({ status = null }) => {
                      <Button color="secondary" sx={{ mr: 2 }} onClick={() => setTargetSection("sectionPayments")}>
                         Ir a Pagos
                      </Button>
+                     <Typography textAlign={"center"} color={"secondary"} fontWeight={"bolder"} variant="h2" my={2} width={"50%"}>
+                        FOLIO # {objReport.folio}
+                     </Typography>
                   </div>
 
                   <Tooltip title={`Imprimir Reporte`} placement="top">
