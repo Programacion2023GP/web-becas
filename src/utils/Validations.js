@@ -3,6 +3,7 @@ import sAlert from "./sAlert";
 import Toast from "./Toast";
 import { colorPrimaryDark } from "../context/GlobalContext";
 import { formatDatetime } from "./Formats";
+import axios from "axios";
 
 export const validateImageRequired = (valuesImg, msg = "Imagen requerida") => {
    if (
@@ -53,7 +54,7 @@ export function validateCURP(curp) {
    return true; //Validado
 }
 
-export const validatePermissionToRequestBeca = async (currentSettings) => {
+export const validatePermissionToRequestBeca = async (currentSettings, requestBeca = null) => {
    // console.log("🚀 ~ validatePermissionToRequestBeca ~ currentSettings:", currentSettings);
    // VERIFICAR QUE HAYA CONFIGURACIÓN
    if (!currentSettings || currentSettings.start_date_request == null || currentSettings.closing_date_request == null) {
@@ -78,11 +79,16 @@ export const validatePermissionToRequestBeca = async (currentSettings) => {
       return false;
    }
    // VERIFICAR QUE EL USUARIO NO HAYA PEDIDO BECA ANTERIORMENTE EN ESTE CICLO
-   if (false) {
-      sAlert.Info(`YA HAS REALIZADO LOS INTENTOS MÁXIMOS PERMITIDOS PARA SOLICITAR BECA. ESPERE AL SIGUIENTE CICLO.
-         <br/>
-         <br/>
-         GRACIAS`);
+   if (requestBeca) {
+      const res = await axios.post(`${import.meta.env.VITE_API}/becas/validatePermissionToRequestBeca`, requestBeca, {
+         headers: {
+            Accept: "application/json", //*/*
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token") || ""}`
+         }
+      });
+      const validatePermission = res.data.data;
+      sAlert.Customizable(`${validatePermission.alert_text}`, validatePermission.alert_icon, true, false);
       return false;
    }
    return true;

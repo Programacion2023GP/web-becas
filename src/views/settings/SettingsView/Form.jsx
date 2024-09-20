@@ -145,6 +145,7 @@ const SettingForm = () => {
             textBtnSubmit={"GUARDAR CONFIGURACIÓN"}
             formikRef={formikRef}
             handleCancel={handleCancel}
+            showCancelButton={false}
          >
             <InputComponent col={12} idName={"id"} label={"ID"} placeholder={"0"} type={"number"} hidden={true} />
 

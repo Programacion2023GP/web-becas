@@ -42,7 +42,10 @@ const CycleForm = () => {
          localStorage.setItem("checkAdd", active);
          setCheckAdd(active);
          setColorLabelcheck("");
+         setTextBtnSumbit("CREAR NUEVO CICLO");
          if (!active) setColorLabelcheck("#ccc");
+         formikRef.current.resetForm();
+         setOpenDialog(true);
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -57,7 +60,7 @@ const CycleForm = () => {
          if (axiosResponse.status === 200) {
             resetForm();
             resetFormData();
-            setTextBtnSumbit("AGREGAR");
+            setTextBtnSumbit("CREAR NUEVO CICLO");
             setFormTitle(`REGISTRAR ${singularName.toUpperCase()}`);
          }
          setSubmitting(false);
@@ -134,7 +137,7 @@ const CycleForm = () => {
             ) : (
                <Typography variant="h4">NO HAY CICLO ACTIVO</Typography>
             )}
-            <Button color="secondary" sx={{ fontWeight: "bolder" }} onClick={() => setOpenDialog(true)}>
+            <Button color="secondary" sx={{ fontWeight: "bolder" }} onClick={handleChangeCheckAdd}>
                NUEVO CICLO
             </Button>
          </Grid>
@@ -157,7 +160,7 @@ const CycleForm = () => {
                   initialValues={formData}
                   validationSchema={validationSchema}
                   onSubmit={onSubmit}
-                  textBtnSubmit={"GUARDAR"}
+                  textBtnSubmit={textBtnSubmit}
                   formikRef={formikRef}
                   handleCancel={handleCancel}
                >

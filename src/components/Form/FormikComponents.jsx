@@ -102,6 +102,7 @@ export const FormikComponent = forwardRef(
          formikRef = null,
          handleCancel,
          showActionButtons = true,
+         showCancelButton = true,
          activeStep = null,
          setStepFailed = null,
          maxHeight = "97%",
@@ -163,9 +164,11 @@ export const FormikComponent = forwardRef(
                               {textBtnSubmit}
                            </LoadingButton>
                            {/* <ButtonGroup variant="outlined" fullWidth> */}
-                           <Button type="reset" variant="outlined" color="error" fullWidth size="large" sx={{ mt: 1 }} onClick={() => handleCancel(resetForm)}>
-                              CANCELAR
-                           </Button>
+                           {showCancelButton && (
+                              <Button type="reset" variant="outlined" color="error" fullWidth size="large" sx={{ mt: 1 }} onClick={() => handleCancel(resetForm)}>
+                                 CANCELAR
+                              </Button>
+                           )}
                            {/* </ButtonGroup> */}
                         </Grid>
                      </>
