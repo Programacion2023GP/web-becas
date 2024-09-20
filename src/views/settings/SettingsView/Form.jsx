@@ -59,6 +59,10 @@ const SettingForm = () => {
          const closing_date = dayjs(values.closing_date_request);
          values.request_enabled = today.isBetween(start_date, closing_date, "day", "[]");
          // values.cycle_id = currentCycle.id;
+         values.id = currentSettings.id;
+         values.cycle_name = currentSettings.cycle_name;
+         values.cycle_start = currentSettings.cycle_start;
+         values.cycle_end = currentSettings.cycle_end;
 
          // return console.log("values", values);
          setLoadingAction(true);
@@ -139,7 +143,7 @@ const SettingForm = () => {
       <>
          <FormikComponent
             key={"formikComponent"}
-            initialValues={currentSettings ? currentSettings : formData}
+            initialValues={formData}
             validationSchema={validationSchema}
             onSubmit={onSubmit}
             textBtnSubmit={"GUARDAR CONFIGURACIÓN"}

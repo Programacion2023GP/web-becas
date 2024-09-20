@@ -106,11 +106,12 @@ const CycleForm = () => {
 
    useEffect(() => {
       try {
+         // console.log("🚀 ~ CycleForm ~ currentSettings:", currentSettings);
       } catch (error) {
          console.log(error);
          Toast.Error(error);
       }
-   }, [formData]);
+   }, [formData, currentSettings]);
 
    return (
       <>
@@ -119,18 +120,18 @@ const CycleForm = () => {
                <>
                   <Typography variant="h4">CICLO ACTUAL VIGENTE:</Typography>
                   <Tooltip title="Nombre del ciclo">
-                     <Typography variant="h4">{currentSettings.cycle_name}</Typography>
+                     <Typography variant="h4">{currentSettings?.cycle_name}</Typography>
                   </Tooltip>
                   <Tooltip title="Fecha de Inicio">
                      <Typography variant="h4" display={"flex"} alignItems={"end"}>
                         <IconCalendarTime />
-                        &nbsp; {currentSettings.cycle_start}
+                        &nbsp; {currentSettings?.cycle_start}
                      </Typography>
                   </Tooltip>
                   <Tooltip title="Fecha de Termino">
                      <Typography variant="h4" display={"flex"} alignItems={"end"}>
                         <IconCalendarX />
-                        &nbsp; {currentSettings.cycle_end}
+                        &nbsp; {currentSettings?.cycle_end}
                      </Typography>
                   </Tooltip>
                </>
