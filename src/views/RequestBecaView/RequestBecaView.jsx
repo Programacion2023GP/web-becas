@@ -416,7 +416,7 @@ const RequestBecaView = () => {
          if (!folio) {
             // console.log("formData en submit3", formData);
             // console.log("values", values);
-            if (!(await validatePermissionToRequestBeca(currentSettings))) return navigate("/app/solicitudes/mis-solicitudes");
+            if (!(await validatePermissionToRequestBeca(currentSettings, values))) return navigate("/app/solicitudes/mis-solicitudes");
 
             values.cycle_id = currentSettings.id;
 

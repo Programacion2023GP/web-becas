@@ -102,6 +102,7 @@ export const FormikComponent = forwardRef(
          formikRef = null,
          handleCancel,
          showActionButtons = true,
+         showCancelButton = true,
          activeStep = null,
          setStepFailed = null,
          maxHeight = "97%",
@@ -163,9 +164,11 @@ export const FormikComponent = forwardRef(
                               {textBtnSubmit}
                            </LoadingButton>
                            {/* <ButtonGroup variant="outlined" fullWidth> */}
-                           <Button type="reset" variant="outlined" color="error" fullWidth size="large" sx={{ mt: 1 }} onClick={() => handleCancel(resetForm)}>
-                              CANCELAR
-                           </Button>
+                           {showCancelButton && (
+                              <Button type="reset" variant="outlined" color="error" fullWidth size="large" sx={{ mt: 1 }} onClick={() => handleCancel(resetForm)}>
+                                 CANCELAR
+                              </Button>
+                           )}
                            {/* </ButtonGroup> */}
                         </Grid>
                      </>
@@ -976,7 +979,7 @@ export const RadioButtonComponent = ({
             value={values[idName]} // Usar el valor del formulario
             onChange={handleChange} // Usar la función de cambio de Formik
             onBlur={handleBlur} // Usar la función de desenfoque de Formik
-            sx={{ flexDirection: rowLayout ? "row" : "column" }} // Ajustar la dirección del grupo de radio
+            sx={{ flexDirection: rowLayout ? "row" : "column", justifyItems: "stretch" }} // Ajustar la dirección del grupo de radio
             ref={inputRef}
          >
             {options.length > 0 && (

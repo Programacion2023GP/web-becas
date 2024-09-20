@@ -279,7 +279,6 @@ const RequestBecaDT = ({ status = null }) => {
    };
 
    const handleClickView = async (obj) => {
-      // console.log("🚀 ~ handleClickView ~ obj:", obj)
       try {
          setLoadingAction(true);
          setTargetSection("sectionRequest");
@@ -287,7 +286,7 @@ const RequestBecaDT = ({ status = null }) => {
          const community = await getCommunityById(obj.community_id);
          const school_community = await getCommunityById(obj.school_community_id);
          const familyData = await getIndexByFolio(obj.folio);
-         const paymentsRequest = await getPaymentsByBeca(obj.id);
+         const paymentsRequest = await getPaymentsByBeca(obj.beca_id ? obj.beca_id : obj.id);
          const paymentDetails = paymentsRequest.result.paymentDetails;
          obj.community = community;
          obj.school_community = school_community;
@@ -318,7 +317,7 @@ const RequestBecaDT = ({ status = null }) => {
 
    const handleClickApprove = async (folio) => {
       try {
-         if (counters.requestApproved >= currentSettings.max_approved) return sAlert.Info("Ya se alcanzó el límite de becas aprobadas");
+         if (counters.requestApproved >= currentSettings?.max_approved ?? 0) return sAlert.Info("Ya se alcanzó el límite de becas aprobadas");
 
          setFolio(folio);
          setOpenModalApprove(true);
@@ -469,8 +468,8 @@ const RequestBecaDT = ({ status = null }) => {
                      color="secondary"
                      onClick={() => handleClickApprove(obj.folio)}
                      sx={{
-                        color: counters.requestApproved >= currentSettings.max_approved && "#E1E0E3",
-                        border: counters.requestApproved >= currentSettings.max_approved && "1px solid #E1E0E3"
+                        color: counters.requestApproved >= (currentSettings?.max_approved ?? 0) && "#E1E0E3",
+                        border: counters.requestApproved >= (currentSettings?.max_approved ?? 0) && "1px solid #E1E0E3"
                      }}
                   >
                      <IconThumbUpFilled />
@@ -638,7 +637,7 @@ const RequestBecaDT = ({ status = null }) => {
                <Typography variant="h4">
                   BECAS APROBADAS:{" "}
                   <span>
-                     {counters.requestApproved} de {currentSettings.max_approved}
+                     {counters.requestApproved} de {currentSettings?.max_approved ?? 0}
                   </span>
                </Typography>
             )}
@@ -707,7 +706,7 @@ const RequestBecaDT = ({ status = null }) => {
                      </IconButton>
                   </Tooltip>
                )} */}
-                  <div style={{ width: "100%" }}>
+                  <div style={{ width: "100%", display: "flex" }}>
                      <Button color="secondary" sx={{ mr: 2 }} onClick={() => setTargetSection("sectionRequest")}>
                         Ir a Solicitud
                      </Button>
@@ -717,6 +716,9 @@ const RequestBecaDT = ({ status = null }) => {
                      <Button color="secondary" sx={{ mr: 2 }} onClick={() => setTargetSection("sectionPayments")}>
                         Ir a Pagos
                      </Button>
+                     <Typography textAlign={"center"} color={"secondary"} fontWeight={"bolder"} variant="h2" my={2} width={"50%"}>
+                        FOLIO # {objReport.folio}
+                     </Typography>
                   </div>
 
                   <Tooltip title={`Imprimir Reporte`} placement="top">
@@ -773,7 +775,7 @@ const RequestBecaDT = ({ status = null }) => {
                statusCurrent={status}
                modalTitle={numPago === 1 ? "PRIMER PAGO" : numPago === 2 ? "SEGUNDO PAGO" : numPago === 3 ? "TERCER PAGO" : ""}
                numPago={numPago}
-               maxWidth={"md"}
+               maxWidth={"xl"}
             />
          )}
       </>

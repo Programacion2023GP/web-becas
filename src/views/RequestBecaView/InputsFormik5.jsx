@@ -92,7 +92,7 @@ const InputsFormik5 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
                      col={12}
                      idName={"b3_services"}
                      label={"Servicios (agua y luz) * $"}
-                     placeholder={"Ingrese el gasto mensual de alimentos"}
+                     placeholder={"Ingrese el gasto mensual de servicios"}
                      type="number"
                      onChange={(e) => {
                         formik.handleChange(e);

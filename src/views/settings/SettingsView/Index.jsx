@@ -18,7 +18,7 @@ const SettingsView = () => {
    // const { result } = useLoaderData();
    const { setLoading } = useGlobalContext();
    // const { currentCycle, getCurrentCycle } = useCycleContext();
-   const { pluralName, getSettings, currentSettings } = useSettingContext();
+   const { pluralName, getSettings, currentSettings, formData } = useSettingContext();
 
    useEffect(() => {
       try {

@@ -31,7 +31,7 @@ const InputsFormik2 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
 
    const handleChangeCURP = async (e, values, setFieldValue) => {
       try {
-         console.log("cambio de curp");
+         // console.log("cambio de curp");
 
          let curp = e.target.value.toUpperCase();
          // if (curp.length < 1) return Toast.Info("El campo CURP esta vacío");
@@ -68,7 +68,7 @@ const InputsFormik2 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
          await setFormData({ ...formData, ...values });
 
          if (formData.community_id > 0) {
-            console.log("amos a pedir el community", formData.community_id);
+            // console.log("amos a pedir el community", formData.community_id);
 
             getCommunity(
                formData.zip,
@@ -97,10 +97,10 @@ const InputsFormik2 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
    useEffect(() => {
       const init = async () => {
          if (formData.community_id > 0) {
-            console.log("🚀 ~ init ~ formData:", formData);
-            console.log("amos a pedir el community", formData.community_id);
+            // console.log("🚀 ~ init ~ formData:", formData);
+            // console.log("amos a pedir el community", formData.community_id);
             const CommunityStudent = await getCommunityById(formData.community_id);
-            console.log("🚀 ~ useEffect ~ CommunityStudent:", CommunityStudent);
+            // console.log("🚀 ~ useEffect ~ CommunityStudent:", CommunityStudent);
          }
       };
       init();

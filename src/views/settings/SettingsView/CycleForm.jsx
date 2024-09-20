@@ -42,7 +42,10 @@ const CycleForm = () => {
          localStorage.setItem("checkAdd", active);
          setCheckAdd(active);
          setColorLabelcheck("");
+         setTextBtnSumbit("CREAR NUEVO CICLO");
          if (!active) setColorLabelcheck("#ccc");
+         formikRef.current.resetForm();
+         setOpenDialog(true);
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -57,7 +60,7 @@ const CycleForm = () => {
          if (axiosResponse.status === 200) {
             resetForm();
             resetFormData();
-            setTextBtnSumbit("AGREGAR");
+            setTextBtnSumbit("CREAR NUEVO CICLO");
             setFormTitle(`REGISTRAR ${singularName.toUpperCase()}`);
          }
          setSubmitting(false);
@@ -103,11 +106,12 @@ const CycleForm = () => {
 
    useEffect(() => {
       try {
+         // console.log("🚀 ~ CycleForm ~ currentSettings:", currentSettings);
       } catch (error) {
          console.log(error);
          Toast.Error(error);
       }
-   }, [formData]);
+   }, [formData, currentSettings]);
 
    return (
       <>
@@ -116,25 +120,25 @@ const CycleForm = () => {
                <>
                   <Typography variant="h4">CICLO ACTUAL VIGENTE:</Typography>
                   <Tooltip title="Nombre del ciclo">
-                     <Typography variant="h4">{currentSettings.cycle_name}</Typography>
+                     <Typography variant="h4">{currentSettings?.cycle_name}</Typography>
                   </Tooltip>
                   <Tooltip title="Fecha de Inicio">
                      <Typography variant="h4" display={"flex"} alignItems={"end"}>
                         <IconCalendarTime />
-                        &nbsp; {currentSettings.cycle_start}
+                        &nbsp; {currentSettings?.cycle_start}
                      </Typography>
                   </Tooltip>
                   <Tooltip title="Fecha de Termino">
                      <Typography variant="h4" display={"flex"} alignItems={"end"}>
                         <IconCalendarX />
-                        &nbsp; {currentSettings.cycle_end}
+                        &nbsp; {currentSettings?.cycle_end}
                      </Typography>
                   </Tooltip>
                </>
             ) : (
                <Typography variant="h4">NO HAY CICLO ACTIVO</Typography>
             )}
-            <Button color="secondary" sx={{ fontWeight: "bolder" }} onClick={() => setOpenDialog(true)}>
+            <Button color="secondary" sx={{ fontWeight: "bolder" }} onClick={handleChangeCheckAdd}>
                NUEVO CICLO
             </Button>
          </Grid>
@@ -157,7 +161,7 @@ const CycleForm = () => {
                   initialValues={formData}
                   validationSchema={validationSchema}
                   onSubmit={onSubmit}
-                  textBtnSubmit={"GUARDAR"}
+                  textBtnSubmit={textBtnSubmit}
                   formikRef={formikRef}
                   handleCancel={handleCancel}
                >
