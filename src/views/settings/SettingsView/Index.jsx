@@ -18,14 +18,14 @@ const SettingsView = () => {
    // const { result } = useLoaderData();
    const { setLoading } = useGlobalContext();
    // const { currentCycle, getCurrentCycle } = useCycleContext();
-   const { pluralName, getSettings, currentSettings, formData } = useSettingContext();
+   const { pluralName, getSettings, currentSettings, getCurrentSettings, formData } = useSettingContext();
 
    useEffect(() => {
       try {
          (async () => {
             setLoading(true);
             // await getCurrentCycle();
-            await getSettings();
+            await getCurrentSettings();
             setLoading(false);
          })();
       } catch (error) {

@@ -1,7 +1,7 @@
 import * as Yup from "yup";
 
 import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
-import { Button, FormControlLabel, SwipeableDrawer, Switch, Tooltip, Typography } from "@mui/material";
+import { Button, FormControlLabel, IconButton, SwipeableDrawer, Switch, Tooltip, Typography } from "@mui/material";
 import { useState } from "react";
 import { useSettingContext } from "../../../context/SettingContext";
 import { useEffect } from "react";
@@ -10,10 +10,11 @@ import { colorPrimaryDark, gpcLight, useGlobalContext } from "../../../context/G
 import { DatePickerComponent, DividerComponent, FormikComponent, InputComponent, Select2Component } from "../../../components/Form/FormikComponents";
 import { formatCurrency, formatDatetime } from "../../../utils/Formats";
 import { Box } from "@mui/system";
-import { IconCalendarTime } from "@tabler/icons";
+import { IconCalendarTime, IconEditCircle, IconEditCircleOff, IconReload } from "@tabler/icons";
 import { IconCalendarX } from "@tabler/icons-react";
 import { useCycleContext } from "../../../context/CycleContext";
 import dayjs from "dayjs";
+import ValuePreview from "../../../components/ValuePreview";
 
 const checkAddInitialState = localStorage.getItem("checkAdd") == "true" ? true : false || false;
 const colorLabelcheckInitialState = checkAddInitialState ? "" : "#ccc";
@@ -33,11 +34,13 @@ const SettingForm = () => {
       formTitle,
       setFormTitle,
       formikRef,
-      currentSettings
+      currentSettings,
+      getCurrentSettings
    } = useSettingContext();
    // const { currentCycle } = useCycleContext();
    const [checkAdd, setCheckAdd] = useState(checkAddInitialState);
    const [colorLabelcheck, setColorLabelcheck] = useState(colorLabelcheckInitialState);
+   const [inEdit, setInEdit] = useState(false);
 
    const handleChangeCheckAdd = (e) => {
       try {
@@ -72,15 +75,15 @@ const SettingForm = () => {
          if (values.id < 1) axiosResponse = await createSetting(values);
          else axiosResponse = await updateSetting(values);
          if (axiosResponse.status === 200) {
-            resetForm();
-            resetFormData();
+            // resetForm();
+            // resetFormData();
             setTextBtnSumbit("AGREGAR");
             setFormTitle(`REGISTRAR ${singularName.toUpperCase()}`);
          }
          setSubmitting(false);
          setLoadingAction(false);
+         setInEdit(false);
          Toast.Customizable(axiosResponse.alert_text, axiosResponse.alert_icon);
-         if (!checkAdd) setOpenDialog(false);
       } catch (error) {
          setLoadingAction(false);
          setOpenDialog(false);
@@ -127,20 +130,27 @@ const SettingForm = () => {
 
    useEffect(() => {
       try {
-         (async () => {
-            if (currentSettings) {
-               // console.log("🚀 ~ useEffect ~ currentSettings:", currentSettings);
-               await setFormData(currentSettings);
-            }
-         })();
+         // (async () => {
+         //    if (currentSettings) {
+         //       console.log("🚀 ~ useEffect ~ currentSettings:", currentSettings);
+         //       // await setFormData(currentSettings);
+         //    }
+         // })();
       } catch (error) {
          console.log(error);
          Toast.Error(error);
       }
-   }, [formData]);
+   }, [formData, inEdit]);
 
    return (
       <>
+         <Grid textAlign={"end"} mb={-3}>
+            <Tooltip title={inEdit ? "Cancelar Edición" : "Editar Configuración"}>
+               <IconButton color="secondary" size="large" onClick={() => setInEdit(!inEdit)}>
+                  {inEdit ? <IconEditCircleOff /> : <IconEditCircle />}
+               </IconButton>
+            </Tooltip>
+         </Grid>
          <FormikComponent
             key={"formikComponent"}
             initialValues={formData}
@@ -150,6 +160,7 @@ const SettingForm = () => {
             formikRef={formikRef}
             handleCancel={handleCancel}
             showCancelButton={false}
+            showActionButtons={!inEdit}
          >
             <InputComponent col={12} idName={"id"} label={"ID"} placeholder={"0"} type={"number"} hidden={true} />
 
@@ -168,56 +179,76 @@ const SettingForm = () => {
                            Periodo para solicitar becas
                         </Typography>
                         <Grid container spacing={2} mx={0.5} py={1.6}>
-                           <DatePickerComponent
-                              col={6}
-                              idName={"start_date_request"}
-                              label={"Fehca de Inicio "}
-                              format={"DD/MM/YYYY"}
-                              disabled={!currentSettings?.cycle_name}
-                           />
-                           <DatePickerComponent
-                              col={6}
-                              idName={"closing_date_request"}
-                              label={"Fehca de Cierre "}
-                              format={"DD/MM/YYYY"}
-                              disabled={!currentSettings?.cycle_name}
-                           />
+                           {!inEdit ? (
+                              <ValuePreview col={5} title={"Fecha de Inicio"} value={formatDatetime(formData.start_date_request, true)} />
+                           ) : (
+                              <DatePickerComponent
+                                 col={6}
+                                 idName={"start_date_request"}
+                                 label={"Fecha de Inicio"}
+                                 format={"DD/MM/YYYY"}
+                                 disabled={!currentSettings?.cycle_name}
+                              />
+                           )}
+                           {!inEdit ? (
+                              <ValuePreview col={5} title={"Fecha de Cierre"} value={formatDatetime(formData.closing_date_request, true)} />
+                           ) : (
+                              <DatePickerComponent
+                                 col={6}
+                                 idName={"closing_date_request"}
+                                 label={"Fecha de Cierre"}
+                                 format={"DD/MM/YYYY"}
+                                 disabled={!currentSettings?.cycle_name}
+                              />
+                           )}
                         </Grid>
                      </li>
                      <li style={{ border: `solid 2px ${colorPrimaryDark}`, borderRadius: "10px", marginBottom: "1rem" }}>
                         <Typography variant="h4" mb={1} sx={{ p: 0.5, backgroundColor: colorPrimaryDark, borderRadius: 1, color: gpcLight }}>
                            Oportunidades por usuario para solicitar becas
                         </Typography>
-                        <InputComponent
-                           col={6}
-                           idName={"opportunities"}
-                           label={"Cantidad"}
-                           placeholder={"0"}
-                           type={"number"}
-                           disabled={!currentSettings?.cycle_name}
-                        />
+                        {!inEdit ? (
+                           <ValuePreview col={6} title={"Cantidad"} value={formData.opportunities} />
+                        ) : (
+                           <InputComponent
+                              col={6}
+                              idName={"opportunities"}
+                              label={"Cantidad"}
+                              placeholder={"0"}
+                              type={"number"}
+                              disabled={!currentSettings?.cycle_name}
+                           />
+                        )}
                      </li>
                      <li style={{ border: `solid 2px ${colorPrimaryDark}`, borderRadius: "10px", marginBottom: "1rem" }}>
                         <Typography variant="h4" mb={2} sx={{ p: 0.5, backgroundColor: colorPrimaryDark, borderRadius: 1, color: gpcLight }}>
                            Montos mínimos para mostrar alerta en Ingresos y Egresos Mensuales
                         </Typography>
                         <Grid container spacing={2} mx={0.5}>
-                           <InputComponent
-                              col={6}
-                              idName={"monthly_income_min"}
-                              label={"Monto en Ingresos"}
-                              placeholder={"0"}
-                              type={"number"}
-                              disabled={!currentSettings?.cycle_name}
-                           />
-                           <InputComponent
-                              col={6}
-                              idName={"total_expenses_min"}
-                              label={"Monto en Engresos"}
-                              placeholder={"0"}
-                              type={"number"}
-                              disabled={!currentSettings?.cycle_name}
-                           />
+                           {!inEdit ? (
+                              <ValuePreview col={5} title={"Monto en Ingresos"} value={formatCurrency(formData.monthly_income_min)} />
+                           ) : (
+                              <InputComponent
+                                 col={6}
+                                 idName={"monthly_income_min"}
+                                 label={"Monto en Ingresos"}
+                                 placeholder={"0"}
+                                 type={"number"}
+                                 disabled={!currentSettings?.cycle_name}
+                              />
+                           )}
+                           {!inEdit ? (
+                              <ValuePreview col={5} title={"Monto en Engresos"} value={formatCurrency(formData.total_expenses_min)} />
+                           ) : (
+                              <InputComponent
+                                 col={6}
+                                 idName={"total_expenses_min"}
+                                 label={"Monto en Engresos"}
+                                 placeholder={"0"}
+                                 type={"number"}
+                                 disabled={!currentSettings?.cycle_name}
+                              />
+                           )}
                         </Grid>
                      </li>
                   </ul>
@@ -231,7 +262,18 @@ const SettingForm = () => {
                               <Typography variant="h4" mb={2} sx={{ p: 0.5, backgroundColor: colorPrimaryDark, borderRadius: 1, color: gpcLight }}>
                                  Presupuesto asignado
                               </Typography>
-                              <InputComponent col={12} idName={"budget"} label={"Monto"} placeholder={"0"} type={"number"} disabled={!currentSettings?.cycle_name} />
+                              {!inEdit ? (
+                                 <ValuePreview col={10} title={"Monto"} value={formatCurrency(formData.budget)} />
+                              ) : (
+                                 <InputComponent
+                                    col={12}
+                                    idName={"budget"}
+                                    label={"Monto"}
+                                    placeholder={"0"}
+                                    type={"number"}
+                                    disabled={!currentSettings?.cycle_name}
+                                 />
+                              )}
                            </li>
                         </Grid>
                         <Grid xs={12} md={6}>
@@ -239,14 +281,18 @@ const SettingForm = () => {
                               <Typography variant="h4" mb={2} sx={{ p: 0.5, backgroundColor: colorPrimaryDark, borderRadius: 1, color: gpcLight }}>
                                  Becas Aprobadas
                               </Typography>
-                              <InputComponent
-                                 col={12}
-                                 idName={"max_approved"}
-                                 label={"Cantidad Máxima"}
-                                 placeholder={"0"}
-                                 type={"number"}
-                                 disabled={!currentSettings?.cycle_name}
-                              />
+                              {!inEdit ? (
+                                 <ValuePreview col={10} title={"Cantidad Máxima"} value={formData.max_approved} />
+                              ) : (
+                                 <InputComponent
+                                    col={12}
+                                    idName={"max_approved"}
+                                    label={"Cantidad Máxima"}
+                                    placeholder={"0"}
+                                    type={"number"}
+                                    disabled={!currentSettings?.cycle_name}
+                                 />
+                              )}
                            </li>
                         </Grid>
                      </Grid>
@@ -255,28 +301,40 @@ const SettingForm = () => {
                            Entrega de Becas
                         </Typography>
                         <Grid container spacing={2} mx={0.5}>
-                           <InputComponent
-                              col={6}
-                              idName={"total_payments"}
-                              label={"Cantidad de pagos"}
-                              placeholder={"0"}
-                              type={"number"}
-                              inputProps={{ maxLength: 1, min: 1, max: 3 }}
-                              disabled={!currentSettings?.cycle_name}
-                           />
-                           <Select2Component
-                              col={6}
-                              idName={"payment_frequency"}
-                              label={"Periodicidad de pago"}
-                              options={[
-                                 { id: "1 month", label: "1 Mes" },
-                                 { id: "2 months", label: "2 Meses" },
-                                 { id: "3 months", label: "3 Meses" }
-                              ]}
-                              pluralName={""}
-                              refreshSelect={null}
-                              disabled={!currentSettings?.cycle_name}
-                           />
+                           {!inEdit ? (
+                              <ValuePreview col={5} title={"Cantidad de pagos"} value={formData.total_payments} />
+                           ) : (
+                              <InputComponent
+                                 col={6}
+                                 idName={"total_payments"}
+                                 label={"Cantidad de pagos"}
+                                 placeholder={"0"}
+                                 type={"number"}
+                                 inputProps={{ maxLength: 1, min: 1, max: 3 }}
+                                 disabled={!currentSettings?.cycle_name}
+                              />
+                           )}
+                           {!inEdit ? (
+                              <ValuePreview
+                                 col={5}
+                                 title={"Cantidad de pagos"}
+                                 value={formData.payment_frequency == "1 month" ? "1 Mes" : formData.payment_frequency == "2 months" ? "2 Meses" : "3 Meses"}
+                              />
+                           ) : (
+                              <Select2Component
+                                 col={6}
+                                 idName={"payment_frequency"}
+                                 label={"Periodicidad de pago"}
+                                 options={[
+                                    { id: "1 month", label: "1 Mes" },
+                                    { id: "2 months", label: "2 Meses" },
+                                    { id: "3 months", label: "3 Meses" }
+                                 ]}
+                                 pluralName={""}
+                                 refreshSelect={null}
+                                 disabled={!currentSettings?.cycle_name}
+                              />
+                           )}
                         </Grid>
                      </li>
                      <li style={{ border: `solid 2px ${colorPrimaryDark}`, borderRadius: "10px", marginBottom: "1rem" }}>

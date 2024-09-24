@@ -64,7 +64,7 @@ const InputsFormik1 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
                      handleChangeTutorCURP(e, formik.values, formik.setFieldValue);
                   }}
                   disabled={formik.values.id == 0 ? false : true}
-                  focus={true}
+                  // focus={true}
                />
                {/* Parentesco */}
                <Select2Component

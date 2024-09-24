@@ -269,7 +269,9 @@ const RequestBecaDT = ({ status = null }) => {
 
    const handleClickContinue = async (current_page, folio) => {
       try {
-         if (!(await validatePermissionToRequestBeca(currentSettings))) return;
+         setLoadingAction(true);
+         if (!(await validatePermissionToRequestBeca(currentSettings))) return setLoadingAction(false);
+         setLoadingAction(false);
 
          window.open(`#/app/solicitud-beca/pagina/${current_page}/folio/${folio}`, "_blank");
       } catch (error) {
@@ -357,7 +359,9 @@ const RequestBecaDT = ({ status = null }) => {
 
    const handleClickAdd = async () => {
       try {
-         if (!(await validatePermissionToRequestBeca(currentSettings))) return;
+         setLoadingAction(true);
+         if (!(await validatePermissionToRequestBeca(currentSettings))) return setLoadingAction(false);
+         setLoadingAction(false);
 
          location.hash = "/app/solicitud-beca";
       } catch (error) {

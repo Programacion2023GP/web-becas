@@ -167,8 +167,8 @@ const CycleForm = () => {
                >
                   <Grid container xs={12} spacing={2}>
                      <InputComponent col={4} idName={"cycle_name"} label={"Nombre del Ciclo"} placeholder={"Ciclo Enero - Junio 2024"} />
-                     <DatePickerComponent col={4} idName={"cycle_start"} label={"Fehca de Inicio "} format={"DD/MM/YYYY"} />
-                     <DatePickerComponent col={4} idName={"cycle_end"} label={"Fehca de Cierre "} format={"DD/MM/YYYY"} />
+                     <DatePickerComponent col={4} idName={"cycle_start"} label={"Fecha de Inicio "} format={"DD/MM/YYYY"} />
+                     <DatePickerComponent col={4} idName={"cycle_end"} label={"Fecha de Cierre "} format={"DD/MM/YYYY"} />
                   </Grid>
                </FormikComponent>
             </Box>
