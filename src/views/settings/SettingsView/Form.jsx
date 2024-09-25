@@ -136,6 +136,8 @@ const SettingForm = () => {
          //       // await setFormData(currentSettings);
          //    }
          // })();
+         // console.log("🚀 ~ SettingForm ~ formData:", formData);
+         formikRef.current.setValues(formData);
       } catch (error) {
          console.log(error);
          Toast.Error(error);
@@ -160,7 +162,7 @@ const SettingForm = () => {
             formikRef={formikRef}
             handleCancel={handleCancel}
             showCancelButton={false}
-            showActionButtons={!inEdit}
+            showActionButtons={inEdit}
          >
             <InputComponent col={12} idName={"id"} label={"ID"} placeholder={"0"} type={"number"} hidden={true} />
 

@@ -111,7 +111,7 @@ export const FormikComponent = forwardRef(
       ref
    ) => {
       useEffect(() => {
-         // console.log("useEffect del FormikComponent");
+         // console.log("useEffect del FormikComponent", initialValues);
       }, []);
 
       const onBlur = () => {

@@ -54,7 +54,7 @@ export function validateCURP(curp) {
    return true; //Validado
 }
 
-export const validatePermissionToRequestBeca = async (currentSettings, requestBeca = null) => {
+export const validatePermissionToRequestBeca = async (currentSettings, requestBeca = null, inContinue = false) => {
    // console.log("🚀 ~ validatePermissionToRequestBeca ~ currentSettings:", currentSettings);
    // VERIFICAR QUE HAYA CONFIGURACIÓN
    // if (!currentSettings || currentSettings.start_date_request == null || currentSettings.closing_date_request == null) {
@@ -81,8 +81,9 @@ export const validatePermissionToRequestBeca = async (currentSettings, requestBe
    // VERIFICAR QUE EL USUARIO NO HAYA PEDIDO BECA ANTERIORMENTE EN ESTE CICLO
    // if (requestBeca) {
    const data = {
-      tutor_curp: requestBeca?.tutor_curp || "",
-      curp: requestBeca?.curp || ""
+      tutor_curp: requestBeca?.tutor_curp || "SinCURP",
+      curp: requestBeca?.curp || "SinCURP",
+      continue: inContinue
    };
    const res = await axios.post(`${import.meta.env.VITE_API}/becas/validatePermissionToRequestBeca`, data, {
       headers: {
@@ -92,11 +93,11 @@ export const validatePermissionToRequestBeca = async (currentSettings, requestBe
       }
    });
    const validatePermission = res.data.data;
-   if (!validatePermission.result.allowed) {
+   if (!validatePermission.result.v_allowed) {
       if (validatePermission.alert_text.includes("el tiempo de solicitar becas es del")) {
          // const today = dayjs();
-         const start_date_request = dayjs(validatePermission.result.start_date_request);
-         const closing_date_request = dayjs(validatePermission.result.closing_date_request);
+         const start_date_request = dayjs(validatePermission.result.v_start_date_request);
+         const closing_date_request = dayjs(validatePermission.result.v_closing_date_request);
          sAlert.Info(
             `NO ES POSIBLE SOLICITAR BECAS EN ESTE MOMENTO
                   <br/>
@@ -109,7 +110,7 @@ export const validatePermissionToRequestBeca = async (currentSettings, requestBe
          );
       } else sAlert.Customizable(validatePermission.alert_text, validatePermission.alert_icon, true, false);
    }
-   return validatePermission.result.allowed;
+   return validatePermission.result.v_allowed;
    // }
    // return true;
 };

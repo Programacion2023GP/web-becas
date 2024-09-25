@@ -267,10 +267,10 @@ const RequestBecaDT = ({ status = null }) => {
 
    const mySwal = withReactContent(Swal);
 
-   const handleClickContinue = async (current_page, folio) => {
+   const handleClickContinue = async (current_page, folio, obj) => {
       try {
          setLoadingAction(true);
-         if (!(await validatePermissionToRequestBeca(currentSettings))) return setLoadingAction(false);
+         if (!(await validatePermissionToRequestBeca(currentSettings, obj, true))) return setLoadingAction(false);
          setLoadingAction(false);
 
          window.open(`#/app/solicitud-beca/pagina/${current_page}/folio/${folio}`, "_blank");
@@ -438,7 +438,7 @@ const RequestBecaDT = ({ status = null }) => {
          <ButtonGroup variant="outlined">
             {obj.end_date == null && (
                <Tooltip title={`Solicitud ${folio}`} placement="top">
-                  <Button color="dark" onClick={() => handleClickContinue(current_page, obj.folio)}>
+                  <Button color="dark" onClick={() => handleClickContinue(current_page, obj.folio, obj)}>
                      Continuar
                   </Button>
                </Tooltip>

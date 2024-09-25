@@ -1036,7 +1036,10 @@ const RequestBecaView = () => {
          setLoadingAction(false);
 
          if (showModalRemember && pagina == 1) setShowModalRemember(true);
-         else setShowModalRemember(false);
+         else
+            setTimeout(() => {
+               setShowModalRemember(false);
+            }, 500);
          if (pagina == 9 && accion != "revision") {
             setShowModalRememberTakePhoto(true);
             setTimeout(() => {
