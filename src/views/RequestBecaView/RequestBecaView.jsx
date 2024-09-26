@@ -347,8 +347,9 @@ const RequestBecaView = () => {
    const handleClickInitRequest = async () => {
       // console.log("clickk");
       handleReset();
-
-      if (!(await validatePermissionToRequestBeca(currentSettings))) return;
+      setLoadingAction(true);
+      if (!(await validatePermissionToRequestBeca(currentSettings))) return setLoadingAction(false);
+      setLoadingAction(false);
 
       const pagesIA = pageInAnimation;
       // console.log("🚀 ~ handleClickInitRequest ~ pagesIA:", pagesIA);
@@ -416,8 +417,13 @@ const RequestBecaView = () => {
          if (!folio) {
             // console.log("formData en submit3", formData);
             // console.log("values", values);
-            if (!(await validatePermissionToRequestBeca(currentSettings, values))) return navigate("/app/solicitudes/mis-solicitudes");
+            setLoadingAction(true);
+            if (!(await validatePermissionToRequestBeca(currentSettings, values))) {
+               navigate("/app/solicitudes/mis-solicitudes");
+               return setLoadingAction(false);
+            }
 
+            setLoadingAction(false);
             values.cycle_id = currentSettings.id;
 
             await setFormData({ ...formData, ...values });
@@ -1022,10 +1028,18 @@ const RequestBecaView = () => {
          setNotifiactedIncome(false);
          setNotifiactedExpenses(false);
          const resCurrentSettings = await getCurrentSettings();
-         if (!(await validatePermissionToRequestBeca(resCurrentSettings.result))) return navigate("/app/");
+         setLoadingAction(true);
+         if (!(await validatePermissionToRequestBeca(resCurrentSettings.result, formData, pagina > 3))) {
+            navigate(auth.role_id === 3 ? "/app/solicitudes/mis-solicitudes" : "/app/");
+            return setLoadingAction(false);
+         }
+         setLoadingAction(false);
 
          if (showModalRemember && pagina == 1) setShowModalRemember(true);
-         else setShowModalRemember(false);
+         else
+            setTimeout(() => {
+               setShowModalRemember(false);
+            }, 500);
          if (pagina == 9 && accion != "revision") {
             setShowModalRememberTakePhoto(true);
             setTimeout(() => {

@@ -54,42 +54,63 @@ export function validateCURP(curp) {
    return true; //Validado
 }
 
-export const validatePermissionToRequestBeca = async (currentSettings, requestBeca = null) => {
+export const validatePermissionToRequestBeca = async (currentSettings, requestBeca = null, inContinue = false) => {
    // console.log("🚀 ~ validatePermissionToRequestBeca ~ currentSettings:", currentSettings);
    // VERIFICAR QUE HAYA CONFIGURACIÓN
-   if (!currentSettings || currentSettings.start_date_request == null || currentSettings.closing_date_request == null) {
-      sAlert.Info("Por el momento no se pueden realizar solcitudes, comuniquese con el departamento de Eduación");
-      return false;
-   }
-   const today = dayjs();
-   const start_date_request = dayjs(currentSettings.start_date_request);
-   const closing_date_request = dayjs(currentSettings.closing_date_request);
+   // if (!currentSettings || currentSettings.start_date_request == null || currentSettings.closing_date_request == null) {
+   //    sAlert.Info("Por el momento no se pueden realizar solcitudes, comuniquese con el departamento de Eduación");
+   //    return false;
+   // }
+   // const today = dayjs();
+   // const start_date_request = dayjs(currentSettings.start_date_request);
+   // const closing_date_request = dayjs(currentSettings.closing_date_request);
    // VERIFICAR QUE ESTE EN FECHA DE SOLICITUDES
-   if (!today.isBetween(start_date_request, closing_date_request, "day", "[]")) {
-      sAlert.Info(
-         `NO ES POSIBLE SOLICITAR BECAS EN ESTE MOMENTO 
-         <br/>
-         <br/>
-         el tiempo de solicitar becas es del <span style="color:${colorPrimaryDark}; font-weight:bolder">${formatDatetime(
-            start_date_request,
-            null,
-            "LL"
-         )}</span> al <span style="color:${colorPrimaryDark}; font-weight:bolder">${formatDatetime(closing_date_request, null, "LL")}</span>`
-      );
-      return false;
-   }
+   // if (!today.isBetween(start_date_request, closing_date_request, "day", "[]")) {
+   //    sAlert.Info(
+   //       `NO ES POSIBLE SOLICITAR BECAS EN ESTE MOMENTO
+   //       <br/>
+   //       <br/>
+   //       el tiempo de solicitar becas es del <span style="color:${colorPrimaryDark}; font-weight:bolder">${formatDatetime(
+   //          start_date_request,
+   //          null,
+   //          "LL"
+   //       )}</span> al <span style="color:${colorPrimaryDark}; font-weight:bolder">${formatDatetime(closing_date_request, null, "LL")}</span>`
+   //    );
+   //    return false;
+   // }
    // VERIFICAR QUE EL USUARIO NO HAYA PEDIDO BECA ANTERIORMENTE EN ESTE CICLO
-   if (requestBeca) {
-      const res = await axios.post(`${import.meta.env.VITE_API}/becas/validatePermissionToRequestBeca`, requestBeca, {
-         headers: {
-            Accept: "application/json", //*/*
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token") || ""}`
-         }
-      });
-      const validatePermission = res.data.data;
-      sAlert.Customizable(`${validatePermission.alert_text}`, validatePermission.alert_icon, true, false);
-      return false;
+   // if (requestBeca) {
+   const data = {
+      tutor_curp: requestBeca?.tutor_curp || "SinCURP",
+      curp: requestBeca?.curp || "SinCURP",
+      continue: inContinue
+   };
+   const res = await axios.post(`${import.meta.env.VITE_API}/becas/validatePermissionToRequestBeca`, data, {
+      headers: {
+         Accept: "application/json", //*/*
+         "Content-Type": "application/json",
+         Authorization: `Bearer ${localStorage.getItem("token") || ""}`
+      }
+   });
+   const validatePermission = res.data.data;
+   if (!validatePermission.result.v_allowed) {
+      if (validatePermission.alert_text.includes("el tiempo de solicitar becas es del")) {
+         // const today = dayjs();
+         const start_date_request = dayjs(validatePermission.result.v_start_date_request);
+         const closing_date_request = dayjs(validatePermission.result.v_closing_date_request);
+         sAlert.Info(
+            `NO ES POSIBLE SOLICITAR BECAS EN ESTE MOMENTO
+                  <br/>
+                  <br/>
+                  el tiempo de solicitar becas es del <span style="color:${colorPrimaryDark}; font-weight:bolder">${formatDatetime(
+               start_date_request,
+               null,
+               "LL"
+            )}</span> al <span style="color:${colorPrimaryDark}; font-weight:bolder">${formatDatetime(closing_date_request, null, "LL")}</span>`
+         );
+      } else sAlert.Customizable(validatePermission.alert_text, validatePermission.alert_icon, true, false);
    }
-   return true;
+   return validatePermission.result.v_allowed;
+   // }
+   // return true;
 };

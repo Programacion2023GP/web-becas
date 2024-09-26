@@ -16,16 +16,16 @@ import SettingForm from "./Form";
 
 const SettingsView = () => {
    // const { result } = useLoaderData();
-   const { setLoading } = useGlobalContext();
+   const { loading, setLoading } = useGlobalContext();
    // const { currentCycle, getCurrentCycle } = useCycleContext();
-   const { pluralName, getSettings, currentSettings, formData } = useSettingContext();
+   const { pluralName, getSettings, currentSettings, getCurrentSettings, formData } = useSettingContext();
 
    useEffect(() => {
       try {
          (async () => {
             setLoading(true);
             // await getCurrentCycle();
-            await getSettings();
+            await getCurrentSettings();
             setLoading(false);
          })();
       } catch (error) {
@@ -34,6 +34,7 @@ const SettingsView = () => {
       }
    }, []);
 
+   
    return (
       <>
          <Typography variant="h1" color={"#1E2126"} mb={2} textAlign={"center"}>
