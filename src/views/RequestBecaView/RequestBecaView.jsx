@@ -1029,8 +1029,8 @@ const RequestBecaView = () => {
          setNotifiactedExpenses(false);
          const resCurrentSettings = await getCurrentSettings();
          setLoadingAction(true);
-         if (!(await validatePermissionToRequestBeca(resCurrentSettings.result))) {
-            navigate("/app/");
+         if (!(await validatePermissionToRequestBeca(resCurrentSettings.result, formData, pagina > 3))) {
+            navigate(auth.role_id === 3 ? "/app/solicitudes/mis-solicitudes" : "/app/");
             return setLoadingAction(false);
          }
          setLoadingAction(false);
