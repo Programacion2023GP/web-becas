@@ -180,7 +180,7 @@ const InputsFormik9 = ({ folio, pagina, activeStep, setStepFailed, ButtonsBefore
                {/* IMAGEN DE INE TUTOR */}
                {dataFileInputs.map((dataInput, index) => (
                   <>
-                     {![dataInput.isTutor, dataInput.haveSecondRef].includes(null) && <DividerComponent title={dataInput.infoDivider.title} />}
+                     {![dataInput.isTutor, dataInput.haveSecondRef].includes(null) && <DividerComponent fontWeight={"bold"} title={dataInput.infoDivider.title} />}
                      {dataInput.isTutor === true && (
                         <>
                            <Typography variant="h5" sx={{ display: "block", width: "100%", mb: 1 }}>

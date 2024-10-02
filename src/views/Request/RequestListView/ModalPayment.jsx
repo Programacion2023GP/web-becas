@@ -101,12 +101,13 @@ function ModalPayment({ obj, open, setOpen, statusCurrent, modalTitle, numPago, 
          setImgIneShown(obj.b7_img_tutor_ine);
          setImgIneBackShown(obj.b7_img_tutor_ine_back);
       } else {
-         setImgIneShown(obj.b7_img_second_ref_ine);
-         setImgIneBackShown(obj.b7_img_second_ref_ine_back);
+         setImgIneShown(obj.b7_img_second_ref);
+         setImgIneBackShown(obj.b7_img_second_ref_back);
       }
    };
 
    useEffect(() => {
+      // console.log("🚀 ~ useEffect ~ obj:", obj);
       // console.log("🚀 ~ useEffect ~ formData:", formData);
    }, [imgIneShown]);
 
@@ -137,7 +138,7 @@ function ModalPayment({ obj, open, setOpen, statusCurrent, modalTitle, numPago, 
                      idName={"paid_to_tutor"}
                      title={"¿Quien recibio el apoyo?"}
                      options={
-                        obj.second_ref === "Familia"
+                        obj.second_ref === "Familiar"
                            ? [
                                 { value: true, label: `TUTOR - ${obj.tutor_name} ${obj.tutor_paternal_last_name} ${obj.tutor_maternal_last_name}` },
                                 { value: false, label: `${obj.second_ref_relationship} - ${obj.second_ref_fullname}` }

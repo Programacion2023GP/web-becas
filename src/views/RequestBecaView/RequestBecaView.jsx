@@ -132,7 +132,7 @@ const RequestBecaView = () => {
          isTutor: false,
          haveSecondRef: haveSecondRef ? true : null,
          infoDivider: {
-            title: "DOCUMENTO DEL REPRESENTATE (2da Opción)"
+            title: "DOCUMENTOS DEL FAMILIAR AUTORIZADO (2da Opción)"
          }
       },
       {
@@ -146,7 +146,7 @@ const RequestBecaView = () => {
          isTutor: false,
          haveSecondRef: haveSecondRef ? true : null,
          infoDivider: {
-            title: "DOCUMENTO DEL REPRESENTATE (2da Opción)"
+            title: ""
          }
       },
       {
@@ -1029,9 +1029,12 @@ const RequestBecaView = () => {
          setNotifiactedExpenses(false);
          const resCurrentSettings = await getCurrentSettings();
          setLoadingAction(true);
+         // console.log("🚀 ~ location.href:", location.href.includes("revision"));
          if (!(await validatePermissionToRequestBeca(resCurrentSettings.result, formData, pagina > 3))) {
-            navigate(auth.role_id === 3 ? "/app/solicitudes/mis-solicitudes" : "/app/");
-            return setLoadingAction(false);
+            if (!location.href.includes("revision")) {
+               navigate(auth.role_id === 3 ? "/app/solicitudes/mis-solicitudes" : "/app/");
+               return setLoadingAction(false);
+            }
          }
          setLoadingAction(false);
 
