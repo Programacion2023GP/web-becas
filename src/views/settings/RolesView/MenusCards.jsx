@@ -206,6 +206,7 @@ const MenusCards = ({ loadPermissions }) => {
          // console.log("handleCheckboxChange()->id", id);
          // console.log("handleCheckboxChange()->value", value);
          // console.log("handleCheckboxChange()->isChecked", isChecked);
+         // console.log("🚀 ~ handleCheckboxChange ~ checkMenus:", checkMenus);
          let _checkMenus = [...checkMenus];
          // console.log("_checkMenus", _checkMenus);
          _checkMenus = _checkMenus.map((check) => {
